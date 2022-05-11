@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Place extends Model
+{
+    use HasFactory;
+
+    protected $guarded = [];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+    public function tableplans()
+    {
+        return $this->hasMany(Tableplan::class);
+    }
+
+    public function timetables()
+    {
+        return $this->hasMany(Timetable::class);
+    }
+
+    public function areas()
+    {
+        return $this->hasMany(Area::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function menus()
+    {
+        return $this->hasMany(Menu::class);
+    }
+
+    public function message_templates()
+    {
+        return $this->hasMany(MessageTemplate::class);
+    }
+
+    public function giftcards()
+    {
+        return $this->hasMany(Giftcard::class);
+    }
+
+    public function coupons()
+    {
+        return $this->hasMany(Coupon::class);
+    }
+
+    public function settings()
+    {
+        return $this->hasMany(Setting::class);
+    }
+
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
+}

@@ -117,12 +117,17 @@
 - id
 - place_id
 - name
+- expired_at
+- initial_amount
+- spend_amount
 - code
 
 ### Coupons
 - id
 - place_id
 - name
+- expired_at
+- amount
 - code
 
 ### Settings

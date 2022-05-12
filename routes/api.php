@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthApiController;
+use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,4 +25,11 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('user',function(Request $request){
         return $request->user();
     });
+
+    Route::post('settings',[SettingController::class, 'save']);
+    Route::get('settings',[SettingController::class, 'get']);
+
+    Route::post('places',[PlaceController::class, 'create']);
+    Route::get('places',[PlaceController::class, 'getAll']);
+    Route::get('places/{id}',[PlaceController::class, 'getId']);
 });

@@ -156,3 +156,10 @@
 - place_id
 - purpose
 - filename
+
+### Logs
+- id
+- user_id
+- action
+- comment
+- ip

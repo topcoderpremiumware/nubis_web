@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,6 +30,8 @@ class SettingController extends Controller
         ],[
             'value' => $request->value
         ]);
+
+        Log::add($request,'change-settings','Changed place settings');
 
         return response()->json($settings);
     }

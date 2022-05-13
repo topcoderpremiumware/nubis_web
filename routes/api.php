@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthApiController;
 use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('user',function(Request $request){
         return $request->user();
     });
+    Route::post('user',[AuthApiController::class, 'save']);
+    Route::post('user/language',[AuthApiController::class, 'language']);
+    Route::post('user/password',[AuthApiController::class, 'password']);
 
     Route::post('settings',[SettingController::class, 'save']);
     Route::get('settings',[SettingController::class, 'get']);
@@ -32,4 +36,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('places',[PlaceController::class, 'create']);
     Route::get('places',[PlaceController::class, 'getAll']);
     Route::get('places/{id}',[PlaceController::class, 'getId']);
+    Route::post('places/{id}',[PlaceController::class, 'save']);
+
+    Route::post('roles',[RoleController::class, 'create']);
+    Route::get('roles',[RoleController::class, 'getAll']);
+    Route::post('user/{id}/roles',[AuthApiController::class, 'setRoles']);
 });

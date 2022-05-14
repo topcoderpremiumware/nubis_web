@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamp('reservation_time');
             $table->text('comment');
             $table->string('status');
-            $table->binary('is_take_away');
+            $table->boolean('is_take_away');
             $table->string('source');
             $table->text('marks');
             $table->softDeletes();

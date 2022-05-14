@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('zip_code')->nullable();
             $table->string('password');
-            $table->binary('allow_send_emails');
-            $table->binary('allow_send_news');
+            $table->boolean('allow_send_emails');
+            $table->boolean('allow_send_news');
             $table->string('language');
             $table->timestamps();
         });

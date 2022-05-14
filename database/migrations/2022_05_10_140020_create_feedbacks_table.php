@@ -26,7 +26,7 @@ return new class extends Migration
             $table->double('experience_mark',3,1);
             $table->double('price_mark',3,1);
             $table->double('average_mark',3,1);
-            $table->binary('is_recommend');
+            $table->boolean('is_recommend');
             $table->timestamps();
         });
     }

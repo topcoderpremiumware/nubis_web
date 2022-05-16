@@ -95,7 +95,7 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/mine \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
-#### Get one (with tableplans)
+#### Get one (with tableplans, areas)
 > GET /api/places/{id}
 ```cmd
 curl -X GET https://dinner-book.vasilkoff.info/api/places/1 \
@@ -178,4 +178,60 @@ curl -X POST https://dinner-book.vasilkoff.info/api/tableplans/1 \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
 -d '{"name":"Tableplan 1","place_id":1,"data":[{"number":1,"priority":1,"seats":2,"group":1,"group_priority":1,"color":"#ff0000","angle":90,"top":50,"left":40,"type":0,"is_internal":true,"is_online":true,"qr_code":""}]}'
+```
+---
+## Areas
+#### Create
+> POST /api/areas
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/areas \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"name":"Area 1","place_id":1}'
+```
+#### Get one
+> GET /api/areas/{id}
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/areas/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
+#### Save place
+> POST /api/areas/{id}
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/areas/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"name":"Area 1","place_id":1}'
+```
+---
+## Timetables
+#### Create
+> POST /api/timetables
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/timetables \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"tableplan_id":1,"area_id":1,"start_date":"2022-01-01","end_date":"2032-01-01","start_time":"09:00:00","end_time":"18:00:00","length":420,"max":50,"min":1,"week_days":[1,2,3,4,5],"status":"working"}'
+```
+#### Get one
+> GET /api/timetables/{id}
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/timetables/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
+#### Save place
+> POST /api/timetables/{id}
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/timetables/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"tableplan_id":1,"area_id":1,"start_date":"2022-01-01","end_date":"2032-01-01","start_time":"09:00:00","end_time":"18:00:00","length":420,"max":50,"min":1,"week_days":[1,2,3,4,5],"status":"working"}'
 ```

@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthApiController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TableplanController;
+use App\Models\Timetable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,4 +49,12 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('tableplans',[TableplanController::class, 'create']);
     Route::get('tableplans/{id}',[TableplanController::class, 'getId']);
     Route::post('tableplans/{id}',[TableplanController::class, 'save']);
+
+    Route::post('areas',[AreaController::class, 'create']);
+    Route::get('areas/{id}',[AreaController::class, 'getId']);
+    Route::post('areas/{id}',[AreaController::class, 'save']);
+
+    Route::post('timetables',[Timetable::class, 'create']);
+    Route::get('timetables/{id}',[Timetable::class, 'getId']);
+    Route::post('timetables/{id}',[Timetable::class, 'save']);
 });

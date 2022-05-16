@@ -86,7 +86,7 @@ class PlaceController extends Controller
             ], 400);
         }
 
-        $place = Place::with('tableplans')->find($request->id);
+        $place = Place::with(['tableplans','areas'])->find($request->id);
 
         return response()->json($place);
     }

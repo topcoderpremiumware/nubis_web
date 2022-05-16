@@ -66,6 +66,13 @@ class PlaceController extends Controller
 
     public function getAll(Request $request)
     {
+        $places = Place::all();
+
+        return response()->json($places);
+    }
+
+    public function getAllMine(Request $request)
+    {
         $places = Auth::user()->places;
 
         return response()->json($places);
@@ -79,7 +86,7 @@ class PlaceController extends Controller
             ], 400);
         }
 
-        $place = Place::find($request->id);
+        $place = Place::with('tableplans')->find($request->id);
 
         return response()->json($place);
     }

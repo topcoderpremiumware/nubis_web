@@ -37,8 +37,6 @@ class AuthApiController extends Controller
             'language' => $request->language ?? 'en'
         ]);
 
-        Log::add($request,'register','Register new user');
-
         return $this->response($user);
     }
 

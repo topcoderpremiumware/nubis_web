@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthApiController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TableplanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,10 +36,15 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::post('places',[PlaceController::class, 'create']);
     Route::get('places',[PlaceController::class, 'getAll']);
+    Route::get('places/mine',[PlaceController::class, 'getAllMine']);
     Route::get('places/{id}',[PlaceController::class, 'getId']);
     Route::post('places/{id}',[PlaceController::class, 'save']);
 
     Route::post('roles',[RoleController::class, 'create']);
     Route::get('roles',[RoleController::class, 'getAll']);
     Route::post('user/{id}/roles',[AuthApiController::class, 'setRoles']);
+
+    Route::post('tableplans',[TableplanController::class, 'create']);
+    Route::get('tableplans/{id}',[TableplanController::class, 'getId']);
+    Route::post('tableplans/{id}',[TableplanController::class, 'save']);
 });

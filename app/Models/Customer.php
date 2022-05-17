@@ -4,15 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
 class Customer extends Model
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory;
 
     protected $guarded = [];
 
     protected $hidden = [
-        'password'
+        'password',
+        'remember_token'
     ];
 
     public function orders()

@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Log;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
     public function create(Request $request)
     {
+        if(!Auth::user()->tokenCan('superadmin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'title' => 'required|unique:roles',
         ]);
@@ -25,6 +30,10 @@ class RoleController extends Controller
 
     public function getAll(Request $request)
     {
+        if(!Auth::user()->tokenCan('superadmin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $roles = Role::all();
 
         return response()->json($roles);

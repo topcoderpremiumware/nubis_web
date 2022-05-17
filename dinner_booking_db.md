@@ -77,7 +77,8 @@
 - email
 - zip_code
 - password
-- allow_send_email
+- allow_send_emails
+- allow_send_news
 - language
 
 ### Orders

@@ -11,7 +11,7 @@ class AuthApiController extends Controller
 {
     public function response($user)
     {
-        $token = $user->createToken(str()->random(40))->plainTextToken;
+        $token = $user->createToken(str()->random(40),['admin'])->plainTextToken;
         return response()->json([
             'user' => $user,
             'token' => $token,
@@ -53,23 +53,27 @@ class AuthApiController extends Controller
             ], 401);
         }
 
-        Log::add($request,'login','Loged in');
+        Log::add($request,'login','Logged in');
 
         return $this->response(Auth::user());
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
+        Log::add($request,'logout','Logged out');
+
         Auth::user()->tokens()->delete();
         return response()->json([
            'message' => 'You have successfully logged out and token was successfully deleted.'
         ]);
-
-        Log::add($request,'logout','Loged out');
     }
 
     public function save(Request $request)
     {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:2',
@@ -96,6 +100,10 @@ class AuthApiController extends Controller
 
     public function language(Request $request)
     {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'language' => 'required|min:2|max:2',
         ]);
@@ -116,6 +124,10 @@ class AuthApiController extends Controller
 
     public function password(Request $request)
     {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'password' => 'required|min:4|confirmed',
         ]);
@@ -137,6 +149,10 @@ class AuthApiController extends Controller
 
     public function setRoles($id, Request $request)
     {
+        if(!Auth::user()->tokenCan('superadmin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'roles' => 'required|array'
         ]);

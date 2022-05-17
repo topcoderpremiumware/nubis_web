@@ -66,7 +66,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/user/1/roles \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json' \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
--d '{"roles":"[1]"}'
+-d '{"roles":[1]}'
 ```
 ---
 ## Places
@@ -95,7 +95,7 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/mine \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
-#### Get one (with tableplans, areas)
+#### Get one
 > GET /api/places/{id}
 ```cmd
 curl -X GET https://dinner-book.vasilkoff.info/api/places/1 \
@@ -170,7 +170,7 @@ curl -X GET https://dinner-book.vasilkoff.info/api/tableplans/1 \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
-#### Save place
+#### Save
 > POST /api/tableplans/{id}
 ```cmd
 curl -X POST https://dinner-book.vasilkoff.info/api/tableplans/1 \
@@ -198,7 +198,7 @@ curl -X GET https://dinner-book.vasilkoff.info/api/areas/1 \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
-#### Save place
+#### Save
 > POST /api/areas/{id}
 ```cmd
 curl -X POST https://dinner-book.vasilkoff.info/api/areas/1 \
@@ -226,7 +226,7 @@ curl -X GET https://dinner-book.vasilkoff.info/api/timetables/1 \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
-#### Save place
+#### Save
 > POST /api/timetables/{id}
 ```cmd
 curl -X POST https://dinner-book.vasilkoff.info/api/timetables/1 \
@@ -234,4 +234,65 @@ curl -X POST https://dinner-book.vasilkoff.info/api/timetables/1 \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
 -d '{"place_id":1,"tableplan_id":1,"area_id":1,"start_date":"2022-01-01","end_date":"2032-01-01","start_time":"09:00:00","end_time":"18:00:00","length":420,"max":50,"min":1,"week_days":[1,2,3,4,5],"status":"working"}'
+```
+---
+## Customers
+#### Register
+> POST /api/customers/register
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/customers/register \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-d '{"first_name":"Mary","last_name":"Nic","email":"2ovob4ehko@ukr.net","phone":"","zip_code":"","password":"MaxLibra85","password_confirmation":"MaxLibra85","language":"en","allow_send_emails":true,"allow_send_news":false}'
+```
+#### Login
+> POST /api/customers/login
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/customers/login \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-d '{"email":"2ovob4ehko@ukr.net","password":"Maxlibra85"}'
+```
+#### Get
+> GET /api/customers
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/customers \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Accept: application/json" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f"
+```
+#### Logout
+> POST /api/customers/logout
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/customers/logout \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Accept: application/json" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f"
+```
+#### Save
+> POST /api/customers
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/customers \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-d '{"first_name":"Max","last_name":"Nic","email":"2ovob4ehko@ukr.net","language":"en"}'
+```
+#### Change customer language
+> POST /api/customers/language
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/customers/language \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-d '{"language":"en"}'
+```
+#### Change customer password
+> POST /api/customers/password
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/customers/password \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-d '{"password":"Maxlibra85","password_confirmation":"Maxlibra85"}'
 ```

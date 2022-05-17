@@ -13,6 +13,10 @@ class TableplanController extends Controller
 {
     public function create(Request $request)
     {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'name' => 'required',
             'place_id' => 'required|exists:places,id',
@@ -38,6 +42,10 @@ class TableplanController extends Controller
 
     public function save($id, Request $request)
     {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'name' => 'required',
             'place_id' => 'required|exists:places,id',

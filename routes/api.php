@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthApiController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
@@ -23,6 +24,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('register',[AuthApiController::class, 'register']);
 Route::post('login',[AuthApiController::class, 'login']);
+
+Route::post('customers/register',[CustomerController::class, 'register']);
+Route::post('customers/login',[CustomerController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);
@@ -57,4 +61,12 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('timetables',[Timetable::class, 'create']);
     Route::get('timetables/{id}',[Timetable::class, 'getId']);
     Route::post('timetables/{id}',[Timetable::class, 'save']);
+
+    Route::post('customers/logout',[CustomerController::class, 'logout']);
+    Route::get('customers',function(Request $request){
+        return $request->user();
+    });
+    Route::post('customers',[CustomerController::class, 'save']);
+    Route::post('customers/language',[CustomerController::class, 'language']);
+    Route::post('customers/password',[CustomerController::class, 'password']);
 });

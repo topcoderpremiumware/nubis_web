@@ -11,6 +11,10 @@ class PlaceController extends Controller
 {
     public function create(Request $request)
     {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'name' => 'required',
         ]);
@@ -34,6 +38,10 @@ class PlaceController extends Controller
 
     public function save($id, Request $request)
     {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'name' => 'required',
         ]);
@@ -86,7 +94,7 @@ class PlaceController extends Controller
             ], 400);
         }
 
-        $place = Place::with(['tableplans','areas'])->find($request->id);
+        $place = Place::with(['areas'])->find($request->id);
 
         return response()->json($place);
     }

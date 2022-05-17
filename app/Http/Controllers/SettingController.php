@@ -12,6 +12,10 @@ class SettingController extends Controller
 {
     public function save(Request $request)
     {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'place_id' => 'required|integer|exists:places,id',
             'name' => 'required',

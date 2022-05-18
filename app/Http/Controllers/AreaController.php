@@ -73,7 +73,7 @@ class AreaController extends Controller
 
     public function getId($id, Request $request)
     {
-        $area = Area::with('timetables')->find($id);
+        $area = Area::find($id);
 
         if(!Auth::user()->places->contains($area->place_id)){
             return response()->json([
@@ -82,5 +82,18 @@ class AreaController extends Controller
         }
 
         return response()->json($area);
+    }
+
+    public function getAllByPlace($place_id, Request $request)
+    {
+        if(!Auth::user()->places->contains($place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $areas = Area::where('place_id',$place_id)->get();
+
+        return response()->json($areas);
     }
 }

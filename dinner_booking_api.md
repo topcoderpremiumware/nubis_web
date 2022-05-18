@@ -112,6 +112,14 @@ curl -X POST https://dinner-book.vasilkoff.info/api/places/1 \
 -H 'Content-Type: application/json' \
 -d '{"name":"McDonalds","address":"Shevchenka 200","city":"Cherkasy","zip_code":"18000","phone":"","email":"","home_page":""}'
 ```
+#### Get all areas of place
+> GET /api/places/{id}/areas
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/areas \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
 ---
 ## Settings
 #### Save
@@ -206,6 +214,15 @@ curl -X POST https://dinner-book.vasilkoff.info/api/areas/1 \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
 -d '{"name":"Area 1","place_id":1}'
+```
+#### Get working time by area and date
+> GET /api/areas/{id}/working
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/areas/1/working \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"date":"2022-05-18"}'
 ```
 ---
 ## Timetables

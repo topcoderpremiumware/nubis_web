@@ -11286,3 +11286,11 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+.container {
+  display: flex;
+}
+
+.pages__container {
+  flex: 2;
+  width: 550px;
+}

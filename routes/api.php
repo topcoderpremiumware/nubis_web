@@ -3,6 +3,7 @@
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthApiController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
@@ -71,4 +72,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('customers',[CustomerController::class, 'save']);
     Route::post('customers/language',[CustomerController::class, 'language']);
     Route::post('customers/password',[CustomerController::class, 'password']);
+
+    Route::post('orders',[OrderController::class, 'create']);
+    Route::get('orders/{id}',[OrderController::class, 'getId']);
+    Route::post('orders/{id}',[OrderController::class, 'save']);
+    Route::get('orders',[OrderController::class, 'getAllByParams']);
 });

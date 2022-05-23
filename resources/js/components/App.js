@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Topbar from "./components/topbar/topbar";
-import Sidebar from "./components/sidebar/Sidebar";
-import "./app.css";
+import Topbar from "./sections/topbar/topbar";
+import Sidebar from "./sections/sidebar/Sidebar";
 import DailyUse from "./pages/DailyUse/DailyUse";
 import DailyUseInfo from "./pages/DailyUse/DailyUseInfo/DailyUseInfo";
 import { BrowserRouter, Routes, Route } from "react-router-dom";

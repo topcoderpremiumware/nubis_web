@@ -1,5 +1,5 @@
 body {
-    margin: 0;
+    margin: 0!important;
 }
 .container{
     display: flex;
@@ -9,5 +9,5 @@ body {
     width: 550px;
 }
 *{
-   box-sizing: border-box;
+   box-sizing: border-box!important;
 }

@@ -1,0 +1,60 @@
+.topbar{
+    width: 100%;
+    height: 54px;
+    background: #343C48;
+    z-index: 9999;
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+}
+.topbarWrapper{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.topbar__left{
+    display: flex;
+}
+.topbar__right{
+    display: flex;
+}
+.topbar__item{
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+.topbar__item-text{
+    font-size: 14px;
+    line-height: 17px;
+}
+.logo{
+    font-weight: 500;   
+    font-size: 20px;
+    cursor: pointer;
+    // margin-right: 50px;
+}
+
+.topbarIconContainer{
+    position: relative;
+    margin: 0 30px;
+    padding: 0;
+}
+.topbarIconBag{
+    position: absolute;
+    top: 5px;
+    left: 11px;
+    width: 14px;
+    height: 10px;
+    background-color: #F4675E;
+    color: #fff;
+    font-size: 8px;
+    line-height: 9px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

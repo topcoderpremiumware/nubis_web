@@ -1,0 +1,7 @@
+.container{
+    display: flex;
+}
+.pages__container{
+    flex: 2;
+    width: 550px;
+}

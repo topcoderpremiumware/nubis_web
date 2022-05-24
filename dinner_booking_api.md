@@ -313,3 +313,40 @@ curl -X POST https://dinner-book.vasilkoff.info/api/customers/password \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -d '{"password":"Maxlibra85","password_confirmation":"Maxlibra85"}'
 ```
+---
+## Order
+#### Create
+> POST /api/orders
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/orders \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"customer_id":1,"place_id":1,"tableplan_id":1,"area_id":1,"table_ids":[1],"seats":2,"reservation_time":"2022-05-18 12:00:00","comment":"","status":"waiting","is_take_away":0,"source":"online","marks": ""}'
+```
+#### Get one
+> GET /api/orders/{id}
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/orders/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
+#### Save
+> POST /api/orders/{id}
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/orders/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"customer_id":1,"place_id":1,"tableplan_id":1,"area_id":1,"table_ids":[1],"seats":2,"reservation_time":"2022-05-18 12:00:00","comment":"","status":"waiting","is_take_away":0,"source":"online","marks": ""}'
+```
+#### Get working time by area and date
+> GET /api/orders
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/orders \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"area_id":1,"reservation_from":"2022-05-18 09:00:00","reservation_to":"2022-05-18 18:00:00"}'
+```

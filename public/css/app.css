@@ -11286,6 +11286,10 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+body {
+  margin: 0;
+}
+
 .container {
   display: flex;
 }
@@ -11293,4 +11297,8 @@ textarea.form-control-lg {
 .pages__container {
   flex: 2;
   width: 550px;
+}
+
+* {
+  box-sizing: border-box;
 }

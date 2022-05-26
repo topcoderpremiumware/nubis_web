@@ -163,4 +163,15 @@ class AuthApiController extends Controller
         $user->roles()->sync($request->roles);
         return response()->json(['message' => 'Roles are set']);
     }
+
+    public function getRoles($id, Request $request)
+    {
+        if(!Auth::user()->tokenCan('superadmin') &&
+            !Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $user = User::findOrFail($id);
+        return response()->json($user->roles);
+    }
 }

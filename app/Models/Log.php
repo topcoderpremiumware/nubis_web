@@ -4,13 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Support\Facades\Auth;
 
 class Log extends Model
 {
-    use HasFactory;
+    use HasFactory, Prunable;
 
     protected $guarded = [];
+
+    public function prunable()
+    {
+        return static::where('created_at', '<=', now()->subMonths(3));
+    }
 
     public function users()
     {

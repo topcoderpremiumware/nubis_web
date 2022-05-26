@@ -132,4 +132,58 @@ class OrderController extends Controller
 
         return response()->json($orders);
     }
+
+    public function getAllByCustomer(Request $request)
+    {
+        if(!Auth::user()->tokenCan('customer')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $orders = Order::where('customer_id',Auth::user()->id)
+            ->get();
+
+        return response()->json($orders);
+    }
+
+    public function delete($id, Request $request)
+    {
+        $order = Order::find($id);
+
+        if(!Auth::user()->places->contains($order->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $order->delete();
+
+        return response()->json(['message' => 'Order is deleted']);
+    }
+
+    public function setStatus($id, Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'status' => 'required',
+        ]);
+
+        $order = Order::find($id);
+
+        if(!Auth::user()->places->contains($order->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $res = $order->update([
+            'status' => $request->status,
+        ]);
+
+        Log::add($request,'change-order-status','Changed order status');
+
+        return response()->json(['message' => 'Order status changed']);
+    }
 }

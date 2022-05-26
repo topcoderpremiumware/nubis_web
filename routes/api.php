@@ -3,6 +3,9 @@
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthApiController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DishController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MessageTemplateController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RoleController;
@@ -37,6 +40,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('user',[AuthApiController::class, 'save']);
     Route::post('user/language',[AuthApiController::class, 'language']);
     Route::post('user/password',[AuthApiController::class, 'password']);
+    Route::post('user/{id}/roles',[AuthApiController::class, 'setRoles']);
+    Route::get('user/{id}/roles',[AuthApiController::class, 'getRoles']);
 
     Route::post('settings',[SettingController::class, 'save']);
     Route::get('settings',[SettingController::class, 'get']);
@@ -47,10 +52,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('places/{id}',[PlaceController::class, 'getId']);
     Route::post('places/{id}',[PlaceController::class, 'save']);
     Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace']);
+    Route::get('places/{place_id}/menus',[MenuController::class, 'getAllByPlace']);
 
     Route::post('roles',[RoleController::class, 'create']);
     Route::get('roles',[RoleController::class, 'getAll']);
-    Route::post('user/{id}/roles',[AuthApiController::class, 'setRoles']);
 
     Route::post('tableplans',[TableplanController::class, 'create']);
     Route::get('tableplans/{id}',[TableplanController::class, 'getId']);
@@ -72,9 +77,27 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('customers',[CustomerController::class, 'save']);
     Route::post('customers/language',[CustomerController::class, 'language']);
     Route::post('customers/password',[CustomerController::class, 'password']);
+    Route::get('customers/orders',[OrderController::class, 'getAllByCustomer']);
 
     Route::post('orders',[OrderController::class, 'create']);
     Route::get('orders/{id}',[OrderController::class, 'getId']);
     Route::post('orders/{id}',[OrderController::class, 'save']);
     Route::get('orders',[OrderController::class, 'getAllByParams']);
+    Route::delete('orders/{id}',[OrderController::class, 'delete']);
+    Route::post('orders/{id}/status',[OrderController::class, 'setStatus']);
+
+    Route::post('dishes',[DishController::class, 'create']);
+    Route::get('dishes/{id}',[DishController::class, 'getId']);
+    Route::post('dishes/{id}',[DishController::class, 'save']);
+    Route::get('dishes',[DishController::class, 'getAll']);
+
+    Route::post('menus',[MenuController::class, 'create']);
+    Route::get('menus/{id}',[MenuController::class, 'getId']);
+    Route::post('menus/{id}',[MenuController::class, 'save']);
+    Route::post('menus/{id}/dishes',[MenuController::class, 'setDishes']);
+
+    Route::post('message_tempates',[MessageTemplateController::class, 'create']);
+    Route::get('message_tempates/{id}',[MessageTemplateController::class, 'getId']);
+    Route::post('message_tempates/{id}',[MessageTemplateController::class, 'save']);
+    Route::get('message_tempates',[MessageTemplateController::class, 'getAllByPlace']);
 });

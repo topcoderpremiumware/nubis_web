@@ -4,9 +4,23 @@
 - [Auth](#auth)
 - [Places](#places)
 - [Settings](#settings)
+- [Roles](#roles)
+- [Tableplans](#tableplans)
+- [Areas](#areas)
+- [Timetables](#timetables)
+- [Customers](#customers)
+- [Orders](#orders)
+- [Dishes](#dishes)
+- [Menus](#menus)
+- [Message templates](#message_templates)
+- [Giftcards](#giftcards)
+- [Coupons](#coupons)
+- [Feedbacks](#feedbacks)
+- [Files](#files)
 
 ---
-## Auth <a id="auth"></a>
+<a id="auth"></a>
+## Auth
 #### Register
 > POST /api/register
 ```cmd
@@ -84,7 +98,8 @@ curl -X POST https://dinner-book.vasilkoff.info/api/user/1/roles \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f"
 ```
 ---
-## Places <a id="places"></a>
+<a id="places"></a>
+## Places
 #### Create
 > POST /api/places
 ```cmd
@@ -144,7 +159,8 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/menus \
 -H 'Content-Type: application/json'
 ```
 ---
-## Settings <a id="settings"></a>
+<a id="settings"></a>
+## Settings
 #### Save
 > POST /api/settings
 ```cmd
@@ -211,6 +227,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/tableplans/1 \
 -d '{"name":"Tableplan 1","place_id":1,"data":[{"number":1,"priority":1,"seats":2,"group":1,"group_priority":1,"color":"#ff0000","angle":90,"top":50,"left":40,"type":0,"is_internal":true,"is_online":true,"qr_code":""}]}'
 ```
 ---
+<a id="areas"></a>
 ## Areas
 #### Create
 > POST /api/areas
@@ -248,6 +265,7 @@ curl -X GET https://dinner-book.vasilkoff.info/api/areas/1/working \
 -d '{"date":"2022-05-18"}'
 ```
 ---
+<a id="timetables"></a>
 ## Timetables
 #### Create
 > POST /api/timetables
@@ -276,6 +294,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/timetables/1 \
 -d '{"place_id":1,"tableplan_id":1,"area_id":1,"start_date":"2022-01-01","end_date":"2032-01-01","start_time":"09:00:00","end_time":"18:00:00","length":420,"max":50,"min":1,"week_days":[1,2,3,4,5],"status":"working"}'
 ```
 ---
+<a id="customers"></a>
 ## Customers
 #### Register
 > POST /api/customers/register
@@ -345,7 +364,8 @@ curl -X GET https://dinner-book.vasilkoff.info/api/customers/orders \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f"
 ```
 ---
-## Order
+<a id="orders"></a>
+## Orders
 #### Create
 > POST /api/orders
 ```cmd
@@ -399,6 +419,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/orders/1/status \
 -d '{"status":"waiting"}'
 ```
 ---
+<a id="dishes"></a>
 ## Dishes
 #### Create
 > POST /api/dishes
@@ -435,6 +456,7 @@ curl -X GET https://dinner-book.vasilkoff.info/api/dishes \
 -H 'Content-Type: application/json'
 ```
 ---
+<a id="menus"></a>
 ## Menus
 #### Create
 > POST /api/menus
@@ -472,6 +494,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/menus/1/dishes \
 -d '{"dishes":[1,2,3]}'
 ```
 ---
+<a id="message_templates"></a>
 ## Message templates
 #### Create
 > POST /api/message_tempates
@@ -509,6 +532,7 @@ curl -X GET https://dinner-book.vasilkoff.info/api/message_tempates \
 -d '{"place_id":1}'
 ```
 ---
+<a id="giftcards"></a>
 ## Giftcards
 #### Create
 > POST /api/giftcards
@@ -564,6 +588,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/giftcards_spend \
 -d '{"code":"dfhdfh","amount":30}'
 ```
 ---
+<a id="coupons"></a>
 ## Coupons
 #### Create
 > POST /api/coupons
@@ -618,6 +643,7 @@ curl -X DELETE https://dinner-book.vasilkoff.info/api/coupons/1 \
 -H 'Content-Type: application/json'
 ```
 ---
+<a id="feedbacks"></a>
 ## Feedbacks
 #### Create
 > POST /api/feedbacks
@@ -664,6 +690,7 @@ curl -X GET https://dinner-book.vasilkoff.info/api/feedbacks_public \
 -d '{"place_id":1}'
 ```
 ---
+<a id="files"></a>
 ## Files
 #### Create
 > POST /api/files

@@ -6,7 +6,7 @@
 - [Settings](#settings)
 
 ---
-## Auth
+## Auth <a id="auth"></a>
 #### Register
 > POST /api/register
 ```cmd
@@ -84,7 +84,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/user/1/roles \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f"
 ```
 ---
-## Places
+## Places <a id="places"></a>
 #### Create
 > POST /api/places
 ```cmd
@@ -144,7 +144,7 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/menus \
 -H 'Content-Type: application/json'
 ```
 ---
-## Settings
+## Settings <a id="settings"></a>
 #### Save
 > POST /api/settings
 ```cmd

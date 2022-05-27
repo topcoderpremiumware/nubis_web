@@ -14,7 +14,7 @@ function App() {
     return (
         <BrowserRouter>
         <Topbar/>
-        <div className="container">
+        <div className="content">
             <Sidebar/>
             {/* <Routes>
                 <Route path='/' exact element={<DailyUse/>} />

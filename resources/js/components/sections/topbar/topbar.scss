@@ -1,15 +1,23 @@
-body {
-    margin: 0!important;
+body{
+    margin: 0;
+}
+.container{
+    display: flex;
+}
+.pages__container{
+    flex: 2;
+    width: 100%;
 }
 *{
-    box-sizing: border-box!important;
- }
+    box-sizing: border-box;
+}
+  
 .topbar{
     width: 100%;
     height: 54px;
     background: #343C48;
     z-index: 9999;
-    // padding: 0 20px;
+    padding: 0 20px;
     position: sticky;
     top: 0;
 }
@@ -37,11 +45,16 @@ body {
     font-size: 14px;
     line-height: 17px;
 }
+.link{
+    text-decoration: none;
+    color: inherit;
+}
 .logo{
     font-weight: 500;   
     font-size: 20px;
     cursor: pointer;
     // margin-right: 50px;
+    text-decoration: none;
 }
 
 .topbarIconContainer{

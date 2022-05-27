@@ -11296,7 +11296,7 @@ body {
 
 .pages__container {
   flex: 2;
-  width: 550px;
+  width: 100%;
 }
 
 * {

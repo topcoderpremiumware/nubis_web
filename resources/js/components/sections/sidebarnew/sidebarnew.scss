@@ -1,0 +1,24 @@
+.Sadebar{
+    // background: #343C48;
+    // min-width: 252px;
+    // height: 100vh;
+    // display: flex;
+    // justify-content: center;
+    // position: fixed;
+    // /* // top: 54px; */
+    /* left: ${({ sidebar }) => (sidebar ? '-100%' : '0')}; */
+    // transition: 350ms;
+    // z-index: 10;
+    flex:1;
+    min-width: 252px;
+    max-width: 252px;
+    min-height: calc(100vh - 54px);
+    background: #343C48;
+    position: relative;
+    top: 0;
+    // overflow: scroll;
+}
+.SadebarWrap{
+    width: 100%;
+    margin-bottom: 200px;
+}

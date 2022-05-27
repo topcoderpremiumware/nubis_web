@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+// import 'custom';
 import Topbar from "./sections/topbar/topbar";
-import Sidebar from "./sections/sidebar/Sidebar";
-import DailyUse from "./pages/DailyUse/DailyUse";
-import DailyUseInfo from "./pages/DailyUse/DailyUseInfo/DailyUseInfo";
+// import Sidebar from "./sections/sidebar/Sidebar";
+// import DailyUse from "./pages/DailyUse/DailyUse";
+// import DailyUseInfo from "./pages/DailyUse/DailyUseInfo/DailyUseInfo";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Sidebar from "./sections/sidebarnew/Sidebarnew";
+import {DailyUse, DayView, WeekView, Activity } from './pages/DailyUse/DailyUse';
 
 function App() {
     return (
@@ -13,11 +16,18 @@ function App() {
         <Topbar/>
         <div className="container">
             <Sidebar/>
-            <Routes>
-            <Route path='/' exact element={<DailyUse/>} />
-            <Route path='/DailyUse' element={<DailyUse/>} />
-            <Route path='/home' element={<DailyUseInfo/>} />
-            </Routes>
+            {/* <Routes>
+                <Route path='/' exact element={<DailyUse/>} />
+                <Route path='/DailyUse' element={<DailyUse/>} />
+                <Route path='/home' element={<DailyUseInfo/>} />
+            </Routes> */}
+
+        <Routes>
+            <Route path='/dailyuse' exact element={<DailyUse/>} />
+            <Route path='/DayView' exact element={<DayView/>} />
+            <Route path='/WeekView' exact element={<WeekView/>} />
+            <Route path='/Activity' exact element={<Activity/>} />
+          </Routes>
         </div>
         </BrowserRouter>
     );

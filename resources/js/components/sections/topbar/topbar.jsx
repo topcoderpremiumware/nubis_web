@@ -1,5 +1,6 @@
 import React from 'react'
 import './topbar.scss'
+import { Link } from 'react-router-dom';
 import { NotificationsNone, Language } from '@material-ui/icons';
 
 export default function Topbar() {
@@ -8,8 +9,10 @@ export default function Topbar() {
         <div className="topbarWrapper container">
             <div className="topbar__left">
               <div className='topbar__logo topbar__item'>
-                {/* <img src="./DinnerBooking.svg" alt="logo" /> */}
-                <span className='logo'>DinnerBooking</span>
+                <Link to="/" className='logolink link'>
+                  <span className='logo'>DinnerBooking</span>
+                </Link>
+                
               </div>
               <div className='topbar__country topbar__item'>
                 <div className='topba__countryWrapper'>

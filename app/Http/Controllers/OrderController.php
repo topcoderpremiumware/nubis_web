@@ -14,7 +14,7 @@ class OrderController extends Controller
         $request->validate([
             'customer_id' => 'exists:customers,id',
             'place_id' => 'required|exists:places,id',
-            'tableplan_id' => 'required|exists:tableplan,id',
+            'tableplan_id' => 'required|exists:tableplans,id',
             'area_id' => 'required|exists:areas,id',
             'table_ids' => 'required|array',
             'seats' => 'required|integer',
@@ -39,7 +39,7 @@ class OrderController extends Controller
             'marks' => ''
         ]);
 
-        Log::add($request,'create-order','Created order');
+        Log::add($request,'create-order','Created order #'.$order->id);
 
         return response()->json($order);
     }
@@ -53,7 +53,7 @@ class OrderController extends Controller
         $request->validate([
             'customer_id' => 'exists:customers,id',
             'place_id' => 'required|exists:places,id',
-            'tableplan_id' => 'required|exists:tableplan,id',
+            'tableplan_id' => 'required|exists:tableplans,id',
             'area_id' => 'required|exists:areas,id',
             'table_ids' => 'required|array',
             'seats' => 'required|integer',
@@ -87,7 +87,7 @@ class OrderController extends Controller
             'marks' => $request->marks ?? ''
         ]);
 
-        Log::add($request,'change-order','Changed order');
+        Log::add($request,'change-order','Changed order #'.$order->id);
 
         if($res){
             $order = Order::find($id);
@@ -155,6 +155,8 @@ class OrderController extends Controller
             ], 400);
         }
 
+        Log::add($request,'delete-order','Deleted order #'.$order->id);
+
         $order->delete();
 
         return response()->json(['message' => 'Order is deleted']);
@@ -182,7 +184,7 @@ class OrderController extends Controller
             'status' => $request->status,
         ]);
 
-        Log::add($request,'change-order-status','Changed order status');
+        Log::add($request,'change-order-status','Changed order #'.$order->id.' status '.$request->status);
 
         return response()->json(['message' => 'Order status changed']);
     }

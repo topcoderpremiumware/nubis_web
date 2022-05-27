@@ -11,6 +11,10 @@ class MessageTemplateController extends Controller
 {
     public function create(Request $request)
     {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'place_id' => 'required|exists:places,id',
             'purpose' => 'required',

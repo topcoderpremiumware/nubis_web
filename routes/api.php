@@ -2,8 +2,12 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthApiController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DishController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\GiftcardController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MessageTemplateController;
 use App\Http\Controllers\OrderController;
@@ -100,4 +104,30 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('message_tempates/{id}',[MessageTemplateController::class, 'getId']);
     Route::post('message_tempates/{id}',[MessageTemplateController::class, 'save']);
     Route::get('message_tempates',[MessageTemplateController::class, 'getAllByPlace']);
+
+    Route::post('giftcards',[GiftcardController::class, 'create']);
+    Route::get('giftcards/{id}',[GiftcardController::class, 'getId']);
+    Route::post('giftcards/{id}',[GiftcardController::class, 'save']);
+    Route::get('giftcards',[GiftcardController::class, 'getAllByPlace']);
+    Route::get('giftcards_check',[GiftcardController::class, 'getByCode']);
+    Route::post('giftcards_spend',[GiftcardController::class, 'spend']);
+
+    Route::post('coupons',[CouponController::class, 'create']);
+    Route::get('coupons/{id}',[CouponController::class, 'getId']);
+    Route::post('coupons/{id}',[CouponController::class, 'save']);
+    Route::get('coupons',[CouponController::class, 'getAllByPlace']);
+    Route::get('coupons_check',[CouponController::class, 'getByCode']);
+    Route::delete('coupons',[CouponController::class, 'delete']);
+
+    Route::post('feedbacks',[FeedbackController::class, 'create']);
+    Route::get('feedbacks/{id}',[FeedbackController::class, 'getId']);
+    Route::post('feedbacks/{id}',[FeedbackController::class, 'save']);
+    Route::get('feedbacks',[FeedbackController::class, 'getAllByPlace']);
+    Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);
+
+    Route::post('files',[FileController::class, 'create']);
+    Route::get('files/{id}',[FileController::class, 'getId']);
+    Route::post('files/{id}',[FileController::class, 'save']);
+    Route::get('files',[FileController::class, 'getAllByPlace']);
+    Route::get('files_perpose',[FileController::class, 'getByPerpose']);
 });

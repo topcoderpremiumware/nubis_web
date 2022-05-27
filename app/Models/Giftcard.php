@@ -15,4 +15,16 @@ class Giftcard extends Model
     {
         return $this->belongsTo(Place::class);
     }
+
+    public function spend($amount)
+    {
+        $amount = floatval($amount);
+        if($this->spend_amount + $amount <= $this->initial_amount){
+            $this->spend_amount += $amount;
+            $this->save();
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

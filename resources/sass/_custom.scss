@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+}
+.container{
+    display: flex;
+}
+.pages__container{
+    flex: 2;
+    width: 100%;
+}
+*{
+   box-sizing: border-box;
+}

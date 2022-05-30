@@ -26,6 +26,9 @@
     align-items: center;
     justify-content: center;
     color: #fff;
+    &:hover{
+        color: #fff;
+    }
 }
 .topbar__item-text{
     font-size: 14px;
@@ -36,7 +39,7 @@
     color: inherit;
 }
 .logo{
-    font-weight: 500;   
+    font-weight: 500;
     font-size: 20px;
     cursor: pointer;
     // margin-right: 50px;
@@ -62,4 +65,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+#languageDropdown{
+    img{
+        width: 20px;
+        height: 13px;
+        object-fit: cover;
+        margin-right: 5px;
+    }
+}
+.language-item{
+    padding: 0 5px;
+    cursor: pointer;
+    img{
+        width: 20px;
+        height: 13px;
+        object-fit: cover;
+    }
 }

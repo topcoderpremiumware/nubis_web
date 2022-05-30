@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 import './SubMenu.scss';
+import { useTranslation } from 'react-i18next';
 
 
 const SubMenu = ({ item }) => {
   const [subnav, setSubnav] = useState(false);
 
   const showSubnav = () => setSubnav(!subnav);
-
+    const { t } = useTranslation();
   return (
     <>
-      <Link className='SidebarLink' to={item.path} >
+      <NavLink className='SidebarLink' to={item.path} >
         <div className='SidebarLinkItem'>
           {item.icon}
-          <span className='SidebarLabel'>{item.title}</span>
+          <span className='SidebarLabel'>{t(item.title)}</span>
         </div>
         <div className='SidebarButtonOpen' onClick={item.subNav && showSubnav}>
           {item.subNav && subnav
@@ -22,14 +23,14 @@ const SubMenu = ({ item }) => {
             ? item.iconClosed
             : null}
         </div>
-      </Link>
+      </NavLink>
       {subnav &&
         item.subNav.map((item, index) => {
           return (
-            <Link className='DropdownLink' to={item.path} key={index}>
+            <NavLink className='DropdownLink' to={item.path} key={index}>
               {item.icon}
               <span className='SidebarLabel'>{item.title}</span>
-            </Link>
+            </NavLink>
           );
         })}
     </>

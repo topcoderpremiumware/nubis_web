@@ -11302,3 +11302,13 @@ body {
 * {
   box-sizing: border-box;
 }
+
+.loading_page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+}

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import './topbar.scss'
 import { Link } from 'react-router-dom';
 import { NotificationsNone, Language } from '@material-ui/icons';
@@ -11,19 +11,7 @@ export default function Topbar() {
         {country: 'GB', lang: 'en', title: 'English'},
         {country: 'DK', lang: 'nl', title: 'Dansk'},
     ];
-    const [language, setLanguage] = useState('en');
 
-    useEffect(() => {
-        let lang = localStorage.getItem('i18nextLng');
-        if (lang) {
-            setLanguage(lang)
-        }
-    }, [])
-
-    const changeLanguage = (e, lang) => {
-        setLanguage(lang)
-        i18n.changeLanguage(lang)
-    }
   return (
     <div className='topbar'>
         <div className="topbarWrapper container">
@@ -54,12 +42,15 @@ export default function Topbar() {
                   <div className="dropdown">
                       <button className="btn topbar__item dropdown-toggle" type="button" id="languageDropdown"
                               data-bs-toggle="dropdown" aria-expanded="false">
-                          <Flag height="13" code={ langs.filter(l => {return l.lang === language})[0].country } />
+                          <Flag height="13" code={ langs.filter(l => {
+                              return l.lang === localStorage.getItem('i18nextLng')})[0].country
+                          } />
                           {t('Language')}
                       </button>
                       <ul className="dropdown-menu" aria-labelledby="languageDropdown">
                           {langs.map((lang, key )=> {
-                              return <li className="language-item" key={key} onClick={(e) => {changeLanguage(e,lang.lang)}}>
+                              return <li className="language-item" key={key}
+                                         onClick={(e) => {i18n.changeLanguage(lang.lang)}}>
                                   <span><Flag height="13" code={ lang.country } /> {lang.title}</span>
                               </li>
                           })}

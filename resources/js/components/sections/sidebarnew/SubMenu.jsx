@@ -29,7 +29,7 @@ const SubMenu = ({ item }) => {
           return (
             <NavLink className='DropdownLink' to={item.path} key={index}>
               {item.icon}
-              <span className='SidebarLabel'>{item.title}</span>
+              <span className='SidebarLabel'>{t(item.title)}</span>
             </NavLink>
           );
         })}

@@ -31,3 +31,5 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: true
 // });
 
+// process.env.APP_URL = 'https://dinner-book.vasilkoff.info'
+process.env.APP_URL = ''

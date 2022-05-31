@@ -1,60 +1,25 @@
-.topbar{
-    width: 100%;
-    height: 54px;
+.navbar{
     background: #343C48;
-    z-index: 9999;
-    padding: 0 20px;
-    position: sticky;
-    top: 0;
-}
-.topbarWrapper{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.topbar__left{
-    display: flex;
-}
-.topbar__right{
-    display: flex;
-}
-.topbar__item{
-    padding: 0 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    &:hover{
+    .navbar-dark .navbar-nav .nav-link{
         color: #fff;
+        text-decoration: none;
+        &:hover{
+            color: #fff;
+        }
+    }
+    .MuiSvgIcon-root{
+        margin: 0.5rem 1rem;
+        color: rgba(255, 255, 255, 0.55);
     }
 }
-.topbar__item-text{
-    font-size: 14px;
-    line-height: 17px;
-}
-.link{
-    text-decoration: none;
-    color: inherit;
-}
-.logo{
-    font-weight: 500;
-    font-size: 20px;
-    cursor: pointer;
-    // margin-right: 50px;
-    text-decoration: none;
-}
-
 .topbarIconContainer{
     position: relative;
-    margin: 0 30px;
     padding: 0;
 }
 .topbarIconBag{
     position: absolute;
     top: 5px;
-    left: 11px;
+    right: 14px;
     width: 14px;
     height: 10px;
     background-color: #F4675E;

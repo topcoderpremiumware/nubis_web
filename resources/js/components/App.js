@@ -7,28 +7,37 @@ import './../i18nextConf';
 import Sidebar from "./sections/sidebarnew/Sidebarnew";
 import {DailyUse, DayView, WeekView, Activity } from './pages/DailyUse/DailyUse';
 import LoadingPage from "./LoadingPage";
+import Login from "./pages/Login/Login";
 
 function App() {
-    return (
-        <BrowserRouter>
-            <Suspense fallback={<LoadingPage/>}>
-                <Topbar/>
-                <div className="content">
-                    <Sidebar/>
-                    <Routes>
-                        <Route path='/dailyuse' exact element={<DailyUse/>} />
-                        <Route path='/DayView' exact element={<DayView/>} />
-                        <Route path='/WeekView' exact element={<WeekView/>} />
-                        <Route path='/Activity' exact element={<Activity/>} />
-                    </Routes>
-                </div>
-            </Suspense>
-        </BrowserRouter>
-    );
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<LoadingPage/>}>
+        <Topbar/>
+        <div className="content">
+          {localStorage.getItem('token') ?
+            <>
+              <Sidebar/>
+              <Routes>
+                <Route path='/dailyuse' exact element={<DailyUse/>}/>
+                <Route path='/DayView' exact element={<DayView/>}/>
+                <Route path='/WeekView' exact element={<WeekView/>}/>
+                <Route path='/Activity' exact element={<Activity/>}/>
+              </Routes>
+            </>
+            :
+            <Routes>
+              <Route path='/login' exact element={<Login/>}/>
+            </Routes>
+          }
+        </div>
+      </Suspense>
+    </BrowserRouter>
+  );
 }
 
 export default App;
 
 if (document.getElementById('app')) {
-    ReactDOM.render(<App />, document.getElementById('app'));
+  ReactDOM.render(<App />, document.getElementById('app'));
 }

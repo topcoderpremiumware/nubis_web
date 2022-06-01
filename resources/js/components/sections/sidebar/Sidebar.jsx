@@ -1,79 +1,26 @@
+import React, { useState } from 'react';
 import './sidebar.scss';
-import { FeaturedPlayListOutlined, SettingsOutlined} from '@mui/icons-material';
-import NestedList from "./list";
+import { SidebarData } from './SidebarData';
+import SubMenu from './SubMenu';
 
 
-export default function Sidebar() {
+const Sidebar = () => {
+  const [sidebar, setSidebar] = useState(false);
+
+  const showSidebar = () => setSidebar(!sidebar);
+
   return (
-    <div className='sidebar'>
-      <div className="sidebarWrapper">
-        <div className="sidebarMenu">
-          <ul className='sidebarList'>
-            <li className='sidebarListItem active'>
-              <FeaturedPlayListOutlined className='sidebarIcon' />
-              Daily Use
-            </li>
-            <li className='sidebarListItem'>
-              Day View
-            </li>
-            <li className='sidebarListItem'>
-              Activity
-            </li>
-            <li className='sidebarListItem'>
-              Opening Times
-            </li>
-            <li className='sidebarListItem'>
-              Special Opening Times
-            </li>
-            <li className='sidebarListItem'>
-              Table Plan Setup
-            </li>
-            <li className='sidebarListItem'>
-              Areas
-            </li>
-            <li className='sidebarListItem'>
-              Orders Setup
-            </li>
-            <li className='sidebarListItem'>
-              Manage Feedback
-            </li>
-            <li className='sidebarListItem'>
-              Manage Gift Cards
-            </li>
-            <li className='sidebarListItem'>
-              Send Bulk SMS
-            </li>
-            <li className='sidebarListItem'>
-              Email Campaign
-            </li>
-          </ul>
-        </div>
-        <div className="sidebarMenu">
-          <ul className='sidebarList'>
-            <NestedList />
-          </ul>
-        </div>
-        <div className="sidebarMenu">
-          <ul className='sidebarList'>
-            <li className='sidebarListItem active'>
-              <FeaturedPlayListOutlined className='sidebarIcon' />
-              Daily Use
-            </li>
-            <li className='sidebarListItem'>
-              Day View
-            </li>
-            <li className='sidebarListItem'>
-              Activity
-            </li>
-            <li className='sidebarListItem'>
-              Opening Times
-            </li>
-            <li className='sidebarListItem'>
-              Special Opening Times
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  )
-}
+    <>  
+        <div className='Sadebar' sidebar={sidebar}>
+          <div className='SadebarWrap'>
+            {SidebarData.map((item, index) => {
+              return <SubMenu item={item} key={index} />;
+            })}
+          </div>
+        </div>  
+        
+    </>
+  );
+};
+
+export default Sidebar;

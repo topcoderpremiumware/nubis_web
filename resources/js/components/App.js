@@ -4,8 +4,8 @@ import Topbar from "./sections/topbar/topbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './../i18nextConf';
 
-import Sidebar from "./sections/sidebarnew/Sidebarnew";
-import {DailyUse, DayView, WeekView, Activity } from './pages/DailyUse/DailyUse';
+import Sidebar from "./sections/sidebar/Sidebar";
+import { DayView, WeekView, Activity } from './pages/DailyUse/DailyUseList';
 import LoadingPage from "./LoadingPage";
 import Login from "./pages/Login/Login";
 
@@ -19,7 +19,7 @@ function App() {
             <>
               <Sidebar/>
               <Routes>
-                <Route path='/dailyuse' exact element={<DailyUse/>}/>
+                {/* <Route path='/dailyuse' exact element={<DailyUse/>}/> */}
                 <Route path='/DayView' exact element={<DayView/>}/>
                 <Route path='/WeekView' exact element={<WeekView/>}/>
                 <Route path='/Activity' exact element={<Activity/>}/>

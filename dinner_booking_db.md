@@ -15,6 +15,7 @@
 ### Role_User
 - user_id
 - role_id
+- place_id
 
 ### Places
 - id

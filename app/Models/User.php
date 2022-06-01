@@ -47,11 +47,21 @@ class User extends Authenticatable
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class)->withPivot(["place_id"]);
     }
 
     public function places()
     {
         return $this->belongsToMany(Place::class);
+    }
+
+    public function hasRole($title,$place_id)
+    {
+        foreach ($this->roles as $role){
+            if ($role->pivot->place_id == $place_id && $role->title == $title){
+                return true;
+            }
+        }
+        return false;
     }
 }

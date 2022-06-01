@@ -87,7 +87,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/user/1/roles \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json' \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
--d '{"roles":[1]}'
+-d '{"place_id":1,"roles":[1]}'
 ```
 #### Get user roles
 > GET /api/user/{id}/roles
@@ -96,6 +96,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/user/1/roles \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json' \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f"
+-d '{"place_id":1}'
 ```
 ---
 <a id="places"></a>
@@ -114,7 +115,6 @@ curl -X POST https://dinner-book.vasilkoff.info/api/places \
 ```cmd
 curl -X GET https://dinner-book.vasilkoff.info/api/places \
 -H "X-Requested-With: XMLHttpRequest" \
--H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
 #### Get all that belongs to the user

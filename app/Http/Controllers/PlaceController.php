@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Log;
 use App\Models\Place;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,8 +31,14 @@ class PlaceController extends Controller
         ]);
 
         Auth::user()->places()->attach($place->id);
+        $role = Role::firstOrCreate([
+            'title' => 'admin'
+        ]);
+        Auth::user()->roles()
+        ->wherePivot('place_id',$place->id)
+        ->syncWithPivotValues([$role->id], ['place_id' => $place->id]);
 
-        Log::add($request,'create-place','Created place');
+        Log::add($request,'create-place','Created place #'.$place->id);
 
         return response()->json($place);
     }

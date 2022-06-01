@@ -8,6 +8,7 @@ import Sidebar from "./sections/sidebar/Sidebar";
 import { DayView, WeekView, Activity } from './pages/DailyUse/DailyUseList';
 import LoadingPage from "./LoadingPage";
 import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             :
             <Routes>
               <Route path='/login' exact element={<Login/>}/>
+              <Route path='/register' exact element={<Register/>}/>
             </Routes>
           }
         </div>

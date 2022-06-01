@@ -36,6 +36,8 @@ Route::post('login',[AuthApiController::class, 'login']);
 Route::post('customers/register',[CustomerController::class, 'register']);
 Route::post('customers/login',[CustomerController::class, 'login']);
 
+Route::get('places',[PlaceController::class, 'getAll']);
+
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);
     Route::get('user',function(Request $request){
@@ -51,7 +53,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('settings',[SettingController::class, 'get']);
 
     Route::post('places',[PlaceController::class, 'create']);
-    Route::get('places',[PlaceController::class, 'getAll']);
     Route::get('places/mine',[PlaceController::class, 'getAllMine']);
     Route::get('places/{id}',[PlaceController::class, 'getId']);
     Route::post('places/{id}',[PlaceController::class, 'save']);

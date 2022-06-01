@@ -1,11 +1,14 @@
 import React, {useState} from "react";
 import  './Login.scss';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 export default function Login() {
   const { t } = useTranslation();
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [emailError, setEmailError] = useState([])
+  const [passwordError, setPasswordError] = useState([])
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -15,8 +18,20 @@ export default function Login() {
     }).then(response => {
       localStorage.setItem('token',response.data.token)
       window.location.href="/"
-    }).catch(e => {
-      console.log('login error: ',e)
+    }).catch(error => {
+      setEmailError([])
+      setPasswordError([])
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          if(key === 'email') setEmailError(value)
+          if(key === 'password') setPasswordError(value)
+        }
+      }else if(error.response.status === 401){
+        setPasswordError(['Authorization error'])
+      } else {
+        setPasswordError([error.message])
+        console.log('Error', error.message)
+      }
     })
   }
 
@@ -38,14 +53,26 @@ export default function Login() {
             <form onSubmit={onSubmit}>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">{t('Email address')}</label>
-                <input onChange={onChange} type="email" className="form-control" name="email" id="email"/>
+                <input onChange={onChange} required type="email"
+                       className={`form-control ${emailError.length > 0 ? 'is-invalid' : ''}`}
+                       name="email" id="email"/>
+                {emailError.length > 0 &&
+                  <>{emailError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
+                }
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">{t('Password')}</label>
-                <input onChange={onChange} type="password" className="form-control" name="password" id="password"/>
+                <input onChange={onChange} required type="password"
+                       className={`form-control ${passwordError.length > 0 ? 'is-invalid' : ''}`}
+                       name="password" id="password"/>
+                {passwordError.length > 0 &&
+                  <>{passwordError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
+                }
               </div>
               <button type="submit" className="btn btn-primary">{t('Sign in')}</button>
             </form>
+            <hr/>
+            <Link to="/register" className="btn btn-primary">{t('Create profile')}</Link>
           </div>
         </div>
       </div>

@@ -149,18 +149,34 @@ class AuthApiController extends Controller
 
     public function setRoles($id, Request $request)
     {
-        if(!Auth::user()->tokenCan('superadmin')) return response()->json([
+        if(!Auth::user()->tokenCan('superadmin') &&
+            !Auth::user()->tokenCan('admin')) return response()->json([
             'message' => 'Unauthorized.'
         ], 401);
 
         $request->validate([
-            'roles' => 'required|array'
+            'roles' => 'required|array',
+            'place_id' => 'required|exists:places,id',
         ]);
 
-        Log::add($request,'roles-user','Changed user roles');
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        if(!Auth::user()->hasRole('admin',$request->place_id)){
+            return response()->json([
+                'message' => 'Unauthorized.'
+            ], 401);
+        }
+
+        Log::add($request,'roles-user','Changed user #'.$id.' roles '.json_encode($request->roles));
 
         $user = User::findOrFail($id);
-        $user->roles()->sync($request->roles);
+        $user->roles()
+            ->wherePivot('place_id',$request->place_id)
+            ->syncWithPivotValues($request->roles, ['place_id' => $request->place_id]);
         return response()->json(['message' => 'Roles are set']);
     }
 
@@ -171,7 +187,20 @@ class AuthApiController extends Controller
             'message' => 'Unauthorized.'
         ], 401);
 
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
         $user = User::findOrFail($id);
-        return response()->json($user->roles);
+        $roles = $user->roles()
+            ->wherePivot('place_id',$request->place_id)
+            ->get();
+        return response()->json($roles);
     }
 }

@@ -14,7 +14,7 @@ export default function Topbar() {
 
   const logout = (e) => {
     e.preventDefault()
-    axios.post(process.env.APP_URL+'/api/logout', {
+    axios.post(process.env.APP_URL+'/api/logout', {},{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }

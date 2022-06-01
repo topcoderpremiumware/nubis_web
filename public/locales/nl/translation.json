@@ -5,5 +5,25 @@
     "Email address": "E-mail",
     "Password": "Kodeord",
     "Daily Use": "Daglig brug",
-    "General Settings": "Generelle indstillinger"
+    "Day View": "Dagsvisning",
+    "Week View": "Ugevisning",
+    "Activity": "Aktivitet",
+    "Opening Times": "Åbningstider",
+    "Special Opening Times": "Særlige Åbningstider",
+    "Table Plan Setup": "Opsætning af Tabelplan",
+    "Areas": "Områder",
+    "Orders Setup": "Opsætning af Ordrer",
+    "Manage Feedback": "Administrer Feedback",
+    "Manage Gift Cards": "Administrer Gavekort",
+    "Send Bulk SMS": "Send Masse SMS",
+    "Email Campaign": "E-mail-Kampagne",
+
+    "General Settings": "Generelle Indstillinger",
+    "Online Booking": "Online Booking",
+    "Online Booking Temple": "Online Booking Tempel",
+    "Sms Templates": "Sms Skabeloner",
+    "Email Templates": "Email Skabeloner",
+    "Statistics": "Statistikker",
+    "Billing": "Fakturering"
+    
 }

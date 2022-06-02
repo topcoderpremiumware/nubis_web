@@ -117,6 +117,7 @@
 - purpose (повинен бути якийсь певний набір цілей відсилати листи)
 - subject
 - text
+- active
 - language
 
 ### Giftcards

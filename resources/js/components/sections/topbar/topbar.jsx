@@ -7,10 +7,6 @@ import { useTranslation } from 'react-i18next';
 
 export default function Topbar() {
   const { t, i18n } = useTranslation();
-  const langs = [
-    {country: 'GB', lang: 'en', title: 'English'},
-    {country: 'DK', lang: 'nl', title: 'Dansk'},
-  ];
 
   const logout = (e) => {
     e.preventDefault()
@@ -19,7 +15,8 @@ export default function Topbar() {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      localStorage.setItem('token','')
+      localStorage.removeItem('token')
+      localStorage.removeItem('place_id')
       window.location.href="/"
     }).catch(e => {
       console.log('logout error: ',e)
@@ -47,13 +44,13 @@ export default function Topbar() {
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" type="button" id="languageDropdown"
                       data-bs-toggle="dropdown" aria-expanded="false">
-                <Flag height="13" code={ langs.filter(l => {
+                <Flag height="13" code={ window.langs.filter(l => {
                   return l.lang === localStorage.getItem('i18nextLng')})[0].country
                 } />
                 <span>{t('Language')}</span>
               </a>
               <ul className="dropdown-menu" aria-labelledby="languageDropdown">
-                {langs.map((lang, key )=> {
+                {window.langs.map((lang, key )=> {
                   return <li className="language-item" key={key}
                              onClick={(e) => {i18n.changeLanguage(lang.lang)}}>
                     <span><Flag height="13" code={ lang.country } /> {lang.title}</span>

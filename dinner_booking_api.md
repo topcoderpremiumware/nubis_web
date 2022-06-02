@@ -496,31 +496,23 @@ curl -X POST https://dinner-book.vasilkoff.info/api/menus/1/dishes \
 ---
 <a id="message_templates"></a>
 ## Message templates
-#### Create
-> POST /api/message_tempates
-```cmd
-curl -X POST https://dinner-book.vasilkoff.info/api/message_tempates \
--H "X-Requested-With: XMLHttpRequest" \
--H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
--H 'Content-Type: application/json' \
--d '{"place_id":1,"purpose":"welcome","subject":"Hello","text":"Hello, [[NAME]]","language":"en"}'
-```
 #### Get one
-> GET /api/message_tempates/{id}
+> GET /api/message_tempates/{purpose}
 ```cmd
 curl -X GET https://dinner-book.vasilkoff.info/api/message_tempates/1 \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
--H 'Content-Type: application/json'
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"language":"en"}'
 ```
 #### Save
-> POST /api/message_tempates/{id}
+> POST /api/message_tempates/{purpose}
 ```cmd
-curl -X POST https://dinner-book.vasilkoff.info/api/message_tempates/1 \
+curl -X POST https://dinner-book.vasilkoff.info/api/message_tempates/welcome \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"place_id":1,"purpose":"welcome","subject":"Hello","text":"Hello, [[NAME]]","language":"en"}'
+-d '{"place_id":1,"subject":"Hello","text":"Hello, [[NAME]]","active":1,"language":"en"}'
 ```
 #### Get all
 > GET /api/message_tempates

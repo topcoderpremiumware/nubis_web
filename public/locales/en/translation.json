@@ -38,5 +38,13 @@
     "Sms Templates": "Sms Templates",
     "Email Templates": "Email Templates",
     "Statistics": "Statistics",
-    "Billing": "Billing"
+    "Billing": "Billing",
+    "Template": "Template",
+    "Preview": "Preview",
+    "Template is active": "Template is active",
+    "Subject": "Subject",
+    "Message": "Message",
+    "Save template": "Save template",
+    "Send SMS to": "Send SMS to",
+    "Send test": "Send test"
 }

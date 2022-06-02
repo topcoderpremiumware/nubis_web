@@ -17,4 +17,4 @@ use Illuminate\Support\Facades\Route;
 //Route::get('/', function () {
 //    return view('app');
 //})->name('home');
-Route::view('/{path?}', 'app')->name('home');
+Route::view('/{path?}/{path2?}', 'app')->name('home');

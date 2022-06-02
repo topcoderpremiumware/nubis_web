@@ -17,7 +17,16 @@ export default function Login() {
       password: password
     }).then(response => {
       localStorage.setItem('token',response.data.token)
-      window.location.href="/"
+      axios.get(process.env.APP_URL+'/api/places/mine', {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        if(response.data.length > 0){
+          localStorage.setItem('place_id', response.data[0].id)
+        }
+        window.location.href = "/"
+      }).catch(error => {})
     }).catch(error => {
       setEmailError([])
       setPasswordError([])

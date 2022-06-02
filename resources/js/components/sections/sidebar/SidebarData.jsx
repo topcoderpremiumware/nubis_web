@@ -110,16 +110,19 @@ export const SidebarData = [
     ]
   },
   {
-    title: 'Sms Templates',
+    title: 'SMS Templates',
     path: '/SmsTemplates',
     icon: <TiMessages/>,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
     subNav: [
       {
-        title: 'sub-nav',
-        path: '',
-        cName: 'sub-nav'
+        title: 'Confirmation',
+        path: '/SmsTemplates/confirmation'
+      },
+      {
+        title: 'Reminder',
+        path: '/SmsTemplates/reminder'
       }
     ]
   },

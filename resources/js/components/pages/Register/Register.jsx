@@ -53,6 +53,7 @@ export default function Register() {
             Authorization: 'Bearer ' + localStorage.getItem('token')
           }
         }).then(response => {
+          localStorage.setItem('place_id',response.data.id)
           window.location.href="/"
         }).catch(error => {})
       }else{

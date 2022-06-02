@@ -35,9 +35,16 @@
     "General Settings": "Generelle Indstillinger",
     "Online Booking": "Online Booking",
     "Online Booking Temple": "Online Booking Tempel",
-    "Sms Templates": "Sms Skabeloner",
+    "SMS Templates": "SMS Skabeloner",
     "Email Templates": "Email Skabeloner",
     "Statistics": "Statistikker",
-    "Billing": "Fakturering"
-    
+    "Billing": "Fakturering",
+    "Template": "Skabelon",
+    "Preview": "Forhåndsvisning",
+    "Template is active": "Skabelonen er aktiv",
+    "Subject": "Emne",
+    "Message": "Besked",
+    "Save template": "Gem skabelon",
+    "Send SMS to": "Send SMS til",
+    "Send test": "Send prøve"
 }

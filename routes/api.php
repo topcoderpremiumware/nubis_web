@@ -101,9 +101,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('menus/{id}',[MenuController::class, 'save']);
     Route::post('menus/{id}/dishes',[MenuController::class, 'setDishes']);
 
-    Route::post('message_tempates',[MessageTemplateController::class, 'create']);
-    Route::get('message_tempates/{id}',[MessageTemplateController::class, 'getId']);
-    Route::post('message_tempates/{id}',[MessageTemplateController::class, 'save']);
+//    Route::post('message_tempates',[MessageTemplateController::class, 'create']);
+    Route::get('message_tempates/{purpose}',[MessageTemplateController::class, 'getId']);
+    Route::post('message_tempates/{purpose}',[MessageTemplateController::class, 'save']);
     Route::get('message_tempates',[MessageTemplateController::class, 'getAllByPlace']);
 
     Route::post('giftcards',[GiftcardController::class, 'create']);

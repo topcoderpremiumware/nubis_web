@@ -1,7 +1,6 @@
 import './DayView.scss';
-// import DayViewTableOne from './DayViewTableOne';
-
-
+import DayViewTableOne from './DayViewTableOne';
+import DayViewTableTwo from './DayViewTableTwo';
 
 
 
@@ -54,20 +53,21 @@ export default function DayViewPage() {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+    <Box sx={{ width: '100%' }} >
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='DayView__Boxbuttons'>
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
           <Tab label="BOOKINGS" {...a11yProps(0)} />
           <Tab label="Waiting list" {...a11yProps(1)} />
           <Tab label="Deleted bookings" {...a11yProps(2)} />
         </Tabs>
       </Box>
-      <TabPanel value={value} index={0}>
-        {/* <DayViewTableOne/> */}
+      <TabPanel className='DayView__BoxItem' value={value} index={0}>
         Item One
+        <DayViewTableOne/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two
+        <DayViewTableTwo/>
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three

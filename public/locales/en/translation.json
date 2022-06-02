@@ -19,5 +19,24 @@
     "Phone": "Phone",
     "Home page": "Home page",
     "Daily Use": "Daily Use",
-    "General Settings": "General Settings"
+    "Day View": "Day View",
+    "Week View": "Week View",
+    "Activity": "Activity",
+    "Opening Times": "Opening Times",
+    "Special Opening Times": "Special Opening Times",
+    "Table Plan Setup": "Table Plan Setup",
+    "Areas": "Areas",
+    "Orders Setup": "Orders Setup",
+    "Manage Feedback": "Manage Feedback",
+    "Manage Gift Cards": "Manage Gift Cards",
+    "Send Bulk SMS": "Send Bulk SMS",
+    "Email Campaign": "Email Campaign",
+
+    "General Settings": "General Settings",
+    "Online Booking": "Online Booking",
+    "Online Booking Temple": "Online Booking Temple",
+    "Sms Templates": "Sms Templates",
+    "Email Templates": "Email Templates",
+    "Statistics": "Statistics",
+    "Billing": "Billing"
 }

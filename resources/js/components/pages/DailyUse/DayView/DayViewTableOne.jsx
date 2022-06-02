@@ -1,20 +1,27 @@
 import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 
+import './DayViewTableOne.scss';
+
 
 const columns = [
-  { field: 'id', headerName: 'ID', width:30, type: 'number'},
-  { field: 'form', headerName: 'Form', width:100},
-  { field: 'to', headerName: 'To', width:100},
-  { field: 'firstName', headerName: 'First name', width: 100, },
-  { field: 'lastName', headerName: 'Last name', width: 130, },
-  { field: 'company', headerName: 'Company', width: 90, },
-  { field: 'pax', headerName: 'Pax', width: 90, },
-  { field: 'table', headerName: 'Table', width: 90, },
-  { field: 'drag', headerName: 'Drag', width: 90, },
-  { field: 'bookinglength', headerName: 'Booking length', width: 90, },
-  { field: 'bookinglength', headerName: 'Booking length', width: 90, },
-  { field: 'bookinglength', headerName: 'Booking length', width: 90, },
+  { field: 'id', headerName: 'ID', type: 'number', headerClassName:'tableСolumn',},
+  { field: 'form', headerName: 'Form',},
+  { field: 'to', headerName: 'To', },
+  { field: 'firstName', headerName: 'First name',  },
+  { field: 'lastName', headerName: 'Last name', },
+  { field: 'company', headerName: 'Company',  },
+  { field: 'pax', headerName: 'Pax',  },
+  { field: 'table', headerName: 'Table',  },
+  { field: 'drag', headerName: 'Drag', },
+  { field: 'bookinglength', headerName: 'Booking length',},
+  { field: 'visits', headerName: 'Visits', },
+  { field: 'restaurantNote', headerName: 'Restaurant note', },
+  { field: 'guestNote', headerName: 'Guest note', },
+  { field: 'guestHistory', headerName: 'Guest history', },
+  { field: 'guestStatus', headerName: 'Guest status', },
+  { field: 'discount', headerName: 'Discount', },
+  { field: 'payment', headerName: 'Payment', },
   // {
   //   field: 'fullName',
   //   headerName: 'Full name',
@@ -28,7 +35,11 @@ const columns = [
 ];
 
 const rows = [
-  { id: 1, form:'18:30',to: '19:30', lastName: 'Snow', firstName: 'Jon', company: 'Company' },
+  { id: 1, form:'18:30',to: '19:30', lastName: 'Snow', firstName: 'Jon', company: 'Company', pax:1, table: 9, drag:'', bookinglength: 450, visits: 1, restaurantNote: '', guestNote:'', guestHistory:'', guestStatus:'', discount:'', payment:'', },
+  { id: 2, form:'18:30',to: '19:30', lastName: 'Snow', firstName: 'Jon', company: 'Company', pax:1, table: 9, drag:'', bookinglength: 450, visits: 1, restaurantNote: '', guestNote:'', guestHistory:'', guestStatus:'', discount:'', payment:'', },
+  { id: 3, form:'18:30',to: '19:30', lastName: 'Snow', firstName: 'Jon', company: 'Company', pax:1, table: 9, drag:'', bookinglength: 450, visits: 1, restaurantNote: '', guestNote:'', guestHistory:'', guestStatus:'', discount:'', payment:'', },
+  { id: 4, form:'18:30',to: '19:30', lastName: 'Snow', firstName: 'Jon', company: 'Company', pax:1, table: 9, drag:'', bookinglength: 450, visits: 1, restaurantNote: '', guestNote:'', guestHistory:'', guestStatus:'', discount:'', payment:'', },
+  { id: 5, form:'18:30',to: '19:30', lastName: 'Snow', firstName: 'Jon', company: 'Company', pax:1, table: 9, drag:'', bookinglength: 450, visits: 1, restaurantNote: '', guestNote:'', guestHistory:'', guestStatus:'', discount:'', payment:'', },
 ];
 
 export default function DayViewTableOne() {
@@ -40,6 +51,13 @@ export default function DayViewTableOne() {
         pageSize={5}
         rowsPerPageOptions={[5]}
         checkboxSelection
+
+        sx={{
+          width: 1,
+          '& .tableСolumn': {
+            width:'max-content',
+          },
+        }}
       />
     </div>
   );

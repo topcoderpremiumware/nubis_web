@@ -10,7 +10,7 @@ import { BsCreditCard } from 'react-icons/bs';
 export const SidebarData = [
   {
     title: 'Daily Use',
-    path: '',
+    path: '#',
     icon: <FeaturedPlayListOutlined  className='dailyuse-icon'/>,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,

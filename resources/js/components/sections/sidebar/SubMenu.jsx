@@ -8,22 +8,23 @@ const SubMenu = ({ item }) => {
   const [subnav, setSubnav] = useState(false);
 
   const showSubnav = () => setSubnav(!subnav);
-    const { t } = useTranslation();
+  const { t } = useTranslation();
+  const ItemTagName = item.subNav ? 'div' : 'NavLink';
   return (
     <>
-      <NavLink className='SidebarLink' to={item.path} >
+      <ItemTagName className='SidebarLink' to={item.path} onClick={item.subNav && showSubnav}>
         <div className='SidebarLinkItem'>
           {item.icon}
           <span className='SidebarLabel'>{t(item.title)}</span>
         </div>
-        <div className='SidebarButtonOpen' onClick={item.subNav && showSubnav}>
+        <div className='SidebarButtonOpen'>
           {item.subNav && subnav
             ? item.iconOpened
             : item.subNav
             ? item.iconClosed
             : null}
         </div>
-      </NavLink>
+      </ItemTagName>
       {subnav &&
         item.subNav.map((item, index) => {
           return (

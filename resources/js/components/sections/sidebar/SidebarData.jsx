@@ -96,7 +96,7 @@ export const SidebarData = [
     ]
   },
   {
-    title: 'Online Booking Templ',
+    title: 'Online Booking Templates',
     path: '/OnlineBookingTempl',
     icon: <CalendarMonthOutlined />,
     iconClosed: <KeyboardArrowDown />,
@@ -111,7 +111,7 @@ export const SidebarData = [
   },
   {
     title: 'SMS Templates',
-    path: '/SmsTemplates',
+    path: '#',
     icon: <TiMessages/>,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
@@ -123,20 +123,71 @@ export const SidebarData = [
       {
         title: 'Reminder',
         path: '/SmsTemplates/reminder'
+      },
+      {
+        title: 'Change',
+        path: '/SmsTemplates/change'
+      },
+      {
+        title: 'Delete',
+        path: '/SmsTemplates/delete'
+      },
+      {
+        title: 'Notification',
+        path: '/SmsTemplates/notification'
       }
     ]
   },
   {
     title: 'Email Templates',
-    path: '/EmailTemplates',
+    path: '#',
     icon: <EmailOutlined/>,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
     subNav: [
       {
-        title: 'sub-nav',
-        path: '',
-        cName: 'sub-nav'
+        title: 'Confirmation',
+        path: '/EmailTemplates/confirmation'
+      },
+      {
+        title: 'Reminder',
+        path: '/EmailTemplates/reminder'
+      },
+      {
+        title: 'Change',
+        path: '/EmailTemplates/change'
+      },
+      {
+        title: 'Delete',
+        path: '/EmailTemplates/delete'
+      },
+      {
+        title: 'Reconfirmation',
+        path: '/EmailTemplates/reconfirmation'
+      },
+      {
+        title: 'Waiting List',
+        path: '/EmailTemplates/waiting-list'
+      },
+      {
+        title: 'Offers',
+        path: '/EmailTemplates/offers'
+      },
+      {
+        title: 'Check Credit Card',
+        path: '/EmailTemplates/check-credit-card'
+      },
+      {
+        title: 'Payment Request',
+        path: '/EmailTemplates/payment-request'
+      },
+      {
+        title: 'Booking Invites',
+        path: '/EmailTemplates/booking-invites'
+      },
+      {
+        title: 'Manual',
+        path: '/EmailTemplates/manual'
       }
     ]
   },

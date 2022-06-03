@@ -2,27 +2,28 @@ import React, {useEffect, useState} from "react";
 import  './SmsTemplate.scss';
 import { useTranslation } from 'react-i18next';
 import {useParams} from "react-router-dom";
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import Switch from "react-switch";
+import eventBus from "../../../eventBus";
 
 export default function SmsTemplate() {
   const { t } = useTranslation();
   let { purpose } = useParams();
+
   var pageTitle = purpose.split('-').map(w => {
     let a = w.split('');
     a[0] = a[0].toUpperCase();
     return a.join('');
   }).join(' ');
+
   const [active, setActive] = useState(1)
   const [language, setLanguage] = useState(localStorage.getItem('i18nextLng'))
-  const [subject, setSubject] = useState('')
   const [text, setText] = useState('')
   const [testPhone, setTestPhone] = useState('')
+  const [textError, setTextError] = useState([])
+
 
   useEffect(() => {
     setActive(1)
-    setSubject('')
     setText('')
     axios.get(process.env.APP_URL+'/api/message_tempates/sms-'+purpose,{
       params: {
@@ -34,10 +35,9 @@ export default function SmsTemplate() {
       }
     }).then(response => {
       setActive(response.data.active)
-      setSubject(response.data.subject)
       setText(response.data.text)
     }).catch(error => {})
-  },[language])
+  },[language,purpose])
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -45,27 +45,25 @@ export default function SmsTemplate() {
       place_id: localStorage.getItem('place_id'),
       language: language,
       active: active,
-      subject: subject,
       text: text
     },{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Template saved successfully'});
     }).catch(error => {
-      // setEmailError([])
-      // setPasswordError([])
-      // if (error.response && error.response.data && error.response.data.errors) {
-      //   for (const [key, value] of Object.entries(error.response.data.errors)) {
-      //     if(key === 'email') setEmailError(value)
-      //     if(key === 'password') setPasswordError(value)
-      //   }
-      // }else if(error.response.status === 401){
-      //   setPasswordError(['Authorization error'])
-      // } else {
-      //   setPasswordError([error.message])
+      setTextError([])
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          if(key === 'text') setTextError(value)
+        }
+      }else if(error.response.status === 401){
+        setTextError(['Authorization error'])
+      } else {
+        setTextError([error.message])
         console.log('Error', error)
-      // }
+      }
     })
   }
 
@@ -78,7 +76,6 @@ export default function SmsTemplate() {
     if(e.target.name === 'language') setLanguage(e.target.value)
     if(e.target.name === 'active') setActive(e.target.value)
     if(e.target.name === 'text') setText(e.target.value)
-    if(e.target.name === 'subject') setSubject(e.target.value)
     if(e.target.name === 'phone') setTestPhone(e.target.value)
   }
 
@@ -118,25 +115,14 @@ export default function SmsTemplate() {
                   checked={Boolean(active)}
                 />
               </div>
-              {/*<div className="mb-3">*/}
-              {/*  <label htmlFor="subject" className="form-label">{t('Subject')}</label>*/}
-              {/*  <input onChange={onChange} required type="text"*/}
-              {/*         className={`form-control`}*/}
-              {/*         name="subject" id="subject"/>*/}
-              {/*</div>*/}
               <div className="mb-3">
                 <label htmlFor="text" className="form-label">{t('Message')}</label>
-                <CKEditor
-                  editor={ClassicEditor}
-                  data={text}
-                  onChange={(event, editor) => onChange({target: {name: 'text', value: editor.getData()}})}
-                  // onReady={(editor) => {
-                  //   editor.plugins.get('FileRepository')
-                  //     .createUploadAdapter = (loader) => {
-                  //     return new UploadAdapter(loader)
-                  //   }
-                  // }}
-                />
+                <textarea onChange={onChange} required value={text}
+                          className={`form-control ${textError.length > 0 ? 'is-invalid' : ''}`}
+                          name="text" id="text" />
+                {textError.length > 0 &&
+                  <>{textError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
+                }
               </div>
               <button type="submit" className="btn btn-primary">{t('Save template')}</button>
             </form>

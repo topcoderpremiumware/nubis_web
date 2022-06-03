@@ -34,8 +34,8 @@
 
     "General Settings": "General Settings",
     "Online Booking": "Online Booking",
-    "Online Booking Temple": "Online Booking Temple",
-    "Sms Templates": "Sms Templates",
+    "Online Booking Templates": "Online Booking Templates",
+    "SMS Templates": "SMS Templates",
     "Email Templates": "Email Templates",
     "Statistics": "Statistics",
     "Billing": "Billing",
@@ -46,5 +46,19 @@
     "Message": "Message",
     "Save template": "Save template",
     "Send SMS to": "Send SMS to",
-    "Send test": "Send test"
+    "Send test": "Send test",
+    "Send Email to": "Send Email to",
+    "Template saved successfully": "Template saved successfully",
+    "Confirmation": "Confirmation",
+    "Reminder": "Reminder",
+    "Change": "Change",
+    "Delete": "Delete",
+    "Notification": "Notification",
+    "Reconfirmation": "Reconfirmation",
+    "Waiting List": "Waiting List",
+    "Offers": "Offers",
+    "Check Credit Card": "Check Credit Card",
+    "Payment Request": "Payment Request",
+    "Booking Invites": "Booking Invites",
+    "Manual": "Manual"
 }

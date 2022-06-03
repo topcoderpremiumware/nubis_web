@@ -34,7 +34,7 @@
 
     "General Settings": "Generelle Indstillinger",
     "Online Booking": "Online Booking",
-    "Online Booking Temple": "Online Booking Tempel",
+    "Online Booking Templates": "Online booking skabeloner",
     "SMS Templates": "SMS Skabeloner",
     "Email Templates": "Email Skabeloner",
     "Statistics": "Statistikker",
@@ -46,5 +46,19 @@
     "Message": "Besked",
     "Save template": "Gem skabelon",
     "Send SMS to": "Send SMS til",
-    "Send test": "Send prøve"
+    "Send test": "Send prøve",
+    "Send Email to": "Send Email to",
+    "Template saved successfully": "Skabelonen blev gemt",
+    "Confirmation": "Bekræftelse",
+    "Reminder": "Påmindelse",
+    "Change": "Ændre",
+    "Delete": "Slet",
+    "Notification": "Notifikation",
+    "Reconfirmation": "Genbekræftelse",
+    "Waiting List": "Venteliste",
+    "Offers": "Rabatter",
+    "Check Credit Card": "Tjek kreditkort",
+    "Payment Request": "Betalingsanmodning",
+    "Booking Invites": "Bookinginvitationer",
+    "Manual": "Manuel"
 }

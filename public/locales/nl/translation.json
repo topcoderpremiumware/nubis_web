@@ -60,5 +60,10 @@
     "Check Credit Card": "Tjek kreditkort",
     "Payment Request": "Betalingsanmodning",
     "Booking Invites": "Bookinginvitationer",
-    "Manual": "Manuel"
+    "Manual": "Manuel",
+    "New": "Ny",
+    "Save": "Gemme",
+    "Table plan saved successfully": "Bordplanen blev gemt",
+    "Table plan deleted successfully": "Bordplanen blev slettet",
+    "Not selected": "Ikke valgt"
 }

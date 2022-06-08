@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('places/{id}',[PlaceController::class, 'save']);
     Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/menus',[MenuController::class, 'getAllByPlace']);
+    Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace']);
 
     Route::post('roles',[RoleController::class, 'create']);
     Route::get('roles',[RoleController::class, 'getAll']);
@@ -65,6 +66,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('tableplans',[TableplanController::class, 'create']);
     Route::get('tableplans/{id}',[TableplanController::class, 'getId']);
     Route::post('tableplans/{id}',[TableplanController::class, 'save']);
+    Route::delete('tableplans/{id}',[TableplanController::class, 'delete']);
 
     Route::post('areas',[AreaController::class, 'create']);
     Route::get('areas/{id}',[AreaController::class, 'getId']);

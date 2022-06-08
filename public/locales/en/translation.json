@@ -60,5 +60,10 @@
     "Check Credit Card": "Check Credit Card",
     "Payment Request": "Payment Request",
     "Booking Invites": "Booking Invites",
-    "Manual": "Manual"
+    "Manual": "Manual",
+    "New": "New",
+    "Save": "Save",
+    "Table plan saved successfully": "Table plan saved successfully",
+    "Table plan deleted successfully": "Table plan deleted successfully",
+    "Not selected": "Not selected"
 }

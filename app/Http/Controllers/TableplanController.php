@@ -89,4 +89,38 @@ class TableplanController extends Controller
 
         return response()->json($tableplan);
     }
+
+    public function getAllByPlace($place_id, Request $request)
+    {
+        if(!Auth::user()->places->contains($place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $tableplans = Tableplan::where('place_id',$place_id)->get();
+
+        return response()->json($tableplans);
+    }
+
+    public function delete($id, Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $tableplan = Tableplan::find($id);
+
+        if(!Auth::user()->places->contains($tableplan->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        Log::add($request,'delete-order','Deleted tableplan #'.$tableplan->id);
+
+        $tableplan->delete();
+
+        return response()->json(['message' => 'Tableplan is deleted']);
+    }
 }

@@ -158,6 +158,14 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/menus \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
+#### Get all tableplans of place
+> GET /api/places/{id}/tableplans
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/tableplans \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
 ---
 <a id="settings"></a>
 ## Settings
@@ -207,7 +215,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/tableplans \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"name":"Tableplan 1","place_id":1,"data":[{"number":1,"priority":1,"seats":2,"group":1,"group_priority":1,"color":"#ff0000","angle":90,"top":50,"left":40,"type":0,"is_internal":true,"is_online":true,"qr_code":""}]}'
+-d '{"name":"Tableplan 1","place_id":1,"data":[{"seats":2,"number":1,"color":"#ff0000","angle":90,"top":50,"left":40,"type":0,"qr_code":"","time":[{"is_internal":true,"is_online":true,"priority":1,"min_seats":1,"group":1,"group_priority":1,"booking_length":0}]}]}'
 ```
 #### Get one
 > GET /api/tableplans/{id}
@@ -224,7 +232,15 @@ curl -X POST https://dinner-book.vasilkoff.info/api/tableplans/1 \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"name":"Tableplan 1","place_id":1,"data":[{"number":1,"priority":1,"seats":2,"group":1,"group_priority":1,"color":"#ff0000","angle":90,"top":50,"left":40,"type":0,"is_internal":true,"is_online":true,"qr_code":""}]}'
+-d '{"name":"Tableplan 1","place_id":1,"data":[{"seats":2,"number":1,"color":"#ff0000","angle":90,"top":50,"left":40,"type":0,"qr_code":"","time":[{"is_internal":true,"is_online":true,"priority":1,"min_seats":1,"group":1,"group_priority":1,"booking_length":0}]}]}'
+```
+#### Delete
+> DELETE /api/tableplans/{id}
+```cmd
+curl -X DELETE https://dinner-book.vasilkoff.info/api/tableplans/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
 ```
 ---
 <a id="areas"></a>

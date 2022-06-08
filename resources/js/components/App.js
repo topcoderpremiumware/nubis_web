@@ -11,6 +11,7 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import SmsTemplate from "./pages/SmsTemplate/SmsTemplate";
 import EmailTemplate from "./pages/EmailTemplate/EmailTemplate";
+import TablePlanSetup from "./pages/TablePlanSetup/TablePlanSetup";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
                 <Route path='/DayView' exact element={<DayView/>}/>
                 <Route path='/WeekView' exact element={<WeekView/>}/>
                 <Route path='/Activity' exact element={<Activity/>}/>
+                <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
                 <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
                 <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
               </Routes>

@@ -34,56 +34,6 @@ export default function TablePlanSetup() {
   const selectPlan = (plan) => {
     setSelectedPlan(plan)
     setSelectedName(plan.name)
-    // axios.get(/*'https://dinner-book.vasilkoff.info'+*/'/api/customers',{
-    //   headers: {
-    //     Authorization: 'Bearer 22|WTLDBtJcbvQzL1XqAWVmJItck1hOyB3pQsIt3xeh'
-    //   }
-    // }).then(response => {
-    //   console.log('response',response)
-    // }).catch(error => {
-    //   console.log('error',error)
-    // })
-    axios.get('https://dinner-book.vasilkoff.info/sanctum/csrf-cookie').then(response => {
-    axios.post('https://dinner-book.vasilkoff.info'+'/api/register', {
-      first_name: 'Max',
-      last_name: 'Nicson',
-      email: '2@ukr.net',
-      phone: '+380982221168',
-      zip_code: '18000',
-      allow_send_emails: 1,
-      allow_send_news: 0,
-      password: '123456',
-      password_confirmation: '123456',
-      language: 'en'
-    }).then(response => {
-      // localStorage.setItem('token',response.data.token)
-      console.log('response',response)
-    }).catch(error => {
-      console.log('error',error)
-    })
-  })
-
-    // axios.get('https://dinner-book.vasilkoff.info/sanctum/csrf-cookie').then(response => {
-    //   console.log('response 2',response)
-    //   axios.post('https://dinner-book.vasilkoff.info/api/customers/register', {
-    //       first_name: 'Max',
-    //       last_name: 'Nicson',
-    //       email: '2@ukr.net',
-    //       phone: '+380982221168',
-    //       zip_code: '18000',
-    //       allow_send_emails: 1,
-    //       allow_send_news: 0,
-    //       password: '123456',
-    //       password_confirmation: '123456',
-    //       language: 'en'
-    //     }).then(response => {
-    //       // localStorage.setItem('token',response.data.token)
-    //       console.log('response',response)
-    //     }).catch(error => {
-    //       console.log('error',error)
-    //     })
-    // });
-
   }
 
   const changePlanData = (plan) => {
@@ -138,24 +88,30 @@ export default function TablePlanSetup() {
       <div className="container-fluid">
         <div className="row">
           <div className="col-lg-2">
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">{t('Name')}</label>
-              <input onChange={onChange} required type="text" value={selectedName}
-                     className={`form-control ${nameError.length > 0 ? 'is-invalid' : ''}`}
-                     name="name" id="name"/>
-              {nameError.length > 0 &&
-                <>{nameError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
-              }
+            <div className="overflow-auto mb-3">
+              <div className="mb-3">
+                <label htmlFor="name" className="form-label">{t('Name')}</label>
+                <input onChange={onChange} required type="text" value={selectedName}
+                       className={`form-control ${nameError.length > 0 ? 'is-invalid' : ''}`}
+                       name="name" id="name"/>
+                {nameError.length > 0 &&
+                  <>{nameError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
+                }
+              </div>
+              {plans.map((plan,key) => {
+                return <button key={key} type="button" onClick={(e) => {selectPlan(plan)}} className="btn btn-link mb-3">{plan.name}</button>
+              })}
             </div>
-            {plans.map((plan,key) => {
-              return <button key={key} type="button" onClick={(e) => {selectPlan(plan)}} className="btn btn-link mb-3">{plan.name}</button>
-            })}
           </div>
           <div className="col-lg-7">
-            <PlanCanvas onChange={changePlanData} data={selectedPlan}/>
+            <div className="overflow-auto mb-3">
+              <PlanCanvas onChange={changePlanData} data={selectedPlan}/>
+            </div>
           </div>
           <div className="col-lg-3">
-            <PlanTools onChange={changePlanData} data={selectedPlan} />
+            <div className="overflow-auto mb-3">
+              <PlanTools onChange={changePlanData} data={selectedPlan} />
+            </div>
           </div>
         </div>
         <div className="row">

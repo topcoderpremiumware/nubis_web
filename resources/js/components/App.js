@@ -13,6 +13,9 @@ import SmsTemplate from "./pages/SmsTemplate/SmsTemplate";
 import EmailTemplate from "./pages/EmailTemplate/EmailTemplate";
 import TablePlanSetup from "./pages/TablePlanSetup/TablePlanSetup";
 
+import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInformation';
+import Picture from './pages/GeneralSettings/Picture/Picture';
+
 function App() {
   return (
     <BrowserRouter>
@@ -30,6 +33,9 @@ function App() {
                 <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
                 <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
                 <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
+
+                <Route path='/BasicInformation' exact element={<BasicInformation/>} />
+                <Route path='/Picture' exact element={<Picture/>} />
               </Routes>
             </>
             :

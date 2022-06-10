@@ -68,26 +68,36 @@ export const SidebarData = [
   },
   {
     title: 'General Settings',
-    path: '/Settings',
+    path: '#',
     icon: <SettingsOutlined />,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
 
     subNav: [
       {
-        title: 'Subnav',
-        path: '',
+        title: 'Basic Information',
+        path: '/BasicInformation',
+        cName: 'sub-nav'
+      },
+      {
+        title: 'Picture',
+        path: '/Picture',
         cName: 'sub-nav'
       }
     ]
   },
   {
     title: 'Online Booking',
-    path: '/OnlineBooking',
+    path: '#',
     icon: <CalendarMonthOutlined />,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
     subNav: [
+      {
+        title: 'Subnav',
+        path: '',
+        cName: 'sub-nav'
+      },
       {
         title: 'Subnav',
         path: '',
@@ -97,7 +107,7 @@ export const SidebarData = [
   },
   {
     title: 'Online Booking Templates',
-    path: '/OnlineBookingTempl',
+    path: '#',
     icon: <CalendarMonthOutlined />,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
@@ -193,7 +203,7 @@ export const SidebarData = [
   },
   {
     title: 'Statistics',
-    path: '/Statistics',
+    path: '#',
     icon: <IoIosStats />,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
@@ -207,7 +217,7 @@ export const SidebarData = [
   },
   {
     title: 'Billing',
-    path: '/Billing',
+    path: '#',
     icon: <BsCreditCard/>,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,

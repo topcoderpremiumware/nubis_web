@@ -3,6 +3,8 @@ import './sidebar.scss';
 import { SidebarData } from './SidebarData';
 import SubMenu from './SubMenu';
 
+import SidebarSelect from './SidebarSelect';
+
 
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);
@@ -13,6 +15,7 @@ const Sidebar = () => {
     <>  
         <div className='Sadebar' sidebar={sidebar}>
           <div className='SadebarWrap'>
+            <SidebarSelect />
             {SidebarData.map((item, index) => {
               return <SubMenu item={item} key={index} />;
             })}

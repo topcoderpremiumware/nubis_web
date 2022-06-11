@@ -4,9 +4,16 @@ import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
 import PlanCanvas from "./PlanCanvas";
 import PlanTools from "./PlanTools";
+import {Button, Stack, styled, TextField} from "@mui/material";
 
 export default function TablePlanSetup() {
   const { t } = useTranslation();
+
+  const PlanButton = styled(Button)({
+    color: '#000000',
+    textTransform: 'none',
+    textAlign: 'left'
+  });
 
   const [plans, setPlans] = useState([])
   const [selectedPlan, setSelectedPlan] = useState({})
@@ -89,17 +96,18 @@ export default function TablePlanSetup() {
         <div className="row">
           <div className="col-lg-2">
             <div className="overflow-auto mb-3">
-              <div className="mb-3">
-                <label htmlFor="name" className="form-label">{t('Name')}</label>
-                <input onChange={onChange} required type="text" value={selectedName}
-                       className={`form-control ${nameError.length > 0 ? 'is-invalid' : ''}`}
-                       name="name" id="name"/>
-                {nameError.length > 0 &&
-                  <>{nameError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
-                }
+              <div className="mb-3 mt-3">
+                <TextField label={t('Name')} size="small" fullWidth
+                           type="text" id="name" name="name" value={selectedName}
+                           onChange={onChange}
+                           error={nameError.length > 0}
+                           helperText={
+                             <>{nameError.map(el => {return t(el)})}</>
+                           }/>
               </div>
               {plans.map((plan,key) => {
-                return <button key={key} type="button" onClick={(e) => {selectPlan(plan)}} className="btn btn-link mb-3">{plan.name}</button>
+                return <PlanButton variant="text" key={key}
+                               onClick={(e) => {selectPlan(plan)}}>{plan.name}</PlanButton>
               })}
             </div>
           </div>
@@ -114,13 +122,12 @@ export default function TablePlanSetup() {
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-12">
-            <button type="button" onClick={createNew} className="btn btn-primary me-3">{t('New')}</button>
-            <button type="button" onClick={savePlan} className="btn btn-success me-3">{t('Save')}</button>
-            <button type="button" onClick={deletePlan} className="btn btn-danger">{t('Delete')}</button>
-          </div>
-        </div>
+
+        <Stack spacing={2} direction="row">
+          <Button variant="contained" type="button" onClick={createNew}>{t('New')}</Button>
+          <Button variant="contained" type="button" color="success" onClick={savePlan}>{t('Save')}</Button>
+          <Button variant="contained" type="button" color="error" onClick={deletePlan}>{t('Delete')}</Button>
+        </Stack>
       </div>
     </div>
   );

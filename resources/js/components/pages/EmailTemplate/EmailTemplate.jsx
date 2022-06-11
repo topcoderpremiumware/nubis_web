@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import {useParams} from "react-router-dom";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import Switch from "react-switch";
 import eventBus from "../../../eventBus";
+import {Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField} from "@mui/material";
 
 export default function EmailTemplate() {
   const { t } = useTranslation();
@@ -83,7 +83,7 @@ export default function EmailTemplate() {
 
   const onChange = (e) => {
     if(e.target.name === 'language') setLanguage(e.target.value)
-    if(e.target.name === 'active') setActive(e.target.value)
+    if(e.target.name === 'active') setActive(e.target.checked)
     if(e.target.name === 'text') setText(e.target.value)
     if(e.target.name === 'subject') setSubject(e.target.value)
     if(e.target.name === 'email') setTestEmail(e.target.value)
@@ -99,40 +99,33 @@ export default function EmailTemplate() {
             <hr/>
             <form onSubmit={onSubmit}>
               <div className="mb-3">
-                <label htmlFor="language" className="form-label">{t('Language')}</label>
-                <select onChange={onChange} id="language" name="language" className="form-select">
-                  {window.langs.map((lang,key) => {
-                    return <option key={key} value={lang.lang}>{lang.title}</option>
-                  })}
-                </select>
-              </div>
-              <div className="mb-3 d-flex">
-                <label className="form-label">{t('Template is active')}</label>
-                <Switch
-                  className="checkbox_switch ms-3"
-                  onChange={(event) => onChange({target: {name: 'active', value: event}})}
-                  uncheckedIcon={false}
-                  checkedIcon={false}
-                  height={24}
-                  width={60}
-                  handleDiameter={16}
-                  boxShadow={'0px 1px 3px #00000099'}
-                  activeBoxShadow={'0px 1px 3px #00000099'}
-                  offColor="#acacac"
-                  onColor={'#343C48'}
-                  offHandleColor="#acacac"
-                  onHandleColor={'#ffffff'}
-                  checked={Boolean(active)}
-                />
+                <FormControl size="small" fullWidth>
+                  <InputLabel id="label_language">{t('Language')}</InputLabel>
+                  <Select label={t('Language')} value={language}
+                          labelId="label_language" id="language" name="language"
+                          onChange={onChange}>
+                    {window.langs.map((lang,key) => {
+                      return <MenuItem key={key} value={lang.lang}>{lang.title}</MenuItem>
+                    })}
+                  </Select>
+                </FormControl>
               </div>
               <div className="mb-3">
-                <label htmlFor="subject" className="form-label">{t('Subject')}</label>
-                <input onChange={onChange} required type="text" value={subject}
-                       className={`form-control ${subjectError.length > 0 ? 'is-invalid' : ''}`}
-                       name="subject" id="subject"/>
-                {subjectError.length > 0 &&
-                  <>{subjectError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
-                }
+                <FormControlLabel label={t('Template is active')} labelPlacement="start"
+                                  control={
+                                    <Switch onChange={onChange}
+                                            name="active"
+                                            checked={Boolean(active)} />
+                                  }/>
+              </div>
+              <div className="mb-3">
+                <TextField label={t('Subject')} size="small" fullWidth
+                           type="text" id="subject" name="subject" required
+                           onChange={onChange} value={subject}
+                           error={subjectError.length > 0}
+                           helperText={
+                             <>{subjectError.map(el => {return t(el)})}</>
+                           }/>
               </div>
               <div className="mb-3">
                 <label htmlFor="text" className="form-label">{t('Message')}</label>
@@ -152,7 +145,7 @@ export default function EmailTemplate() {
                   <>{textError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
                 }
               </div>
-              <button type="submit" className="btn btn-primary">{t('Save template')}</button>
+              <Button variant="contained" type="submit">{t('Save template')}</Button>
             </form>
           </div>
           <div className="col-lg-6 mt-3">
@@ -160,16 +153,15 @@ export default function EmailTemplate() {
             <hr/>
             <form onSubmit={testMessage}>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">{t('Send Email to')}</label>
-                <input onChange={onChange} required type="email"
-                       className={`form-control`}
-                       name="email" id="email"/>
+                <TextField label={t('Send Email to')} size="small" fullWidth
+                           type="text" id="email" name="email" required
+                           onChange={onChange}/>
               </div>
               <div className="mb-3">
                 <label className="form-label">{t('Message')}</label>
                 <div dangerouslySetInnerHTML={{__html: text}} />
               </div>
-              <button type="submit" className="btn btn-primary">{t('Send test')}</button>
+              <Button variant="contained" type="submit">{t('Send test')}</Button>
             </form>
           </div>
         </div>

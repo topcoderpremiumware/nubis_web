@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import  './Login.scss';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import {TextField, Button} from "@mui/material";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -61,27 +61,27 @@ export default function Login() {
           <div className="col-lg-6 offset-lg-3">
             <form onSubmit={onSubmit}>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">{t('Email address')}</label>
-                <input onChange={onChange} required type="email"
-                       className={`form-control ${emailError.length > 0 ? 'is-invalid' : ''}`}
-                       name="email" id="email"/>
-                {emailError.length > 0 &&
-                  <>{emailError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
-                }
+                <TextField label={t('Email address')} required size="small" fullWidth
+                  type="email" id="email" name="email"
+                  onChange={onChange}
+                  error={emailError.length > 0}
+                  helperText={
+                    <>{emailError.map(el => {return t(el)})}</>
+                  }/>
               </div>
               <div className="mb-3">
-                <label htmlFor="password" className="form-label">{t('Password')}</label>
-                <input onChange={onChange} required type="password"
-                       className={`form-control ${passwordError.length > 0 ? 'is-invalid' : ''}`}
-                       name="password" id="password"/>
-                {passwordError.length > 0 &&
-                  <>{passwordError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
-                }
+                <TextField label={t('Password')} required size="small" fullWidth
+                           type="password" id="password" name="password"
+                           onChange={onChange}
+                           error={passwordError.length > 0}
+                           helperText={
+                             <>{passwordError.map(el => {return t(el)})}</>
+                           }/>
               </div>
-              <button type="submit" className="btn btn-primary">{t('Sign in')}</button>
+              <Button variant="contained" type="submit">{t('Sign in')}</Button>
             </form>
             <hr/>
-            <Link to="/register" className="btn btn-primary">{t('Create profile')}</Link>
+            <Button variant="contained" href="/register">{t('Create profile')}</Button>
           </div>
         </div>
       </div>

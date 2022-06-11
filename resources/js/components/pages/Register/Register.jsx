@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import  './Register.scss';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import {Select, TextField, MenuItem, InputLabel, FormControl, Button} from "@mui/material";
 
 export default function Register() {
   const { t } = useTranslation();
@@ -131,105 +131,102 @@ export default function Register() {
           <div className="col-lg-6 offset-lg-3">
             <form onSubmit={onSubmit}>
               <div className="mb-3">
-                <label htmlFor="first_name" className="form-label">{t('First name')}</label>
-                <input onChange={onChange} type="text"
-                       className={`form-control ${firstNameError.length > 0 ? 'is-invalid' : ''}`}
-                       name="first_name" id="first_name"/>
-                {firstNameError.length > 0 &&
-                  <>{firstNameError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
-                }
+                <TextField label={t('First name')} size="small" fullWidth
+                           type="text" id="first_name" name="first_name"
+                           onChange={onChange}
+                           error={firstNameError.length > 0}
+                           helperText={
+                             <>{firstNameError.map(el => {return t(el)})}</>
+                           }/>
               </div>
               <div className="mb-3">
-                <label htmlFor="last_name" className="form-label">{t('Last name')}</label>
-                <input onChange={onChange} type="text"
-                       className={`form-control ${lastNameError.length > 0 ? 'is-invalid' : ''}`}
-                       name="last_name" id="last_name"/>
-                {lastNameError.length > 0 &&
-                  <>{lastNameError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
-                }
+                <TextField label={t('Last name')} size="small" fullWidth
+                           type="text" id="last_name" name="last_name"
+                           onChange={onChange}
+                           error={lastNameError.length > 0}
+                           helperText={
+                             <>{lastNameError.map(el => {return t(el)})}</>
+                           }/>
               </div>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">{t('Email address')}</label>
-                <input onChange={onChange} type="email"
-                       className={`form-control ${emailError.length > 0 ? 'is-invalid' : ''}`}
-                       name="email" id="email"/>
-                {emailError.length > 0 &&
-                  <>{emailError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
-                }
+                <TextField label={t('Email address')} size="small" fullWidth
+                           type="email" id="email" name="email"
+                           onChange={onChange}
+                           error={emailError.length > 0}
+                           helperText={
+                             <>{emailError.map(el => {return t(el)})}</>
+                           }/>
               </div>
               <div className="mb-3">
-                <label htmlFor="password" className="form-label">{t('Password')}</label>
-                <input onChange={onChange} type="password"
-                       className={`form-control ${passwordError.length > 0 ? 'is-invalid' : ''}`}
-                       name="password" id="password"/>
-                {passwordError.length > 0 &&
-                  <>{passwordError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
-                }
+                <TextField label={t('Password')} size="small" fullWidth
+                           type="password" id="password" name="password"
+                           onChange={onChange}
+                           error={passwordError.length > 0}
+                           helperText={
+                             <>{passwordError.map(el => {return t(el)})}</>
+                           }/>
               </div>
               <div className="mb-3">
-                <label htmlFor="password_confirmation" className="form-label">{t('Password confirmation')}</label>
-                <input onChange={onChange} type="password"
-                       className={`form-control`}
-                       name="password_confirmation" id="password_confirmation"/>
+                <TextField label={t('Password confirmation')} size="small" fullWidth
+                           type="password" id="password_confirmation" name="password_confirmation"
+                           onChange={onChange}/>
               </div>
               <hr/>
               <div className="mb-3">
-                <label htmlFor="password_confirmation" className="form-label">{t('Restaurant')}</label>
-                <select onChange={onChange} id="place_id" name="place_id" className="form-select">
-                  <option value="0">{t('Create later')}</option>
-                  <option value="1">{t('Create new')}</option>
-                </select>
+                <FormControl size="small" fullWidth>
+                  <InputLabel id="label_place_id">{t('Restaurant')}</InputLabel>
+                  <Select label={t('Restaurant')} value="0"
+                          labelId="label_place_id" id="place_id" name="place_id"
+                          onChange={onChange}>
+                    <MenuItem value="0">{t('Create later')}</MenuItem>
+                    <MenuItem value="1">{t('Create new')}</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
               {place === '1' &&
               <>
                 <div className="mb-3">
-                  <label htmlFor="place_name" className="form-label">{t('Name')}</label>
-                  <input onChange={onChange} type="text" required
-                         className={`form-control ${placeNameError.length > 0 ? 'is-invalid' : ''}`}
-                         name="place_name" id="place_name"/>
-                  {placeNameError.length > 0 &&
-                  <>{placeNameError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>
-                  }
+                  <TextField label={t('Name')} size="small" fullWidth
+                             type="text" id="place_name" name="place_name"
+                             onChange={onChange}
+                             error={placeNameError.length > 0}
+                             helperText={
+                               <>{placeNameError.map(el => {return t(el)})}</>
+                             }/>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="address" className="form-label">{t('Address')}</label>
-                  <input onChange={onChange} type="text"
-                         className={`form-control`}
-                         name="address" id="address"/>
+                  <TextField label={t('Address')} size="small" fullWidth
+                             type="text" id="address" name="address"
+                             onChange={onChange}/>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="city" className="form-label">{t('City')}</label>
-                  <input onChange={onChange} type="text"
-                         className={`form-control`}
-                         name="city" id="city"/>
+                  <TextField label={t('City')} size="small" fullWidth
+                             type="text" id="city" name="city"
+                             onChange={onChange}/>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="zip_code" className="form-label">{t('Zip code')}</label>
-                  <input onChange={onChange} type="text"
-                         className={`form-control`}
-                         name="zip_code" id="zip_code"/>
+                  <TextField label={t('Zip code')} size="small" fullWidth
+                             type="text" id="zip_code" name="zip_code"
+                             onChange={onChange}/>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="phone" className="form-label">{t('Phone')}</label>
-                  <input onChange={onChange} type="text"
-                         className={`form-control`}
-                         name="phone" id="phone"/>
+                  <TextField label={t('Phone')} size="small" fullWidth
+                             type="text" id="phone" name="phone"
+                             onChange={onChange}/>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="place_email" className="form-label">{t('Email address')}</label>
-                  <input onChange={onChange} type="email"
-                         className={`form-control`}
-                         name="place_email" id="place_email"/>
+                  <TextField label={t('Email address')} size="small" fullWidth
+                             type="email" id="place_email" name="place_email"
+                             onChange={onChange}/>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="home_page" className="form-label">{t('Home page')}</label>
-                  <input onChange={onChange} type="text"
-                         className={`form-control`}
-                         name="home_page" id="home_page"/>
+                  <TextField label={t('Home page')} size="small" fullWidth
+                             type="text" id="home_page" name="home_page"
+                             onChange={onChange}/>
                 </div>
               </>
               }
-              <button type="submit" className="btn btn-primary">{t('Create profile')}</button>
+              <Button variant="contained" type="submit">{t('Create profile')}</Button>
             </form>
           </div>
         </div>

@@ -152,4 +152,13 @@ class CustomerController extends Controller
             return response()->json(['message' => 'Customer not updated'],400);
         }
     }
+
+    public function checkEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:customers',
+        ]);
+
+        return response()->json(['message' => 'Customer is exists']);
+    }
 }

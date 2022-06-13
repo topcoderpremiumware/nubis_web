@@ -4,10 +4,15 @@ import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
 import { fabric } from 'fabric';
 import tableTypes from "./tableTypes";
+import {Button, Menu, MenuItem} from "@mui/material";
 
 export default function PlanCanvas(props) {
   const { t } = useTranslation();
   const [canvas, setCanvas] = useState(null)
+  const [menuAnchorEl, setMenuAnchorEl] = useState({
+    mouseX: null,
+    mouseY: null
+  })
   const width = 840
   const height = 840
   const grid = 20
@@ -42,7 +47,7 @@ export default function PlanCanvas(props) {
       canvas.clear()
       // canvas.dispose()
 
-      canvas.backgroundColor = '#ffffff'
+      canvas.backgroundColor = backgroundColor
 
       for (let i = 0; i < (canvas.height / grid); i++) {
         const lineX = new fabric.Line([ 0, i * grid, canvas.height, i * grid], {
@@ -207,6 +212,10 @@ export default function PlanCanvas(props) {
       var object = objects[i];
       if (object.containsPoint(pointer) && object.selectable) {
         console.log('selected object',object)
+        setMenuAnchorEl({
+          mouseX: e.clientX,
+          mouseY: e.clientY
+        })
       }
     }
     return false
@@ -265,7 +274,37 @@ export default function PlanCanvas(props) {
     return Math.random().toString(36).substr(2, 8)
   }
 
-  return (
+  const menuClose = () => {
+    setMenuAnchorEl({
+      mouseX: null,
+      mouseY: null
+    })
+  }
+
+  const openProperties = () => {
+
+  }
+
+  const deleteTable = () => {
+
+  }
+
+  return (<>
     <canvas id="plan-canvas" width={width} height={height}/>
-  );
+    <Menu
+      keepMounted
+      id="plan-canvas-menu"
+      open={menuAnchorEl.mouseY !== null}
+      onClose={menuClose}
+      anchorReference="anchorPosition"
+      anchorPosition={
+        menuAnchorEl.mouseY !== null && menuAnchorEl.mouseX !== null
+          ? { top: menuAnchorEl.mouseY, left: menuAnchorEl.mouseX }
+          : undefined
+      }
+    >
+      <MenuItem onClick={openProperties}>{t('Properties')}</MenuItem>
+      <MenuItem onClick={deleteTable}>{t('Delete')}</MenuItem>
+    </Menu>
+  </>);
 };

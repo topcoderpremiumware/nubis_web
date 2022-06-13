@@ -35,6 +35,7 @@ Route::post('login',[AuthApiController::class, 'login']);
 
 Route::post('customers/register',[CustomerController::class, 'register']);
 Route::post('customers/login',[CustomerController::class, 'login']);
+Route::post('customers/verify',[CustomerController::class, 'checkEmail']);
 
 Route::get('places',[PlaceController::class, 'getAll']);
 

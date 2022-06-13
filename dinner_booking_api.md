@@ -312,6 +312,14 @@ curl -X POST https://dinner-book.vasilkoff.info/api/timetables/1 \
 ---
 <a id="customers"></a>
 ## Customers
+#### Verify is customer exist by email
+> POST /api/customers/verify
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/customers/verify \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Accept: application/json" \
+-d '{"email":"2ovob4ehko@ukr.net"}'
+```
 #### Register
 > POST /api/customers/register
 ```cmd

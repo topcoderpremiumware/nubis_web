@@ -42,6 +42,8 @@
         "@ckeditor/ckeditor5-build-classic": "^34.1.0",
         "@ckeditor/ckeditor5-react": "^5.0.2",
         "@mui/x-data-grid": "^5.12.0",
+        "datatables.net": "^1.12.1",
+        "datatables.net-dt": "^1.12.1",
         "fabric": "^4.6.0",
         "i18next": "^21.8.5",
         "i18next-browser-languagedetector": "^6.1.4",

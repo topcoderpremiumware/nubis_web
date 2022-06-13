@@ -1,6 +1,6 @@
 import './DayView.scss';
-import DayViewTableOne from './DayViewTableOne';
-// import DayViewTableTwo from './DayViewTableTwo';
+import DayViewTableBooking from './tables/DataTablesBooking';
+
 
 
 
@@ -63,11 +63,10 @@ export default function DayViewPage() {
       </Box>
       <TabPanel className='DayView__BoxItem' value={value} index={0}>
         Item One
-        <DayViewTableOne/>
+        <DayViewTableBooking/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two
-        {/* <DayViewTableTwo/> */}
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three

@@ -43,30 +43,6 @@ export default function Login() {
     })
   }
 
-  const login = (e) => {
-    e.preventDefault();
-    axios.post('https://dinner-book.vasilkoff.info/api/customers/login', {
-      email: '3@ukr.net',
-      password: 'MaxLibra85'
-    }).then(response => {
-      console.log('login',response)
-    }).catch(error => {
-      console.log('login error',error)
-    })
-  }
-
-  const check = (e) => {
-    e.preventDefault();
-    axios.post('https://dinner-book.vasilkoff.info/api/customers/verify', {
-      email: '3@ukr.net',
-      password: 'MaxLibra85'
-    }).then(response => {
-      console.log('check',response)
-    }).catch(error => {
-      console.log('check error',error)
-    })
-  }
-
   const onChange = (e) => {
     if(e.target.name === 'email'){
       setEmail(e.target.value)
@@ -102,8 +78,6 @@ export default function Login() {
                            }/>
               </div>
               <Button variant="contained" type="submit">{t('Sign in')}</Button>
-              {/*<Button variant="contained" onClick={login} type="button">Login</Button>*/}
-              {/*<Button variant="contained" onClick={check} type="button">Check</Button>*/}
             </form>
             <hr/>
             <Button variant="contained" href="/register">{t('Create profile')}</Button>

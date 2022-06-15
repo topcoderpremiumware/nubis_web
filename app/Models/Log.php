@@ -25,8 +25,13 @@ class Log extends Model
 
     public static function add($request,$action,$comment)
     {
+        if(Auth::check()){
+            $user_id = Auth::user()->id;
+        }else{
+            $user_id = Auth::guard('customer')->user()->id;
+        }
         self::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => $user_id,
             'action' => $action,
             'comment' => $comment,
             'ip' => $request->ip()

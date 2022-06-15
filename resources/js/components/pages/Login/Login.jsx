@@ -11,7 +11,6 @@ export default function Login() {
   const [passwordError, setPasswordError] = useState([])
 
   const onSubmit = (e) => {
-    e.preventDefault();
     axios.post(process.env.APP_URL+'/api/login', {
       email: email,
       password: password
@@ -41,6 +40,30 @@ export default function Login() {
         setPasswordError([error.message])
         console.log('Error', error.message)
       }
+    })
+  }
+
+  const login = (e) => {
+    e.preventDefault();
+    axios.post('https://dinner-book.vasilkoff.info/api/customers/login', {
+      email: '3@ukr.net',
+      password: 'MaxLibra85'
+    }).then(response => {
+      console.log('login',response)
+    }).catch(error => {
+      console.log('login error',error)
+    })
+  }
+
+  const check = (e) => {
+    e.preventDefault();
+    axios.post('https://dinner-book.vasilkoff.info/api/customers/verify', {
+      email: '3@ukr.net',
+      password: 'MaxLibra85'
+    }).then(response => {
+      console.log('check',response)
+    }).catch(error => {
+      console.log('check error',error)
     })
   }
 
@@ -79,6 +102,8 @@ export default function Login() {
                            }/>
               </div>
               <Button variant="contained" type="submit">{t('Sign in')}</Button>
+              {/*<Button variant="contained" onClick={login} type="button">Login</Button>*/}
+              {/*<Button variant="contained" onClick={check} type="button">Check</Button>*/}
             </form>
             <hr/>
             <Button variant="contained" href="/register">{t('Create profile')}</Button>

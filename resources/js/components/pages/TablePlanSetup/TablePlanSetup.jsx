@@ -21,21 +21,26 @@ export default function TablePlanSetup() {
   const [nameError, setNameError] = useState([])
 
   useEffect(() => {
+    getTableplans()
+  },[])
+
+  const onChange = (e) => {
+    if(e.target.name === 'name'){
+      setSelectedName(e.target.value)
+      setSelectedPlan(prev => ({...prev, name: e.target.value}))
+    }
+  }
+
+  const getTableplans = () => {
     axios.get(process.env.APP_URL+'api/places/'+localStorage.getItem('place_id')+'/tableplans',{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
       setPlans(response.data)
+      setSelectedName(t('Not selected'))
+      setSelectedPlan({})
     }).catch(error => {})
-  },[])
-
-  useEffect(() => {
-    console.log('plan from parent',selectedPlan)
-  },[selectedPlan])
-
-  const onChange = (e) => {
-    if(e.target.name === 'name') setSelectedName(e.target.value)
   }
 
   const selectPlan = (plan) => {
@@ -44,7 +49,8 @@ export default function TablePlanSetup() {
   }
 
   const changePlanData = (plan) => {
-
+    console.log('PARENT change',plan)
+    setSelectedPlan(prev => ({...plan}))
   }
 
   const createNew = () => {
@@ -67,10 +73,19 @@ export default function TablePlanSetup() {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
+      getTableplans()
       eventBus.dispatch("notification", {type: 'success', message: 'Table plan saved successfully'});
     }).catch(error => {
-      eventBus.dispatch("notification", {type: 'error', message: error.message});
-      console.log('Error', error)
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          eventBus.dispatch("notification", {type: 'error', message: value});
+        }
+      } else if (error.response.status === 401) {
+        eventBus.dispatch("notification", {type: 'error', message: 'Authorization error'});
+      } else {
+        eventBus.dispatch("notification", {type: 'error', message: error.message});
+        console.log('Error', error.message)
+      }
     })
   }
 
@@ -81,6 +96,7 @@ export default function TablePlanSetup() {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
       }).then(response => {
+        getTableplans()
         eventBus.dispatch("notification", {type: 'success', message: 'Table plan deleted successfully'});
       }).catch(error => {
         eventBus.dispatch("notification", {type: 'error', message: error.message});

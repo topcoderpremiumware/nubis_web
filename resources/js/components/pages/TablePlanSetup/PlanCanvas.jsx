@@ -1,43 +1,46 @@
 import React, {useEffect, useState} from "react";
-import  './TablePlanSetup.scss';
-import { useTranslation } from 'react-i18next';
-import eventBus from "../../../eventBus";
-import { fabric } from 'fabric';
-import tableTypes from "./tableTypes";
-import {Button, Menu, MenuItem} from "@mui/material";
+import './TablePlanSetup.scss';
+import {useTranslation} from 'react-i18next';
+import {fabric} from 'fabric';
+import {rectTable} from "./tableTypes";
+import {Menu, MenuItem} from "@mui/material";
+import TablePropertiesPopup from "./TablePropertiesPopup";
 
 export default function PlanCanvas(props) {
   const { t } = useTranslation();
   const [canvas, setCanvas] = useState(null)
+  const [plan, setPlan] = useState({})
+  const [selectedTable, setSelectedTable] = useState({})
   const [menuAnchorEl, setMenuAnchorEl] = useState({
     mouseX: null,
     mouseY: null
   })
+  const [propertiesOpen, setPropertiesOpen] = useState(false)
   const width = 840
   const height = 840
   const grid = 20
   const backgroundColor = '#ffffff'
   const lineStroke = '#ebebeb'
-  const tableStroke = '#c0c0c0'
   var upperCanvas
+  var mouseEvent = 'up'
 
   useEffect(() => {
-    console.log('fisrt_load',props.data)
     setCanvas(new fabric.Canvas('plan-canvas'))
   },[])
 
   useEffect(() => {
-    console.log('canvas_updated',props.data)
-    initCanvas()
-  },[canvas])
+    console.log('CANVAS props',props.data)
+    setPlan(props.data)
+  },[props])
 
   useEffect(() => {
-    console.log('update_load',props.data)
-    initCanvas()
-  },[props.data.data])
+    console.log('CANVAS plan',plan)
+    if(plan.hasOwnProperty('data')){
+      initCanvas()
+    }
+  },[canvas,plan])
 
   const initCanvas = () => {
-    console.log('canvas',canvas)
     if (canvas) {
       upperCanvas = document.querySelector('.upper-canvas')
       if (upperCanvas.getAttribute('listener') !== 'true'){
@@ -45,7 +48,6 @@ export default function PlanCanvas(props) {
         upperCanvas.setAttribute('listener', 'true')
       }
       canvas.clear()
-      // canvas.dispose()
 
       canvas.backgroundColor = backgroundColor
 
@@ -76,131 +78,49 @@ export default function PlanCanvas(props) {
       canvas.on('object:rotating', function (e) {
         checkBoudningBox(e)
       })
+      // canvas.on('mouse:up', function(e) {
+      //   mouseEvent = 'up'
+      // })
+      // canvas.on('mouse:down', function(e) {
+      //   mouseEvent = 'down'
+      // })
+      // canvas.on('object:modified', function(e) {
+      //   if(mouseEvent === 'down'){
+      //     console.log('CANVAS moved_object',e.target)
+      //     let table = e.target.data
+      //     table.top = e.target.top
+      //     table.left = e.target.left
+      //     updateTableToTableplan(e.target.id,table)
+      //   }
+      // })
       showTables()
     }
   }
 
+  const updateTableToTableplan = (key,data) => {
+    let tempPlan = plan
+    tempPlan.data[key] = data
+    setPlan(prev => ({...prev, data: tempPlan.data}))
+    setPropertiesOpen(false)
+    props.onChange(tempPlan)
+  }
+
   const showTables = () => {
-    rectTable(0,{
-      "seats":2,
-      "number":1,
-      "color":"#f0f0f0",
-      "angle":0,
-      "top":50,
-      "left":40,
-      "type":'rect_1_2_1',
-      "qr_code":"",
-      "time":[
-        {
-          "is_internal":true,
-          "is_online":true,
-          "priority":1,
-          "min_seats":1,
-          "group":1,
-          "group_priority":1,
-          "booking_length":0
-        }
-      ]
+    plan.data.forEach((item, key) => {
+      if(item.type.includes('rect')){
+        let table = rectTable(key,item)
+        table.on('mouseup', onMoveObject)
+        canvas.add(table)
+      }
     })
   }
 
-  const rectTable = (key,data) => {
-    const type = tableTypes[data['type']]
-    let seats = []
-    type.seats.forEach(seat => {
-      const s = new fabric.Rect({
-        left: seat.dx,
-        top: seat.dy,
-        width: seat.width,
-        height: seat.height,
-        fill: tableStroke,
-        strokeWidth: 0,
-        originX: 'center',
-        originY: 'center',
-        selectable: false
-      })
-      seats.push(s)
-    })
-    const table = new fabric.Rect({
-      width: type.width,
-      height: type.height,
-      fill: data['color'],
-      stroke: tableStroke,
-      strokeWidth: 3,
-      originX: 'center',
-      originY: 'center',
-      centeredRotation: true,
-      selectable: false,
-      rx: 4,
-      ry: 4
-    })
-    const tableG = new fabric.Group([table, ...seats], {
-      centeredRotation: true,
-      snapAngle: 45,
-      originX: 'center',
-      originY: 'center',
-      angle: data['angle'],
-    })
-
-    const text = tableText(data)
-
-    const og = new fabric.Group([tableG, text], {
-      left: data['left'],
-      top: data['top'],
-      centeredRotation: true,
-      lockRotation: true,
-      lockScalingX: true,
-      lockScalingY: true,
-      snapAngle: 45,
-      selectable: true,
-      hasControls: false,
-      originX: 'center',
-      originY: 'center',
-      id: key,
-      data: data
-    })
-
-    canvas.add(og)
-    return og
-  }
-
-  const tableText = (data) => {
-    const textNumber = new fabric.IText('t: '+data['number'].toString(), {
-      // fontFamily: 'Calibri',
-      top: -8,
-      fontSize: 10,
-      fill: contrastColor(data['color']),
-      textAlign: 'center',
-      originX: 'center',
-      originY: 'center'
-    })
-
-    const textSeats = new fabric.IText('s: '+data['seats'].toString(), {
-      fontSize: 10,
-      fill: contrastColor(data['color']),
-      textAlign: 'center',
-      originX: 'center',
-      originY: 'center'
-    })
-
-    const textGroup = new fabric.IText('g: '+data['time'][0]['group'].toString(), {
-      top: 8,
-      fontSize: 10,
-      fill: contrastColor(data['color']),
-      textAlign: 'center',
-      originX: 'center',
-      originY: 'center'
-    })
-
-    const g = new fabric.Group([textNumber, textSeats, textGroup], {
-      centeredRotation: true,
-      snapAngle: 45,
-      originX: 'center',
-      originY: 'center',
-      angle: data['angle'],
-    })
-
-    return g
+  const onMoveObject = (e) => {
+    console.log('CANVAS moved_object',e.target)
+    let table = e.target.data
+    table.top = e.target.top
+    table.left = e.target.left
+    updateTableToTableplan(e.target.id,table)
   }
 
   const onObjectMenu = (e) => {
@@ -212,6 +132,7 @@ export default function PlanCanvas(props) {
       var object = objects[i];
       if (object.containsPoint(pointer) && object.selectable) {
         console.log('selected object',object)
+        setSelectedTable(object)
         setMenuAnchorEl({
           mouseX: e.clientX,
           mouseY: e.clientY
@@ -260,20 +181,6 @@ export default function PlanCanvas(props) {
     }
   }
 
-  const contrastColor = (hex) => {
-    var r = parseInt(hex.slice(1, 3), 16),
-      g = parseInt(hex.slice(3, 5), 16),
-      b = parseInt(hex.slice(5, 7), 16);
-
-    return (r * 0.299 + g * 0.587 + b * 0.114) > 186
-      ? '#000000'
-      : '#FFFFFF';
-  }
-
-  const generateId = () => {
-    return Math.random().toString(36).substr(2, 8)
-  }
-
   const menuClose = () => {
     setMenuAnchorEl({
       mouseX: null,
@@ -282,11 +189,35 @@ export default function PlanCanvas(props) {
   }
 
   const openProperties = () => {
-
+    setPropertiesOpen(true)
+    menuClose()
   }
 
   const deleteTable = () => {
+    let tempPlan = plan
+    if(tempPlan.data.hasOwnProperty(selectedTable.id)){
+      tempPlan.data.splice(selectedTable.id, 1)
+    }
+    setPlan(prev => ({...prev, data: tempPlan.data}))
+    props.onChange(tempPlan)
+    menuClose()
+  }
 
+  const reservedNumbers = () => {
+    if(plan.hasOwnProperty('data')){
+      return plan.data.map(el => el.number)
+        .filter(el => {
+          if (!el) return false
+          if (selectedTable.hasOwnProperty('data') &&
+            selectedTable.data.hasOwnProperty('number')) {
+            return el !== selectedTable.data.number
+          } else {
+            return true
+          }
+        })
+    }else{
+      return []
+    }
   }
 
   return (<>
@@ -306,5 +237,12 @@ export default function PlanCanvas(props) {
       <MenuItem onClick={openProperties}>{t('Properties')}</MenuItem>
       <MenuItem onClick={deleteTable}>{t('Delete')}</MenuItem>
     </Menu>
+    <TablePropertiesPopup
+      open={propertiesOpen}
+      numbers={reservedNumbers()}
+      table={selectedTable}
+      onChange={updateTableToTableplan}
+      onClose={e => {setPropertiesOpen(false)}}
+    />
   </>);
 };

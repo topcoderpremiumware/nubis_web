@@ -66,5 +66,11 @@
     "Table plan saved successfully": "Table plan saved successfully",
     "Table plan deleted successfully": "Table plan deleted successfully",
     "Not selected": "Not selected",
-    "Properties": "Properties"
+    "Properties": "Properties",
+    "Rectangular": "Rectangular",
+    "Circular": "Circular",
+    "Special": "Special",
+    "Custom Pax": "Custom Pax",
+    "Table properties": "Table properties",
+    "Angle": "Angle"
 }

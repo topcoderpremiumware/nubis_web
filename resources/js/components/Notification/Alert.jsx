@@ -33,7 +33,7 @@ export default function Alert() {
   }
 
   return (
-    <div className="toast-container position-fixed end-0 p-3">
+    <div className="toast-container position-fixed end-0 p-3" style={{zIndex:1000}}>
       {errors.map((alert,key)=> {
         return (<div key={key}
                     className={`toast align-items-center show text-white ${alert.type === 'success' ? 'bg-success' : 'bg-danger'}`}

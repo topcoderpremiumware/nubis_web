@@ -39,7 +39,17 @@ Route::post('customers/verify',[CustomerController::class, 'checkEmail']);
 
 Route::get('places',[PlaceController::class, 'getAll']);
 
-Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:customer')->group(function(){
+    Route::post('customers/logout',[CustomerController::class, 'logout']);
+    Route::get('customers',function(Request $request){
+        return $request->user();
+    });
+    Route::post('customers',[CustomerController::class, 'save']);
+    Route::post('customers/language',[CustomerController::class, 'language']);
+    Route::post('customers/password',[CustomerController::class, 'password']);
+    Route::get('customers/orders',[OrderController::class, 'getAllByCustomer']);
+});
+Route::middleware('auth:user')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);
     Route::get('user',function(Request $request){
         return $request->user();
@@ -77,15 +87,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('timetables',[TimetableController::class, 'create']);
     Route::get('timetables/{id}',[TimetableController::class, 'getId']);
     Route::post('timetables/{id}',[TimetableController::class, 'save']);
-
-    Route::post('customers/logout',[CustomerController::class, 'logout']);
-    Route::get('customers',function(Request $request){
-        return $request->user();
-    });
-    Route::post('customers',[CustomerController::class, 'save']);
-    Route::post('customers/language',[CustomerController::class, 'language']);
-    Route::post('customers/password',[CustomerController::class, 'password']);
-    Route::get('customers/orders',[OrderController::class, 'getAllByCustomer']);
 
     Route::post('orders',[OrderController::class, 'create']);
     Route::get('orders/{id}',[OrderController::class, 'getId']);

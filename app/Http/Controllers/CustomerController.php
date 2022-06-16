@@ -60,31 +60,25 @@ class CustomerController extends Controller
 
     public function logout(Request $request)
     {
-        $logs = [];
-        array_push($logs,['guard check' => Auth::guard()->check()]);
-        array_push($logs,['guard user' => Auth::guard()->user()]);
-        array_push($logs,['not check' => Auth::check()]);
-        array_push($logs,['not user' => Auth::user()]);
-//        Auth::guard()->user()->tokens()->delete();
+        Auth::user()->tokens()->delete();
         return response()->json([
-            'message' => 'You have successfully logged out and token was successfully deleted.',
-            'logs' => $logs
+            'message' => 'You have successfully logged out and token was successfully deleted.'
         ]);
     }
 
     public function save(Request $request)
     {
-        if(!Auth::guard('customer')->user()->tokenCan('customer')) return response()->json([
+        if(!Auth::user()->tokenCan('customer')) return response()->json([
             'message' => 'Unauthorized.'
         ], 401);
 
         $request->validate([
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:2',
-            'email' => 'required|email|unique:customers,email,'.Auth::guard('customer')->user()->id,
+            'email' => 'required|email|unique:customers,email,'.Auth::user()->id,
         ]);
 
-        $res = Customer::where('id',Auth::guard('customer')->user()->id)->update([
+        $res = Customer::where('id',Auth::user()->id)->update([
             'first_name' => ucwords($request->first_name),
             'last_name' => ucwords($request->last_name),
             'phone' => $request->phone,
@@ -96,7 +90,7 @@ class CustomerController extends Controller
         ]);
 
         if($res){
-            $customer = Customer::find(Auth::guard('customer')->user()->id);
+            $customer = Customer::find(Auth::user()->id);
             return response()->json($customer);
         }else{
             return response()->json(['message' => 'Customer not updated'],400);
@@ -105,7 +99,7 @@ class CustomerController extends Controller
 
     public function language(Request $request)
     {
-        if(!Auth::guard('customer')->user()->tokenCan('customer')) return response()->json([
+        if(!Auth::user()->tokenCan('customer')) return response()->json([
             'message' => 'Unauthorized.'
         ], 401);
 
@@ -113,12 +107,12 @@ class CustomerController extends Controller
             'language' => 'required|min:2|max:2',
         ]);
 
-        $res = Customer::where('id',Auth::guard('customer')->user()->id)->update([
+        $res = Customer::where('id',Auth::user()->id)->update([
             'language' => $request->language ?? 'en'
         ]);
 
         if($res){
-            $customer = Customer::find(Auth::guard('customer')->user()->id);
+            $customer = Customer::find(Auth::user()->id);
             return response()->json($customer);
         }else{
             return response()->json(['message' => 'Customer not updated'],400);
@@ -127,7 +121,7 @@ class CustomerController extends Controller
 
     public function password(Request $request)
     {
-        if(!Auth::guard('customer')->user()->tokenCan('customer')) return response()->json([
+        if(!Auth::user()->tokenCan('customer')) return response()->json([
             'message' => 'Unauthorized.'
         ], 401);
 
@@ -135,13 +129,13 @@ class CustomerController extends Controller
             'password' => 'required|min:4|confirmed',
         ]);
 
-        $res = Customer::where('id',Auth::guard('customer')->user()->id)->update([
+        $res = Customer::where('id',Auth::user()->id)->update([
             'password' => bcrypt($request->password),
         ]);
 
         if($res){
-            $customer = Customer::find(Auth::guard('customer')->user()->id);
-            Auth::guard('customer')->user()->tokens()->delete();
+            $customer = Customer::find(Auth::user()->id);
+            Auth::user()->tokens()->delete();
             return $this->response($customer);
         }else{
             return response()->json(['message' => 'Customer not updated'],400);

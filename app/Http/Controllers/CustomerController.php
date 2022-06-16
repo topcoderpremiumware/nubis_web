@@ -60,9 +60,15 @@ class CustomerController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard()->user()->tokens()->delete();
+        $logs = [];
+        array_push($logs,['guard check' => Auth::guard()->check()]);
+        array_push($logs,['guard user' => Auth::guard()->user()]);
+        array_push($logs,['not check' => Auth::check()]);
+        array_push($logs,['not user' => Auth::user()]);
+//        Auth::guard()->user()->tokens()->delete();
         return response()->json([
-            'message' => 'You have successfully logged out and token was successfully deleted.'
+            'message' => 'You have successfully logged out and token was successfully deleted.',
+            'logs' => $logs
         ]);
     }
 

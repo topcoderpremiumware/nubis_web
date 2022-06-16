@@ -41,10 +41,18 @@ return [
             'provider' => 'users',
         ],
         'user' => [
-            'driver' => 'sanctum',
+            'driver' => 'session',
             'provider' => 'users',
         ],
         'customer' => [
+            'driver' => 'session',
+            'provider' => 'customers',
+        ],
+        'user_api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
+        'customer_api' => [
             'driver' => 'sanctum',
             'provider' => 'customers',
         ],

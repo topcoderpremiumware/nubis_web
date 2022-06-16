@@ -39,7 +39,7 @@ Route::post('customers/verify',[CustomerController::class, 'checkEmail']);
 
 Route::get('places',[PlaceController::class, 'getAll']);
 
-Route::middleware('auth:customer')->group(function(){
+Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/logout',[CustomerController::class, 'logout']);
     Route::get('customers',function(Request $request){
         return $request->user();
@@ -49,7 +49,7 @@ Route::middleware('auth:customer')->group(function(){
     Route::post('customers/password',[CustomerController::class, 'password']);
     Route::get('customers/orders',[OrderController::class, 'getAllByCustomer']);
 });
-Route::middleware('auth:user')->group(function(){
+Route::middleware('auth:user_api')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);
     Route::get('user',function(Request $request){
         return $request->user();

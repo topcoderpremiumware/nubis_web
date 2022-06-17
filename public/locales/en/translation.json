@@ -72,5 +72,17 @@
     "Special": "Special",
     "Custom Pax": "Custom Pax",
     "Table properties": "Table properties",
-    "Angle": "Angle"
+    "Copy values down": "Copy values down",
+    "Angle": "Angle",
+    "Number": "Number",
+    "Color": "Color",
+    "Cancel": "Cancel",
+    "Time": "Time",
+    "Internal": "Internal",
+    "Online": "Online",
+    "Priority": "Priority",
+    "Available": "Available",
+    "Group": "Group",
+    "Booking length": "Booking length",
+    "Group priority": "Group priority"
 }

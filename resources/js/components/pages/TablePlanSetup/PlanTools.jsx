@@ -27,22 +27,18 @@ export default function PlanTools(props) {
   },[])
 
   useEffect(() => {
-    console.log('TOOLS props',props.data)
     setPlan(props.data)
   },[props])
 
   useEffect(() => {
-    console.log('TOOLS plan',plan)
-    if(plan.hasOwnProperty('data')){
-      initCanvas()
-    }
+    initCanvas()
   },[canvas,toolsTab,plan])
 
   const initCanvas = () => {
     if (canvas) {
       canvas.clear()
       canvas.backgroundColor = backgroundColor
-      showTables()
+      if(plan.hasOwnProperty('data')) showTables()
     }
   }
 
@@ -67,7 +63,6 @@ export default function PlanTools(props) {
         table.originY = 'top'
         table.hoverCursor = 'pointer'
         table.on('mousedown',(e) => {
-          console.log('TOOLS edit plan',plan)
           data['number'] = plan.data.length > 0 ? plan.data[plan.data.length-1].number+1 : 1
           data['top'] = 50
           data['left'] = 40
@@ -78,9 +73,9 @@ export default function PlanTools(props) {
               "is_online":true,
               "priority":0,
               "min_seats":0,
-              "group":null,
-              "group_priority":null,
-              "booking_length":null
+              "group":0,
+              "group_priority":0,
+              "booking_length":0
             })
           }
           addTableToTableplan(data)
@@ -109,5 +104,5 @@ export default function PlanTools(props) {
       })}
     </Grid>
     <canvas id="plan-tools" width={width} height={height}/>
-    </>);
+  </>);
 };

@@ -12,7 +12,8 @@ export default function TablePlanSetup() {
   const PlanButton = styled(Button)({
     color: '#000000',
     textTransform: 'none',
-    textAlign: 'left'
+    textAlign: 'left',
+    justifyContent: 'left'
   });
 
   const [plans, setPlans] = useState([])
@@ -31,15 +32,24 @@ export default function TablePlanSetup() {
     }
   }
 
-  const getTableplans = () => {
+  const getTableplans = (selectedId = null) => {
     axios.get(process.env.APP_URL+'api/places/'+localStorage.getItem('place_id')+'/tableplans',{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
       setPlans(response.data)
-      setSelectedName(t('Not selected'))
-      setSelectedPlan({})
+      let tempSelected
+      if(selectedPlan.id || selectedId) tempSelected = response.data.find(el => {
+        return el.id === selectedPlan.id || el.id === selectedId
+      })
+      if(tempSelected){
+        setSelectedName(tempSelected.name)
+        setSelectedPlan(tempSelected)
+      }else{
+        setSelectedName(t('Not selected'))
+        setSelectedPlan(prev => ({}))
+      }
     }).catch(error => {})
   }
 
@@ -49,8 +59,8 @@ export default function TablePlanSetup() {
   }
 
   const changePlanData = (plan) => {
-    console.log('PARENT change',plan)
-    setSelectedPlan(prev => ({...plan}))
+    setSelectedPlan(plan)
+    savePlan()
   }
 
   const createNew = () => {
@@ -73,7 +83,7 @@ export default function TablePlanSetup() {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      getTableplans()
+      getTableplans(response.data.id)
       eventBus.dispatch("notification", {type: 'success', message: 'Table plan saved successfully'});
     }).catch(error => {
       if (error.response && error.response.data && error.response.data.errors) {
@@ -122,7 +132,7 @@ export default function TablePlanSetup() {
                            }/>
               </div>
               {plans.map((plan,key) => {
-                return <PlanButton variant="text" key={key}
+                return <PlanButton variant="text" key={key} fullWidth
                                onClick={(e) => {selectPlan(plan)}}>{plan.name}</PlanButton>
               })}
             </div>

@@ -11,6 +11,7 @@ export default function Login() {
   const [passwordError, setPasswordError] = useState([])
 
   const onSubmit = (e) => {
+    e.preventDefault();
     axios.post(process.env.APP_URL+'/api/login', {
       email: email,
       password: password

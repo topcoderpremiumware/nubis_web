@@ -29,15 +29,11 @@ export default function PlanCanvas(props) {
   },[])
 
   useEffect(() => {
-    console.log('CANVAS props',props.data)
     setPlan(props.data)
   },[props])
 
   useEffect(() => {
-    console.log('CANVAS plan',plan)
-    if(plan.hasOwnProperty('data')){
-      initCanvas()
-    }
+    initCanvas()
   },[canvas,plan])
 
   const initCanvas = () => {
@@ -78,22 +74,7 @@ export default function PlanCanvas(props) {
       canvas.on('object:rotating', function (e) {
         checkBoudningBox(e)
       })
-      // canvas.on('mouse:up', function(e) {
-      //   mouseEvent = 'up'
-      // })
-      // canvas.on('mouse:down', function(e) {
-      //   mouseEvent = 'down'
-      // })
-      // canvas.on('object:modified', function(e) {
-      //   if(mouseEvent === 'down'){
-      //     console.log('CANVAS moved_object',e.target)
-      //     let table = e.target.data
-      //     table.top = e.target.top
-      //     table.left = e.target.left
-      //     updateTableToTableplan(e.target.id,table)
-      //   }
-      // })
-      showTables()
+      if(plan.hasOwnProperty('data')) showTables()
     }
   }
 
@@ -116,7 +97,6 @@ export default function PlanCanvas(props) {
   }
 
   const onMoveObject = (e) => {
-    console.log('CANVAS moved_object',e.target)
     let table = e.target.data
     table.top = e.target.top
     table.left = e.target.left
@@ -127,11 +107,9 @@ export default function PlanCanvas(props) {
     e.preventDefault()
     var pointer = canvas.getPointer(e);
     var objects = canvas.getObjects();
-    console.log('objects',objects.length)
     for (var i = objects.length-1; i >= 0; i--) {
       var object = objects[i];
       if (object.containsPoint(pointer) && object.selectable) {
-        console.log('selected object',object)
         setSelectedTable(object)
         setMenuAnchorEl({
           mouseX: e.clientX,

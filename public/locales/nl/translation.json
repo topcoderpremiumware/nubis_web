@@ -73,5 +73,16 @@
     "Custom Pax": "Brugerdefineret Pax",
     "Table properties": "Tabelegenskaber",
     "Copy values down": "Kopier værdier ned",
-    "Angle": "Vinkel"
+    "Angle": "Vinkel",
+    "Number": "Nummer",
+    "Color": "Farve",
+    "Cancel": "Afbestille",
+    "Time": "Tid",
+    "Internal": "Indre",
+    "Online": "Online",
+    "Priority": "Prioritet",
+    "Available": "Ledig",
+    "Group": "Gruppe",
+    "Booking length": "Bookinglængde",
+    "Group priority": "Gruppeprioritet"
 }

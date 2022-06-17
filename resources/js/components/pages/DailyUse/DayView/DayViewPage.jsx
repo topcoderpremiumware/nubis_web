@@ -1,10 +1,7 @@
+import React from 'react';
 import './DayView.scss';
 import DayViewTableBooking from './tables/DataTablesBooking';
 
-
-
-
-import * as React from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';

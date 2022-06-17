@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
-use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,21 +49,17 @@ class CustomerController extends Controller
             'password' => 'required|min:4'
         ]);
 
-        if(!Auth::attempt($cred)){
+        if(!Auth::guard('customer')->attempt($cred)){
             return response()->json([
                 'message' => 'Unauthorized.'
             ], 401);
         }
 
-        Log::add($request,'login-customer','Logged in customer');
-
-        return $this->response(Auth::user());
+        return $this->response(Auth::guard('customer')->user());
     }
 
     public function logout(Request $request)
     {
-        Log::add($request,'logout-customer','Logged out customer');
-
         Auth::user()->tokens()->delete();
         return response()->json([
             'message' => 'You have successfully logged out and token was successfully deleted.'
@@ -94,8 +89,6 @@ class CustomerController extends Controller
             'language' => $request->language ?? 'en'
         ]);
 
-        Log::add($request,'save-customer','Saved customer data');
-
         if($res){
             $customer = Customer::find(Auth::user()->id);
             return response()->json($customer);
@@ -118,8 +111,6 @@ class CustomerController extends Controller
             'language' => $request->language ?? 'en'
         ]);
 
-        Log::add($request,'language-customer','Changed customer language');
-
         if($res){
             $customer = Customer::find(Auth::user()->id);
             return response()->json($customer);
@@ -141,8 +132,6 @@ class CustomerController extends Controller
         $res = Customer::where('id',Auth::user()->id)->update([
             'password' => bcrypt($request->password),
         ]);
-
-        Log::add($request,'password-customer','Changed customer password');
 
         if($res){
             $customer = Customer::find(Auth::user()->id);

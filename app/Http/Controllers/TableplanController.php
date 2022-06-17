@@ -20,7 +20,7 @@ class TableplanController extends Controller
         $request->validate([
             'name' => 'required',
             'place_id' => 'required|exists:places,id',
-            'data' => 'required|array'
+            'data' => 'array'
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)){
@@ -49,7 +49,7 @@ class TableplanController extends Controller
         $request->validate([
             'name' => 'required',
             'place_id' => 'required|exists:places,id',
-            'data' => 'required|array'
+            'data' => 'array'
         ]);
 
         $tableplan = Tableplan::find($id);

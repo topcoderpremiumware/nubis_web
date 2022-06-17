@@ -12,7 +12,8 @@ export default function TablePlanSetup() {
   const PlanButton = styled(Button)({
     color: '#000000',
     textTransform: 'none',
-    textAlign: 'left'
+    textAlign: 'left',
+    justifyContent: 'left'
   });
 
   const [plans, setPlans] = useState([])
@@ -21,21 +22,35 @@ export default function TablePlanSetup() {
   const [nameError, setNameError] = useState([])
 
   useEffect(() => {
+    getTableplans()
+  },[])
+
+  const onChange = (e) => {
+    if(e.target.name === 'name'){
+      setSelectedName(e.target.value)
+      setSelectedPlan(prev => ({...prev, name: e.target.value}))
+    }
+  }
+
+  const getTableplans = (selectedId = null) => {
     axios.get(process.env.APP_URL+'api/places/'+localStorage.getItem('place_id')+'/tableplans',{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
       setPlans(response.data)
+      let tempSelected
+      if(selectedPlan.id || selectedId) tempSelected = response.data.find(el => {
+        return el.id === selectedPlan.id || el.id === selectedId
+      })
+      if(tempSelected){
+        setSelectedName(tempSelected.name)
+        setSelectedPlan(tempSelected)
+      }else{
+        setSelectedName(t('Not selected'))
+        setSelectedPlan(prev => ({}))
+      }
     }).catch(error => {})
-  },[])
-
-  useEffect(() => {
-    console.log('plan from parent',selectedPlan)
-  },[selectedPlan])
-
-  const onChange = (e) => {
-    if(e.target.name === 'name') setSelectedName(e.target.value)
   }
 
   const selectPlan = (plan) => {
@@ -44,7 +59,8 @@ export default function TablePlanSetup() {
   }
 
   const changePlanData = (plan) => {
-
+    setSelectedPlan(plan)
+    savePlan()
   }
 
   const createNew = () => {
@@ -67,10 +83,19 @@ export default function TablePlanSetup() {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
+      getTableplans(response.data.id)
       eventBus.dispatch("notification", {type: 'success', message: 'Table plan saved successfully'});
     }).catch(error => {
-      eventBus.dispatch("notification", {type: 'error', message: error.message});
-      console.log('Error', error)
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          eventBus.dispatch("notification", {type: 'error', message: value});
+        }
+      } else if (error.response.status === 401) {
+        eventBus.dispatch("notification", {type: 'error', message: 'Authorization error'});
+      } else {
+        eventBus.dispatch("notification", {type: 'error', message: error.message});
+        console.log('Error', error.message)
+      }
     })
   }
 
@@ -81,6 +106,7 @@ export default function TablePlanSetup() {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
       }).then(response => {
+        getTableplans()
         eventBus.dispatch("notification", {type: 'success', message: 'Table plan deleted successfully'});
       }).catch(error => {
         eventBus.dispatch("notification", {type: 'error', message: error.message});
@@ -106,7 +132,7 @@ export default function TablePlanSetup() {
                            }/>
               </div>
               {plans.map((plan,key) => {
-                return <PlanButton variant="text" key={key}
+                return <PlanButton variant="text" key={key} fullWidth
                                onClick={(e) => {selectPlan(plan)}}>{plan.name}</PlanButton>
               })}
             </div>

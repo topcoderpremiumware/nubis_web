@@ -1,6 +1,8 @@
 import React from 'react';
 import './DayView.scss';
-import DayViewTableBooking from './tables/DataTablesBooking';
+import DayViewTableBooking from './tables/Booking/DataTablesBooking';
+import DayViewTableWhaiting from './tables/Whaiting/DataTablesWhaiting';
+import DayViewTableDeleted from './tables/DeletedBookings/DataTablesDeleted';
 
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -63,10 +65,10 @@ export default function DayViewPage() {
         <DayViewTableBooking/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <DayViewTableWhaiting/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <DayViewTableDeleted/>
       </TabPanel>
     </Box>
   );

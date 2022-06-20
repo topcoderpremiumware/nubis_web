@@ -61,7 +61,6 @@ export default function DayViewPage() {
         </Tabs>
       </Box>
       <TabPanel className='DayView__BoxItem' value={value} index={0}>
-        Item One
         <DayViewTableBooking/>
       </TabPanel>
       <TabPanel value={value} index={1}>

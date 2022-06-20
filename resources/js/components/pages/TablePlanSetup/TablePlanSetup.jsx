@@ -119,6 +119,11 @@ export default function TablePlanSetup() {
     <div className='pages__container'>
       <h2>{t('Table Plan Setup')} - {selectedName}</h2>
       <div className="container-fluid">
+        <Stack spacing={2} sx={{mb:2}} direction="row">
+          <Button variant="contained" type="button" onClick={createNew}>{t('New')}</Button>
+          <Button variant="contained" type="button" color="success" onClick={savePlan}>{t('Save')}</Button>
+          <Button variant="contained" type="button" color="error" onClick={deletePlan}>{t('Delete')}</Button>
+        </Stack>
         <div className="row">
           <div className="col-lg-2">
             <div className="overflow-auto mb-3">
@@ -126,6 +131,7 @@ export default function TablePlanSetup() {
                 <TextField label={t('Name')} size="small" fullWidth
                            type="text" id="name" name="name" value={selectedName}
                            onChange={onChange}
+                           disabled={!selectedPlan.hasOwnProperty('name')}
                            error={nameError.length > 0}
                            helperText={
                              <>{nameError.map(el => {return t(el)})}</>
@@ -148,12 +154,6 @@ export default function TablePlanSetup() {
             </div>
           </div>
         </div>
-
-        <Stack spacing={2} direction="row">
-          <Button variant="contained" type="button" onClick={createNew}>{t('New')}</Button>
-          <Button variant="contained" type="button" color="success" onClick={savePlan}>{t('Save')}</Button>
-          <Button variant="contained" type="button" color="error" onClick={deletePlan}>{t('Delete')}</Button>
-        </Stack>
       </div>
     </div>
   );

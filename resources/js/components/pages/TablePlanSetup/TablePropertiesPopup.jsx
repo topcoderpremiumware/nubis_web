@@ -66,6 +66,10 @@ export default function TablePropertiesPopup(props) {
       ...prev.data,
         color: e.target.value
     }}))
+    if(e.target.name === 'note') setTable(prev => ({...prev, data: {
+        ...prev.data,
+        note: parseInt(e.target.value) || ''
+      }}))
     setFocusOn(e.target.name)
   }
 
@@ -122,7 +126,7 @@ export default function TablePropertiesPopup(props) {
     {table.hasOwnProperty('data') &&
     <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="md" scroll="paper">
       <DialogTitle sx={{ m: 0, p: 2 }}>
-        {t('Table properties')}
+        {table.data.type.startsWith('land') ? t('Element properties') : t('Table properties')}
         <IconButton onClick={handleClose} sx={{
           position:'absolute',
           right:8,
@@ -131,8 +135,8 @@ export default function TablePropertiesPopup(props) {
           }}><CloseIcon /></IconButton>
       </DialogTitle>
       <DialogContent dividers>
-        <Grid container spacing={2}>
-          <Grid item sm={4}>
+        <Grid container spacing={2} sx={{pb: 2}}>
+          {!table.data.type.startsWith('land') && <><Grid item sm={4}>
             <TextField label={t('Number')} size="small" fullWidth
                        type="number" id="number" name="number" required
                        onChange={onChange} value={table.data.number}
@@ -152,7 +156,7 @@ export default function TablePropertiesPopup(props) {
                 disablePlainColor
                 onChange={e => {onChange({target:{name:'color',value:'#'+e.hex}})}}
               />}/>
-          </Grid>
+          </Grid></>}
           <Grid item sm={4}>
             <FormControl size="small" fullWidth>
               <InputLabel id="label_angle">{t('Angle')}</InputLabel>
@@ -166,7 +170,13 @@ export default function TablePropertiesPopup(props) {
             </FormControl>
           </Grid>
         </Grid>
-        <Table>
+        {table.data.type.startsWith('land') ?
+          <TextField label={t('Note')} size="small" fullWidth
+                     type="text" id="note" name="note"
+                     onChange={onChange} value={table.data.note}
+                     multiline rows="3"/>
+          :
+          <Table>
           <TableHead>
             <TableRow>
               <TableCell size="small"></TableCell>
@@ -261,14 +271,14 @@ export default function TablePropertiesPopup(props) {
               </StyledTableRow>
             })}
           </TableBody>
-        </Table>
+        </Table>}
       </DialogContent>
       <DialogActions sx={{p:2}}>
-        <FormControlLabel sx={{mr:'auto'}}
+        {!table.data.type.startsWith('land') && <FormControlLabel sx={{mr:'auto'}}
           control={<Checkbox name="copy" checked={copy} onChange={onChange}/>}
           label={t('Copy values down')}
           labelPlacement="end"
-        />
+        />}
         <Button variant="outlined" onClick={handleClose}>{t('Cancel')}</Button>
         <Button variant="contained" onClick={handleSave}>{t('Save')}</Button>
       </DialogActions>

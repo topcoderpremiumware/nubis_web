@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import './TablePlanSetup.scss';
 import {useTranslation} from 'react-i18next';
 import {fabric} from 'fabric';
-import {rectTable} from "./tableTypes";
+import {circTable, landscape, rectTable} from "./tableTypes";
 import {Menu, MenuItem} from "@mui/material";
 import TablePropertiesPopup from "./TablePropertiesPopup";
 
@@ -86,14 +86,17 @@ export default function PlanCanvas(props) {
     props.onChange(tempPlan)
   }
 
-  const showTables = () => {
-    plan.data.forEach((item, key) => {
-      if(item.type.includes('rect')){
-        let table = rectTable(key,item)
-        table.on('mouseup', onMoveObject)
-        canvas.add(table)
-      }
-    })
+  const showTables = async () => {
+    let table
+    let key = 0
+    for (const item of plan.data) {
+      if (item.type.includes('rect')) table = rectTable(key, item)
+      if (item.type.includes('circ')) table = circTable(key, item)
+      if (item.type.includes('land')) table = await landscape(key, item)
+      table.on('mouseup', onMoveObject)
+      canvas.add(table)
+      key++
+    }
   }
 
   const onMoveObject = (e) => {

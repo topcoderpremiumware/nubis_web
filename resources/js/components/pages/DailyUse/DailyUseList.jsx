@@ -1,23 +1,17 @@
 import  './DailyUseList.scss';
-import DayViewPage from './DayView/DayViewPage';
+import DayViewContent from './DayView/DayViewContent';
 import DayViewTop from './DayView/DayViewTop';
 import WeekViewPage from './WeekView/WeekViewPage';
 
 
-// export const DailyUse = () => {
-//   return (
-//     <div className='pages__container'>
-//       <h1>DailyUse</h1>
-//     </div>
-//   );
-// };
-
 export const DayView = () => {
   return (
-    <div className='pages__container'>
-      {/* <h1>DayView</h1> */}
-      <DayViewTop/>
-      <DayViewPage/>
+    <div className='wrapper'>
+      <div className='pages__container DayView__container'>
+        <DayViewTop />
+        <DayViewContent/>
+        {/* <BottomPanel/> */}
+      </div>
     </div>
   );
 };

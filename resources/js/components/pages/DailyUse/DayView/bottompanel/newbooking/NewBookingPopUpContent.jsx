@@ -4,6 +4,9 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import TabNewBooking from './tabs/TabNewBooking/TabNewBooking';
+
+
 import './NewBooking.scss';
 
 
@@ -62,7 +65,7 @@ export default function NewBookingPopUpContent() {
                 </Tabs>
               </Box>
               <TabPanel className='NewBooking__BoxItem' value={value} index={0}>
-                1
+                <TabNewBooking/>
               </TabPanel>
               <TabPanel value={value} index={1}>
                 2

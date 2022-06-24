@@ -11295,6 +11295,12 @@ body {
   overflow: hidden;
 }
 
+.container {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
 .scroll_wrapper {
   position: relative;
   width: 100%;
@@ -11349,4 +11355,12 @@ body {
 
 a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover {
   color: #ffffff;
+}
+
+.MuiOutlinedInput-input.MuiOutlinedInput-input {
+  /* padding: 5px; */
+}
+
+.ItemSelect.ItemSelect {
+  font-size: 12px;
 }

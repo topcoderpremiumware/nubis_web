@@ -5,7 +5,12 @@
   position: relative;
 }
 .NewBookingPopUpContent{
-  // background: #fff;
+  width: 100%;
+  height: 100%;
+}
+.css-8atqhb{
+  width: 100%;
+  height: 100%;
 }
 .ButtonNewBooking.ButtonNewBooking{
   background: #67A1E5;
@@ -37,4 +42,11 @@
     }
   }
     
+}
+.NewBookingPopUpContent .MuiSelect-select{
+  padding: 5px;
+  font-size: 14px;
+}
+.NewBookingPopUpContent .ItemSelec.ItemSelect{
+  font-size: 14px;
 }

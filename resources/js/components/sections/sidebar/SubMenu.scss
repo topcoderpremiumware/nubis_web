@@ -3,19 +3,16 @@
     color: #fff;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 10px;
     list-style: none;
     height: 48px;
     text-decoration: none;
     font-size: 14px;
-    border-left: 4px solid transparent;
 
-    &:hover,
-    &.active{
+    &:hover {
         background: #252831;
         border-left: 4px solid #fff;
         cursor: pointer;
-        color: #fff;
     }
 }
 .SidebarLinkItem{
@@ -38,16 +35,28 @@
     color: #f5f5f5;
     font-size: 14px;
 
-    &:hover,
-    &.active{
-        background: #353a49;
+    &:hover {
+        background: #252831;
         cursor: pointer;
-        color: #f5f5f5;
+    }
+    &:focus span{
+        color:#fff;
+        transform: scale(1.1);
+        // text-decoration: underline;
+    }
+    &:focus span::before{
+        content: "\25CF";
+        color: #fff;
+        font-size: 12px;
+        left: -15px;
+        position: absolute;
+        top:50%;
+        transform: translate(0 ,-50%);
     }
 }
 .SidebarButtonOpen{
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;

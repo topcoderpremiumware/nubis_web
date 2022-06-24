@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './../i18nextConf';
 
 import Sidebar from "./sections/sidebar/Sidebar";
-import { DayView, WeekView, Activity } from './pages/DailyUse/DailyUseList';
+import { DayView, WeekView, Activity } from './pages/DailyUse/DailyUse';
 import LoadingPage from "./LoadingPage";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";

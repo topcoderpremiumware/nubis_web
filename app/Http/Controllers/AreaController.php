@@ -86,11 +86,11 @@ class AreaController extends Controller
 
     public function getAllByPlace($place_id, Request $request)
     {
-        if(!Auth::user()->places->contains($place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
-        }
+//        if(!Auth::user()->places->contains($place_id)){
+//            return response()->json([
+//                'message' => 'It\'s not your place'
+//            ], 400);
+//        }
 
         $areas = Area::where('place_id',$place_id)->get();
 

@@ -175,7 +175,7 @@ export default function Register() {
               <div className="mb-3">
                 <FormControl size="small" fullWidth>
                   <InputLabel id="label_place_id">{t('Restaurant')}</InputLabel>
-                  <Select label={t('Restaurant')} value="0"
+                  <Select label={t('Restaurant')} value={place}
                           labelId="label_place_id" id="place_id" name="place_id"
                           onChange={onChange}>
                     <MenuItem value="0">{t('Create later')}</MenuItem>

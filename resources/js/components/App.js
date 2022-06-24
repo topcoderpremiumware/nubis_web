@@ -25,24 +25,28 @@ function App() {
           {localStorage.getItem('token') ?
             <>
               <Sidebar/>
-              <Routes>
-                {/* <Route path='/dailyuse' exact element={<DailyUse/>}/> */}
-                <Route path='/DayView' exact element={<DayView/>}/>
-                <Route path='/WeekView' exact element={<WeekView/>}/>
-                <Route path='/Activity' exact element={<Activity/>}/>
-                <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
-                <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
-                <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
+              <div className='scroll_wrapper'>
+                <Routes>
+                  {/* <Route path='/dailyuse' exact element={<DailyUse/>}/> */}
+                  <Route path='/DayView' exact element={<DayView/>}/>
+                  <Route path='/WeekView' exact element={<WeekView/>}/>
+                  <Route path='/Activity' exact element={<Activity/>}/>
+                  <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
+                  <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
+                  <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
 
-                <Route path='/BasicInformation' exact element={<BasicInformation/>} />
-                <Route path='/Picture' exact element={<Picture/>} />
-              </Routes>
+                  <Route path='/BasicInformation' exact element={<BasicInformation/>} />
+                  <Route path='/Picture' exact element={<Picture/>} />
+                </Routes>
+              </div>
             </>
             :
-            <Routes>
-              <Route path='/login' exact element={<Login/>}/>
-              <Route path='/register' exact element={<Register/>}/>
-            </Routes>
+            <div className='scroll_wrapper'>
+              <Routes>
+                <Route path='/login' exact element={<Login/>}/>
+                <Route path='/register' exact element={<Register/>}/>
+              </Routes>
+            </div>
           }
         </div>
       </Suspense>

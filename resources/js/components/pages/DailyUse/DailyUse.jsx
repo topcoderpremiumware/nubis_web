@@ -6,15 +6,13 @@ import WeekViewPage from './WeekView/WeekViewPage';
 
 
 export const DayView = () => {
-  return (
-    <div className='wrapper'>
+  return (<>
       <div className='pages__container DayView__container'>
         <DayViewTop />
         <DayViewContent/>
       </div>
       <BottomPanel/>
-    </div>
-  );
+  </>);
 };
 
 export const WeekView = () => {

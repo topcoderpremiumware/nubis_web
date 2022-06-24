@@ -35,7 +35,7 @@ class TableplanController extends Controller
             'data' => $request->data
         ]);
 
-        Log::add($request,'create-tableplan','Created tableplan');
+        Log::add($request,'create-tableplan','Created tableplan #'.$tableplan->id);
 
         return response()->json($tableplan);
     }
@@ -67,7 +67,7 @@ class TableplanController extends Controller
             'data' => $request->data
         ]);
 
-        Log::add($request,'change-tableplan','Changed tableplan');
+        Log::add($request,'change-tableplan','Changed tableplan #'.$id);
 
         if($res){
             $tableplan = Tableplan::find($id);
@@ -117,7 +117,7 @@ class TableplanController extends Controller
             ], 400);
         }
 
-        Log::add($request,'delete-order','Deleted tableplan #'.$tableplan->id);
+        Log::add($request,'delete-tableplan','Deleted tableplan #'.$tableplan->id);
 
         $tableplan->delete();
 

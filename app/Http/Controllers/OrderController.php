@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Log;
 use App\Models\Order;
+use App\Models\Tableplan;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
     public function create(Request $request)
     {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         $request->validate([
             'customer_id' => 'exists:customers,id',
             'place_id' => 'required|exists:places,id',
@@ -19,6 +26,7 @@ class OrderController extends Controller
             'table_ids' => 'required|array',
             'seats' => 'required|integer',
             'reservation_time' => 'required|date_format:Y-m-d H:i:s',
+            'length' => 'required|integer',
             'status' => 'required',
             'is_take_away' => 'required|boolean',
             'source' => 'required|in:online,internal'
@@ -32,6 +40,7 @@ class OrderController extends Controller
             'table_ids' => $request->table_ids,
             'seats' => $request->seats,
             'reservation_time' => $request->reservation_time,
+            'length' => $request->length,
             'comment' => $request->comment ?? '',
             'status' => $request->status,
             'is_take_away' => $request->is_take_away,
@@ -58,6 +67,7 @@ class OrderController extends Controller
             'table_ids' => 'required|array',
             'seats' => 'required|integer',
             'reservation_time' => 'required|date_format:Y-m-d H:i:s',
+            'length' => 'required|integer',
             'status' => 'required',
             'is_take_away' => 'required|boolean',
             'source' => 'required|in:online,internal'
@@ -80,6 +90,7 @@ class OrderController extends Controller
             'table_ids' => $request->table_ids,
             'seats' => $request->seats,
             'reservation_time' => $request->reservation_time,
+            'length' => $request->length,
             'comment' => $request->comment ?? '',
             'status' => $request->status,
             'is_take_away' => $request->is_take_away,
@@ -187,5 +198,242 @@ class OrderController extends Controller
         Log::add($request,'change-order-status','Changed order #'.$order->id.' status '.$request->status);
 
         return response()->json(['message' => 'Order status changed']);
+    }
+
+    // дано: заклад, дата від і до, кількість місць і зал
+    // знайти: Вільні дати
+    public function freeDates(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'area_id' => 'required|exists:areas,id',
+            'seats' => 'required|integer',
+            'from' => 'required|date_format:Y-m-d',
+            'to' => 'required|date_format:Y-m-d',
+        ]);
+
+        $period = CarbonPeriod::create($request->from, $request->to);
+        $result = [];
+        foreach ($period as $date) {
+            if($date->lt(Carbon::now()->setTime(0,0,0))) continue;
+            $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"));
+            if(empty($working_hours)) continue;
+            $time_from = $date->copy();
+            $time_from->setTime(0, 0, 0);
+            $time_to = $date->copy();
+            $time_to->setTime(23, 59, 59);
+            $orders = Order::where('place_id',$request->place_id)
+                ->where('area_id',$request->area_id)
+                ->whereBetween('reservation_time',[$time_from,$time_to])
+                ->where('is_take_away',0)
+                ->get();
+
+            if($this->getFreeTables($orders, $working_hours, $request->seats)){
+                array_push($result,$date);
+            }
+        }
+        return response()->json($result);
+    }
+
+    public function freeTime(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'area_id' => 'required|exists:areas,id',
+            'seats' => 'required|integer',
+            'date' => 'required|date_format:Y-m-d',
+        ]);
+        $request_date = Carbon::parse($request->date);
+        if($request_date->lt(Carbon::now()->setTime(0,0,0))) return response()->json([
+            'message' => 'Date must be today and later'
+        ], 400);
+
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"));
+        if(empty($working_hours)) return response()->json([
+            'message' => 'Non-working day'
+        ], 400);
+
+        $time_from = $request_date->copy();
+        $time_from->setTime(0, 0, 0);
+        $time_to = $request_date->copy();
+        $time_to->setTime(23, 59, 59);
+        $orders = Order::where('place_id',$request->place_id)
+            ->where('area_id',$request->area_id)
+            ->whereBetween('reservation_time',[$time_from,$time_to])
+            ->where('is_take_away',0)
+            ->get();
+
+        $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
+        $free_time = [];
+        foreach($working_hours as $working_hour){
+            $time = Carbon::parse($request->date.' '.$working_hour['from']);
+            $end = Carbon::parse($request->date.' '.$working_hour['to']);
+            for($time;$time->lt($end);$time->addMinutes(15)){
+                $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
+                foreach ($free_tables[$working_hour['tableplan_id']] as $table){
+                    if(!array_key_exists('ordered',$table['time'][$indexFrom])){
+                        if(!$time->lt(Carbon::now())){
+                            array_push($free_time,$time->copy());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return response()->json($free_time);
+    }
+
+    private function getFreeTables($orders,$working_hours,$seats,$boolean = true)
+    {
+        $free_tables = [];
+        foreach ($working_hours as $working_hour){
+            $tableplan = Tableplan::find($working_hour['tableplan_id']);
+            $tables = $tableplan->getTables();
+            foreach ($tables as $tab){
+                if($tab['seats'] < $seats) continue;
+                if(empty(array_filter($tab['time'],function($t) use ($seats) {
+                    return ($t['is_online'] && ($t['min_seats'] <= $seats && $t['group'] == 0));
+                }))) continue;
+                if(!array_key_exists($tableplan->id,$free_tables) || !array_key_exists($tab['number'],$free_tables[$tableplan->id])){
+                    $free_tables[$tableplan->id][$tab['number']] = $tab;
+                }
+            }
+        }
+        foreach ($orders as $order){
+            if(array_key_exists($order->tableplan_id,$free_tables)){
+                $reservTo = $order->reservation_time->copy();
+                $reservTo = $reservTo->addMinutes($order->length);
+                $indexFrom = intval($order->reservation_time->format('H'))*4 + floor(intval($order->reservation_time->format('i'))/15);
+                $indexTo = intval($reservTo->format('H'))*4 + floor(intval($reservTo->format('i'))/15);
+                foreach ($order->table_ids as $table_id){
+                    if(array_key_exists($table_id,$free_tables[$order->tableplan_id])) {
+                        for($i = $indexFrom;$i<=$indexTo;$i++){
+                            $free_tables[$order->tableplan_id][$table_id]['time'][$i]['ordered'] = true;
+                        }
+                    }
+                }
+            }
+        }
+        if($boolean){
+            $free_table = false;
+            foreach ($free_tables as $tables){
+                foreach ($tables as $table){
+                    $free_time = [];
+                    $index = 0;
+                    $prev_status = '';
+                    foreach ($table['time'] as $time){
+                        $status = array_key_exists('ordered',$time);
+                        if($prev_status && !$status){
+                            $index++;
+                        }
+                        if(!$status) {
+                            if(array_key_exists($index,$free_time)){
+                                $free_time[$index] += 15;
+                            }else{
+                                $free_time[$index] = 15;
+                            }
+                        }
+                        $prev_status = $status;
+                    }
+                    if(!empty($free_time) && max($free_time) >= 120){
+                        $free_table = $table;
+                        break 2;
+                    }
+                }
+            }
+            return $free_table;
+        }
+
+        return $free_tables;
+    }
+
+    public function makeOrder(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'area_id' => 'required|exists:areas,id',
+            'seats' => 'required|integer',
+            'reservation_time' => 'required|date_format:Y-m-d H:i:s',
+            'is_take_away' => 'required|boolean',
+        ]);
+
+        $reservation_time = Carbon::parse($request->reservation_time);
+        if($reservation_time->lt(Carbon::now())) return response()->json([
+            'message' => 'Time must be in the future'
+        ], 400);
+
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$reservation_time->format("Y-m-d"));
+        if(empty($working_hours)) return response()->json([
+            'message' => 'Non-working day'
+        ], 400);
+
+        $tableplan_id = null;
+        $table_ids = [];
+        $length = 0;
+        if($request->has('length') && intval($request->length) > 0){
+            $length = intval($request->length);
+        }
+
+        if(!$request->is_take_away){
+            $time_from = $reservation_time->copy();
+            $time_from->setTime(0, 0, 0);
+            $time_to = $reservation_time->copy();
+            $time_to->setTime(23, 59, 59);
+            $orders = Order::where('place_id',$request->place_id)
+                ->where('area_id',$request->area_id)
+                ->whereBetween('reservation_time',[$time_from,$time_to])
+                ->where('is_take_away',0)
+                ->get();
+
+            $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
+
+            $indexFrom = intval($reservation_time->format('H'))*4 + floor(intval($reservation_time->format('i'))/15);
+            foreach ($free_tables as $plan_id => $tables){
+                foreach ($tables as $table) {
+                    if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                        if(!$length) $length = intval($table['time'][$indexFrom]['booking_length']);
+                        if(!$length) $length = 120;
+                        $reserv_to = $reservation_time->copy()->addMinutes($length);
+                        $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
+                        for($i = $indexFrom;$i<=$indexTo;$i++){
+                            if(array_key_exists('ordered', $table['time'][$i])){
+                                continue 2;
+                            }
+                        }
+                        $table_ids = [$table['number']];
+                        $tableplan_id = $plan_id;
+                        break 2;
+                    }
+                }
+            }
+        }else{
+            $tableplan_id = '';
+            $table_ids = [1];
+            $length = 120;
+        }
+
+        if(empty($table_ids)){
+            return response()->json([
+                'message' => 'There are no free tables for the required time'
+            ], 400);
+        }
+
+        $order = Order::create([
+            'customer_id' => Auth::user()->id,
+            'place_id' => $request->place_id,
+            'tableplan_id' => $tableplan_id,
+            'area_id' => $request->area_id,
+            'table_ids' => $table_ids,
+            'seats' => $request->seats,
+            'reservation_time' => $request->reservation_time,
+            'length' => $length,
+            'comment' => $request->comment ?? '',
+            'status' => 'ordered',
+            'is_take_away' => $request->is_take_away,
+            'source' => 'online',
+            'marks' => ''
+        ]);
+
+        return response()->json($order);
     }
 }

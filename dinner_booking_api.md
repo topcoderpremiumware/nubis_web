@@ -442,6 +442,31 @@ curl -X POST https://dinner-book.vasilkoff.info/api/orders/1/status \
 -H 'Content-Type: application/json' \
 -d '{"status":"waiting"}'
 ```
+#### Get free dates
+> GET /api/free_dates
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/free_dates \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"area_id":1,"seats":2,"from":"2022-06-01","to":"2022-06-30"}'
+```
+#### Get free time
+> GET /api/free_time
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/free_time \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"area_id":1,"seats":2,"date":"2022-06-01"}'
+```
+#### Make order
+> POST /api/make_order
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/make_order \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"area_id":1,"seats":2,"reservation_time":"2022-05-18 12:00:00","comment":"","is_take_away":0}'
+```
 ---
 <a id="dishes"></a>
 ## Dishes

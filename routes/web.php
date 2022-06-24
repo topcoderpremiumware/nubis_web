@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Area;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -17,4 +19,7 @@ use Illuminate\Support\Facades\Route;
 //Route::get('/', function () {
 //    return view('app');
 //})->name('home');
+Route::get('/test', function () {
+
+});
 Route::view('/{path?}/{path2?}', 'app')->name('home');

@@ -39,6 +39,9 @@ Route::post('customers/verify',[CustomerController::class, 'checkEmail']);
 
 Route::get('places',[PlaceController::class, 'getAll']);
 
+Route::get('free_dates',[OrderController::class, 'freeDates']);
+Route::get('free_time',[OrderController::class, 'freeTime']);
+
 Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/logout',[CustomerController::class, 'logout']);
     Route::get('customers',function(Request $request){
@@ -48,6 +51,8 @@ Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/language',[CustomerController::class, 'language']);
     Route::post('customers/password',[CustomerController::class, 'password']);
     Route::get('customers/orders',[OrderController::class, 'getAllByCustomer']);
+
+    Route::post('make_order',[OrderController::class, 'makeOrder']);
 });
 Route::middleware('auth:user_api')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);

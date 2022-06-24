@@ -93,6 +93,7 @@
 - table_ids (ід столу на плані tableplans)
 - seats (кількість замовлених місць)
 - reservation_time (2022-01-01 17:00:00)
+- length
 - area_id
 - comment
 - status

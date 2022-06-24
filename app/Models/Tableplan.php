@@ -55,4 +55,11 @@ class Tableplan extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function getTables()
+    {
+        return array_filter($this->data,function($el){
+            return array_key_exists('number',$el);
+        });
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\Log;
+use App\Models\Tableplan;
 use App\Models\Timetable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -131,18 +132,26 @@ class TimetableController extends Controller
             'date' => 'date_format:Y-m-d',
         ]);
 
-        $date_arr = explode('-',$request->date);
+        $working_hours = self::get_working_by_area_and_date($area_id, $request->date);
+        return response()->json($working_hours);
+    }
+
+    public static function get_working_by_area_and_date($area_id, $date)
+    {
+        $area = Area::find($area_id);
+        $default_tableplan = $area->place->timetables()->first();
+        $date_arr = explode('-',$date);
         $without_year = $date_arr[1].'-'.$date_arr[2];
-        $week_day = date('w',strtotime($request->date));
+        $week_day = date('w',strtotime($date));
 
         $working = Timetable::where('area_id',$area_id)
-            ->where(function($q) use ($request,$without_year){
-                $q->whereDate('start_date','<=',$request->date)
+            ->where(function($q) use ($date,$without_year){
+                $q->whereDate('start_date','<=',$date)
                     ->orWhereNull('start_date')
                     ->orWhereDate('start_date','<=','0004-'.$without_year);
             })
-            ->where(function($q) use ($request,$without_year){
-                $q->whereDate('end_date','>=',$request->date)
+            ->where(function($q) use ($date,$without_year){
+                $q->whereDate('end_date','>=',$date)
                     ->orWhereNull('end_date')
                     ->orWhereDate('end_date','>=','0004-'.$without_year);
             })
@@ -150,13 +159,13 @@ class TimetableController extends Controller
             ->get();
 
         $non_working = Timetable::where('area_id',$area_id)
-            ->where(function($q) use ($request,$without_year){
-                $q->whereDate('start_date','<=',$request->date)
+            ->where(function($q) use ($date,$without_year){
+                $q->whereDate('start_date','<=',$date)
                     ->orWhereNull('start_date')
                     ->orWhereDate('start_date','<=','0004-'.$without_year);
             })
-            ->where(function($q) use ($request,$without_year){
-                $q->whereDate('end_date','>=',$request->date)
+            ->where(function($q) use ($date,$without_year){
+                $q->whereDate('end_date','>=',$date)
                     ->orWhereNull('end_date')
                     ->orWhereDate('end_date','>=','0004-'.$without_year);
             })
@@ -170,7 +179,7 @@ class TimetableController extends Controller
                 array_push($working_hours,[
                     'from' => $item->start_time,
                     'to' => $item->end_time,
-                    'tableplan_id' => $item->tableplan_id
+                    'tableplan_id' => $item->tableplan_id ?? $default_tableplan->id
                 ]);
             }
         }
@@ -181,7 +190,7 @@ class TimetableController extends Controller
                     $working_hours = [];
                     break;
                 }else{
-                    $working_hours = $this->divideTimePeriod($working_hours,$item);
+                    $working_hours = self::divideTimePeriod($working_hours,$item);
                 }
             }
         }
@@ -190,12 +199,12 @@ class TimetableController extends Controller
 //        Якщо накладається, і різні столи, то перший закінчується коли починається інший
 //        Якщо накладається, і столи однакові, то перший об'єднується з іншим
 //      Якщо буде повторів правил більше ніж 2, тоді можна прописати цикл mergeTimePeriod поки кількість $working_hours старого не буде = кількості $working_hours нового.
-//        $working_hours = $this->mergeTimePeriod($working_hours);
+//        $working_hours = self::mergeTimePeriod($working_hours);
 
-        return response()->json($working_hours);
+        return $working_hours;
     }
 
-    private function divideTimePeriod($working_hours,$item)
+    private static function divideTimePeriod($working_hours,$item)
     {
         $w_h = [];
         foreach ($working_hours as $index => $hours){
@@ -215,7 +224,7 @@ class TimetableController extends Controller
         return $w_h;
     }
 
-    private function mergeTimePeriod($working_hours)
+    private static function mergeTimePeriod($working_hours)
     {
         $w_h = [];
         foreach ($working_hours as $index1 => $item1){

@@ -15,6 +15,7 @@ class Order extends Model
     protected $casts = [
         'table_ids' => 'array',
         'marks' => 'array',
+        'reservation_time' => 'datetime'
     ];
 
     public function customer()

@@ -11295,6 +11295,12 @@ body {
   overflow: hidden;
 }
 
+.container {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
 .scroll_wrapper {
   position: relative;
   width: 100%;
@@ -11309,6 +11315,7 @@ body {
   width: 100%;
   height: auto;
   padding: 10px 20px 10px;
+  background: #EBECF1;
 }
 
 .scroll_wrapper::-webkit-scrollbar {
@@ -11349,4 +11356,18 @@ body {
 
 a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover {
   color: #ffffff;
+}
+
+.MuiOutlinedInput-input.MuiOutlinedInput-input {
+  /* padding: 5px; */
+}
+
+.ItemSelect.ItemSelect {
+  font-size: 12px;
+}
+
+.MuiFormControl-root {
+  background: #fff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
 }

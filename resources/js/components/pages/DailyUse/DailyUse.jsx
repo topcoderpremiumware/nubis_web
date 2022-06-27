@@ -1,5 +1,5 @@
 import  './DailyUse.scss';
-import DayViewTop from './DayView/DayViewTop';
+import DayViewTop from './DayView/toppanel/DayViewTop';
 import DayViewContent from './DayView/DayViewContent';
 import BottomPanel from './DayView/bottompanel/BottomPanel';
 import WeekViewPage from './WeekView/WeekViewPage';

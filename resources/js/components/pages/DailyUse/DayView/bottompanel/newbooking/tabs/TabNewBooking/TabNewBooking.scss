@@ -1,0 +1,43 @@
+.TabNewBooking__container{
+  display: flex;
+}
+.TabNewBooking__left{
+  width: 33%;
+  height: auto;
+  border-right: 2px solid #EBECF1;
+  padding: 5px;
+}
+
+.TabNewBooking__right{
+  width: 67%;
+  height: auto;
+  // border: 1px solid red;
+  padding: 5px;
+}
+.NewBookingDate__container{
+  // display: flex;
+  // align-items: center;
+}
+.NewBookingArea__container{
+  // display: flex;
+  // align-items: center;
+  justify-content: space-between;
+}
+
+.TabNewBooking__container .MuiOutlinedInput-input.MuiOutlinedInput-input{
+  padding: 5px;
+}
+.TabNewBooking__container .MuiOutlinedInput-root.MuiOutlinedInput-root{
+  padding: 0px!important;
+  padding-right:5px;
+  font-size: 12px;
+}
+.GuesInfo{
+  width: 50%;
+}
+.GuesInfo .container{
+  justify-content: space-between ;
+}
+.TabNewBooking__SelectCountry{
+  // width:50px;
+}

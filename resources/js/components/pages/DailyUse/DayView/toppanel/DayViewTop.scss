@@ -1,0 +1,56 @@
+.DayViewTop__container{
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.DayViewSelect__container{
+  margin-right: 20px;
+}
+.DayViewSelect{
+  width: 100px;
+}
+.DayViewSelect .MuiSelect-select{
+  padding: 5px;
+  font-size: 12px;
+}
+.DayViewTop__container .DayViewSelect .MuiMenuItem-root{
+  // font-size: 12px;
+}
+
+.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root{
+  // font-size: 12px!important;
+}
+
+.TimeTablePopper__container{
+  min-width: 83px;
+  height: 38px;
+  border: 6px;
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.TablePlan-logo,.TimePlan-logo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+.TimePlan-logo img{
+  width: 21px;
+}
+.TimePlan-logo::after{
+  content: "";
+  width: 1px;
+  height: 20px;
+  background: #EFEDED;
+  top: 0;
+  right: -13px;
+  position: absolute;
+}
+.TablePlan-logo img{
+  width: 21px;
+}

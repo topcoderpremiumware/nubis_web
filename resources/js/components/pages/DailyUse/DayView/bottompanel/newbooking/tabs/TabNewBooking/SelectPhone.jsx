@@ -7,7 +7,7 @@ export default function BasicTextFields() {
     <Box
       component="form"
       sx={{
-        '& > :not(style)': { m: 1, width: '25ch' },
+        '& > :not(style)': { m: 1, width: '100%' },
       }}
       noValidate
       autoComplete="off"

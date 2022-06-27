@@ -1,0 +1,8 @@
+<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="10.5" cy="10.5" r="7.25" stroke="#ACACAC" stroke-width="1.5"/>
+<circle cx="10.5" cy="10.5" r="7.15" transform="rotate(-180 10.5 10.5)" stroke="#ACACAC" stroke-width="1.7"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M6.5 0.75C6.5 0.335786 6.83579 0 7.25 0H13.75C14.1642 0 14.5 0.335786 14.5 0.75C14.5 1.16421 14.1642 1.5 13.75 1.5H7.25C6.83579 1.5 6.5 1.16421 6.5 0.75Z" fill="#ACACAC"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M14.5 20.25C14.5 20.6642 14.1642 21 13.75 21L7.25 21C6.83579 21 6.5 20.6642 6.5 20.25C6.5 19.8358 6.83579 19.5 7.25 19.5L13.75 19.5C14.1642 19.5 14.5 19.8358 14.5 20.25Z" fill="#ACACAC"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M20.25 6.5C20.6642 6.5 21 6.83579 21 7.25L21 13.75C21 14.1642 20.6642 14.5 20.25 14.5C19.8358 14.5 19.5 14.1642 19.5 13.75L19.5 7.25C19.5 6.83579 19.8358 6.5 20.25 6.5Z" fill="#ACACAC"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0.75 14.5C0.335786 14.5 4.40331e-08 14.1642 9.83506e-08 13.75L9.50723e-07 7.25C1.00504e-06 6.83579 0.335788 6.5 0.750001 6.5C1.16421 6.5 1.5 6.83579 1.5 7.25L1.5 13.75C1.5 14.1642 1.16421 14.5 0.75 14.5Z" fill="#ACACAC"/>
+</svg>

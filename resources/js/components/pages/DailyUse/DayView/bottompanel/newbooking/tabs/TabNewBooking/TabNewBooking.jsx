@@ -27,16 +27,19 @@ export default function TabNewBooking() {
     <div className='TabNewBooking__container'>
       <div className='TabNewBooking__left'>
         <div className='NewBookingDate__container container'>
-          <span>Date:</span>
+          <span className='NewBooking__ItemName'>Date:</span>
           <SelectDate/>
         </div>
       <div className='NewBookingArea__container container'>
-        <span>Area:</span>
+        <span className='NewBooking__ItemName'>Area:</span>
         <SelectArea/>
       </div>
       <div className='TabNewBookingDuraion__container container'>
-        <span>PaxDuration</span>
-        <SelectPax/>
+        <span className='NewBooking__ItemName'>PaxDuration</span>
+        <div className='NewBooking__InputItem'>
+          <SelectPax />
+        </div>
+        
         <SelectDuration/>
         <div className='time-spent'></div>
       </div>
@@ -45,20 +48,20 @@ export default function TabNewBooking() {
       <div className='TabNewBooking__right'>
         <div className='GuesInfo'>
           <div className='GuesInfo-phone container'> 
-            <span>Phone:</span>
+            <span className='NewBooking__ItemName'>Phone:</span>
             <SelectCountry/>
             <SelectPhone/>
           </div>
           <div className='GuesInfo-first-name container'>
-            <span>FirstName:</span>
+            <span className='NewBooking__ItemName'>FirstName:</span>
             <SelectFirstName/>
           </div>
           <div className='GuesInfo-last-name container'>
-            <span>LastName:</span>
+            <span className='NewBooking__ItemName'>LastName:</span>
             <SelectLastName/>
           </div>
           <div className='GuesInfo-company container'>
-            <span>Company:</span>
+            <span className='NewBooking__ItemName'>Company:</span>
             <SelectCompany/>
           </div>
 

@@ -11315,6 +11315,7 @@ body {
   width: 100%;
   height: auto;
   padding: 10px 20px 10px;
+  background: #EBECF1;
 }
 
 .scroll_wrapper::-webkit-scrollbar {
@@ -11363,4 +11364,10 @@ a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover {
 
 .ItemSelect.ItemSelect {
   font-size: 12px;
+}
+
+.MuiFormControl-root {
+  background: #fff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
 }

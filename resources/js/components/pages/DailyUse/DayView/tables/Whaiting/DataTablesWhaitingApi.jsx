@@ -16,22 +16,22 @@ class TablesWhaiting extends Component {
             scrollX: 400,
                data: this.props.data,
                columns: [
-                   {title: "From"}, 
-                   {title: "To"}, 
-                   {title: "Pax"}, 
-                   {title: "First name"}, 
-                   {title: "Last name"}, 
-                   {title: "Company"}, 
-                   {title: "Contact person"}, 
-                   {title: "Restaurant note"}, 
-                   {title: "Guest status"}, 
-                   {title: "Order date"}, 
-                   {title: "Initials"}, 
-                   {title: "Guest note"}, 
-                   {title: "Booking ID"},                 
-                    
+                   {title: "From"},
+                   {title: "To"},
+                   {title: "Pax"},
+                   {title: "First name"},
+                   {title: "Last name"},
+                   {title: "Company"},
+                   {title: "Contact person"},
+                   {title: "Restaurant note"},
+                   {title: "Guest status"},
+                   {title: "Order date"},
+                   {title: "Initials"},
+                   {title: "Guest note"},
+                   {title: "Booking ID"},
+
                ]
-           } 
+           }
         )
 
     }
@@ -42,7 +42,7 @@ class TablesWhaiting extends Component {
     render(){
       return(
         <div>
-          <table class="display" width="100%" ref={el => this.el = el}>
+          <table className="display" width="100%" ref={el => this.el = el}>
 
           </table>
         </div>

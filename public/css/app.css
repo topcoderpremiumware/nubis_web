@@ -11293,6 +11293,8 @@ body {
 .content {
   display: flex;
   overflow: hidden;
+  position: relative;
+  top: 10px;
 }
 
 .container {
@@ -11366,7 +11368,7 @@ a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover {
   font-size: 12px;
 }
 
-.MuiFormControl-root {
+.MuiOutlinedInput-root {
   background: #fff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
   border-radius: 6px;

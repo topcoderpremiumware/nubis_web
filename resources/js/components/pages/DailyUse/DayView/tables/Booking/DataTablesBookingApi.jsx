@@ -17,24 +17,24 @@ class TablesBooking extends Component {
             scrollX: 400,
                data: this.props.data,
                columns: [
-                   {title: "Flag"}, 
-                   {title: "From"}, 
-                   {title: "To"}, 
-                   {title: "First Name"}, 
-                   {title: "Last Name"}, 
-                   {title: "Company"}, 
-                   {title: "Pax"}, 
-                   {title: "Drag"}, 
-                   {title: "Booking Length"}, 
-                   {title: "Visit"}, 
-                   {title: "Restaurant"}, 
-                   {title: "Guest Note"}, 
-                   {title: "Guest History"}, 
-                   {title: "Discount"}, 
-                   {title: "Guest Status"}, 
-                    
+                   {title: "Flag"},
+                   {title: "From"},
+                   {title: "To"},
+                   {title: "First Name"},
+                   {title: "Last Name"},
+                   {title: "Company"},
+                   {title: "Pax"},
+                   {title: "Drag"},
+                   {title: "Booking Length"},
+                   {title: "Visit"},
+                   {title: "Restaurant"},
+                   {title: "Guest Note"},
+                   {title: "Guest History"},
+                   {title: "Discount"},
+                   {title: "Guest Status"},
+
                ]
-           } 
+           }
         )
 
     }
@@ -45,7 +45,7 @@ class TablesBooking extends Component {
     render(){
       return(
         <div>
-          <table class="display" width="100%" ref={el => this.el = el}>
+          <table className="display" width="100%" ref={el => this.el = el}>
 
           </table>
         </div>

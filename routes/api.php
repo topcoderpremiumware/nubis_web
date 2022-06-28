@@ -38,10 +38,13 @@ Route::post('customers/login',[CustomerController::class, 'login']);
 Route::post('customers/verify',[CustomerController::class, 'checkEmail']);
 
 Route::get('places',[PlaceController::class, 'getAll']);
+Route::get('places/{id}',[PlaceController::class, 'getId']);
 
 Route::get('free_dates',[OrderController::class, 'freeDates']);
 Route::get('free_time',[OrderController::class, 'freeTime']);
 Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace']);
+
+Route::get('files_purpose',[FileController::class, 'getByPurpose']);
 
 Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/logout',[CustomerController::class, 'logout']);
@@ -71,7 +74,6 @@ Route::middleware('auth:user_api')->group(function(){
 
     Route::post('places',[PlaceController::class, 'create']);
     Route::get('places/mine',[PlaceController::class, 'getAllMine']);
-    Route::get('places/{id}',[PlaceController::class, 'getId']);
     Route::post('places/{id}',[PlaceController::class, 'save']);
     Route::get('places/{place_id}/menus',[MenuController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace']);
@@ -139,5 +141,4 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('files/{id}',[FileController::class, 'getId']);
     Route::post('files/{id}',[FileController::class, 'save']);
     Route::get('files',[FileController::class, 'getAllByPlace']);
-    Route::get('files_perpose',[FileController::class, 'getByPerpose']);
 });

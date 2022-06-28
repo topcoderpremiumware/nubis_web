@@ -130,7 +130,6 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/mine \
 ```cmd
 curl -X GET https://dinner-book.vasilkoff.info/api/places/1 \
 -H "X-Requested-With: XMLHttpRequest" \
--H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
 #### Save place
@@ -739,7 +738,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/files \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -F "place_id=1" \
--F "perpose=logo" \
+-F "purpose=logo" \
 -F "file=@logo.png"
 ```
 #### Get one
@@ -757,7 +756,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/files/1 \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -F "place_id=1" \
--F "perpose=logo" \
+-F "purpose=logo" \
 -F "file=@logo.png"
 ```
 #### Get all
@@ -769,12 +768,11 @@ curl -X GET https://dinner-book.vasilkoff.info/api/files \
 -H 'Content-Type: application/json' \
 -d '{"place_id":1}'
 ```
-#### Get file by perpose
-> GET /api/files_perpose
+#### Get file by purpose
+> GET /api/files_purpose
 ```cmd
-curl -X GET https://dinner-book.vasilkoff.info/api/files_perpose \
+curl -X GET https://dinner-book.vasilkoff.info/api/files_purpose \
 -H "X-Requested-With: XMLHttpRequest" \
--H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"place_id":1,"perpose":"logo"}'
+-d '{"place_id":1,"purpose":"logo"}'
 ```

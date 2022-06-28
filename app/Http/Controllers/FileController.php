@@ -18,7 +18,7 @@ class FileController extends Controller
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'perpose' => 'required',
+            'purpose' => 'required',
             'file' => 'required'
         ]);
 
@@ -29,7 +29,7 @@ class FileController extends Controller
 
         $file = File::create([
             'place_id' => $request->place_id,
-            'perpose' => $request->perpose,
+            'purpose' => $request->purpose,
             'filename' => $filename
         ]);
 
@@ -46,7 +46,7 @@ class FileController extends Controller
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'perpose' => 'required',
+            'purpose' => 'required',
             'file' => 'required'
         ]);
 
@@ -66,7 +66,7 @@ class FileController extends Controller
 
         $res = $file->update([
             'place_id' => $request->place_id,
-            'perpose' => $request->perpose,
+            'purpose' => $request->purpose,
             'filename' => $filename
         ]);
 
@@ -111,19 +111,21 @@ class FileController extends Controller
         return response()->json($files);
     }
 
-    public function getByPerpose(Request $request)
+    public function getByPurpose(Request $request)
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'perpose' => 'required'
+            'purpose' => 'required'
         ]);
 
         $file = File::where('place_id',$request->place_id)
-            ->where('perpose',$request->perpose)
+            ->where('purpose',$request->purpose)
             ->first();
 
         if($file === null){
             return response()->json(['message' => 'File not exist'], 400);
+        }else{
+            $file->url = Storage::disk('public')->url($file->filename);
         }
 
         return response()->json($file);

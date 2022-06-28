@@ -95,11 +95,11 @@ class PlaceController extends Controller
 
     public function getId($id, Request $request)
     {
-        if(!Auth::user()->places->contains($id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
-        }
+//        if(!Auth::user()->places->contains($id)){
+//            return response()->json([
+//                'message' => 'It\'s not your place'
+//            ], 400);
+//        }
 
         $place = Place::find($request->id);
 

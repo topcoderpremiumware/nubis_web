@@ -6,6 +6,9 @@ import SelectArea from './SelectArea';
 import SelectPax from './SelectPax';
 import SelectStartTime from './SelectStartTime';
 import SelectTableNote from './SelectTableNote';
+import SelectRestarauntNote from './SelectRestarauntNote';
+import SelectGuestNote from './SelectGuestNote';
+
 import SelectCountry from './SelectCountry';
 import SelectPhone from './SelectPhone';
 import SelectFirstName from './SelectFirstName';
@@ -24,6 +27,8 @@ import ButtonSave from './ButtonSave';
 import CkeckBoxSms from './CkeckBoxSms';
 import CkeckBoxEmail from './CkeckBoxEmail';
 
+import GuestTables from './tables/GuestTables';
+
 
 
 
@@ -40,27 +45,40 @@ return (
 <div className='TabNewBooking__container'>
   <div className='TabNewBooking__TopContainer'>
     <div className='TabNewBooking__left'>
-      <div className='NewBookingDate__container container TabNewBookingItemcontainer'>
-        <span className='NewBooking__ItemName'>Date:</span>
-        <SelectDate />
-      </div>
-      <div className='NewBookingArea__container container TabNewBookingItemcontainer'>
-        <span className='NewBooking__ItemName'>Area:</span>
-        <SelectArea />
-      </div>
-      <div className='TabNewBookingDuraion__container container TabNewBookingItemcontainer'>
-        <span className='NewBooking__ItemName'>Pax / Duration :</span>
-        <div className='NewBooking__InputPax'>
-          <SelectPax />
+      <div className='TabNewBooking__BookingInfoTop'>
+        <div className='NewBookingDate__container container TabNewBookingItemcontainer'>
+          <span className='NewBooking__ItemName'>Date:</span>
+          <SelectDate />
         </div>
-        <div className='NewBooking__InputStartTime'>
-          <SelectStartTime />
+        <div className='NewBookingArea__container container TabNewBookingItemcontainer'>
+          <span className='NewBooking__ItemName'>Area:</span>
+          <SelectArea />
         </div>
-        <div className='time-spent'></div>
+        <div className='TabNewBookingDuraion__container container TabNewBookingItemcontainer'>
+          <span className='NewBooking__ItemName'>Pax / Duration :</span>
+          <div className='NewBooking__InputPax'>
+            <SelectPax />
+          </div>
+          <div className='NewBooking__InputStartTime'>
+            <SelectStartTime />
+          </div>
+          <div className='time-spent'></div>
+        </div>
+        <div className='TabNewBookingTableNote__container container TabNewBookingItemcontainer'>
+          <span className='NewBooking__ItemName'>Table note:</span>
+          <SelectTableNote />
+        </div>
+        
       </div>
-      <div className='TabNewBookingTableNote__container container TabNewBookingItemcontainer'>
-        <span className='NewBooking__ItemName'>Table note:</span>
-        <SelectTableNote />
+      <div className='TabNewBooking__BookingInfoBottom'>
+        <div className='TabNewBookingRestaurantNote__container container TabNewBookingItemcontainer'>
+          <span className='NewBooking__ItemName'>Restaurant Note:</span>
+          <SelectRestarauntNote />
+        </div>
+        <div className='TabNewBookingGuesttNote__container container TabNewBookingItemcontainer'>
+          <span className='NewBooking__ItemName'>Guest Note:</span>
+          <SelectGuestNote />
+        </div>
       </div>
     </div>
     <div className='TabNewBooking__right'>
@@ -98,7 +116,7 @@ return (
             <SelectCity />
           </div>
         </div>
-        <div className='GuestInfoActive '>
+        <div className='GuestInfoActive'>
           <div className='GuestInfoActive__ButtonContainer'>
             <ButtonWalkIn />
             <ButtonReset />
@@ -113,7 +131,12 @@ return (
           </div>
         </div>
       </div>
-
+      <div className='GuestInfoBottom__container'>
+        <div className='GuestInfoActiveTable'>
+            <GuestTables />
+          </div>
+      </div>
+      
     </div>
   </div>
   <div className='NewBooking__BottomContainer'>

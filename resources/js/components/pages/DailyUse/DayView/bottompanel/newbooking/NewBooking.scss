@@ -7,6 +7,24 @@
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
   border-radius: 6px;
 }
+.NewBookingPopUp__container.NewBookingPopUp__container .Booking__Boxbuttons .MuiBox-root{
+  height: auto;
+}
+.NewBookingPopUp__container.NewBookingPopUp__container .NewBooking__BoxItem .MuiBox-root{
+  width: 100%;
+  height: 100%;
+}
+// .NewBookingPopUp__container.NewBookingPopUp__container .NewBooking__BoxItem .css-19kzrtu.css-19kzrtu{
+//   width: 100%;
+//   height: 100%;
+// }
+.NewBooking__BoxItem{
+  height: 94%;
+}
+.NewBookingPopUp__container.NewBookingPopUp__container .MuiTypography-root{
+  width: 100%;
+  height: 100%;
+}
 
 .NewBookingPopUpContent {
   width: 100%;
@@ -71,8 +89,8 @@
 }
 
 .NewBooking__ItemName {
-  margin-right: 20px;
-  font-size: 14px;
+  margin-right: 10px;
+  font-size: 12px;
   min-width: 100px;
 }
 
@@ -93,3 +111,4 @@
 .mob{
   color: red;
 }
+

@@ -67,7 +67,7 @@ export default function NewBookingPopUpContent() {
               <TabPanel className='NewBooking__BoxItem' value={value} index={0}>
                 <TabNewBooking/>
               </TabPanel>
-              <TabPanel value={value} index={1}>
+              <TabPanel className='NewBooking__BoxItem' value={value} index={1}>
                 2
               </TabPanel>
               <TabPanel value={value} index={2}>

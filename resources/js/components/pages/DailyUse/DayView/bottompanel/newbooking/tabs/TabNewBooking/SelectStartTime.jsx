@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-export default function DisabledOptions() {
+export default function SelectStartTime() {
   return (
     <div className='NewBooking__InputItem'>
       <Autocomplete

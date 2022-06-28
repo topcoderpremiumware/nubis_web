@@ -3,17 +3,16 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-export default function CountrySelect() {
+export default function SelectCountry() {
   return (
-    <div className='TabNewBooking__SelectCountry'>
     <Autocomplete
       id="country-select-demo"
-      sx={{ width: 120 }}
+      sx={{ width: 110 }}
       options={countries}
       autoHighlight
       getOptionLabel={(option) => option.phone}
       renderOption={(props, option) => (
-        <Box component="li"  sx={{ '& > img': { mr: 0.5, flexShrink: 1, fontSize:10, ml:0 } }}  {...props} >
+        <Box component="li"  sx={{ '& > img': { mr: 0.5, flexShrink: 0,  ml:0 } }}  {...props} >
           <img
             loading="lazy"
             width="15"
@@ -21,7 +20,9 @@ export default function CountrySelect() {
             srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
             alt=""
           />
-          ({option.label})({option.code}) +{option.phone}
+          {/* ({option.label}) */}
+          ({option.code})
+           +{option.phone}
         </Box>
       )}
       renderInput={(params) => (
@@ -35,7 +36,6 @@ export default function CountrySelect() {
         />
       )}
     />
-    </div>
   );
 }
 

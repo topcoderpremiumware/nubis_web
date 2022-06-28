@@ -1,68 +1,135 @@
-.TabNewBooking__container{
+.TabNewBooking__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+.TabNewBooking__TopContainer {
+  width: 100%;
+  height: 100%;
   display: flex;
 }
-.TabNewBooking__left{
+.TabNewBooking__left {
   width: 33%;
   height: auto;
   border-right: 2px solid #EBECF1;
   padding: 5px;
 }
-
-.TabNewBooking__right{
+.TabNewBooking__right {
   width: 67%;
   height: auto;
-  // border: 1px solid red;
   padding: 5px;
+  display: flex;
 }
-.NewBookingDate__container{
+.NewBookingDate__container {
   // display: flex;
   // align-items: center;
 }
-.NewBookingArea__container{
+.NewBookingArea__container {
   // display: flex;
   // align-items: center;
   justify-content: space-between;
 }
-
-.TabNewBooking__container .MuiOutlinedInput-input.MuiOutlinedInput-input{
+.TabNewBooking__container .MuiOutlinedInput-input.MuiOutlinedInput-input {
   padding: 5px;
+  display: flex;
+  align-items: center;
 }
-.TabNewBooking__container .MuiOutlinedInput-root.MuiOutlinedInput-root{
-  padding: 0px!important;
-  padding-right:5px;
+.TabNewBooking__container .MuiOutlinedInput-root.MuiOutlinedInput-root {
+  padding: 0px !important;
+  padding-right: 5px;
   font-size: 12px;
 }
-.GuestInfo{
-  width: 50%;
+.GuestInfo {
+  width: 40%;
+  flex: 1;
+  padding: 5px;
+
 }
-.GuestInfo .container{
-  justify-content: space-between ;
+.GuestInfo .container {
+  // justify-content: space-between;
 }
-.TabNewBookingDataPicker__container{
+.TabNewBookingItemcontainer {
+  // display: flex;
+  // justify-content: space-between;
+}
+.TabNewBookingItemcontainer .MuiFormControl-root{
+  // max-width: 200px;
+  // justify-content: flex-end;
+}
+.TabNewBookingDataPicker__container {
   width: 100%;
-} 
-.NewBooking__Input{
+}
+.NewBooking__Input {
   width: 100%;
 }
-.TabNewBookingDataPicker__container .react-datepicker__input-container input{
+.TabNewBookingDataPicker__container .react-datepicker__input-container input {
   width: 100%;
   text-align: center;
-} 
-.TabNewBookingDataPicker__container .react-datepicker-ignore-onclickoutside{
+}
+
+.TabNewBookingDataPicker__container .react-datepicker-ignore-onclickoutside {
   // width: 100%;
   // text-align: center;
-} 
-
-.TabNewBooking__SelectCountry{
+}
+.TabNewBooking__SelectCountry {
   // width:50px;
 }
-.TabNewBooking__SelectArea{
+.TabNewBooking__Phone-container{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.TabNewBooking__PhoneNumber__container{
+  margin: 0 5px;
+  // max-width: 50px;
+}
+.TabNewBooking__SelectArea {
   width: 100%;
 }
-.TabNewBooking__SelectArea .SelectAreaInput{
+
+.TabNewBooking__SelectArea .SelectAreaInput {
   width: 100%;
 }
-.TabNewBookingDuraion__container .time-spent{
+.TabNewBookingDuraion__container .time-spent {
   width: 100px;
   height: 20px;
+}
+// GuestInfoActive
+.GuestInfoTop__container{
+  width: 100%;
+  height: 50%;
+  // border: 1px solid red;
+  display: flex;
+} 
+
+.GuestInfoActive{
+  width: 50%;
+  flex:1;
+  padding: 5px;
+}
+.GuestInfoActive__ButtonContainer{
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+//BottomPanel
+
+.NewBooking__BottomContainer {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.NewBooking__Bottom-button {
+  margin: 0 5px;
+}
+
+.NewBooking__Bottom-button button {
+  min-width: 150px;
+  // width: 150px;
+  font-size: 12px;
 }

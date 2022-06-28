@@ -11,7 +11,7 @@ export default function SelectTableNote() {
         maxWidth: '100%',
       }}
     >
-      <TextField fullWidth  id="fullWidth"/>
+      <TextField fullWidth  id="fullWidth" />
     </Box>
   );
 }

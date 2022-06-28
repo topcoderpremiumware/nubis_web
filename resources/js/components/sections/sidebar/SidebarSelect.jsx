@@ -14,11 +14,12 @@ export default function SidebarSelect() {
 
   return (
     <div className='SidebarSelect__container'>
-      <FormControl sx={{ minWidth: 120 }} className='SidebarSelect'>
+      <FormControl sx={{ minWidth: 120 }} fullWidth className='SidebarSelect' size="small">
         <Select
           value={age}
           onChange={handleChange}
           displayEmpty
+          fullWidth
           inputProps={{ 'aria-label': 'Without label' }}
         >
           <MenuItem value="">

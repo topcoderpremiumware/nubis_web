@@ -110,7 +110,7 @@ class OrderController extends Controller
 
     public function getId($id, Request $request)
     {
-        $order = Order::find($id);
+        $order = Order::where('id',$id)->with('customer')->first();
 
         if(!Auth::user()->places->contains($order->place_id)){
             return response()->json([
@@ -138,6 +138,7 @@ class OrderController extends Controller
 
         $orders = Order::where('place_id',$request->place_id)
             ->where('area_id',$request->area_id)
+            ->with('customer')
             ->whereBetween('reservation_time', [$request->reservation_from, $request->reservation_to])
             ->get();
 

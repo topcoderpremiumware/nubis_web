@@ -16,21 +16,21 @@ class TablesDeleted extends Component {
             scrollX: 400,
                data: this.props.data,
                columns: [
-                   {title: "From"}, 
-                   {title: "To"}, 
-                   {title: "Pax"}, 
-                   {title: "First name"}, 
-                   {title: "Last name"}, 
-                   {title: "Company"}, 
-                   {title: "Phone number"}, 
-                   {title: "Email"}, 
-                   {title: "Deleted date"}, 
-                   {title: "Initials"}, 
-                   {title: "Area"}, 
-                   {title: "Booking ID"},                 
-                    
+                   {title: "From"},
+                   {title: "To"},
+                   {title: "Pax"},
+                   {title: "First name"},
+                   {title: "Last name"},
+                   {title: "Company"},
+                   {title: "Phone number"},
+                   {title: "Email"},
+                   {title: "Deleted date"},
+                   {title: "Initials"},
+                   {title: "Area"},
+                   {title: "Booking ID"},
+
                ]
-           } 
+           }
         )
 
     }
@@ -41,7 +41,7 @@ class TablesDeleted extends Component {
     render(){
       return(
         <div>
-          <table class="display" width="100%" ref={el => this.el = el}>
+          <table className="display" width="100%" ref={el => this.el = el}>
 
           </table>
         </div>

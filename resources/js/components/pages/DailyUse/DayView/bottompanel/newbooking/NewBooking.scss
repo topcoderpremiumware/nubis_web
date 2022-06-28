@@ -31,11 +31,13 @@
   position: absolute;
   top: 10px;
   right: 10px;
+  cursor: pointer;
   width: 20px;
   height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 100;
 }
 
 .MuiTabs-scroller {
@@ -75,9 +77,19 @@
 }
 
 .NewBooking__InputItem {
-  margin-right: 20px;
+  margin-right: 10px;
+  // width: 100%;
 }
 
 .css-1gyr8kh.css-1gyr8kh {
   max-width: 300px;
+}
+.MuiInputLabel-root.MuiInputLabel-root{
+  font-size: 12px;
+  // top:50%;
+  // left:50%;
+  // transform: translate(-50%, -50%);
+}
+.mob{
+  color: red;
 }

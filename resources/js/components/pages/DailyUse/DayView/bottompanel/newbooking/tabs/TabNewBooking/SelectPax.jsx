@@ -11,8 +11,8 @@ export default function SelectPax() {
       setPoint(event.target.value);
     };
   return (
-    <div>
-         <FormControl sx={{ minWidth: 120 }} className=''>
+    <div className='NewBooking__InputItem'>
+         <FormControl sx={{ minWidth: 100 }} className=''>
           <Select
             value={point}
             onChange={handleChange}

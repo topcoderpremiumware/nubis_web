@@ -11,8 +11,8 @@ export default function SelectDuration() {
       setPoint(event.target.value);
     };
   return (
-    <div>
-         <FormControl sx={{ minWidth: 120 }} className=''>
+    <div className='TabNewBooking__SelectArea'>
+         <FormControl sx={{ minWidth: 120 }} className='SelectAreaInput'>
           <Select
             value={point}
             onChange={handleChange}

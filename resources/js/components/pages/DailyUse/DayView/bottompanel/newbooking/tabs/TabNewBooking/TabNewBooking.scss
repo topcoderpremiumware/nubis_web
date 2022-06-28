@@ -32,12 +32,37 @@
   padding-right:5px;
   font-size: 12px;
 }
-.GuesInfo{
+.GuestInfo{
   width: 50%;
 }
-.GuesInfo .container{
+.GuestInfo .container{
   justify-content: space-between ;
 }
+.TabNewBookingDataPicker__container{
+  width: 100%;
+} 
+.NewBooking__Input{
+  width: 100%;
+}
+.TabNewBookingDataPicker__container .react-datepicker__input-container input{
+  width: 100%;
+  text-align: center;
+} 
+.TabNewBookingDataPicker__container .react-datepicker-ignore-onclickoutside{
+  // width: 100%;
+  // text-align: center;
+} 
+
 .TabNewBooking__SelectCountry{
   // width:50px;
+}
+.TabNewBooking__SelectArea{
+  width: 100%;
+}
+.TabNewBooking__SelectArea .SelectAreaInput{
+  width: 100%;
+}
+.TabNewBookingDuraion__container .time-spent{
+  width: 100px;
+  height: 20px;
 }

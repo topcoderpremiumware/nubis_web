@@ -8,20 +8,20 @@ export default function CountrySelect() {
     <div className='TabNewBooking__SelectCountry'>
     <Autocomplete
       id="country-select-demo"
-      sx={{ width: 150 }}
+      sx={{ width: 120 }}
       options={countries}
       autoHighlight
       getOptionLabel={(option) => option.phone}
       renderOption={(props, option) => (
-        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+        <Box component="li"  sx={{ '& > img': { mr: 0.5, flexShrink: 1, fontSize:10, ml:0 } }}  {...props} >
           <img
             loading="lazy"
-            width="20"
+            width="15"
             src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
             srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
             alt=""
           />
-          {option.label} ({option.code}) +{option.phone}
+          ({option.label})({option.code}) +{option.phone}
         </Box>
       )}
       renderInput={(params) => (
@@ -39,9 +39,23 @@ export default function CountrySelect() {
   );
 }
 
+// inputProps={{ style: menuStyle }}
+const menuStyle = {
+  // borderRadius: '3px',
+  // boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
+  // background: 'rgba(255, 255, 255, 0.9)',
+  // padding: '2px 0',
+  fontSize: '5px',
+  color: 'red',
+  // position: 'fixed',
+  // overflow: 'auto',
+  // maxHeight: '50%', // TODO: don't cheat, let it flow to the bottom
+  // "zIndex": 100,
+};
+
 // From https://bitbucket.org/atlassian/atlaskit-mk-2/raw/4ad0e56649c3e6c973e226b7efaeb28cb240ccb0/packages/core/select/src/data/countries.js
 const countries = [
-  { code: 'AD', label: 'Andorra', phone: '376' },
+  { code: 'AD', label: 'Andorra', phone: '376', className:'mob' },
   {
     code: 'AE',
     label: 'United Arab Emirates',

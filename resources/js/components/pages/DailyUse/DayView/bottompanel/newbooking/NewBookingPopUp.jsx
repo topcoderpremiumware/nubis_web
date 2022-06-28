@@ -6,6 +6,7 @@ import Modal from '@mui/material/Modal';
 import NewBookingContent from './NewBookingPopUpContent';
 import './NewBooking.scss';
 
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const style = {
@@ -36,7 +37,7 @@ export default function NewBookingPopUp() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style} className='NewBookingPopUp__container'>
-          <div className='close-icon' onClick={handleClose}>x</div>
+          <div className='close-icon' onClick={handleClose}><CloseIcon/></div>
           <NewBookingContent/>
           {/* <Typography id="modal-modal-title" variant="h6" component="h2" onClick={handleClose}>
             Text in a modal

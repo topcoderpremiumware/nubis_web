@@ -101,17 +101,19 @@ export default function TablePlanSetup() {
 
   const deletePlan = () => {
     if(selectedPlan.hasOwnProperty('id')){
-      axios.delete(process.env.APP_URL+'/api/tableplans/'+selectedPlan.id,{
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }).then(response => {
-        getTableplans()
-        eventBus.dispatch("notification", {type: 'success', message: 'Table plan deleted successfully'});
-      }).catch(error => {
-        eventBus.dispatch("notification", {type: 'error', message: error.message});
-        console.log('Error', error)
-      })
+      if(window.confirm(t('Are you sure you want to delete this plan?'))){
+        axios.delete(process.env.APP_URL+'/api/tableplans/'+selectedPlan.id,{
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        }).then(response => {
+          getTableplans()
+          eventBus.dispatch("notification", {type: 'success', message: 'Table plan deleted successfully'});
+        }).catch(error => {
+          eventBus.dispatch("notification", {type: 'error', message: error.message});
+          console.log('Error', error)
+        })
+      }
     }
   }
 

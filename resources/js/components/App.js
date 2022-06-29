@@ -12,6 +12,7 @@ import Register from "./pages/Register/Register";
 import SmsTemplate from "./pages/SmsTemplate/SmsTemplate";
 import EmailTemplate from "./pages/EmailTemplate/EmailTemplate";
 import TablePlanSetup from "./pages/TablePlanSetup/TablePlanSetup";
+import OpeningTimes from "./pages/OpeningTimes/OpeningTimes";
 
 import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInformation';
 import Picture from './pages/GeneralSettings/Picture/Picture';
@@ -34,6 +35,7 @@ function App() {
                   <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
                   <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
                   <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
+                  <Route path='/OpeningTimes' exact element={<OpeningTimes/>}/>
 
                   <Route path='/BasicInformation' exact element={<BasicInformation/>} />
                   <Route path='/Picture' exact element={<Picture/>} />

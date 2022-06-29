@@ -113,6 +113,27 @@ class TimetableController extends Controller
         }
     }
 
+    public function delete($id, Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $timetable = Timetable::find($id);
+
+        if(!Auth::user()->places->contains($timetable->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        Log::add($request,'delete-tableplan','Deleted tableplan #'.$timetable->id);
+
+        $timetable->delete();
+
+        return response()->json(['message' => 'Timetable is deleted']);
+    }
+
     public function getId($id, Request $request)
     {
         $timetable = Timetable::find($id);
@@ -124,6 +145,19 @@ class TimetableController extends Controller
         }
 
         return response()->json($timetable);
+    }
+
+    public function getAllByPlace($place_id, Request $request)
+    {
+        if(!Auth::user()->places->contains($place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $timetables = Timetable::where('place_id',$place_id)->get();
+
+        return response()->json($timetables);
     }
 
     public function getWorkingByAreaAndDate($area_id, Request $request)

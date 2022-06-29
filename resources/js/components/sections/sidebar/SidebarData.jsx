@@ -32,10 +32,10 @@ export const SidebarData = [
         title: 'Opening Times',
         path: '/OpeningTimes',
       },
-      {
-        title: 'Special Opening Times',
-        path: '/SpecialOpeningTimes',
-      },
+      // {
+      //   title: 'Special Opening Times',
+      //   path: '/SpecialOpeningTimes',
+      // },
       {
         title: 'Table Plan Setup',
         path: '/TablePlanSetup',

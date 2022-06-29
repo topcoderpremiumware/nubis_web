@@ -164,6 +164,14 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/tableplans \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
+#### Get all timetables of place
+> GET /api/places/{id}/timetables
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/timetables \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
 ---
 <a id="settings"></a>
 ## Settings
@@ -306,6 +314,14 @@ curl -X POST https://dinner-book.vasilkoff.info/api/timetables/1 \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
 -d '{"place_id":1,"tableplan_id":1,"area_id":1,"start_date":"2022-01-01","end_date":"2032-01-01","start_time":"09:00:00","end_time":"18:00:00","length":420,"max":50,"min":1,"week_days":[1,2,3,4,5],"status":"working"}'
+```
+#### Delete
+> DELETE /api/timetables/{id}
+```cmd
+curl -X DELETE https://dinner-book.vasilkoff.info/api/timetables/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
 ```
 ---
 <a id="customers"></a>

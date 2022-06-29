@@ -68,7 +68,7 @@ export default function TablePropertiesPopup(props) {
     }}))
     if(e.target.name === 'note') setTable(prev => ({...prev, data: {
         ...prev.data,
-        note: parseInt(e.target.value) || ''
+        note: e.target.value
       }}))
     setFocusOn(e.target.name)
   }

@@ -11293,21 +11293,13 @@ body {
 .content {
   display: flex;
   overflow: hidden;
-  position: relative;
-  top: 10px;
-}
-
-.container {
-  display: flex;
-  align-items: center;
-  padding: 5px;
 }
 
 .scroll_wrapper {
   position: relative;
   width: 100%;
   /* overflow: hidden; */
-  height: calc(100vh - 54px);
+  height: calc(100vh - 66px);
   overflow-y: scroll;
   flex: 2;
 }
@@ -11316,6 +11308,7 @@ body {
   /* flex: 2; */
   width: 100%;
   height: auto;
+  min-height: 100%;
   padding: 10px 20px 10px;
   background: #EBECF1;
 }

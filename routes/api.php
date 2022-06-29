@@ -77,6 +77,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('places/{id}',[PlaceController::class, 'save']);
     Route::get('places/{place_id}/menus',[MenuController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace']);
+    Route::get('places/{place_id}/timetables',[TimetableController::class, 'getAllByPlace']);
 
     Route::post('roles',[RoleController::class, 'create']);
     Route::get('roles',[RoleController::class, 'getAll']);
@@ -94,6 +95,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('timetables',[TimetableController::class, 'create']);
     Route::get('timetables/{id}',[TimetableController::class, 'getId']);
     Route::post('timetables/{id}',[TimetableController::class, 'save']);
+    Route::delete('timetables/{id}',[TimetableController::class, 'delete']);
 
     Route::post('orders',[OrderController::class, 'create']);
     Route::get('orders/{id}',[OrderController::class, 'getId']);

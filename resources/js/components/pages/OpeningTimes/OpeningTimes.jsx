@@ -73,11 +73,37 @@ export default function EmailTemplate() {
   }
 
   const updateTimetable = (timetable) => {
-    getTimetables()
+    console.log('timetable',timetable)
+    let url = `${process.env.APP_URL}/api/timetables`
+    if(timetable.hasOwnProperty('id')){
+      url = `${process.env.APP_URL}/api/timetables/${timetable.id}`
+    }
+
+    axios.post(url, timetable,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      getTimetables()
+      setEditPopupOpened(false)
+      eventBus.dispatch("notification", {type: 'success', message: 'Timetable saved successfully'});
+    }).catch(error => {
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          eventBus.dispatch("notification", {type: 'error', message: value});
+        }
+      } else if (error.response.status === 401) {
+        eventBus.dispatch("notification", {type: 'error', message: 'Authorization error'});
+      } else {
+        eventBus.dispatch("notification", {type: 'error', message: error.message});
+        console.log('Error', error.message)
+      }
+    })
   }
 
   const openEditPopup = (time) => {
     if (!time) time = {
+      place_id: localStorage.getItem('place_id'),
       start_date: Moment().format('YYYY-MM-DD'),
       end_date: Moment().format('YYYY-MM-DD'),
       start_time: '',
@@ -130,6 +156,14 @@ export default function EmailTemplate() {
     }
   }
 
+  const dateFromFormat = (date) => {
+    if(date.startsWith('0004')){
+      return date.replace('0004',Moment().format('YYYY'))
+    }else{
+      return date
+    }
+  }
+
   return (
     <div className='pages__container'>
       <h2>{t('Opening Times')}</h2>
@@ -139,32 +173,32 @@ export default function EmailTemplate() {
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell size="small">{t('Area')}</TableCell>
+                  <TableCell size="small">{t('Tableplan')}</TableCell>
+                  <TableCell size="small">{t('Status')}</TableCell>
                   <TableCell size="small" style={{minWidth: '110px'}}>{t('Start date')}</TableCell>
                   <TableCell size="small" style={{minWidth: '110px'}}>{t('End date')}</TableCell>
                   <TableCell size="small" style={{minWidth: '100px'}}>{t('From time')}</TableCell>
                   <TableCell size="small" style={{minWidth: '100px'}}>{t('To time')}</TableCell>
                   <TableCell size="small" style={{minWidth: '110px'}}>{t('Week days')}</TableCell>
-                  <TableCell size="small">{t('Area')}</TableCell>
-                  <TableCell size="small">{t('Tableplan')}</TableCell>
                   <TableCell size="small">{t('Length')}</TableCell>
                   <TableCell size="small" style={{minWidth: '100px'}}>{t('Max seats')}</TableCell>
-                  <TableCell size="small">{t('Status')}</TableCell>
                   <TableCell size="small" style={{minWidth: '100px'}}>{t('Actions')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {timetables.map((time, key) => {
                   return <StyledTableRow key={key}>
-                    <TableCell size="small">{time.start_date}</TableCell>
-                    <TableCell size="small">{time.end_date}</TableCell>
+                    <TableCell size="small">{getAreaName(time.area_id)}</TableCell>
+                    <TableCell size="small">{getTableplanName(time.tableplan_id)}</TableCell>
+                    <TableCell size="small">{time.status}</TableCell>
+                    <TableCell size="small">{dateFromFormat(time.start_date)}</TableCell>
+                    <TableCell size="small">{dateFromFormat(time.end_date)}</TableCell>
                     <TableCell size="small">{time.start_time}</TableCell>
                     <TableCell size="small">{time.end_time}</TableCell>
                     <TableCell size="small">{time.week_days.join()}</TableCell>
-                    <TableCell size="small">{getAreaName(time.area_id)}</TableCell>
-                    <TableCell size="small">{getTableplanName(time.tableplan_id)}</TableCell>
                     <TableCell size="small">{time.length}</TableCell>
                     <TableCell size="small">{time.max}</TableCell>
-                    <TableCell size="small">{time.status}</TableCell>
                     <TableCell size="small">
                       <IconButton onClick={e => {
                         openEditPopup(time)
@@ -186,7 +220,7 @@ export default function EmailTemplate() {
       </div>
       <Stack spacing={2} sx={{mt: 2}} direction="row">
         <Button variant="contained" type="button" onClick={e => {
-          openEditPopup()
+          openEditPopup(false)
         }}>{t('New')}</Button>
       </Stack>
       <TimetableEditPopup

@@ -124,7 +124,12 @@ export default function TablePropertiesPopup(props) {
 
   return (<>
     {table.hasOwnProperty('data') &&
-    <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="md" scroll="paper">
+    <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="md" scroll="paper"
+            PaperProps={{
+              style: {
+                backgroundColor: "#F2F3F9",
+              },
+            }}>
       <DialogTitle sx={{ m: 0, p: 2 }}>
         {table.data.type.startsWith('land') ? t('Element properties') : t('Table properties')}
         <IconButton onClick={handleClose} sx={{

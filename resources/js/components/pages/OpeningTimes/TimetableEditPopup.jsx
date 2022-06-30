@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import  './OpeningTimes.scss';
 import { useTranslation } from 'react-i18next';
-import eventBus from "../../../eventBus";
 import CloseIcon from '@mui/icons-material/Close';
 import Moment from 'moment';
+import 'moment/locale/nl'
 import {
   Button,
   Checkbox,
@@ -13,7 +13,7 @@ import {
   DialogTitle, FormControl,
   FormControlLabel,
   Grid,
-  IconButton, InputLabel, MenuItem, Select,
+  IconButton, InputLabel, MenuItem, Select, TextField,
 } from "@mui/material";
 import DatePicker from "react-datepicker";
 
@@ -34,8 +34,14 @@ export default function TimetableEditPopup(props) {
   },[props])
 
   const onChange = (e) => {
-    console.log('change',e)
-    if(e.target.name === 'yearly') setYearly(e.target.checked)
+    if(e.target.name === 'yearly') {
+      setYearly(e.target.checked)
+      let year = e.target.checked ? '0004' : 'YYYY'
+      setTimetable(prev => ({...prev,
+        start_date: Moment(prev.start_date).format(year+'-MM-DD'),
+        end_date: Moment(prev.end_date).format(year+'-MM-DD')
+      }))
+    }
     if(e.target.name === 'start_date') setTimetable(prev => ({...prev, start_date: e.target.value}))
     if(e.target.name === 'end_date') setTimetable(prev => ({...prev, end_date: e.target.value}))
     if(e.target.name === 'start_time') setTimetable(prev => ({...prev, start_time: e.target.value}))
@@ -63,10 +69,10 @@ export default function TimetableEditPopup(props) {
 
   const timeOptions = () => {
     let time = []
-    for(var i=0;i<=24*4;i++){
-      let tt = Moment(0);
-      tt = Moment(tt.valueOf() + i*15*60000)
-      time.push(tt.format('hh:mm:00'))
+    for(let i=0;i<=24*4;i++){
+      let tt = new Date(0);
+      tt = new Date(tt.getTime() + i*15*60000)
+      time.push((tt.getUTCHours()<10?'0':'')+tt.getUTCHours()+':'+(tt.getMinutes()<10?'0':'')+tt.getMinutes()+':00')
     }
     return time
   }
@@ -76,12 +82,33 @@ export default function TimetableEditPopup(props) {
   }
 
   const dateFormat = (date) => {
-    return Moment(date).format('YYYY-MM-DD')
+    let year = yearly ? '0004' : 'YYYY'
+    return Moment(date).format(year+'-MM-DD')
+  }
+
+  const dateFromFormat = (date) => {
+    if(date.startsWith('0004')){
+      return new Date(date.replace('0004',Moment().format('YYYY')))
+    }else{
+      return new Date(date)
+    }
+  }
+
+  const weekDays = () => {
+    Moment.locale(localStorage.getItem('i18nextLng'))
+    return Moment.weekdays()
   }
 
   return (<>
     {timetable.hasOwnProperty('start_date') &&
-    <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="md" scroll="paper">
+    <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="md"
+            scroll="paper"
+            PaperProps={{
+              style: {
+                backgroundColor: "#F2F3F9",
+              },
+            }}
+            >
       <DialogTitle sx={{ m: 0, p: 2 }}>
         <>&nbsp;</>
         <IconButton onClick={handleClose} sx={{
@@ -93,22 +120,124 @@ export default function TimetableEditPopup(props) {
       </DialogTitle>
       <DialogContent dividers>
         <Grid container spacing={2} sx={{pb: 2}}>
-          <Grid item sm={4}>
-            <FormControlLabel
-                control={<DatePicker
-                  selected={new Date(timetable.start_date)}
-                  onSelect={e => {onChange({target: {name:'start_date',value:dateFormat(e)}})}}
-                />}
-                label={t('Start date')}
-                labelPlacement="top"
-            />
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_area_id">{t('Area')}</InputLabel>
+              <Select label={t('Area')} value={timetable.area_id || ''} required
+                      labelId="label_area_id" id="area_id" name="area_id"
+                      onChange={onChange}>
+                {areas.map((el,key) => {
+                  return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
           </Grid>
-          <Grid item sm={4}>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_tableplan_id">{t('Tableplan')}</InputLabel>
+              <Select label={t('Tableplan')} value={timetable.tableplan_id || ''}
+                      labelId="label_tableplan_id" id="tableplan_id" name="tableplan_id"
+                      onChange={onChange}>
+                {tableplans.map((el,key) => {
+                  return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_status">{t('Status')}</InputLabel>
+              <Select label={t('Status')} value={timetable.status}
+                      labelId="label_status" id="status" name="status"
+                      onChange={onChange}>
+                {['working','non-working'].map((el,key) => {
+                  return <MenuItem key={key} value={el}>{el}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel htmlFor="start_date" shrink>{t('Start date')}</InputLabel>
+              <DatePicker
+                dateFormat='yyyy-MM-dd'
+                selected={dateFromFormat(timetable.start_date)} id="start_date"
+                onSelect={e => {onChange({target: {name:'start_date',value:dateFormat(e)}})}}
+                onChange={e => {onChange({target: {name:'start_date',value:dateFormat(e)}})}}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel htmlFor="end_date" shrink>{t('End date')}</InputLabel>
+              <DatePicker
+                dateFormat='yyyy-MM-dd'
+                selected={dateFromFormat(timetable.end_date)} id="end_date"
+                onSelect={e => {onChange({target: {name:'end_date',value:dateFormat(e)}})}}
+                onChange={e => {onChange({target: {name:'end_date',value:dateFormat(e)}})}}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
             <FormControlLabel
                 control={<Checkbox name="yearly" checked={yearly} onChange={onChange}/>}
                 label={t('This date every year')}
                 labelPlacement="end"
             />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_start_time">{t('From time')}</InputLabel>
+              <Select label={t('From time')} value={timetable.start_time} required
+                      labelId="label_start_time" id="start_time" name="start_time"
+                      onChange={onChange}>
+                {timeOptions().map((el,key) => {
+                  return <MenuItem key={key} value={el}>{el}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_end_time">{t('To time')}</InputLabel>
+              <Select label={t('To time')} value={timetable.end_time} required
+                      labelId="label_end_time" id="end_time" name="end_time"
+                      onChange={onChange}>
+                {timeOptions().map((el,key) => {
+                  return <MenuItem key={key} value={el}>{el}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_week_days">{t('Week days')}</InputLabel>
+              <Select label={t('Week days')} value={timetable.week_days} multiple
+                      labelId="label_week_days" id="week_days" name="week_days"
+                      onChange={onChange}>
+                {weekDays().map((el,key) => {
+                  return <MenuItem key={key} value={key}>{el}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_length">{t('Length')}</InputLabel>
+              <Select label={t('Length')} value={timetable.length}
+                      labelId="label_length" id="length" name="length"
+                      onChange={onChange}>
+                {bookingOptions().map((el,key) => {
+                  return <MenuItem key={key} value={el}>{el}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField label={t('Max seats')} size="small" fullWidth
+                       type="number" id="max" name="max" required
+                       onChange={onChange} value={timetable.max}
+                       />
           </Grid>
         </Grid>
       </DialogContent>

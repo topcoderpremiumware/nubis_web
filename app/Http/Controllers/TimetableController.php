@@ -19,7 +19,7 @@ class TimetableController extends Controller
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'tableplan_id' => 'exists:tableplans,id',
+//            'tableplan_id' => 'exists:tableplans,id',
             'area_id' => 'required|exists:areas,id',
             'start_date' => 'date_format:Y-m-d',
             'end_date' => 'date_format:Y-m-d',
@@ -43,7 +43,7 @@ class TimetableController extends Controller
             'tableplan_id' => $request->has('tableplan_id') ? $request->tableplan_id : null,
             'area_id' => $request->area_id,
             'start_date' => $request->has('start_date') ? $request->start_date : null,
-            'end_date' => $request->has('end_date') ? $request->start_date : null,
+            'end_date' => $request->has('end_date') ? $request->end_date : null,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'length' => $request->length,
@@ -66,7 +66,7 @@ class TimetableController extends Controller
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'tableplan_id' => 'exists:tableplans,id',
+//            'tableplan_id' => 'exists:tableplans,id',
             'area_id' => 'required|exists:areas,id',
             'start_date' => 'date_format:Y-m-d',
             'end_date' => 'date_format:Y-m-d',
@@ -93,7 +93,7 @@ class TimetableController extends Controller
             'tableplan_id' => $request->has('tableplan_id') ? $request->tableplan_id : null,
             'area_id' => $request->area_id,
             'start_date' => $request->has('start_date') ? $request->start_date : null,
-            'end_date' => $request->has('end_date') ? $request->start_date : null,
+            'end_date' => $request->has('end_date') ? $request->end_date : null,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'length' => $request->length,

@@ -70,4 +70,9 @@ class Place extends Model
     {
         return $this->hasMany(File::class);
     }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 }

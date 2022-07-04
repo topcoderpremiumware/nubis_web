@@ -25,4 +25,9 @@ class Area extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function custom_booking_lengths()
+    {
+        return $this->belongsToMany(CustomBookingLength::class);
+    }
 }

@@ -53,7 +53,7 @@ class TimetableController extends Controller
             'status' => $request->status
         ]);
 
-        Log::add($request,'create-timetable','Created timetable');
+        Log::add($request,'create-timetable','Created timetable #'.$timetable->id);
 
         return response()->json($timetable);
     }
@@ -103,7 +103,7 @@ class TimetableController extends Controller
             'status' => $request->status
         ]);
 
-        Log::add($request,'change-timetable','Changed timetable');
+        Log::add($request,'change-timetable','Changed timetable #'.$id);
 
         if($res){
             $timetable = Timetable::find($id);

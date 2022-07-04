@@ -16,12 +16,12 @@ export default function Topbar() {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      localStorage.removeItem('token')
-      localStorage.removeItem('place_id')
-      window.location.href="/"
     }).catch(e => {
       console.log('logout error: ',e)
     })
+    localStorage.removeItem('token')
+    localStorage.removeItem('place_id')
+    window.location.href="/"
   }
   return (
     <>

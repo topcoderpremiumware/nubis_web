@@ -408,7 +408,7 @@ class OrderController extends Controller
                 }
             }
         }else{
-            $tableplan_id = '';
+            $tableplan_id = 1;
             $table_ids = [1];
             $length = 120;
         }

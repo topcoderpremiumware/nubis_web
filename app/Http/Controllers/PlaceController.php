@@ -18,6 +18,7 @@ class PlaceController extends Controller
 
         $request->validate([
             'name' => 'required',
+            'country_id' => 'required|exists:countries,id'
         ]);
 
         $place = Place::create([
@@ -28,6 +29,7 @@ class PlaceController extends Controller
             'phone' => $request->phone ?? '',
             'email' => $request->email ?? '',
             'home_page' => $request->home_page ?? '',
+            'country_id' => $request->country_id
         ]);
 
         Auth::user()->places()->attach($place->id);
@@ -51,6 +53,7 @@ class PlaceController extends Controller
 
         $request->validate([
             'name' => 'required',
+            'country_id' => 'required|exists:countries,id'
         ]);
 
         if(!Auth::user()->places->contains($id)){
@@ -67,9 +70,10 @@ class PlaceController extends Controller
             'phone' => $request->phone ?? '',
             'email' => $request->email ?? '',
             'home_page' => $request->home_page ?? '',
+            'country_id' => $request->country_id
         ]);
 
-        Log::add($request,'change-place','Changed place');
+        Log::add($request,'change-place','Changed place #'.$id);
 
         if($res){
             $place = Place::find($id);

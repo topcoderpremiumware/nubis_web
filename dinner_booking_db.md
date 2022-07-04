@@ -19,6 +19,7 @@
 
 ### Places
 - id
+- country_id
 - name
 - address
 - city
@@ -174,3 +175,30 @@
 - action
 - comment
 - ip
+
+### Custom booking length
+- id
+- name (string)
+- length (int)
+- active (bool)
+- start_date (date)
+- end_date (date)
+- max (int)
+- min (int)
+- areas (array)
+- priority (int)
+- labels (json) index lang code
+  - name
+  - description
+- month_days (array)
+- week_days (array)
+- spec_dates (array)
+    - date
+    - active
+- time_intervals (array)
+    - from
+    - to
+
+### Countries
+- id
+- name

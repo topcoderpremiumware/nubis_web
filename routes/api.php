@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthApiController;
+use App\Http\Controllers\CountryController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CustomBookingLengthController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\FeedbackController;
@@ -43,8 +45,10 @@ Route::get('places/{id}',[PlaceController::class, 'getId']);
 Route::get('free_dates',[OrderController::class, 'freeDates']);
 Route::get('free_time',[OrderController::class, 'freeTime']);
 Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace']);
+Route::get('places/{place_id}/lengths',[CustomBookingLengthController::class, 'getAllByParams']);
 
 Route::get('files_purpose',[FileController::class, 'getByPurpose']);
+Route::get('countries',[CountryController::class, 'getAll']);
 
 Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/logout',[CustomerController::class, 'logout']);
@@ -143,4 +147,9 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('files/{id}',[FileController::class, 'getId']);
     Route::post('files/{id}',[FileController::class, 'save']);
     Route::get('files',[FileController::class, 'getAllByPlace']);
+
+    Route::post('custom_booking_lengths',[CustomBookingLengthController::class, 'create']);
+    Route::get('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'getId']);
+    Route::post('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'save']);
+    Route::delete('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'delete']);
 });

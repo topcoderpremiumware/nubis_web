@@ -161,6 +161,7 @@ export default function TimetableEditPopup(props) {
               <InputLabel htmlFor="start_date" shrink>{t('Start date')}</InputLabel>
               <DatePicker
                 dateFormat='yyyy-MM-dd'
+                className="w-100"
                 selected={dateFromFormat(timetable.start_date)} id="start_date"
                 onSelect={e => {onChange({target: {name:'start_date',value:dateFormat(e)}})}}
                 onChange={e => {onChange({target: {name:'start_date',value:dateFormat(e)}})}}

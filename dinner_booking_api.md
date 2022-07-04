@@ -17,6 +17,7 @@
 - [Coupons](#coupons)
 - [Feedbacks](#feedbacks)
 - [Files](#files)
+- [Countries](#countries)
 
 ---
 <a id="auth"></a>
@@ -108,7 +109,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/places \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"name":"McDonalds","address":"Shevchenka 200","city":"Cherkasy","zip_code":"18000","phone":"","email":"","home_page":""}'
+-d '{"name":"McDonalds","address":"Shevchenka 200","city":"Cherkasy","zip_code":"18000","phone":"","email":"","home_page":"","country_id":1}'
 ```
 #### Get all
 > GET /api/places
@@ -139,7 +140,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/places/1 \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"name":"McDonalds","address":"Shevchenka 200","city":"Cherkasy","zip_code":"18000","phone":"","email":"","home_page":""}'
+-d '{"name":"McDonalds","address":"Shevchenka 200","city":"Cherkasy","zip_code":"18000","phone":"","email":"","home_page":"","country_id":1}'
 ```
 #### Get all areas of place
 > GET /api/places/{id}/areas
@@ -791,4 +792,14 @@ curl -X GET https://dinner-book.vasilkoff.info/api/files_purpose \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json' \
 -d '{"place_id":1,"purpose":"logo"}'
+```
+---
+<a id="countries"></a>
+## Countries
+#### Get all
+> GET /api/countries
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/countries \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json'
 ```

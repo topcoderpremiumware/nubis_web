@@ -157,11 +157,10 @@ export default function TimetableEditPopup(props) {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <FormControl size="small" fullWidth>
+            <FormControl size="small" fullWidth className="datePickerFullWidth">
               <InputLabel htmlFor="start_date" shrink>{t('Start date')}</InputLabel>
               <DatePicker
                 dateFormat='yyyy-MM-dd'
-                className="w-100"
                 selected={dateFromFormat(timetable.start_date)} id="start_date"
                 onSelect={e => {onChange({target: {name:'start_date',value:dateFormat(e)}})}}
                 onChange={e => {onChange({target: {name:'start_date',value:dateFormat(e)}})}}
@@ -169,7 +168,7 @@ export default function TimetableEditPopup(props) {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <FormControl size="small" fullWidth>
+            <FormControl size="small" fullWidth className="datePickerFullWidth">
               <InputLabel htmlFor="end_date" shrink>{t('End date')}</InputLabel>
               <DatePicker
                 dateFormat='yyyy-MM-dd'

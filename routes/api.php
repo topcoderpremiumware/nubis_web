@@ -40,7 +40,6 @@ Route::post('customers/login',[CustomerController::class, 'login']);
 Route::post('customers/verify',[CustomerController::class, 'checkEmail']);
 
 Route::get('places',[PlaceController::class, 'getAll']);
-Route::get('places/{id}',[PlaceController::class, 'getId']);
 
 Route::get('free_dates',[OrderController::class, 'freeDates']);
 Route::get('free_time',[OrderController::class, 'freeTime']);
@@ -153,3 +152,5 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'save']);
     Route::delete('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'delete']);
 });
+
+Route::get('places/{id}',[PlaceController::class, 'getId']);

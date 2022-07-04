@@ -11,6 +11,8 @@ class Place extends Model
 
     protected $guarded = [];
 
+    protected $with = ['country'];
+
     public function users()
     {
         return $this->belongsToMany(User::class);

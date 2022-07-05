@@ -13,6 +13,9 @@
     padding:5px;
     border:none;
 }
+.DayViewTop__container .react-datepicker__input-container input{
+    width: auto;
+}
 .react-datepicker__input-container input:focus-visible{
     // border:1px solid #216BA5;
     // box-shadow: none;

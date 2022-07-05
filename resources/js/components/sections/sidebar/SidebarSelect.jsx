@@ -1,36 +1,45 @@
-import * as React from 'react';
-import InputLabel from '@mui/material/InputLabel';
+import React, {useEffect, useState} from "react";
+import { useTranslation } from 'react-i18next';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 export default function SidebarSelect() {
-  const [age, setAge] = React.useState('');
+  const {t} = useTranslation();
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
+  const [listrest, setListRest] = useState([])
+
+  useEffect(async () => {
+    await getListRest()
+  }, [])
+
+  const getListRest = async () => {
+    await axios.get(`${process.env.APP_URL}/api/places/mine`, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setListRest(response.data)
+    }).catch(error => {
+    })
+  }
+
+  const onChange = (e) => {
+    if(e.target.name === 'listrest') localStorage.setItem('place_id',e.target.value)
   };
 
   return (
     <div className='SidebarSelect__container'>
-      <FormControl sx={{ minWidth: 120 }} fullWidth className='SidebarSelect' size="small">
-        <Select
-          value={age}
-          onChange={handleChange}
-          displayEmpty
-          fullWidth
-          inputProps={{ 'aria-label': 'Without label' }}
-        >
-          <MenuItem value="">
-            <em>---</em>
-          </MenuItem>
-          <MenuItem value={10}>Restaurant 1</MenuItem>
-          <MenuItem value={20}>Restaurant 2</MenuItem>
-          <MenuItem value={30}>Restaurant 3</MenuItem>
+      <FormControl sx={{ minWidth: 120 }} className='SidebarSelect' fullWidth>
+          <Select  value={localStorage.getItem('place_id')}
+                     id="listrest" name="listrest" fullWidth
+                      onChange={onChange}>
+                {listrest.map((el,key) => {
+                  return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                })}
         </Select>
-        {/* <FormHelperText>Without label</FormHelperText> */}
       </FormControl>
     </div>
   );
 }
+

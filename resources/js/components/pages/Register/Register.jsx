@@ -23,9 +23,14 @@ export default function Register() {
   const [phone, setPhone] = useState('')
   const [placeEmail, setPlaceEmail] = useState('')
   const [homePage, setHomePage] = useState('')
+  const [countries,setCountries] = useState([])
+  const [countryId,setCountryId] = useState('')
 
   useEffect(() => {
-
+    axios.get(`${process.env.APP_URL}/api/countries`).then(response => {
+      setCountries(response.data)
+    }).catch(error => {
+    })
   },[])
 
   const onSubmit = (e) => {
@@ -47,7 +52,8 @@ export default function Register() {
           zip_code: zipCode,
           phone: phone,
           email: placeEmail,
-          home_page: homePage
+          home_page: homePage,
+          country_id: countryId
         },{
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -119,6 +125,9 @@ export default function Register() {
         break;
       case 'home_page':
         setHomePage(e.target.value)
+        break;
+      case 'country_id':
+        setCountryId(e.target.value)
         break;
     }
   }
@@ -203,6 +212,18 @@ export default function Register() {
                   <TextField label={t('City')} size="small" fullWidth
                              type="text" id="city" name="city"
                              onChange={onChange}/>
+                </div>
+                <div className="mb-3">
+                  <FormControl size="small" fullWidth>
+                    <InputLabel id="label_country_id">{t('Country')}</InputLabel>
+                    <Select label={t('Country')} value={place}
+                            labelId="label_country_id" id="country_id" name="country_id"
+                            onChange={onChange}>
+                      {countries.map((c,key) => {
+                       return <MenuItem key={key} value={c.id}>{c.name}</MenuItem>
+                      })}
+                    </Select>
+                  </FormControl>
                 </div>
                 <div className="mb-3">
                   <TextField label={t('Zip code')} size="small" fullWidth

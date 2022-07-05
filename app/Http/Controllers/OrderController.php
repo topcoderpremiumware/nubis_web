@@ -408,7 +408,7 @@ class OrderController extends Controller
                 }
             }
         }else{
-            $tableplan_id = '';
+            $tableplan_id = $working_hours[0]['tableplan_id'];
             $table_ids = [1];
             $length = 120;
         }

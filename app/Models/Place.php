@@ -11,6 +11,8 @@ class Place extends Model
 
     protected $guarded = [];
 
+    protected $with = ['country'];
+
     public function users()
     {
         return $this->belongsToMany(User::class);
@@ -69,5 +71,10 @@ class Place extends Model
     public function files()
     {
         return $this->hasMany(File::class);
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }

@@ -26,7 +26,7 @@ class CustomBookingLengthController extends Controller
             'end_date' => 'date_format:Y-m-d',
             'max' => 'required|integer',
             'min' => 'required|integer',
-            'areas' => 'required|array',
+            'area_ids' => 'required|array',
             'priority' => 'required|integer',
             'labels' => 'required',
             'month_days' => 'array',
@@ -60,7 +60,7 @@ class CustomBookingLengthController extends Controller
 
         Log::add($request,'create-custom_booking_length','Created custom booking length #'.$custom_booking_length->id);
 
-        $custom_booking_length->areas()->sync($request->areas);
+        $custom_booking_length->areas()->sync($request->area_ids);
 
         return response()->json($custom_booking_length);
     }
@@ -80,7 +80,7 @@ class CustomBookingLengthController extends Controller
             'end_date' => 'date_format:Y-m-d',
             'max' => 'required|integer',
             'min' => 'required|integer',
-            'areas' => 'required|array',
+            'area_ids' => 'required|array',
             'priority' => 'required|integer',
             'labels' => 'required',
             'month_days' => 'array',
@@ -119,7 +119,7 @@ class CustomBookingLengthController extends Controller
 
         if($res){
             $custom_booking_length = CustomBookingLength::find($id);
-            $custom_booking_length->areas()->sync($request->areas);
+            $custom_booking_length->areas()->sync($request->area_ids);
             return response()->json($custom_booking_length);
         }else{
             return response()->json(['message' => 'Custom booking length not updated'],400);
@@ -160,16 +160,30 @@ class CustomBookingLengthController extends Controller
         return response()->json($custom_booking_length);
     }
 
-    public function getAllByParams($place_id,Request $request)
+    public function getAllByPlace($place_id, Request $request)
+    {
+        if(!Auth::user()->places->contains($place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $custom_lengths = CustomBookingLength::where('place_id',$place_id)->get();
+
+        return response()->json($custom_lengths);
+    }
+
+    public function getAllByParams(Request $request)
     {
         $request->validate([
+            'place_id' => 'required|exists:places,id',
             'area_id' => 'required|exists:areas,id',
             'reservation_date' => 'required|date_format:Y-m-d',
             'language' => 'required',
             'seats' => 'required|integer'
         ]);
 
-        $custom_lengths = CustomBookingLength::where('place_id',$place_id)
+        $custom_lengths = CustomBookingLength::where('place_id',$request->place_id)
             ->wherePivot('area_id',$request->area_id)
             ->where('active', 1)
             ->where('start_date', '<=', $request->reservation_date)
@@ -206,12 +220,16 @@ class CustomBookingLengthController extends Controller
                     array_push($times,$time->copy());
                 }
             }
-            array_push($lengths_data,[
-                'name' => $custom_length->labels[$request->language]['name'],
-                'description' => $custom_length->labels[$request->language]['description'],
-                'length' => $custom_length->length,
-                'time' => $times
-            ]);
+            $times = array_values(array_unique($times));
+
+            if(count($times) > 0){
+                array_push($lengths_data,[
+                    'name' => $custom_length->labels[$request->language]['name'],
+                    'description' => $custom_length->labels[$request->language]['description'],
+                    'length' => $custom_length->length,
+                    'time' => $times
+                ]);
+            }
         }
 
         return response()->json($lengths_data);

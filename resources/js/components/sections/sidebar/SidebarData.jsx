@@ -94,15 +94,9 @@ export const SidebarData = [
     iconOpened: <KeyboardArrowUp />,
     subNav: [
       {
-        title: 'Subnav',
-        path: '',
-        cName: 'sub-nav'
+        title: 'Custom Booking Length',
+        path: '/CustomBookingLength'
       },
-      {
-        title: 'Subnav',
-        path: '',
-        cName: 'sub-nav'
-      }
     ]
   },
   {

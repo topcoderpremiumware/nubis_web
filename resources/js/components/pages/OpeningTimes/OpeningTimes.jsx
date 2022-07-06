@@ -18,7 +18,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import TimetableEditPopup from "./TimetableEditPopup"
 import Moment from "moment";
 
-export default function EmailTemplate() {
+export default function OpeningTimes() {
   const {t} = useTranslation();
 
   const [timetables, setTimetables] = useState([])

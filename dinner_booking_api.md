@@ -173,6 +173,14 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/timetables \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
+#### Get all custom booking lengths of place
+> GET /api/places/{id}/custom_booking_lengths
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/custom_booking_lengths \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
 ---
 <a id="settings"></a>
 ## Settings
@@ -801,5 +809,48 @@ curl -X GET https://dinner-book.vasilkoff.info/api/files_purpose \
 ```cmd
 curl -X GET https://dinner-book.vasilkoff.info/api/countries \
 -H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json'
+```
+---
+<a id="custom_booking_lengths"></a>
+## Custom booking lengths
+#### Create
+> POST /api/custom_booking_lengths
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/custom_booking_lengths \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-d '{"place_id":1,"name":"Some tea","length":120,"active":1,"start_date":"2022-01-01","end_date":"2030-01-01","max":10,"min":0,"areas":[1],"priority":1,"labels":{"en":{"name":"Some tea","description":"Drink a tea and leave"}},"month_days":[1,5,7,9],"week_days":[0,1,2,3,4,5,6],"spec_dates":[],"time_intervals":{"from":"18:00","to":"22:00"}
+```
+#### Get one
+> GET /api/custom_booking_lengths/{id}
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/custom_booking_lengths/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
+#### Save
+> POST /api/custom_booking_lengths/{id}
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/custom_booking_lengths/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-d '{"place_id":1,"name":"Some tea","length":120,"active":1,"start_date":"2022-01-01","end_date":"2030-01-01","max":10,"min":0,"areas":[1],"priority":1,"labels":{"en":{"name":"Some tea","description":"Drink a tea and leave"}},"month_days":[1,5,7,9],"week_days":[0,1,2,3,4,5,6],"spec_dates":[],"time_intervals":{"from":"18:00","to":"22:00"}
+```
+#### Get list by params
+> GET /api/custom_booking_lengths
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/files \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"area_id":1,"reservation_date":"2022-01-01","language":"en","seats":2}'
+```
+#### Delete
+> DELETE /api/custom_booking_lengths/{id}
+```cmd
+curl -X DELETE https://dinner-book.vasilkoff.info/api/custom_booking_lengths/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```

@@ -49,6 +49,8 @@ Route::get('places/{place_id}/lengths',[CustomBookingLengthController::class, 'g
 Route::get('files_purpose',[FileController::class, 'getByPurpose']);
 Route::get('countries',[CountryController::class, 'getAll']);
 
+Route::get('custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByParams']);
+
 Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/logout',[CustomerController::class, 'logout']);
     Route::get('customers',function(Request $request){
@@ -81,6 +83,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('places/{place_id}/menus',[MenuController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/timetables',[TimetableController::class, 'getAllByPlace']);
+    Route::get('places/{place_id}/custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByPlace']);
 
     Route::post('roles',[RoleController::class, 'create']);
     Route::get('roles',[RoleController::class, 'getAll']);

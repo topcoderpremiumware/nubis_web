@@ -13,6 +13,7 @@ import SmsTemplate from "./pages/SmsTemplate/SmsTemplate";
 import EmailTemplate from "./pages/EmailTemplate/EmailTemplate";
 import TablePlanSetup from "./pages/TablePlanSetup/TablePlanSetup";
 import OpeningTimes from "./pages/OpeningTimes/OpeningTimes";
+import CustomBookingLength from "./pages/CustomBookingLength/CustomBookingLength"
 
 import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInformation';
 import Picture from './pages/GeneralSettings/Picture/Picture';
@@ -39,6 +40,8 @@ function App() {
 
                   <Route path='/BasicInformation' exact element={<BasicInformation/>} />
                   <Route path='/Picture' exact element={<Picture/>} />
+
+                  <Route path='/CustomBookingLength' exact element={<CustomBookingLength/>}/>
                 </Routes>
               </div>
             </>

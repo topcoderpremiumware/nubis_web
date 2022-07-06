@@ -11,12 +11,9 @@ class CustomBookingLength extends Model
 
     protected $guarded = [];
 
-    protected $with = ['areas'];
+    protected $appends = ['area_ids'];
 
     protected $casts = [
-        'active' => 'boolean',
-        'start_date' => 'date',
-        'end_date' => 'date',
         'max' => 'integer',
         'min' => 'integer',
         'priority' => 'integer',
@@ -30,6 +27,11 @@ class CustomBookingLength extends Model
     public function place()
     {
         return $this->belongsTo(Place::class);
+    }
+
+    public function getAreaIdsAttribute()
+    {
+        return $this->areas()->pluck('area_id');
     }
 
     public function areas()

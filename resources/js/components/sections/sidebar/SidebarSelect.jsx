@@ -31,7 +31,7 @@ export default function SidebarSelect() {
   return (
     <div className='SidebarSelect__container'>
       <FormControl sx={{ minWidth: 120 }} className='SidebarSelect' fullWidth>
-          <Select  value={localStorage.getItem('place_id')}
+          <Select  value={localStorage.getItem('place_id')} size="small"
                      id="listrest" name="listrest" fullWidth
                       onChange={onChange}>
                 {listrest.map((el,key) => {

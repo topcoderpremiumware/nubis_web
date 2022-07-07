@@ -448,10 +448,18 @@ curl -X GET https://dinner-book.vasilkoff.info/api/orders \
 -H 'Content-Type: application/json' \
 -d '{"place_id":1,"area_id":1,"reservation_from":"2022-05-18 09:00:00","reservation_to":"2022-05-18 18:00:00"}'
 ```
-#### Delete
+#### Delete by admin
 > DELETE /api/orders/{id}
 ```cmd
 curl -X DELETE https://dinner-book.vasilkoff.info/api/orders/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
+#### Cancel by custmer
+> DELETE /api/cancel_order/{id}
+```cmd
+curl -X DELETE https://dinner-book.vasilkoff.info/api/cancel_order/1 \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'

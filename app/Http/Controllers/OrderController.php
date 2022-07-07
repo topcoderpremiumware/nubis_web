@@ -174,6 +174,23 @@ class OrderController extends Controller
         return response()->json(['message' => 'Order is deleted']);
     }
 
+    public function cancel($id, Request $request)
+    {
+        $order = Order::find($id);
+
+        if(Auth::user()->id !== $order->customer_id){
+            return response()->json([
+                'message' => 'It\'s not your order'
+            ], 400);
+        }
+
+        Log::add($request,'delete-order','Canceled order #'.$order->id);
+
+        $order->delete();
+
+        return response()->json(['message' => 'Order is canceled']);
+    }
+
     public function setStatus($id, Request $request)
     {
         if(!Auth::user()->tokenCan('admin')) return response()->json([

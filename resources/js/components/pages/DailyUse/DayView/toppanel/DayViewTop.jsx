@@ -1,5 +1,5 @@
 import React from 'react';
-import PointSelect from './select/point-select';
+import AreasSelect from './select/AreasSelect';
 import TimeSelect from './select/time-select';
 import DatePicker from './datepicker/DatePicker';
 import TimePlan from './TimeTablePopper/timeplan/TimePlan';
@@ -21,7 +21,7 @@ export default function DayViewTop() {
 
   return (
     <div className='DayViewTop__container'>
-      <PointSelect/>
+      <AreasSelect/>
       <TimeSelect/>
       <DatePicker/>
       <div className='TimeTablePopper__container'>

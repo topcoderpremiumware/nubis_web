@@ -62,6 +62,7 @@ Route::middleware('auth:customer_api')->group(function(){
     Route::get('customers/orders',[OrderController::class, 'getAllByCustomer']);
 
     Route::post('make_order',[OrderController::class, 'makeOrder']);
+    Route::delete('cancel_order/{id}',[OrderController::class, 'cancel']);
 });
 Route::middleware('auth:user_api')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);

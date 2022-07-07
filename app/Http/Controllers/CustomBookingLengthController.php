@@ -184,12 +184,14 @@ class CustomBookingLengthController extends Controller
         ]);
 
         $custom_lengths = CustomBookingLength::where('place_id',$request->place_id)
-            ->wherePivot('area_id',$request->area_id)
+            ->whereHas('areas', function ($q) use ($request){
+                $q->where('areas.id', $request->area_id);
+            })
             ->where('active', 1)
             ->where('start_date', '<=', $request->reservation_date)
             ->where('end_date', '>=', $request->reservation_date)
-            ->where('max', '<=', $request->seats)
-            ->where('min', '>=', $request->seats)
+            ->where('max', '>=', $request->seats)
+            ->where('min', '<=', $request->seats)
             ->orderBy('priority', 'desc')
             ->get();
 
@@ -208,8 +210,8 @@ class CustomBookingLengthController extends Controller
             }
             if($condition == 'verify'){
                 $date = Carbon::parse($request->reservation_date);
-                if(!in_array($date->format('D'),$custom_length->month_days)) continue;
-                if(!in_array($date->format('d'),$custom_length->week_days)) continue;
+                if(!in_array($date->format('j'),$custom_length->month_days)) continue;
+                if(!in_array($date->format('w'),$custom_length->week_days)) continue;
             }
 
             $times = [];

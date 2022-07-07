@@ -841,7 +841,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/custom_booking_lengths/1 \
 #### Get list by params
 > GET /api/custom_booking_lengths
 ```cmd
-curl -X GET https://dinner-book.vasilkoff.info/api/files \
+curl -X GET https://dinner-book.vasilkoff.info/api/custom_booking_lengths \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json' \
 -d '{"place_id":1,"area_id":1,"reservation_date":"2022-01-01","language":"en","seats":2}'

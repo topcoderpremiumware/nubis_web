@@ -12,6 +12,7 @@ import Register from "./pages/Register/Register";
 import SmsTemplate from "./pages/SmsTemplate/SmsTemplate";
 import EmailTemplate from "./pages/EmailTemplate/EmailTemplate";
 import TablePlanSetup from "./pages/TablePlanSetup/TablePlanSetup";
+import Areas from "./pages/Areas/Areas";
 import OpeningTimes from "./pages/OpeningTimes/OpeningTimes";
 import CustomBookingLength from "./pages/CustomBookingLength/CustomBookingLength"
 
@@ -19,6 +20,15 @@ import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInfo
 import Picture from './pages/GeneralSettings/Picture/Picture';
 
 function App() {
+  if(localStorage.getItem('token')){
+    axios.get(`${process.env.APP_URL}/api/user`).then(response => {
+    }).catch(error => {
+      if (error.response.status === 401){
+        localStorage.clear()
+        window.location.href="/"
+      }
+    })
+  }
   return (
     <BrowserRouter>
       <Suspense fallback={<LoadingPage/>}>
@@ -34,6 +44,7 @@ function App() {
                   <Route path='/WeekView' exact element={<WeekView/>}/>
                   <Route path='/Activity' exact element={<Activity/>}/>
                   <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
+                  <Route path='/Areas' exact element={<Areas/>}/>
                   <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
                   <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
                   <Route path='/OpeningTimes' exact element={<OpeningTimes/>}/>

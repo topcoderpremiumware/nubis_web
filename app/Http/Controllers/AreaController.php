@@ -18,6 +18,10 @@ class AreaController extends Controller
         $request->validate([
             'name' => 'required',
             'place_id' => 'required|exists:places,id',
+            'priority' => 'required|integer',
+            'labels' => 'required',
+            'online_available' => 'required|integer',
+
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)){
@@ -28,10 +32,13 @@ class AreaController extends Controller
 
         $area = Area::create([
             'name' => $request->name,
-            'place_id' => $request->place_id
+            'place_id' => $request->place_id,
+            'priority' => $request->priority,
+            'labels' => $request->labels,
+            'online_available' => $request->online_available,
         ]);
 
-        Log::add($request,'create-area','Created area');
+        Log::add($request,'create-area','Created area #'.$area->id);
 
         return response()->json($area);
     }
@@ -45,6 +52,9 @@ class AreaController extends Controller
         $request->validate([
             'name' => 'required',
             'place_id' => 'required|exists:places,id',
+            'priority' => 'required|integer',
+            'labels' => 'required',
+            'online_available' => 'required|integer',
         ]);
 
         $area = Area::find($id);
@@ -59,9 +69,12 @@ class AreaController extends Controller
         $res = $area->update([
             'name' => $request->name,
             'place_id' => $request->place_id,
+            'priority' => $request->priority,
+            'labels' => $request->labels,
+            'online_available' => $request->online_available,
         ]);
 
-        Log::add($request,'change-area','Changed area');
+        Log::add($request,'change-area','Changed area #'.$id);
 
         if($res){
             $area = Area::find($id);
@@ -86,14 +99,29 @@ class AreaController extends Controller
 
     public function getAllByPlace($place_id, Request $request)
     {
-//        if(!Auth::user()->places->contains($place_id)){
-//            return response()->json([
-//                'message' => 'It\'s not your place'
-//            ], 400);
-//        }
-
-        $areas = Area::where('place_id',$place_id)->get();
+        $query = Area::where('place_id',$place_id);
+        if(!$request->has('all'))
+            $query->where('online_available',1);
+        $areas = $query->orderBy('priority', 'desc')
+            ->get();
 
         return response()->json($areas);
+    }
+
+    public function delete($id, Request $request)
+    {
+        $area = Area::find($id);
+
+        if(!Auth::user()->places->contains($area->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        Log::add($request,'delete-area','Deleted area #'.$area->id);
+
+        $area->delete();
+
+        return response()->json(['message' => 'Area is deleted']);
     }
 }

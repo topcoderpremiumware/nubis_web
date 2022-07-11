@@ -3,7 +3,7 @@ import  './OpeningTimes.scss';
 import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
 import {
-  Button,
+  Button, CircularProgress,
   IconButton, Stack,
   styled,
   Table,
@@ -26,6 +26,7 @@ export default function OpeningTimes() {
   const [tableplans, setTableplans] = useState([])
   const [editPopupOpened, setEditPopupOpened] = useState(false)
   const [selectedTimetable, setSelectedTimetable] = useState({})
+  const [loading, setLoading] = useState(true)
 
   const StyledTableRow = styled(TableRow)(({theme}) => ({
     '&:nth-of-type(odd)': {
@@ -44,18 +45,20 @@ export default function OpeningTimes() {
   }, [])
 
   const getTimetables = async () => {
+    setLoading(true)
     await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/timetables`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
       setTimetables(response.data)
+      setLoading(false)
     }).catch(error => {
     })
   }
 
   const getAreas = async () => {
-    await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas`).then(response => {
+    await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
       setAreas(response.data)
     }).catch(error => {
     })
@@ -169,7 +172,7 @@ export default function OpeningTimes() {
       <h2>{t('Opening Times')}</h2>
       <div className="container-fluid">
         <div className="row">
-          <TableContainer>
+          {loading ? <div><CircularProgress/></div> : <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
@@ -215,7 +218,7 @@ export default function OpeningTimes() {
                 })}
               </TableBody>
             </Table>
-          </TableContainer>
+          </TableContainer>}
         </div>
       </div>
       <Stack spacing={2} sx={{mt: 2}} direction="row">

@@ -73,6 +73,12 @@
 - id
 - place_id
 - name
+- priority (int)
+- online_available (bool)
+- deleted_at
+- labels (index lang code)
+    - name
+    - description
 
 ### Customers
 - id

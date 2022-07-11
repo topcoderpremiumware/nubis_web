@@ -142,7 +142,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/places/1 \
 -H 'Content-Type: application/json' \
 -d '{"name":"McDonalds","address":"Shevchenka 200","city":"Cherkasy","zip_code":"18000","phone":"","email":"","home_page":"","country_id":1}'
 ```
-#### Get all areas of place
+#### Get all online areas of place (set property 'all' for showing not only online areas)
 > GET /api/places/{id}/areas
 ```cmd
 curl -X GET https://dinner-book.vasilkoff.info/api/places/1/areas \
@@ -267,7 +267,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/areas \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"name":"Area 1","place_id":1}'
+-d '{"name":"Area 1","place_id":1,"priority":1,"online_available":1,"labels":{"en":{"name":"Area 1","description":"First area for test"}}}'
 ```
 #### Get one
 > GET /api/areas/{id}
@@ -284,7 +284,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/areas/1 \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"name":"Area 1","place_id":1}'
+-d '{"name":"Area 1","place_id":1,"priority":1,"online_available":1,"labels":{"en":{"name":"Area 1","description":"First area for test"}}}'
 ```
 #### Get working time by area and date
 > GET /api/areas/{id}/working
@@ -294,6 +294,14 @@ curl -X GET https://dinner-book.vasilkoff.info/api/areas/1/working \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
 -d '{"date":"2022-05-18"}'
+```
+#### Delete
+> DELETE /api/areas/{id}
+```cmd
+curl -X DELETE https://dinner-book.vasilkoff.info/api/areas/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
 ```
 ---
 <a id="timetables"></a>

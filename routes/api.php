@@ -98,6 +98,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('areas/{id}',[AreaController::class, 'getId']);
     Route::post('areas/{id}',[AreaController::class, 'save']);
     Route::get('areas/{area_id}/working',[TimetableController::class, 'getWorkingByAreaAndDate']);
+    Route::delete('areas/{id}',[AreaController::class, 'delete']);
 
     Route::post('timetables',[TimetableController::class, 'create']);
     Route::get('timetables/{id}',[TimetableController::class, 'getId']);

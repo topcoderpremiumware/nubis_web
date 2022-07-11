@@ -3,7 +3,7 @@ import  './CustomBookingLength.scss';
 import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
 import {
-  Button,
+  Button, CircularProgress,
   IconButton, Stack,
   styled,
   Table,
@@ -25,6 +25,7 @@ export default function CustomBookingLength() {
   const [areas, setAreas] = useState([])
   const [editPopupOpened, setEditPopupOpened] = useState(false)
   const [selectedLength, setSelectedLength] = useState({})
+  const [loading, setLoading] = useState(true)
 
   const StyledTableRow = styled(TableRow)(({theme}) => ({
     '&:nth-of-type(odd)': {
@@ -42,18 +43,20 @@ export default function CustomBookingLength() {
   }, [])
 
   const getCustomBookingLength = async () => {
+    setLoading(true)
     await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/custom_booking_lengths`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
       setCustomBookingLength(response.data)
+      setLoading(false)
     }).catch(error => {
     })
   }
 
   const getAreas = async () => {
-    await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas`).then(response => {
+    await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
       setAreas(response.data)
     }).catch(error => {
     })
@@ -133,7 +136,7 @@ export default function CustomBookingLength() {
       <h2>{t('Custom Booking Length')}</h2>
       <div className="container-fluid">
         <div className="row">
-          <TableContainer>
+          {loading ? <div><CircularProgress/></div> : <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
@@ -173,7 +176,7 @@ export default function CustomBookingLength() {
                 })}
               </TableBody>
             </Table>
-          </TableContainer>
+          </TableContainer>}
         </div>
       </div>
       <Stack spacing={2} sx={{mt: 2}} direction="row">

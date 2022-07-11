@@ -15,7 +15,7 @@ export default function AreasSelect() {
   }, [])
 
   const getArea = async () => {
-    await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas`, {
+    await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -26,13 +26,13 @@ export default function AreasSelect() {
   }
 
   const onChange = (e) => {
-    if(e.target.name === 'area') localStorage.setItem('place_id',e.target.value)
+    if(e.target.name === 'area') localStorage.setItem('area_id',e.target.value)
   };
 
   return (
     <div className='DayViewSelect__container'>
       <FormControl sx={{ m: 1, minWidth: 120 }} className='DayViewSelect'>
-      <Select  value={localStorage.getItem('place_id')}
+      <Select  value={localStorage.getItem('area_id')}
                      id="area" name="area" fullWidth
                       onChange={onChange}>
                 {area.map((el,key) => {

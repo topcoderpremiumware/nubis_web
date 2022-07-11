@@ -392,7 +392,9 @@ class OrderController extends Controller
             $length = intval($request->length);
         }
 
-        if(!$request->is_take_away){
+        $status = ($request->has('status') && $request->status === 'waiting') ? 'waiting' : 'ordered';
+
+        if(!$request->is_take_away && $status === 'ordered'){
             $time_from = $reservation_time->copy();
             $time_from->setTime(0, 0, 0);
             $time_to = $reservation_time->copy();
@@ -446,7 +448,7 @@ class OrderController extends Controller
             'reservation_time' => $request->reservation_time,
             'length' => $length,
             'comment' => $request->comment ?? '',
-            'status' => 'ordered',
+            'status' => $status,
             'is_take_away' => $request->is_take_away,
             'source' => 'online',
             'marks' => ''

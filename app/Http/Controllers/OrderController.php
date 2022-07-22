@@ -196,8 +196,6 @@ class OrderController extends Controller
             ], 400);
         }
 
-        Log::add($request,'delete-order','Canceled order #'.$order->id);
-
         $order->delete();
 
         return response()->json(['message' => 'Order is canceled']);

@@ -161,6 +161,12 @@ class OrderController extends Controller
     {
         $order = Order::find($id);
 
+        if(!$order){
+            return response()->json([
+                'message' => 'Order is not exist'
+            ], 400);
+        }
+
         if(!Auth::user()->places->contains($order->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
@@ -177,6 +183,12 @@ class OrderController extends Controller
     public function cancel($id, Request $request)
     {
         $order = Order::find($id);
+
+        if(!$order){
+            return response()->json([
+                'message' => 'Order is not exist'
+            ], 400);
+        }
 
         if(Auth::user()->id !== $order->customer_id){
             return response()->json([

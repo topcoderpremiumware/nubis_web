@@ -1,0 +1,97 @@
+import React, {useEffect, useState} from "react";
+import { useTranslation } from 'react-i18next';
+
+import {
+  CircularProgress,
+} from "@mui/material";
+import Moment from "moment";
+import {DataGrid} from "@mui/x-data-grid";
+import eventBus from "../../../../eventBus";
+
+export default function DayViewTableWaiting() {
+  const {t} = useTranslation();
+
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(async () => {
+    getOrders()
+    eventBus.on("placeChanged", () => {
+      getOrders()
+    });
+    eventBus.on("areaChanged",  () => {
+      getOrders()
+    });
+    eventBus.on("timeChanged",  () => {
+      getOrders()
+    });
+    eventBus.on("dateChanged",  () => {
+      getOrders()
+    });
+  }, [])
+
+  const columns = [
+    { field: 'id', headerName: t('Booking id'), width: 100 },
+    { field: 'from', headerName: t('From'), width: 70 },
+    { field: 'to', headerName: t('To'), width: 70 },
+    { field: 'first_name', headerName: t('First name'), width: 130 },
+    { field: 'last_name', headerName: t('Last name'), width: 130 },
+    { field: 'seats', headerName: t('Seats'), width: 10 },
+    { field: 'phone', headerName: t('Phone'), width: 140 },
+    { field: 'email', headerName: t('Email'), width: 150 },
+    { field: 'deleted_at', headerName: t('Deleted date'), width: 140 },
+    { field: 'status', headerName: t('Status'), width: 100 },
+  ];
+
+
+  const getOrders = async () => {
+    setLoading(true)
+    if(localStorage.getItem('place_id') &&
+      localStorage.getItem('area_id') &&
+      localStorage.getItem('time')){
+      let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
+      let time = JSON.parse(localStorage.getItem('time'))
+      await axios.get(`${process.env.APP_URL}/api/orders?deleted=1`, {
+        params: {
+          place_id: localStorage.getItem('place_id'),
+          area_id: localStorage.getItem('area_id'),
+          reservation_from: date+' '+time.from,
+          reservation_to: date+' '+time.to
+        },
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        let orders = response.data.map(item => {
+          item.from = Moment(item.reservation_time).format('HH:mm')
+          item.to = Moment(item.reservation_time).add(item.length, 'minutes').format('HH:mm')
+          item.first_name = item.customer.first_name
+          item.last_name = item.customer.last_name
+          item.phone = item.customer.phone
+          item.email = item.customer.email
+          item.deleted_at = Moment(item.deleted_at).format('YYYY-MM-DD HH:mm')
+          return item
+        })
+
+        setOrders(orders)
+        setLoading(false)
+      }).catch(error => {
+      })
+    }else{
+      setOrders([])
+      setLoading(false)
+    }
+  }
+
+  return (<>{loading ? <div><CircularProgress/></div> :
+    <div style={{ height: '100%', width: '100%' }}>
+      <DataGrid
+        rows={orders}
+        columns={columns}
+        pageSize={5}
+        rowsPerPageOptions={[5]}
+        // checkboxSelection
+      />
+    </div>
+  }</>);
+};

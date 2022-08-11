@@ -22,4 +22,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/test', function () {
 
 });
+
+Route::view('/book/{place_id}', 'book')->name('book');
 Route::view('/{path?}/{path2?}', 'app')->name('home');

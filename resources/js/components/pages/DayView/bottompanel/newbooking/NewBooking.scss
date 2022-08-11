@@ -1,0 +1,106 @@
+.NewBookingPopUp__container.NewBookingPopUp__container {
+  background: #F2F3F9;
+  padding: 20px;
+  border: none;
+  position: relative;
+  z-index: 8999;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+}
+.NewBookingPopUp__container.NewBookingPopUp__container .Booking__Boxbuttons .MuiBox-root{
+  height: auto;
+}
+.NewBookingPopUp__container.NewBookingPopUp__container .NewBooking__BoxItem .MuiBox-root{
+  width: 100%;
+  height: 100%;
+}
+// .NewBookingPopUp__container.NewBookingPopUp__container .NewBooking__BoxItem .css-19kzrtu.css-19kzrtu{
+//   width: 100%;
+//   height: 100%;
+// }
+.NewBooking__BoxItem{
+  height: 94%;
+}
+.NewBookingPopUp__container.NewBookingPopUp__container .MuiTypography-root{
+  width: 100%;
+  height: 100%;
+}
+
+.NewBookingPopUpContent {
+  width: 100%;
+  height: 100%;
+}
+
+.ButtonNewBooking.ButtonNewBooking {
+  background: #67A1E5;
+  color: #fff;
+
+  &:hover {
+    color: #343C48;
+  }
+}
+
+.close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.MuiTabs-scroller {
+  overflow-x: scroll !important;
+}
+
+@media(max-width:10024px) {
+  .MuiTabs-scroller {
+    &::-webkit-scrollbar {
+      width: .5px;
+      height: .5px;
+      background: #000000;
+      // opacity: 0.1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      // background-color: #f5f5f5;
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+}
+
+.NewBookingPopUpContent .MuiSelect-select {
+  padding: 5px;
+  font-size: 14px;
+}
+
+.NewBookingPopUpContent .ItemSelec.ItemSelect {
+  font-size: 14px;
+}
+
+.NewBooking__ItemName {
+  margin-right: 10px;
+  font-size: 12px;
+  min-width: 100px;
+}
+
+.NewBooking__InputItem {
+  margin-right: 10px;
+  // width: 100%;
+}
+
+.css-1gyr8kh.css-1gyr8kh {
+  max-width: 300px;
+}
+.MuiInputLabel-root.MuiInputLabel-root{
+  font-size: 12px;
+  // top:50%;
+  // left:50%;
+  // transform: translate(-50%, -50%);
+}
+

@@ -43,6 +43,8 @@ Route::get('places',[PlaceController::class, 'getAll']);
 
 Route::get('free_dates',[OrderController::class, 'freeDates']);
 Route::get('free_time',[OrderController::class, 'freeTime']);
+Route::get('work_dates',[OrderController::class, 'workDates']);
+Route::get('work_time',[OrderController::class, 'workTime']);
 Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace']);
 Route::get('places/{place_id}/lengths',[CustomBookingLengthController::class, 'getAllByParams']);
 

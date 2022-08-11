@@ -19,8 +19,9 @@ export default function Topbar() {
     }).catch(e => {
       console.log('logout error: ',e)
     })
-    localStorage.removeItem('token')
-    localStorage.removeItem('place_id')
+    let lang = localStorage.getItem('i18nextLng')
+    localStorage.clear()
+    localStorage.setItem('i18nextLng',lang)
     window.location.href="/"
   }
   return (

@@ -1,0 +1,242 @@
+body {
+  padding: 0;
+  margin: 0;
+  color: black;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+p {
+  letter-spacing: 0.03em;
+  line-height: 1.55em;
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 400;
+  padding: 0;
+  margin: 0;
+  line-height: 1.4em;
+}
+
+.header {
+  padding-top: 72px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 72px;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 15px auto;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+a {
+  color: #586fc5;
+}
+
+.place {
+  font-size: 18px;
+  margin-bottom: 21px;
+}
+
+.offer-title {
+  font-size: 45px;
+  line-height: 1.4em;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.desc {
+  font-size: 18px;
+  margin-top: 21px;
+  margin-bottom: 21px;
+}
+
+.btn {
+  color: #fff;
+  background: #6a85e3;
+  font-size: 18px;
+  padding: 18px 30px;
+  font-weight: 700;
+  display: block;
+  width: 197px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.btn:hover {
+  background: #4f68c4;
+}
+
+.intro {
+  background: #eaeaea;
+  padding: 30px;
+  width: 441px;
+}
+
+.intro-title {
+  font-weight: 700;
+  margin-bottom: 17px;
+}
+
+.content {
+  display: flex;
+  max-width: 1280px;
+  margin: 15px auto;
+}
+
+@media (max-width: 1024px) {
+  .content {
+    flex-direction: row-reverse;
+  }
+}
+
+.content-cut {
+  margin-top: 72px;
+}
+
+li {
+  list-style-type: none;
+}
+
+.content-wrapper {
+  width: 100%;
+}
+@media (max-width: 1024px) {
+  .content-wrapper {
+    width: 50%;
+  }
+}
+@media (max-width: 768px) {
+  .content-wrapper {
+    width: 100%;
+  }
+}
+.main-block__body {
+  margin-left: 100px;
+}
+
+@media (max-width: 1024px) {
+  .main-block__body {
+    margin-left: 10px;
+  }
+}
+
+.main-block__info {
+  max-width: 428px;
+  margin-top: 32px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  color: #333333;
+  display: block;
+  text-align: left;
+}
+
+.cancel-booking {
+  display: block;
+  max-width: 121px;
+  margin-top: 14px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 150%;
+  color: #333333;
+  text-decoration: none;
+  text-align: left;
+}
+
+@media (max-width: 1024px) {
+  .cancel-booking {
+    margin-left: 195px;
+  }
+}
+@media (max-width: 768px) {
+  .cancel-booking {
+    margin-left: 330px;
+  }
+}
+
+.copyrigth {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0px 60px 57px 0px;
+  font-family: "Lusitana";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  text-transform: uppercase;
+  color: #333333;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+@media (max-width: 1024px) {
+  .copyrigth {
+    position: relative;
+    margin-right: 190px;
+    margin-top: 10px;
+  }
+  .main-footer {
+    display: block;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .copyrigth {
+    display: block;
+    margin-right: 0px;
+  }
+}
+
+.button-main {
+  font-family: "Lusitana";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 100%;
+  display: flex;
+  margin-top: 38px;
+  background: #000;
+  color: #fff;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 2px;
+  cursor: pointer;
+  width: 192px;
+  height: 47px;
+  justify-content: center;
+}
+
+.button-main:hover:disabled {
+  opacity: 0.7;
+  cursor: default;
+}

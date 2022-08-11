@@ -497,6 +497,22 @@ curl -X GET https://dinner-book.vasilkoff.info/api/free_time \
 -H 'Content-Type: application/json' \
 -d '{"place_id":1,"area_id":1,"seats":2,"date":"2022-06-01"}'
 ```
+#### Get work dates
+> GET /api/work_dates
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/work_dates \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"area_id":1,"seats":2,"from":"2022-06-01","to":"2022-06-30"}'
+```
+#### Get work time
+> GET /api/work_time
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/work_time \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"area_id":1,"seats":2,"date":"2022-06-01"}'
+```
 #### Make order
 > POST /api/make_order
 ```cmd

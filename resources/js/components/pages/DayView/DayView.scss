@@ -1,0 +1,29 @@
+.table-row{
+    // overflow-x: scroll;
+}
+
+//Data Table Box
+
+.DayView__BoxItem .MuiBox-root{
+    // padding: 0;
+}
+
+.DayView__container{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.DayView__container > .MuiBox-root{
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.DayView__BoxItem{
+    flex: 1;
+    overflow: auto;
+    height: 100%;
+}
+.DayView__container .MuiDataGrid-root .MuiDataGrid-cellContent{
+    overflow: auto;
+    text-overflow: unset;
+}

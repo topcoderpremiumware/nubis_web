@@ -33,7 +33,7 @@ export default function TablePlanSetup() {
   }
 
   const getTableplans = (selectedId = null) => {
-    axios.get(process.env.APP_URL+'api/places/'+localStorage.getItem('place_id')+'/tableplans',{
+    axios.get(process.env.APP_URL+'/api/places/'+localStorage.getItem('place_id')+'/tableplans',{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }

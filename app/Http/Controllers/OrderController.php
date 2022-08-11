@@ -139,8 +139,11 @@ class OrderController extends Controller
         $orders = Order::where('place_id',$request->place_id)
             ->where('area_id',$request->area_id)
             ->with('customer')
-            ->whereBetween('reservation_time', [$request->reservation_from, $request->reservation_to])
-            ->get();
+            ->whereBetween('reservation_time', [$request->reservation_from, $request->reservation_to]);
+        if($request->has('deleted')){
+            $orders = $orders->onlyTrashed();
+        }
+        $orders = $orders->get();
 
         return response()->json($orders);
     }
@@ -228,8 +231,6 @@ class OrderController extends Controller
         return response()->json(['message' => 'Order status changed']);
     }
 
-    // дано: заклад, дата від і до, кількість місць і зал
-    // знайти: Вільні дати
     public function freeDates(Request $request)
     {
         $request->validate([
@@ -257,6 +258,29 @@ class OrderController extends Controller
                 ->get();
 
             if($this->getFreeTables($orders, $working_hours, $request->seats)){
+                array_push($result,$date);
+            }
+        }
+        return response()->json($result);
+    }
+
+    public function workDates(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'area_id' => 'required|exists:areas,id',
+            'seats' => 'required|integer',
+            'from' => 'required|date_format:Y-m-d',
+            'to' => 'required|date_format:Y-m-d',
+        ]);
+
+        $period = CarbonPeriod::create($request->from, $request->to);
+        $result = [];
+        foreach ($period as $date) {
+            if($date->lt(Carbon::now()->setTime(0,0,0))) continue;
+            $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"));
+            if(empty($working_hours)) continue;
+            if($this->getFreeTables([], $working_hours, $request->seats)){
                 array_push($result,$date);
             }
         }
@@ -309,6 +333,44 @@ class OrderController extends Controller
             }
         }
         return response()->json($free_time);
+    }
+
+    public function workTime(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'area_id' => 'required|exists:areas,id',
+            'seats' => 'required|integer',
+            'date' => 'required|date_format:Y-m-d',
+        ]);
+        $request_date = Carbon::parse($request->date);
+        if($request_date->lt(Carbon::now()->setTime(0,0,0))) return response()->json([
+            'message' => 'Date must be today and later'
+        ], 400);
+
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"));
+        if(empty($working_hours)) return response()->json([
+            'message' => 'Non-working day'
+        ], 400);
+
+        $free_tables = $this->getFreeTables([], $working_hours, $request->seats, false);
+        $work_time = [];
+        foreach($working_hours as $working_hour){
+            $time = Carbon::parse($request->date.' '.$working_hour['from']);
+            $end = Carbon::parse($request->date.' '.$working_hour['to']);
+            for($time;$time->lt($end);$time->addMinutes(15)){
+                $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
+                foreach ($free_tables[$working_hour['tableplan_id']] as $table){
+                    if(!array_key_exists('ordered',$table['time'][$indexFrom])){
+                        if(!$time->lt(Carbon::now())){
+                            array_push($work_time,$time->copy());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return response()->json($work_time);
     }
 
     private function getFreeTables($orders,$working_hours,$seats,$boolean = true)

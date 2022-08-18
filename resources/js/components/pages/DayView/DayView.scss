@@ -27,3 +27,10 @@
     overflow: auto;
     text-overflow: unset;
 }
+.tablePlanSidebar{
+    flex: 1;
+    overflow: auto;
+}
+.tablePlanSidebar .react-calendar-timeline .rct-header-root{
+    background: #f0f0f0;
+}

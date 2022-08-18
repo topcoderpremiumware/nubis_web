@@ -1,23 +1,31 @@
-import React from 'react';
+import React, {useState} from 'react';
 import AreasSelect from './select/AreasSelect';
 import TimeSelect from './select/time-select';
 import DatePicker from './datepicker/DatePicker';
-import TimePlan from './TimeTablePopper/timeplan/TimePlan';
-import TablePlan from './TimeTablePopper/tableplan/TablePlan';
 import  './DayViewTop.scss';
-import  './TimeTablePopper/TimeTablePopper.scss';
+import eventBus from "../../../../eventBus";
 
-
-// import ToggleButton from '@mui/material/ToggleButton';
-// import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 export default function DayViewTop() {
+  const [tableSidebar, setTableSidebar] = useState('');
 
-  // const [alignment, setAlignment] = React.useState('web');
-
-  // const handleChange = (event, newAlignment) => {
-  //   setAlignment(newAlignment);
-  // };
+  const openTableSidebar = (type) => {
+    if(!localStorage.getItem('place_id')){
+      eventBus.dispatch("notification", {type: 'error', message: 'Place is not selected'});
+      return;
+    }
+    if(!localStorage.getItem('area_id')){
+      eventBus.dispatch("notification", {type: 'error', message: 'Area is not selected'});
+      return;
+    }
+    if(!localStorage.getItem('time')){
+      eventBus.dispatch("notification", {type: 'error', message: 'Time is not selected'});
+      return;
+    }
+    if(tableSidebar === type) type = ''
+    setTableSidebar(type)
+    eventBus.dispatch("openTableSidebar", {type: type});
+  }
 
   return (
     <div className='DayViewTop__container'>
@@ -25,17 +33,16 @@ export default function DayViewTop() {
       <TimeSelect/>
       <DatePicker/>
       <div className='TimeTablePopper__container'>
-        <TimePlan/>
-        <TablePlan/>
-        {/* <ToggleButtonGroup
-          color="primary"
-          value={alignment}
-          exclusive
-          onChange={handleChange}
-        >
-          <ToggleButton value="web" ><TimePlan/></ToggleButton>
-          <ToggleButton value="android"><TablePlan/></ToggleButton>
-        </ToggleButtonGroup> */}
+        <div className='TimePlan-logo'>
+          <img src='./images/timeplan-icon.svg'
+               onClick={(e) => {openTableSidebar('timePlan')}}
+          />
+        </div>
+        <div className='TablePlan-logo'>
+          <img src='./images/tableplan-icon.svg'
+               onClick={(e) => {openTableSidebar('tablePlan')}}
+          />
+        </div>
       </div>
     </div>
   )

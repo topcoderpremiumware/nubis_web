@@ -247,7 +247,7 @@ export const rectTable = (key,data) => {
   const table = new fabric.Rect({
     width: type.width,
     height: type.height,
-    fill: data['color'],
+    fill: (data.hasOwnProperty('markColor') && data.markColor) ? data['markColor'] : data['color'],
     stroke: tableStroke,
     strokeWidth: 3,
     originX: 'center',
@@ -306,7 +306,7 @@ export const circTable = (key,data) => {
   })
   const table = new fabric.Circle({
     radius: type.radius,
-    fill: data['color'],
+    fill: (data.hasOwnProperty('markColor') && data.markColor) ? data['markColor'] : data['color'],
     stroke: tableStroke,
     strokeWidth: 3,
     originX: 'center',
@@ -373,12 +373,13 @@ export const landscape = async (key, data) => {
 
 export const tableText = (data) => {
   let objectArray = []
+  let textColor = contrastColor((data.hasOwnProperty('markColor') && data.markColor) ? data['markColor'] : data['color'])
   if(data.hasOwnProperty('number')){
     const textNumber = new fabric.IText('t: '+data['number'].toString(), {
       // fontFamily: 'Calibri',
       top: -8,
       fontSize: 10,
-      fill: contrastColor(data['color']),
+      fill: textColor,
       textAlign: 'center',
       originX: 'center',
       originY: 'center'
@@ -389,7 +390,7 @@ export const tableText = (data) => {
   if(data.hasOwnProperty('seats')) {
     const textSeats = new fabric.IText('s: ' + data['seats'].toString(), {
       fontSize: 10,
-      fill: contrastColor(data['color']),
+      fill: textColor,
       textAlign: 'center',
       originX: 'center',
       originY: 'center'
@@ -397,12 +398,22 @@ export const tableText = (data) => {
     objectArray.push(textSeats)
   }
 
-  if(data.hasOwnProperty('time') && data['time'].length > 0 &&
+  if(data.hasOwnProperty('order') && data['order']) {
+    const textGroup = new fabric.IText(data['order'], {
+      top: 8,
+      fontSize: 10,
+      fill: textColor,
+      textAlign: 'center',
+      originX: 'center',
+      originY: 'center'
+    })
+    objectArray.push(textGroup)
+  }else if(data.hasOwnProperty('time') && data['time'].length > 0 &&
     data['time'][0].hasOwnProperty('group') && data['time'][0]['group']) {
     const textGroup = new fabric.IText('g: ' + data['time'][0]['group'].toString(), {
       top: 8,
       fontSize: 10,
-      fill: contrastColor(data['color']),
+      fill: textColor,
       textAlign: 'center',
       originX: 'center',
       originY: 'center'

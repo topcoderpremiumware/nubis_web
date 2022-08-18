@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './DayView.scss';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -10,6 +10,9 @@ import {useTranslation} from "react-i18next";
 import DayViewTableBookings from './tables/DayViewTableBookings';
 import DayViewTableWaiting from "./tables/DayViewTableWaiting";
 import DayViewTableDeleted from "./tables/DayViewTableDeleted";
+import eventBus from "../../../eventBus";
+import PlanCanvas from "./TablePlan/PlanCanvas";
+import TimeLinePlan from "./TimeLinePlan/TimeLinePlan";
 
 
 function TabPanel(props) {
@@ -47,6 +50,25 @@ export default function DayViewContent() {
   const {t} = useTranslation();
 
   const [value, setValue] = useState(0);
+  const [tableSidebar, setTableSidebar] = useState('');
+
+  useEffect(() => {
+    eventBus.on("openTableSidebar",(data) => {
+      setTableSidebar(data.type)
+    })
+    eventBus.on("placeChanged",(data) => {
+      setTableSidebar('')
+    })
+    eventBus.on("areaChanged",(data) => {
+      setTableSidebar('')
+    })
+    eventBus.on("timeChanged",(data) => {
+      setTableSidebar('')
+    })
+    eventBus.on("dateChanged",(data) => {
+      setTableSidebar('')
+    })
+  },[])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -55,7 +77,7 @@ export default function DayViewContent() {
   return (
     <div className='pages__container DayView__container'>
       <DayViewTop />
-      <div style={{display:'flex',height:'100%'}}>
+      <div style={{display:'flex',height:'100%',overflow:'hidden'}}>
         <Box sx={{ width: '100%',flex:1,display:'flex',flexDirection:'column' }} >
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='DayView__Boxbuttons'>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
@@ -74,7 +96,12 @@ export default function DayViewContent() {
             <DayViewTableDeleted/>
           </TabPanel>
         </Box>
-        {false && <div style={{flex:1}}>Test</div>}
+        {tableSidebar === 'timePlan' && <div className="tablePlanSidebar">
+          <TimeLinePlan/>
+        </div>}
+        {tableSidebar === 'tablePlan' && <div className="tablePlanSidebar">
+          <PlanCanvas/>
+        </div>}
       </div>
       <BottomPanel/>
     </div>

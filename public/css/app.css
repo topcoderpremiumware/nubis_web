@@ -11367,6 +11367,6 @@ a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover {
   border-radius: 6px;
 }
 
-.react-datepicker-popper {
+.react-datepicker__tab-loop .react-datepicker-popper {
   z-index: 1000;
 }

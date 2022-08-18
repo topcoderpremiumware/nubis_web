@@ -19,7 +19,7 @@ import OpeningTimes from "./pages/OpeningTimes/OpeningTimes";
 import CustomBookingLength from "./pages/CustomBookingLength/CustomBookingLength"
 
 import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInformation';
-import Picture from './pages/GeneralSettings/Picture/Picture';
+import Pictures from './pages/GeneralSettings/Pictures/Pictures';
 
 function App() {
   if(localStorage.getItem('token')){
@@ -52,7 +52,7 @@ function App() {
                   <Route path='/OpeningTimes' exact element={<OpeningTimes/>}/>
 
                   <Route path='/BasicInformation' exact element={<BasicInformation/>} />
-                  <Route path='/Picture' exact element={<Picture/>} />
+                  <Route path='/Pictures' exact element={<Pictures/>} />
 
                   <Route path='/CustomBookingLength' exact element={<CustomBookingLength/>}/>
                 </Routes>

@@ -80,8 +80,8 @@ export const SidebarData = [
         cName: 'sub-nav'
       },
       {
-        title: 'Picture',
-        path: '/Picture',
+        title: 'Pictures',
+        path: '/Pictures',
         cName: 'sub-nav'
       }
     ]

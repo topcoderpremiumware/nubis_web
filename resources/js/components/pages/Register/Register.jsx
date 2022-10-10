@@ -216,7 +216,7 @@ export default function Register() {
                 <div className="mb-3">
                   <FormControl size="small" fullWidth>
                     <InputLabel id="label_country_id">{t('Country')}</InputLabel>
-                    <Select label={t('Country')} value={place}
+                    <Select label={t('Country')} value={countryId}
                             labelId="label_country_id" id="country_id" name="country_id"
                             onChange={onChange}>
                       {countries.map((c,key) => {

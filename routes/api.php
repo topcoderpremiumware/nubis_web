@@ -43,6 +43,7 @@ Route::get('places',[PlaceController::class, 'getAll']);
 
 Route::get('free_dates',[OrderController::class, 'freeDates']);
 Route::get('free_time',[OrderController::class, 'freeTime']);
+Route::get('free_tables',[OrderController::class, 'freeTables']);
 Route::get('work_dates',[OrderController::class, 'workDates']);
 Route::get('work_time',[OrderController::class, 'workTime']);
 Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace']);
@@ -149,9 +150,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('feedbacks',[FeedbackController::class, 'getAllByPlace']);
     Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);
 
-    Route::post('files',[FileController::class, 'create']);
-    Route::get('files/{id}',[FileController::class, 'getId']);
-    Route::post('files/{id}',[FileController::class, 'save']);
+    Route::post('files/{purpose}',[FileController::class, 'set']);
     Route::get('files',[FileController::class, 'getAllByPlace']);
 
     Route::post('custom_booking_lengths',[CustomBookingLengthController::class, 'create']);

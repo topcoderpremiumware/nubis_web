@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
-    public function create(Request $request)
+    public function set($purpose, Request $request)
     {
         if(!Auth::user()->tokenCan('admin')) return response()->json([
             'message' => 'Unauthorized.'
@@ -18,77 +18,45 @@ class FileController extends Controller
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'purpose' => 'required',
             'file' => 'required'
         ]);
 
-        $file_upload = $request->file('file');
-        $filename = $request->place_id.'/'.$file_upload->getClientOriginalName();
-        $content = $file_upload->getContent();
-        Storage::disk('public')->put($filename,$content);
-
-        $file = File::create([
-            'place_id' => $request->place_id,
-            'purpose' => $request->purpose,
-            'filename' => $filename
-        ]);
-
-        Log::add($request,'create-file','Created file #'.$file->id);
-
-        return response()->json($file);
-    }
-
-    public function save($id, Request $request)
-    {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
-
-        $request->validate([
-            'place_id' => 'required|exists:places,id',
-            'purpose' => 'required',
-            'file' => 'required'
-        ]);
-
-        $file = File::find($id);
-
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($file->place_id)){
+        if(!Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
         }
-        Storage::disk('public')->delete($file->filename);
+
+        $file = File::where('place_id',$request->place_id)
+            ->where('purpose',$purpose)
+            ->first();
+
+        if($file){
+            Storage::disk('public')->delete($file->filename);
+        }
+
         $file_upload = $request->file('file');
         $filename = $request->place_id.'/'.$file_upload->getClientOriginalName();
         $content = $file_upload->getContent();
         Storage::disk('public')->put($filename,$content);
 
-        $res = $file->update([
-            'place_id' => $request->place_id,
-            'purpose' => $request->purpose,
-            'filename' => $filename
-        ]);
+        if($file){
+            $res = $file->update([
+                'place_id' => $request->place_id,
+                'purpose' => $request->purpose,
+                'filename' => $filename
+            ]);
+            $file->refresh();
+        }else{
+            $file = File::create([
+                'place_id' => $request->place_id,
+                'purpose' => $request->purpose,
+                'filename' => $filename
+            ]);
+        }
 
         Log::add($request,'change-file','Changed file #'.$file->id);
-
-        if($res){
-            $file = File::find($id);
-            return response()->json($file);
-        }else{
-            return response()->json(['message' => 'File not updated'],400);
-        }
-    }
-
-    public function getId($id, Request $request)
-    {
-        $file = File::find($id);
-
-        if(!Auth::user()->places->contains($file->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
-        }
+        $file->url = Storage::disk('public')->url($file->filename);
 
         return response()->json($file);
     }
@@ -107,6 +75,15 @@ class FileController extends Controller
 
         $files = File::where('place_id',$request->place_id)
             ->get();
+
+        if($files->count() == 0){
+            return response()->json(['message' => 'Files not found'], 400);
+        }else{
+            $files->map(function ($file) {
+                $file->url = Storage::disk('public')->url($file->filename);
+                return $file;
+            });
+        }
 
         return response()->json($files);
     }

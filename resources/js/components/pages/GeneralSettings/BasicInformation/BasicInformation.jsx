@@ -1,16 +1,117 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './BasicInformation.scss';
-import BasicBreadcrumbs from'./BasicBreadcrumbs';
-import BasicMainInformation from'./BasicMainInformation';
+import {useTranslation} from "react-i18next";
+import {Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import eventBus from "../../../../eventBus";
 
-export const BasicInformation = () => {
+export default function BasicInformation() {
+  const { t } = useTranslation();
+  const [place, setPlace] = useState({})
+  const [countries,setCountries] = useState([])
+
+  useEffect(() => {
+    getCountries()
+    getPlace()
+  },[])
+
+  const getPlace = () => {
+    axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}`).then(response => {
+      setPlace(response.data)
+    }).catch(error => {
+    })
+  }
+
+  const getCountries = () => {
+    axios.get(`${process.env.APP_URL}/api/countries`).then(response => {
+      setCountries(response.data)
+    }).catch(error => {
+    })
+  }
+
+  const onChange = (e) => {
+    setPlace(prev => ({...prev, [e.target.name]: e.target.value}))
+  }
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    axios.post(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}`, place).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Information saved'});
+    }).catch(error => {
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          eventBus.dispatch("notification", {type: 'error', message: value});
+        }
+      } else if (error.response.status === 401) {
+        eventBus.dispatch("notification", {type: 'error', message: 'Authorization error'});
+      } else {
+        eventBus.dispatch("notification", {type: 'error', message: error.message});
+        console.log('Error', error.message)
+      }
+    })
+  }
+
   return (
     <div className='pages__container'>
-      <h1>Basic Information</h1>
-      <BasicBreadcrumbs />
-      <BasicMainInformation />
+      <h2>{t('Basic Information')}</h2>
+      <form onSubmit={onSubmit}>
+        <Grid container spacing={2} sx={{pb: 2, mt: 3}}>
+          <Grid item xs={12} sm={6}>
+            <TextField label={t('Name')} size="small" fullWidth
+                       type="text" id="name" name="name" required
+                       onChange={onChange} value={place.name || ''}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label={t('Address')} size="small" fullWidth
+                       type="text" id="address" name="address"
+                       onChange={onChange} value={place.address || ''}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label={t('City')} size="small" fullWidth
+                       type="text" id="city" name="city"
+                       onChange={onChange} value={place.city || ''}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_country_id">{t('Country')}</InputLabel>
+              <Select label={t('Country')} value={place.country_id || 0}
+                      labelId="label_country_id" id="country_id" name="country_id"
+                      onChange={onChange}>
+                {countries.map((c,key) => {
+                  return <MenuItem key={key} value={c.id}>{c.name}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label={t('Zip code')} size="small" fullWidth
+                       type="text" id="zip_code" name="zip_code"
+                       onChange={onChange} value={place.zip_code || ''}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label={t('Phone')} size="small" fullWidth
+                       type="text" id="phone" name="phone"
+                       onChange={onChange} value={place.phone || ''}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label={t('Email')} size="small" fullWidth
+                       type="email" id="email" name="email"
+                       onChange={onChange} value={place.email || ''}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField label={t('Home page')} size="small" fullWidth
+                       type="text" id="home_page" name="home_page"
+                       onChange={onChange} value={place.home_page || ''}
+            />
+          </Grid>
+        </Grid>
+        <Button variant="contained" type="submit">{t('Save')}</Button>
+      </form>
     </div>
   )
 }
-
-export default BasicInformation ;

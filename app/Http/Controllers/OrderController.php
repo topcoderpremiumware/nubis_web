@@ -528,4 +528,35 @@ class OrderController extends Controller
 
         return response()->json($order);
     }
+
+    public function freeTables(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'area_id' => 'required|exists:areas,id',
+            'seats' => 'required|integer',
+            'reservation_time' => 'required|date_format:Y-m-d H:i:s'
+        ]);
+
+        $reservation_time = Carbon::parse($request->reservation_time);
+
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$reservation_time->format("Y-m-d"));
+        if(empty($working_hours)) return response()->json([
+            'message' => 'Non-working day'
+        ], 400);
+
+        $time_from = $reservation_time->copy();
+        $time_from->setTime(0, 0, 0);
+        $time_to = $reservation_time->copy();
+        $time_to->setTime(23, 59, 59);
+        $orders = Order::where('place_id',$request->place_id)
+            ->where('area_id',$request->area_id)
+            ->whereBetween('reservation_time',[$time_from,$time_to])
+            ->where('is_take_away',0)
+            ->get();
+
+        $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
+
+        return response()->json($free_tables);
+    }
 }

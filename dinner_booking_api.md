@@ -788,32 +788,13 @@ curl -X GET https://dinner-book.vasilkoff.info/api/feedbacks_public \
 ---
 <a id="files"></a>
 ## Files
-#### Create
-> POST /api/files
+#### Set
+> POST /api/files/{purpose}
 ```cmd
-curl -X POST https://dinner-book.vasilkoff.info/api/files \
+curl -X POST https://dinner-book.vasilkoff.info/api/files/logo \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -F "place_id=1" \
--F "purpose=logo" \
--F "file=@logo.png"
-```
-#### Get one
-> GET /api/files/{id}
-```cmd
-curl -X GET https://dinner-book.vasilkoff.info/api/files/1 \
--H "X-Requested-With: XMLHttpRequest" \
--H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
--H 'Content-Type: application/json'
-```
-#### Save
-> POST /api/files/{id}
-```cmd
-curl -X POST https://dinner-book.vasilkoff.info/api/files/1 \
--H "X-Requested-With: XMLHttpRequest" \
--H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
--F "place_id=1" \
--F "purpose=logo" \
 -F "file=@logo.png"
 ```
 #### Get all

@@ -57,6 +57,7 @@
         "jquery": "^3.6.0",
         "material-ui-color": "^1.2.0",
         "moment": "^2.29.3",
+        "prop-types": "^15.8.1",
         "react-booking-calendar": "^1.0.3",
         "react-calendar-timeline": "^0.28.0",
         "react-datepicker": "^4.8.0",

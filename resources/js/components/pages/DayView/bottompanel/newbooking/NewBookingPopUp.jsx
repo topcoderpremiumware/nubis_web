@@ -1,12 +1,13 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import NewBookingContent from './NewBookingPopUpContent';
+import NewBookingPopUpContent from './NewBookingPopUpContent';
 import './NewBooking.scss';
 
 import CloseIcon from '@mui/icons-material/Close';
+import {useEffect} from "react";
+import eventBus from "../../../../../eventBus";
+import Moment from "moment";
 
 
 const style = {
@@ -24,27 +25,52 @@ const style = {
 
 export default function NewBookingPopUp() {
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
+  const [order, setOrder] = React.useState({});
   const handleClose = () => setOpen(false);
+
+  useEffect(async () => {
+    eventBus.on("newBookingOpen",  (data) => {
+      if(data && data.hasOwnProperty('id') && data.id > 0){
+        axios.get(`${process.env.APP_URL}/api/orders/${data.id}`, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        }).then(response => {
+          setOrder(response.data)
+        }).catch(error => {
+        })
+      }else{
+        setOrder({
+          area_id: localStorage.getItem('area_id'),
+          comment: "",
+          customer: {},
+          customer_id: null,
+          is_take_away: 0,
+          length: 120,
+          marks: "",
+          place_id: localStorage.getItem('place_id'),
+          reservation_time: Moment().format('YYYY-MM-DD HH:mm'),
+          seats: 1,
+          source: "internal",
+          status: "ordered",
+          table_ids: [],
+          tableplan_id: 0,
+        })
+      }
+      setOpen(true);
+    });
+  }, [])
 
   return (
     <div>
-      <Button className='ButtonNewBooking' onClick={handleOpen}>NewBooking</Button>
       <Modal
         open={open}
-        // onClose={handleClose}  
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style} className='NewBookingPopUp__container'>
           <div className='close-icon' onClick={handleClose}><CloseIcon/></div>
-          <NewBookingContent/>
-          {/* <Typography id="modal-modal-title" variant="h6" component="h2" onClick={handleClose}>
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>  */}
+          <NewBookingPopUpContent order={order}/>
         </Box>
       </Modal>
     </div>

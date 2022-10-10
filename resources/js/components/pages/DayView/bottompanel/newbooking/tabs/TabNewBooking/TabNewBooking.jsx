@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import './TabNewBooking.scss'
 
 import SelectDate from './SelectDate';
@@ -28,129 +28,460 @@ import CkeckBoxSms from './CkeckBoxSms';
 import CkeckBoxEmail from './CkeckBoxEmail';
 
 import GuestTables from './tables/GuestTables';
+import {
+  CircularProgress,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Select,
+  Switch,
+  TextField
+} from "@mui/material";
+import DatePicker from "react-datepicker";
+import Moment from "moment";
+import {useTranslation} from "react-i18next";
+import eventBus from "../../../../../../../eventBus";
 
+export default function TabNewBooking(props) {
+  const {t} = useTranslation();
+  const [order, setOrder] = React.useState({})
+  const [areas, setAreas] = React.useState([])
+  const [times, setTimes] = React.useState([])
+  const [tables, setTables] = React.useState([])
+  const [loading, setLoading] = useState(true)
 
+  useEffect(async () => {
+    getAreas()
+  }, [])
 
+  useEffect(async () => {
+    setOrder(props.order)
+  }, [props])
 
+  useEffect(async () => {
+    console.log('order',order)
+    getTimes()
+    getTables()
+  }, [order])
 
-export default function TabNewBooking() {
+  const getAreas = () => {
+    setLoading(true)
+    axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
+      setAreas(response.data)
+      setLoading(false)
+    }).catch(error => {
+    })
+  }
 
-const [point, setPoint] = React.useState('');
+  const getTimes = () => {
+    axios.get(`${process.env.APP_URL}/api/work_time`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        area_id: order.area_id,
+        seats: order.seats,
+        date: Moment(order.reservation_time).format('YYYY-MM-DD')
+      }
+    }).then(response => {
+      setTimes(response.data)
+    }).catch(error => {
+    })
+  }
 
-const handleChange = (event) => {
-setPoint(event.target.value);
-};
+  const getTables = () => {
+    axios.get(`${process.env.APP_URL}/api/free_tables`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        area_id: order.area_id,
+        seats: order.seats,
+        reservation_time: order.reservation_time
+      }
+    }).then(response => {
+      let data = []
+      for (const tableplan in response.data) {
+        for (const index in response.data[tableplan]) {
+          data.push({...response.data[tableplan][index], tableplan_id:tableplan})
+        }
+      }
+      console.log('tables',data)
+      setTables(data)
+    }).catch(error => {
+    })
+  }
 
-return (
-<div className='TabNewBooking__container'>
-  <div className='TabNewBooking__TopContainer'>
-    <div className='TabNewBooking__left'>
-      <div className='TabNewBooking__BookingInfoTop'>
-        <div className='NewBookingDate__container container TabNewBookingItemcontainer'>
-          <span className='NewBooking__ItemName'>Date:</span>
-          <SelectDate />
-        </div>
-        <div className='NewBookingArea__container container TabNewBookingItemcontainer'>
-          <span className='NewBooking__ItemName'>Area:</span>
-          <SelectArea />
-        </div>
-        <div className='TabNewBookingDuraion__container container TabNewBookingItemcontainer'>
-          <span className='NewBooking__ItemName'>Pax / Duration :</span>
-          <div className='NewBooking__InputPax'>
-            <SelectPax />
+  const onChange = (e) => {
+    if(e.target.name === 'date') setOrder(prev => (
+      {
+        ...prev,
+        reservation_time: e.target.value + ' ' + Moment(prev.reservation_time).format('HH:mm:00')
+      }
+      ))
+    if(e.target.name === 'time') setOrder(prev => (
+      {
+        ...prev,
+        reservation_time: Moment(prev.reservation_time).format('YYYY-MM-DD') + ' ' + e.target.value+':00'
+      }
+    ))
+    if(e.target.name === 'area_id') setOrder(prev => ({...prev, area_id: e.target.value}))
+    if(e.target.name === 'seats') setOrder(prev => ({...prev, seats: e.target.value}))
+    if(e.target.name === 'length') setOrder(prev => ({...prev, length: e.target.value}))
+    if(e.target.name === 'table_ids') setOrder(prev => ({...prev, table_ids: getTableIds(e.target.value)}))
+    if(e.target.name === 'comment') setOrder(prev => ({...prev, comment: e.target.value}))
+    if(e.target.name === 'status') setOrder(prev => ({...prev, status: e.target.value}))
+    if(e.target.name === 'is_take_away') setOrder(prev => ({...prev, is_take_away: e.target.checked}))
+    if(e.target.name === 'customer_phone') setOrder(prev => ({...prev, customer: {
+      ...prev.customer, phone: e.target.value
+    }}))
+    if(e.target.name === 'customer_first_name') setOrder(prev => ({...prev, customer: {
+      ...prev.customer, first_name: e.target.value
+    }}))
+    if(e.target.name === 'customer_last_name') setOrder(prev => ({...prev, customer: {
+      ...prev.customer, last_name: e.target.value
+    }}))
+    if(e.target.name === 'customer_email') setOrder(prev => ({...prev, customer: {
+      ...prev.customer, email: e.target.value
+    }}))
+    if(e.target.name === 'customer_zip_code') setOrder(prev => ({...prev, customer: {
+      ...prev.customer, zip_code: e.target.value
+    }}))
+    if(e.target.name === 'customer_language') setOrder(prev => ({...prev, customer: {
+        ...prev.customer, language: e.target.value
+      }}))
+    if(e.target.name === 'customer_allow_send_emails') setOrder(prev => ({...prev, customer: {
+        ...prev.customer, allow_send_emails: e.target.checked
+      }}))
+    if(e.target.name === 'customer_allow_send_news') setOrder(prev => ({...prev, customer: {
+        ...prev.customer, allow_send_news: e.target.checked
+      }}))
+  }
+
+  const seatsOptions = () => {
+    let output = []
+    for (let i=1;i<=100;i++){
+      output.push({id:i,name:i})
+    }
+    return output
+  }
+
+  const lengthOptions = () => {
+    let output = []
+    for (let i=15;i<=1500;i+=15){
+      output.push({id:i,name:i+' min'})
+    }
+    return output
+  }
+
+  const timeOptions = () => {
+    return times.map(el => {
+      el = el.replace('T',' ')
+      el = el.replace('.000000Z','')
+      return el
+    })
+  }
+
+  const tablesOptions = () => {
+    return tables.map((el,index) => {
+      return {id:index, name: 'Table '+el.number+' ('+el.seats+' pax)'}
+    })
+  }
+
+  const getTableIds = (data) => {
+    let result = []
+    let tableplan_id = ''
+    console.log('tables',tables)
+    data.forEach(index => {
+      result.push(tables[index].number)
+      tableplan_id = tables[index].tableplan_id
+    })
+    setOrder(prev => ({...prev, tableplan_id: tableplan_id}))
+    return result
+  }
+
+  const getSelectedTables = () => {
+    let result = []
+    console.log('order.table_ids',order.table_ids)
+    order.table_ids.forEach(id => {
+      let index = tables.findIndex(el => {
+        return (el.tableplan_id === order.tableplan_id && el.number === id)
+      })
+      console.log('index',index)
+      result.push(index)
+    })
+    console.log('result',result)
+    return order.table_ids
+  }
+
+  return (<>{loading ? <div><CircularProgress/></div> :
+    <div className="row pt-3 TabNewBooking__container">
+      <div className="col-md-4">
+        <FormControl size="small" fullWidth className="datePickerFullWidth" sx={{mb:2}}>
+          <InputLabel htmlFor="date" shrink>{t('Date')}</InputLabel>
+          <DatePicker
+            dateFormat='LLLL dd yyyy'
+            selected={new Date(order.reservation_time || new Date())} id="date"
+            onSelect={e => {
+              onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
+            }}
+            onChange={e => {
+              onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
+            }}
+          />
+        </FormControl>
+        <FormControl size="small" fullWidth sx={{mb:2}}>
+          <InputLabel id="label_area_id">{t('Area')}</InputLabel>
+          <Select label={t('Area')} value={order.area_id || ''} required
+                  labelId="label_area_id" id="area_id" name="area_id"
+                  onChange={onChange}>
+            {areas.map((el, key) => {
+              return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+            })}
+          </Select>
+        </FormControl>
+        <div className="row">
+          <div className="col-6">
+            <FormControl size="small" fullWidth sx={{mb:2}}>
+              <InputLabel id="label_seats">{t('Seats')}</InputLabel>
+              <Select label={t('Seats')} value={order.seats || ''} required
+                      labelId="label_seats" id="seats" name="seats"
+                      onChange={onChange}>
+                {seatsOptions().map((el, key) => {
+                  return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
           </div>
-          <div className='NewBooking__InputStartTime'>
-            <SelectStartTime />
+          <div className="col-6">
+            <FormControl size="small" fullWidth sx={{mb:2}}>
+              <InputLabel id="label_length">{t('Length')}</InputLabel>
+              <Select label={t('Length')} value={order.length || ''} required
+                      labelId="label_length" id="length" name="length"
+                      onChange={onChange}>
+                {lengthOptions().map((el, key) => {
+                  return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
           </div>
-          <div className='time-spent'></div>
         </div>
-        <div className='TabNewBookingTableNote__container container TabNewBookingItemcontainer'>
-          <span className='NewBooking__ItemName'>Table note:</span>
-          <SelectTableNote />
+        <div className="row">
+          <div className="col-6">
+            <FormControl size="small" fullWidth sx={{mb:2}}>
+              <InputLabel id="label_time">{t('Time')}</InputLabel>
+              <Select label={t('Time')} value={Moment(order.reservation_time).format('HH:mm') || ''} required
+                      labelId="label_time" id="time" name="time"
+                      onChange={onChange}>
+                {timeOptions().map((el, key) => {
+                  return <MenuItem key={key} value={Moment(el).format('HH:mm')}>{Moment(el).format('HH:mm')}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </div>
+          <div className="col-6">
+            <FormControl size="small" fullWidth sx={{mb:2}}>
+              <InputLabel id="label_tables">{t('Tables')}</InputLabel>
+              <Select label={t('Tables')} value={getSelectedTables() || ''} required
+                      labelId="label_table_ids" id="table_ids" name="table_ids" multiple
+                      onChange={onChange}>
+                {tablesOptions().map((el, key) => {
+                  return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </div>
         </div>
-        
+        <TextField label={t('Note')} size="small" fullWidth multiline rows="2" sx={{mb:2}}
+                   type="text" id="comment" name="comment"
+                   onChange={onChange}
+                   value={order.comment}/>
+        <FormControl size="small" fullWidth sx={{mb:2}}>
+          <InputLabel id="label_status">{t('Status')}</InputLabel>
+          <Select label={t('Language')} value={order.status}
+                  labelId="label_status" id="status" name="status"
+                  onChange={onChange}>
+            <MenuItem value="ordered">{t('Ordered')}</MenuItem>
+            <MenuItem value="waiting">{t('Waiting')}</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControlLabel label={t('Take away')} labelPlacement="start" sx={{mb:2}}
+                          control={
+                            <Switch onChange={onChange}
+                                    name="is_take_away"
+                                    checked={Boolean(order.is_take_away)} />
+                          }/>
       </div>
-      <div className='TabNewBooking__BookingInfoBottom'>
-        <div className='TabNewBookingRestaurantNote__container container TabNewBookingItemcontainer'>
-          <span className='NewBooking__ItemName'>Restaurant Note:</span>
-          <SelectRestarauntNote />
-        </div>
-        <div className='TabNewBookingGuesttNote__container container TabNewBookingItemcontainer'>
-          <span className='NewBooking__ItemName'>Guest Note:</span>
-          <SelectGuestNote />
+      <div className="col-md-8">
+        <div className="row">
+          <div className="col-md-6">
+            <TextField label={t('Phone')} size="small" fullWidth sx={{mb:2}}
+                       type="text" id="customer_phone" name="customer_phone"
+                       value={order.customer.phone}
+                       onChange={onChange}/>
+          </div>
+          <div className="col-md-6">
+            <TextField label={t('First name')} size="small" fullWidth sx={{mb:2}}
+                       type="text" id="customer_first_name" name="customer_first_name"
+                       value={order.customer.first_name}
+                       onChange={onChange}/>
+          </div>
+          <div className="col-md-6">
+            <TextField label={t('Last name')} size="small" fullWidth sx={{mb:2}}
+                       type="text" id="customer_last_name" name="customer_last_name"
+                       value={order.customer.last_name}
+                       onChange={onChange}/>
+          </div>
+          <div className="col-md-6">
+            <TextField label={t('Email address')} size="small" fullWidth sx={{mb:2}}
+                       type="email" id="customer_email" name="customer_email"
+                       value={order.customer.email}
+                       onChange={onChange}/>
+          </div>
+          <div className="col-md-6">
+            <TextField label={t('Zip code')} size="small" fullWidth sx={{mb:2}}
+                       type="text" id="customer_zip_code" name="customer_zip_code"
+                       value={order.customer.zip_code}
+                       onChange={onChange}/>
+          </div>
+          <div className="col-md-6">
+            <FormControl size="small" fullWidth sx={{mb:2}}>
+              <InputLabel id="label_language">{t('Language')}</InputLabel>
+              <Select label={t('Language')} value={order.customer.language || ''}
+                      labelId="label_language" id="customer_language" name="customer_language"
+                      onChange={onChange}>
+                {window.langs.map((lang,key) => {
+                  return <MenuItem key={key} value={lang.lang}>{lang.title}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </div>
+          <div className="col-md-6">
+            <FormControlLabel label={t('Allow send emails')} labelPlacement="start" sx={{mb:2}}
+                              control={
+                                <Switch onChange={onChange}
+                                        name="customer_allow_send_emails"
+                                        checked={Boolean(order.customer.allow_send_emails)} />
+                              }/>
+          </div>
+          <div className="col-md-6">
+            <FormControlLabel label={t('Allow send news')} labelPlacement="start" sx={{mb:2}}
+                              control={
+                                <Switch onChange={onChange}
+                                        name="customer_allow_send_news"
+                                        checked={Boolean(order.customer.allow_send_news)} />
+                              }/>
+          </div>
         </div>
       </div>
     </div>
-    <div className='TabNewBooking__right'>
-      <div className='GuestInfoTop__container'>
-        <div className='GuestInfo'>
-          <div className='GuestInfo-phone container TabNewBookingItemcontainer'>
-            <span className='NewBooking__ItemName'>Phone:</span>
-            <div className='TabNewBooking__Phone-container'>
-              <SelectCountry />
-              <SelectPhone />
-            </div>
-          </div>
-          <div className='GuestInfo-first-name container TabNewBookingItemcontainer'>
-            <span className='NewBooking__ItemName'>FirstName:</span>
-            <SelectFirstName />
-          </div>
-          <div className='GuestInfo-last-name container TabNewBookingItemcontainer'>
-            <span className='NewBooking__ItemName'>LastName:</span>
-            <SelectLastName />
-          </div>
-          <div className='GuestInfo-company container TabNewBookingItemcontainer'>
-            <span className='NewBooking__ItemName'>Company:</span>
-            <SelectCompany />
-          </div>
-          <div className='GuestInfo-company container TabNewBookingItemcontainer'>
-            <span className='NewBooking__ItemName'>Email:</span>
-            <SelectEmail />
-          </div>
-          <div className='GuestInfo-company container TabNewBookingItemcontainer'>
-            <span className='NewBooking__ItemName'>Address:</span>
-            <SelectAddress />
-          </div>
-          <div className='GuestInfo-company container TabNewBookingItemcontainer'>
-            <span className='NewBooking__ItemName'>Zip code/city:</span>
-            <SelectCity />
-          </div>
-        </div>
-        <div className='GuestInfoActive'>
-          <div className='GuestInfoActive__ButtonContainer'>
-            <ButtonWalkIn />
-            <ButtonReset />
-          </div>
-          <div className='GuestInfoActive__checkBox__container'>
-            <div className='GuestInfoActive__Sms_Service_Subscription'>
-              <CkeckBoxSms/>
-            </div>
-            <div className='GuestInfoActive__Email_Service_Subscription'>
-              <CkeckBoxEmail/>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='GuestInfoBottom__container'>
-        <div className='GuestInfoActiveTable'>
-            <GuestTables />
-          </div>
-      </div>
-      
-    </div>
-  </div>
-  <div className='NewBooking__BottomContainer'>
-    <div className='NewBooking__Bottom-button'>
-      <ButtonAddWaitingList />
-    </div>
-    <div className='NewBooking__Bottom-button'>
-      <ButtonCancel />
-    </div>
-    <div className='NewBooking__Bottom-button'>
-      <ButtonSave />
-    </div>
-  </div>
 
-</div>
-)
+// <div className='TabNewBooking__container'>
+//   <div className='TabNewBooking__TopContainer'>
+//     <div className='TabNewBooking__left'>
+//       <div className='TabNewBooking__BookingInfoTop'>
+//         <div className='NewBookingDate__container container TabNewBookingItemcontainer'>
+//           <span className='NewBooking__ItemName'>Date:</span>
+//           <SelectDate />
+//         </div>
+//         <div className='NewBookingArea__container container TabNewBookingItemcontainer'>
+//           <span className='NewBooking__ItemName'>Area:</span>
+//           <SelectArea />
+//         </div>
+//         <div className='TabNewBookingDuraion__container container TabNewBookingItemcontainer'>
+//           <span className='NewBooking__ItemName'>Pax / Duration :</span>
+//           <div className='NewBooking__InputPax'>
+//             <SelectPax />
+//           </div>
+//           <div className='NewBooking__InputStartTime'>
+//             <SelectStartTime />
+//           </div>
+//           <div className='time-spent'></div>
+//         </div>
+//         <div className='TabNewBookingTableNote__container container TabNewBookingItemcontainer'>
+//           <span className='NewBooking__ItemName'>Table note:</span>
+//           <SelectTableNote />
+//         </div>
+//
+//       </div>
+//       <div className='TabNewBooking__BookingInfoBottom'>
+//         <div className='TabNewBookingRestaurantNote__container container TabNewBookingItemcontainer'>
+//           <span className='NewBooking__ItemName'>Restaurant Note:</span>
+//           <SelectRestarauntNote />
+//         </div>
+//         <div className='TabNewBookingGuesttNote__container container TabNewBookingItemcontainer'>
+//           <span className='NewBooking__ItemName'>Guest Note:</span>
+//           <SelectGuestNote />
+//         </div>
+//       </div>
+//     </div>
+//     <div className='TabNewBooking__right'>
+//       <div className='GuestInfoTop__container'>
+//         <div className='GuestInfo'>
+//           <div className='GuestInfo-phone container TabNewBookingItemcontainer'>
+//             <span className='NewBooking__ItemName'>Phone:</span>
+//             <div className='TabNewBooking__Phone-container'>
+//               <SelectCountry />
+//               <SelectPhone />
+//             </div>
+//           </div>
+//           <div className='GuestInfo-first-name container TabNewBookingItemcontainer'>
+//             <span className='NewBooking__ItemName'>FirstName:</span>
+//             <SelectFirstName />
+//           </div>
+//           <div className='GuestInfo-last-name container TabNewBookingItemcontainer'>
+//             <span className='NewBooking__ItemName'>LastName:</span>
+//             <SelectLastName />
+//           </div>
+//           <div className='GuestInfo-company container TabNewBookingItemcontainer'>
+//             <span className='NewBooking__ItemName'>Company:</span>
+//             <SelectCompany />
+//           </div>
+//           <div className='GuestInfo-company container TabNewBookingItemcontainer'>
+//             <span className='NewBooking__ItemName'>Email:</span>
+//             <SelectEmail />
+//           </div>
+//           <div className='GuestInfo-company container TabNewBookingItemcontainer'>
+//             <span className='NewBooking__ItemName'>Address:</span>
+//             <SelectAddress />
+//           </div>
+//           <div className='GuestInfo-company container TabNewBookingItemcontainer'>
+//             <span className='NewBooking__ItemName'>Zip code/city:</span>
+//             <SelectCity />
+//           </div>
+//         </div>
+//         <div className='GuestInfoActive'>
+//           <div className='GuestInfoActive__ButtonContainer'>
+//             <ButtonWalkIn />
+//             <ButtonReset />
+//           </div>
+//           <div className='GuestInfoActive__checkBox__container'>
+//             <div className='GuestInfoActive__Sms_Service_Subscription'>
+//               <CkeckBoxSms/>
+//             </div>
+//             <div className='GuestInfoActive__Email_Service_Subscription'>
+//               <CkeckBoxEmail/>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//       <div className='GuestInfoBottom__container'>
+//         <div className='GuestInfoActiveTable'>
+//             <GuestTables />
+//           </div>
+//       </div>
+//
+//     </div>
+//   </div>
+//   <div className='NewBooking__BottomContainer'>
+//     <div className='NewBooking__Bottom-button'>
+//       <ButtonAddWaitingList />
+//     </div>
+//     <div className='NewBooking__Bottom-button'>
+//       <ButtonCancel />
+//     </div>
+//     <div className='NewBooking__Bottom-button'>
+//       <ButtonSave />
+//     </div>
+//   </div>
+//
+// </div>
+  }</>)
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -14,12 +15,12 @@ return new class extends Migration
     public function up()
     {
         Schema::table('giftcards', function (Blueprint $table) {
-            $table->timestamp('expired_at');
+            $table->timestamp('expired_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->double('initial_amount',9,2);
             $table->double('spend_amount',9,2);
         });
         Schema::table('coupons', function (Blueprint $table) {
-            $table->timestamp('expired_at');
+            $table->timestamp('expired_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->double('amount',9,2);
         });
     }

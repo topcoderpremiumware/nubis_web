@@ -322,11 +322,13 @@ class OrderController extends Controller
             $end = Carbon::parse($request->date.' '.$working_hour['to']);
             for($time;$time->lt($end);$time->addMinutes(15)){
                 $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
-                foreach ($free_tables[$working_hour['tableplan_id']] as $table){
-                    if(!array_key_exists('ordered',$table['time'][$indexFrom])){
-                        if(!$time->lt(Carbon::now())){
-                            array_push($free_time,$time->copy());
-                            break;
+                if(array_key_exists($working_hour['tableplan_id'],$free_tables)) {
+                    foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
+                        if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                            if (!$time->lt(Carbon::now())) {
+                                array_push($free_time, $time->copy());
+                                break;
+                            }
                         }
                     }
                 }
@@ -360,11 +362,13 @@ class OrderController extends Controller
             $end = Carbon::parse($request->date.' '.$working_hour['to']);
             for($time;$time->lt($end);$time->addMinutes(15)){
                 $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
-                foreach ($free_tables[$working_hour['tableplan_id']] as $table){
-                    if(!array_key_exists('ordered',$table['time'][$indexFrom])){
-                        if(!$time->lt(Carbon::now())){
-                            array_push($work_time,$time->copy());
-                            break;
+                if(array_key_exists($working_hour['tableplan_id'],$free_tables)){
+                    foreach ($free_tables[$working_hour['tableplan_id']] as $table){
+                        if(!array_key_exists('ordered',$table['time'][$indexFrom])){
+                            if(!$time->lt(Carbon::now())){
+                                array_push($work_time,$time->copy());
+                                break;
+                            }
                         }
                     }
                 }

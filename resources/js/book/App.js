@@ -376,6 +376,7 @@ const App = () => {
               ordersError={ordersError}
               ordersErrorString={ordersErrorString}
               filteredOrder={filteredOrder}
+              getDatesTimeInfo={getDatesTimeInfo}
             />
           </div>
           <div>

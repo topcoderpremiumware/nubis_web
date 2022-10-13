@@ -29,7 +29,6 @@ function SecondBlock(props) {
   const [times, setTimes] = useState([]);
 
   useEffect(async () => {
-    props.getDatesTimeInfo(utils().getToday());
     getExtraTime(selectedDay)
     eventBus.on("langChanged", () => {
       getExtraTime(selectedDay)

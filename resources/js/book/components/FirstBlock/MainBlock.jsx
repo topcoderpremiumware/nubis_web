@@ -10,6 +10,7 @@ import Copyrigth from "./Copyrigth/Copyrigth.jsx";
 import CancelingModal from "./CancelingModal/CancelingModal.jsx";
 import MainModal from "../MainModal/MainModal.jsx";
 import {useTranslation} from "react-i18next";
+import {utils} from "react-modern-calendar-datepicker";
 
 function MainBlock(props) {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ function MainBlock(props) {
   };
 
   const changeType = () => {
+    props.getDatesTimeInfo(utils().getToday());
     props.handleChangeItem();
     props.setBlockType("secondblock");
   };

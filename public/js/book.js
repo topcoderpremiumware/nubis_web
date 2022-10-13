@@ -5883,7 +5883,8 @@ var App = function App() {
             getOrders: getOrders,
             ordersError: ordersError,
             ordersErrorString: ordersErrorString,
-            filteredOrder: filteredOrder
+            filteredOrder: filteredOrder,
+            getDatesTimeInfo: getDatesTimeInfo
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_components_SecondBlock_SecondBlock__WEBPACK_IMPORTED_MODULE_4__["default"], {
@@ -6345,8 +6346,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Copyrigth_Copyrigth_jsx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Copyrigth/Copyrigth.jsx */ "./resources/js/book/components/FirstBlock/Copyrigth/Copyrigth.jsx");
 /* harmony import */ var _CancelingModal_CancelingModal_jsx__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./CancelingModal/CancelingModal.jsx */ "./resources/js/book/components/FirstBlock/CancelingModal/CancelingModal.jsx");
 /* harmony import */ var _MainModal_MainModal_jsx__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../MainModal/MainModal.jsx */ "./resources/js/book/components/MainModal/MainModal.jsx");
-/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/useTranslation.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/useTranslation.js");
+/* harmony import */ var react_modern_calendar_datepicker__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react-modern-calendar-datepicker */ "./node_modules/react-modern-calendar-datepicker/lib/index.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 
@@ -6363,7 +6366,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function MainBlock(props) {
-  var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_12__.useTranslation)(),
+  var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_13__.useTranslation)(),
       t = _useTranslation.t;
 
   var isValid = props.guestValue;
@@ -6372,6 +6375,7 @@ function MainBlock(props) {
   };
 
   var changeType = function changeType() {
+    props.getDatesTimeInfo((0,react_modern_calendar_datepicker__WEBPACK_IMPORTED_MODULE_11__.utils)().getToday());
     props.handleChangeItem();
     props.setBlockType("secondblock");
   };
@@ -6401,48 +6405,48 @@ function MainBlock(props) {
     canceled: t('You cancelled the reservation'),
     morePeople: t('Please enter your message')
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
     className: "content",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_img_Image_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_img_Image_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
       className: "content-wrapper",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
         className: "main-block__body",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_SelectLang_SelectLang_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Title_Title_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_SelectLang_SelectLang_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_Title_Title_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
           restaurantInfo: props.restaurantInfo
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_Counter_Counter_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_Counter_Counter_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], {
           increment: props.increment,
           decrement: props.decrement,
           guestValue: props.guestValue
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("button", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("button", {
           className: "button-main",
           onClick: changeType,
           disabled: !isValid,
           children: mainProps.title
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
           className: "main-block__info",
-          children: [t('Booking for'), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
+          children: [t('Booking for'), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("a", {
             href: "#",
             onClick: function onClick(e) {
               return showModalMore(e);
             },
             children: t('more than 8')
-          }), " ", t('people?'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("br", {}), " ", t('Do you want to'), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
+          }), " ", t('people?'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("br", {}), " ", t('Do you want to'), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("a", {
             href: "#",
             onClick: function onClick(e) {
               return showModalWindow(e);
             },
             children: t('cancel a booking')
           }), "?"]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsxs)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
           className: "main-footer",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("a", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("a", {
             href: "/#",
             className: "cancel-booking",
             onClick: function onClick(e) {
               return showModalWindow(e);
             },
             children: t('Cancel Booking')
-          }), (props.defaultModal === "canceling" || props.defaultModal === "confirmation" || props.defaultModal === "canceled" || props.defaultModal === "morePeople") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_CancelingModal_CancelingModal_jsx__WEBPACK_IMPORTED_MODULE_9__["default"], {
+          }), (props.defaultModal === "canceling" || props.defaultModal === "confirmation" || props.defaultModal === "canceled" || props.defaultModal === "morePeople") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_CancelingModal_CancelingModal_jsx__WEBPACK_IMPORTED_MODULE_9__["default"], {
             title: getTitle[props.defaultModal] || "",
             active: props.modalActive,
             setActive: props.setModalActive,
@@ -6465,7 +6469,7 @@ function MainBlock(props) {
             ordersError: props.ordersError,
             ordersErrorString: props.ordersErrorString,
             filteredOrder: props.filteredOrder
-          }), (props.defaultModal === "emailCancel" || props.defaultModal === "emailMore") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_MainModal_MainModal_jsx__WEBPACK_IMPORTED_MODULE_10__["default"], {
+          }), (props.defaultModal === "emailCancel" || props.defaultModal === "emailMore") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_MainModal_MainModal_jsx__WEBPACK_IMPORTED_MODULE_10__["default"], {
             title: t('Please enter your email to continue'),
             active: props.modalActive,
             setActive: props.setModalActive,
@@ -6474,7 +6478,7 @@ function MainBlock(props) {
             defaultModal: props.defaultModal,
             userData: props.userData,
             setUserData: props.setUserData
-          }), (props.defaultModal === "loginCancel" || props.defaultModal === "loginMore") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)(_MainModal_MainModal_jsx__WEBPACK_IMPORTED_MODULE_10__["default"], {
+          }), (props.defaultModal === "loginCancel" || props.defaultModal === "loginMore") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_MainModal_MainModal_jsx__WEBPACK_IMPORTED_MODULE_10__["default"], {
             title: t('Please enter your email and password to continue'),
             active: props.modalActive,
             setActive: props.setModalActive,
@@ -6483,7 +6487,7 @@ function MainBlock(props) {
             mainProps: mainProps,
             userData: props.userData,
             setUserData: props.setUserData
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__.jsx)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
             className: "copyrigth",
             children: props.restaurantInfo.name
           })]
@@ -7329,13 +7333,12 @@ function SecondBlock(props) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            props.getDatesTimeInfo((0,react_modern_calendar_datepicker__WEBPACK_IMPORTED_MODULE_8__.utils)().getToday());
             getExtraTime(selectedDay);
             _eventBus__WEBPACK_IMPORTED_MODULE_11__["default"].on("langChanged", function () {
               getExtraTime(selectedDay);
             });
 
-          case 3:
+          case 2:
           case "end":
             return _context.stop();
         }

@@ -386,7 +386,7 @@ class OrderController extends Controller
             foreach ($tables as $tab){
                 if($tab['seats'] < $seats) continue;
                 if(empty(array_filter($tab['time'],function($t) use ($seats) {
-                    return ($t['is_online'] && ($t['min_seats'] <= $seats && $t['group'] == 0));
+                    return ($t['is_online'] && ($t['min_seats'] <= $seats /*&& $t['group'] == 0*/));
                 }))) continue;
                 if(!array_key_exists($tableplan->id,$free_tables) || !array_key_exists($tab['number'],$free_tables[$tableplan->id])){
                     $free_tables[$tableplan->id][$tab['number']] = $tab;

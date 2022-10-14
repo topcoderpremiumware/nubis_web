@@ -221,9 +221,8 @@ export const SidebarData = [
     iconOpened: <KeyboardArrowUp />,
     subNav: [
       {
-        title: 'sub-nav',
-        path: '',
-        cName: 'sub-nav'
+        title: 'Pricing',
+        path: '/pricing'
       }
     ]
   }

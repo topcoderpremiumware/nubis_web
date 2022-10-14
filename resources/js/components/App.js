@@ -21,6 +21,7 @@ import CustomBookingLength from "./pages/CustomBookingLength/CustomBookingLength
 
 import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInformation';
 import Pictures from './pages/GeneralSettings/Pictures/Pictures';
+import Pricing from './pages/Pricing/Pricing';
 
 function App() {
   if(localStorage.getItem('token')){
@@ -57,6 +58,8 @@ function App() {
                   <Route path='/Pictures' exact element={<Pictures/>} />
 
                   <Route path='/CustomBookingLength' exact element={<CustomBookingLength/>}/>
+
+                  <Route path='/pricing' exact element={<Pricing/>}/>
                 </Routes>
               </div>
             </>

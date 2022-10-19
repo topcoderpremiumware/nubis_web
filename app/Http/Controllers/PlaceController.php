@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Log;
+use App\Models\Order;
 use App\Models\Place;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -108,5 +110,16 @@ class PlaceController extends Controller
         $place = Place::find($request->id);
 
         return response()->json($place);
+    }
+
+    public function getCustomers($place_id, Request $request)
+    {
+        $customers = Customer::whereIn('id', function($query) use ($place_id){
+            $query->select('customer_id')
+                ->from(with(new Order)->getTable())
+                ->where('place_id', $place_id);
+        })->get();
+
+        return response()->json($customers);
     }
 }

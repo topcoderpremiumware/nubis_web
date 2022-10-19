@@ -181,6 +181,14 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/custom_booking_lengt
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
+#### Get customers
+> GET /api/places/{id}/customers
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/customers \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
 ---
 <a id="settings"></a>
 ## Settings

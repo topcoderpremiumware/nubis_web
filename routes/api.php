@@ -88,6 +88,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/timetables',[TimetableController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByPlace']);
+    Route::get('places/{place_id}/customers',[PlaceController::class, 'getCustomers']);
 
     Route::post('roles',[RoleController::class, 'create']);
     Route::get('roles',[RoleController::class, 'getAll']);

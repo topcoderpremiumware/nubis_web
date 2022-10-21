@@ -347,30 +347,35 @@ export default function TabNewBooking(props) {
             <div className="col-md-6">
               <TextField label={t('Phone')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_phone" name="customer_phone"
+                        InputLabelProps={{ shrink: !!order.customer.phone }}
                         value={order.customer.phone}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('First name')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_first_name" name="customer_first_name"
+                        InputLabelProps={{ shrink: !!order.customer.first_name }}
                         value={order.customer.first_name}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Last name')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_last_name" name="customer_last_name"
+                        InputLabelProps={{ shrink: !!order.customer.last_name }}
                         value={order.customer.last_name}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Email address')} size="small" fullWidth sx={{mb:2}}
                         type="email" id="customer_email" name="customer_email"
+                        InputLabelProps={{ shrink: !!order.customer.email }}
                         value={order.customer.email}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Zip code')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_zip_code" name="customer_zip_code"
+                        InputLabelProps={{ shrink: !!order.customer.zip_code }}
                         value={order.customer.zip_code}
                         onChange={onChange}/>
             </div>

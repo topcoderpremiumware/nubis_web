@@ -8,6 +8,7 @@ use App\Models\Timetable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class CustomBookingLengthController extends Controller
 {
@@ -41,6 +42,15 @@ class CustomBookingLengthController extends Controller
             ], 400);
         }
 
+        $filename = null;
+
+        if($request->file('image')){
+            $file_upload = $request->file('image');
+            $filename = $request->place_id.'/'.$file_upload->getClientOriginalName();
+            $content = $file_upload->getContent();
+            Storage::disk('public')->put($filename,$content);
+        }
+
         $custom_booking_length = CustomBookingLength::create([
             'place_id' => $request->place_id,
             'name' => $request->name,
@@ -56,6 +66,7 @@ class CustomBookingLengthController extends Controller
             'week_days' => $request->has('week_days') ? $request->week_days : [],
             'spec_dates' => $request->has('spec_dates') ? $request->spec_dates : [],
             'time_intervals' => $request->has('time_intervals') ? $request->time_intervals : [],
+            'image' => $filename,
         ]);
 
         Log::add($request,'create-custom_booking_length','Created custom booking length #'.$custom_booking_length->id);
@@ -98,6 +109,19 @@ class CustomBookingLengthController extends Controller
             ], 400);
         }
 
+        if($custom_booking_length->image){
+            Storage::disk('public')->delete($custom_booking_length->image);
+        }
+
+        $filename = null;
+
+        if($request->file('image')){
+            $file_upload = $request->file('image');
+            $filename = $request->place_id.'/'.$file_upload->getClientOriginalName();
+            $content = $file_upload->getContent();
+            Storage::disk('public')->put($filename,$content);
+        }
+
         $res = $custom_booking_length->update([
             'place_id' => $request->place_id,
             'name' => $request->name,
@@ -113,6 +137,7 @@ class CustomBookingLengthController extends Controller
             'week_days' => $request->has('week_days') ? $request->week_days : [],
             'spec_dates' => $request->has('spec_dates') ? $request->spec_dates : [],
             'time_intervals' => $request->has('time_intervals') ? $request->time_intervals : [],
+            'image' => $filename ? $filename : $custom_booking_length->image,
         ]);
 
         Log::add($request,'change-custom_booking_length','Changed custom booking length #'.$id);
@@ -228,6 +253,7 @@ class CustomBookingLengthController extends Controller
                 array_push($lengths_data,[
                     'name' => $custom_length->labels[$request->language]['name'],
                     'description' => $custom_length->labels[$request->language]['description'],
+                    'image' => Storage::disk('public')->url($custom_length->image),
                     'length' => $custom_length->length,
                     'time' => $times
                 ]);

@@ -841,7 +841,22 @@ curl -X GET https://dinner-book.vasilkoff.info/api/countries \
 curl -X POST https://dinner-book.vasilkoff.info/api/custom_booking_lengths \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
--d '{"place_id":1,"name":"Some tea","length":120,"active":1,"start_date":"2022-01-01","end_date":"2030-01-01","max":10,"min":0,"areas":[1],"priority":1,"labels":{"en":{"name":"Some tea","description":"Drink a tea and leave"}},"month_days":[1,5,7,9],"week_days":[0,1,2,3,4,5,6],"spec_dates":[],"time_intervals":{"from":"18:00","to":"22:00"}
+-F "place_id=1" \
+-F "name=Some tea" \
+-F "length=120" \
+-F "active=1" \
+-F "start_date=2022-01-01" \
+-F "end_date=2030-01-01" \
+-F "max=10" \
+-F "min=0" \
+-F "areas=[1]" \
+-F "priority=1" \
+-F "labels={"en":{"name":"Some tea","description":"Drink a tea and leave"}}" \
+-F "month_days=[1,5,7,9]" \
+-F "week_days=[0,1,2,3,4,5,6]" \
+-F "spec_dates=[]" \
+-F "time_intervals={"from":"18:00","to":"22:00"}" \
+-F "image=@logo.png"
 ```
 #### Get one
 > GET /api/custom_booking_lengths/{id}
@@ -857,7 +872,22 @@ curl -X GET https://dinner-book.vasilkoff.info/api/custom_booking_lengths/1 \
 curl -X POST https://dinner-book.vasilkoff.info/api/custom_booking_lengths/1 \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
--d '{"place_id":1,"name":"Some tea","length":120,"active":1,"start_date":"2022-01-01","end_date":"2030-01-01","max":10,"min":0,"areas":[1],"priority":1,"labels":{"en":{"name":"Some tea","description":"Drink a tea and leave"}},"month_days":[1,5,7,9],"week_days":[0,1,2,3,4,5,6],"spec_dates":[],"time_intervals":{"from":"18:00","to":"22:00"}
+-F "place_id=1" \
+-F "name=Some tea" \
+-F "length=120" \
+-F "active=1" \
+-F "start_date=2022-01-01" \
+-F "end_date=2030-01-01" \
+-F "max=10" \
+-F "min=0" \
+-F "areas=[1]" \
+-F "priority=1" \
+-F "labels={"en":{"name":"Some tea","description":"Drink a tea and leave"}}" \
+-F "month_days=[1,5,7,9]" \
+-F "week_days=[0,1,2,3,4,5,6]" \
+-F "spec_dates=[]" \
+-F "time_intervals={"from":"18:00","to":"22:00"}" \
+-F "image=@logo.png"
 ```
 #### Get list by params
 > GET /api/custom_booking_lengths

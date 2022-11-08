@@ -130,6 +130,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('message_tempates/{purpose}',[MessageTemplateController::class, 'getId']);
     Route::post('message_tempates/{purpose}',[MessageTemplateController::class, 'save']);
     Route::get('message_tempates',[MessageTemplateController::class, 'getAllByPlace']);
+    Route::post('message_tempates_test_sms',[MessageTemplateController::class, 'sendTestSms']);
 
     Route::post('giftcards',[GiftcardController::class, 'create']);
     Route::get('giftcards/{id}',[GiftcardController::class, 'getId']);

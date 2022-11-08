@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-
+    \Illuminate\Support\Facades\Mail::raw('Hello World!', function($msg) {$msg->to('2ovob4ehko@ukr.net')->subject('Test Email'); });
 });
 
 Route::view('/book/{place_id}', 'book')->name('book');

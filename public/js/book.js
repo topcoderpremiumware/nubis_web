@@ -5381,7 +5381,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../helper */ "./resources/js/helper.js");
 /* harmony import */ var _i18nextConf__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./../i18nextConf */ "./resources/js/i18nextConf.js");
 /* harmony import */ var _components_LoadingPage__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../components/LoadingPage */ "./resources/js/components/LoadingPage.jsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _components_SelectArea_SelectArea__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./components/SelectArea/SelectArea */ "./resources/js/book/components/SelectArea/SelectArea.jsx");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 /* provided dependency */ var process = __webpack_require__(/*! process/browser.js */ "./node_modules/process/browser.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
@@ -5408,6 +5409,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 
@@ -5563,22 +5565,40 @@ var App = function App() {
       areas = _useState42[0],
       setAreas = _useState42[1];
 
+  var _useState43 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+      _useState44 = _slicedToArray(_useState43, 2),
+      showSelectAreas = _useState44[0],
+      setShowSelectAreas = _useState44[1];
+
   var myAxios = axios.create({
     baseURL: process.env.APP_URL,
     responseType: "json"
   });
 
   var handleChangeItem = function handleChangeItem() {
-    var _ref$current;
+    if (blockType === 'mainblock' && !showSelectAreas) {
+      var _ref$current;
 
-    (_ref$current = ref.current) === null || _ref$current === void 0 ? void 0 : _ref$current.increment();
+      (_ref$current = ref.current) === null || _ref$current === void 0 ? void 0 : _ref$current.moveTo(2);
+    } else {
+      var _ref$current2;
+
+      (_ref$current2 = ref.current) === null || _ref$current2 === void 0 ? void 0 : _ref$current2.increment();
+    }
   };
 
   var handlePrevItem = function handlePrevItem(e) {
-    var _ref$current2;
-
     e.preventDefault();
-    (_ref$current2 = ref.current) === null || _ref$current2 === void 0 ? void 0 : _ref$current2.decrement();
+
+    if (blockType === 'secondblock' && !showSelectAreas) {
+      var _ref$current3;
+
+      (_ref$current3 = ref.current) === null || _ref$current3 === void 0 ? void 0 : _ref$current3.moveTo(0);
+    } else {
+      var _ref$current4;
+
+      (_ref$current4 = ref.current) === null || _ref$current4 === void 0 ? void 0 : _ref$current4.decrement();
+    }
   };
 
   function increment() {
@@ -5748,10 +5768,17 @@ var App = function App() {
             case 0:
               _context.next = 2;
               return axios.get("".concat(process.env.APP_URL, "/api/places/").concat(getPlaceId(), "/areas")).then(function (response) {
-                setAreas(response.data);
+                var availableAreas = response.data.filter(function (i) {
+                  return !!i.online_available;
+                });
+                setAreas(availableAreas);
 
-                if (response.data.length > 0) {
-                  localStorage.setItem('area_id', response.data[0].id);
+                if (availableAreas.length > 1) {
+                  setShowSelectAreas(true);
+                }
+
+                if (availableAreas.length === 1) {
+                  localStorage.setItem('area_id', availableAreas[0].id);
                 }
               })["catch"](function (error) {
                 console.log("Error: ", error);
@@ -5837,10 +5864,10 @@ var App = function App() {
   }; // Getting extra time
 
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(react__WEBPACK_IMPORTED_MODULE_0__.Suspense, {
-    fallback: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_components_LoadingPage__WEBPACK_IMPORTED_MODULE_12__["default"], {}),
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_responsive_carousel__WEBPACK_IMPORTED_MODULE_3__.Carousel, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(react__WEBPACK_IMPORTED_MODULE_0__.Suspense, {
+    fallback: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_components_LoadingPage__WEBPACK_IMPORTED_MODULE_12__["default"], {}),
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(react_responsive_carousel__WEBPACK_IMPORTED_MODULE_3__.Carousel, {
         swipeable: false,
         showArrows: false,
         showStatus: false,
@@ -5848,8 +5875,8 @@ var App = function App() {
         showThumbs: false,
         autoPlay: false,
         ref: ref,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_components_FirstBlock_MainBlock_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_components_FirstBlock_MainBlock_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
             handleChangeItem: handleChangeItem,
             increment: increment,
             decrement: decrement,
@@ -5886,8 +5913,18 @@ var App = function App() {
             filteredOrder: filteredOrder,
             getDatesTimeInfo: getDatesTimeInfo
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_components_SecondBlock_SecondBlock__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_components_SelectArea_SelectArea__WEBPACK_IMPORTED_MODULE_13__["default"], {
+            areas: areas,
+            restaurantInfo: restaurantInfo,
+            guestValue: guestValue,
+            handleChangeItem: handleChangeItem,
+            handlePrevItem: handlePrevItem,
+            blockType: blockType,
+            setBlockType: setBlockType
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_components_SecondBlock_SecondBlock__WEBPACK_IMPORTED_MODULE_4__["default"], {
             getPlaceId: getPlaceId,
             handleChangeItem: handleChangeItem,
             handlePrevItem: handlePrevItem,
@@ -5919,8 +5956,8 @@ var App = function App() {
             setExtraTime: setExtraTime,
             extraTime: extraTime
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_components_LastBlock_LastBlock__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_components_LastBlock_LastBlock__WEBPACK_IMPORTED_MODULE_5__["default"], {
             handleChangeItem: handleChangeItem,
             handlePrevItem: handlePrevItem,
             guestValue: guestValue,
@@ -5956,7 +5993,7 @@ var App = function App() {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 
 if (document.getElementById('app')) {
-  react_dom__WEBPACK_IMPORTED_MODULE_8__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(App, {}), document.getElementById('app'));
+  react_dom__WEBPACK_IMPORTED_MODULE_8__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(App, {}), document.getElementById('app'));
 }
 
 /***/ }),
@@ -7966,6 +8003,139 @@ function WaitingModal(props) {
     })
   });
 }
+
+/***/ }),
+
+/***/ "./resources/js/book/components/SelectArea/SelectArea.jsx":
+/*!****************************************************************!*\
+  !*** ./resources/js/book/components/SelectArea/SelectArea.jsx ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _FirstBlock_img_Image__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../FirstBlock/img/Image */ "./resources/js/book/components/FirstBlock/img/Image.jsx");
+/* harmony import */ var _SecondBlock_SecondBlock_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../SecondBlock/SecondBlock.css */ "./resources/js/book/components/SecondBlock/SecondBlock.css");
+/* harmony import */ var _FirstBlock_SelectLang_SelectLang__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../FirstBlock/SelectLang/SelectLang */ "./resources/js/book/components/FirstBlock/SelectLang/SelectLang.jsx");
+/* harmony import */ var _FirstBlock_Copyrigth_Copyrigth__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../FirstBlock/Copyrigth/Copyrigth */ "./resources/js/book/components/FirstBlock/Copyrigth/Copyrigth.jsx");
+/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/useTranslation.js");
+/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/Trans.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+
+
+
+
+
+function SelectArea(props) {
+  var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_6__.useTranslation)(),
+      t = _useTranslation.t;
+
+  var restaurantInfo = props.restaurantInfo;
+
+  var checkToken = function checkToken() {
+    props.handleChangeItem();
+    props.setBlockType("secondblock");
+  };
+
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(props.areas[0].id),
+      _useState2 = _slicedToArray(_useState, 2),
+      selectedArea = _useState2[0],
+      setSelectedArea = _useState2[1];
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    localStorage.setItem('area_id', props.areas[0].id);
+  }, []);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+    className: "content",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_FirstBlock_img_Image__WEBPACK_IMPORTED_MODULE_1__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+      className: "content-wrapper",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        className: "main-block__body",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "nav",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: "back",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("a", {
+              href: "/#",
+              className: "back-link",
+              onClick: function onClick(e) {
+                return props.handlePrevItem(e);
+              },
+              children: ["\u2190 ", t('Back')]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: "second-step__lang",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_FirstBlock_SelectLang_SelectLang__WEBPACK_IMPORTED_MODULE_3__["default"], {})
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+          className: "overhead second-overhead",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_i18next__WEBPACK_IMPORTED_MODULE_7__.Trans, {
+            children: ["Reserved ", {
+              val: props.guestValue
+            }, " Guests"]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+          className: "title second-title",
+          children: t('Select Area')
+        }), props.areas.map(function (i) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            style: {
+              textAlign: 'left'
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("label", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+                name: 'area',
+                type: "radio",
+                value: i.id,
+                checked: selectedArea === i.id,
+                onChange: function onChange() {
+                  setSelectedArea(i.id);
+                  localStorage.setItem('area_id', i.id);
+                }
+              }, i.id), "\xA0", i.name]
+            })
+          });
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "button-main next-button",
+          onClick: checkToken,
+          style: {
+            marginTop: "40px"
+          },
+          children: [t('Next'), " \u2192"]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+          className: "footer",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_FirstBlock_Copyrigth_Copyrigth__WEBPACK_IMPORTED_MODULE_4__["default"], {
+            restaurantInfo: restaurantInfo
+          })
+        })]
+      })
+    })]
+  });
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SelectArea);
 
 /***/ }),
 

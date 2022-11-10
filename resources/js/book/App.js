@@ -13,6 +13,7 @@ import {normalizeNumber} from "../helper"
 import './../i18nextConf';
 import LoadingPage from "../components/LoadingPage";
 import {useTranslation} from "react-i18next";
+import SelectArea from "./components/SelectArea/SelectArea";
 
 const App = () => {
   const ref = useRef(null);
@@ -64,6 +65,7 @@ const App = () => {
 
   const [extraTime, setExtraTime] = useState({});
   const [areas, setAreas] = useState([]);
+  const [showSelectAreas, setShowSelectAreas] = useState(false);
 
   const myAxios = axios.create({
     baseURL: process.env.APP_URL,
@@ -71,12 +73,20 @@ const App = () => {
   });
 
   const handleChangeItem = () => {
-    ref.current?.increment();
+    if(blockType === 'mainblock' && !showSelectAreas) {
+      ref.current?.moveTo(2)
+    } else {
+      ref.current?.increment();
+    }
   };
 
   const handlePrevItem = (e) => {
     e.preventDefault()
-    ref.current?.decrement();
+    if(blockType === 'secondblock' && !showSelectAreas) {
+      ref.current?.moveTo(0)
+    } else {
+      ref.current?.decrement();
+    }
   };
 
   function increment() {
@@ -262,9 +272,13 @@ const App = () => {
 
   const getAreas = async () => {
     await axios.get(`${process.env.APP_URL}/api/places/${getPlaceId()}/areas`).then(response => {
-      setAreas(response.data)
-      if (response.data.length > 0) {
-        localStorage.setItem('area_id', response.data[0].id)
+      const availableAreas = response.data.filter(i => !!i.online_available)
+      setAreas(availableAreas)
+      if(availableAreas.length > 1) {
+        setShowSelectAreas(true)
+      }
+      if (availableAreas.length === 1) {
+        localStorage.setItem('area_id', availableAreas[0].id)
       }
     }).catch(error => {
       console.log("Error: ", error);
@@ -380,6 +394,17 @@ const App = () => {
             />
           </div>
           <div>
+            <SelectArea
+              areas={areas}
+              restaurantInfo={restaurantInfo}
+              guestValue={guestValue}
+              handleChangeItem={handleChangeItem}
+              handlePrevItem={handlePrevItem}
+              blockType={blockType}
+              setBlockType={setBlockType}
+            />
+          </div>
+          <div>
             <SecondBlock
               getPlaceId={getPlaceId}
               handleChangeItem={handleChangeItem}
@@ -413,7 +438,6 @@ const App = () => {
               extraTime={extraTime}
             />
           </div>
-
           <div>
             <LastBlock
               handleChangeItem={handleChangeItem}

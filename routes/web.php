@@ -2,6 +2,7 @@
 
 use App\Models\Area;
 use App\Models\Order;
+use App\Models\Place;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-    \Illuminate\Support\Facades\Mail::raw('Hello World!', function($msg) {$msg->to('2ovob4ehko@ukr.net')->subject('Test Email'); });
+    \Illuminate\Support\Facades\Mail::raw('Hello World!', function($msg) {$msg->to('2ovob4ehko@gmail.com')->subject('Test Email'); });
 });
 
 Route::view('/book/{place_id}', 'book')->name('book');

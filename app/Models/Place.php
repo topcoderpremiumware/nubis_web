@@ -77,4 +77,15 @@ class Place extends Model
     {
         return $this->belongsTo(Country::class);
     }
+
+    public function admins()
+    {
+        $admins = collect([]);
+        foreach ($this->users as $user) {
+            if($user->hasRole('admin',$this->id)){
+                $admins->push($user);
+            }
+        }
+        return $admins;
+    }
 }

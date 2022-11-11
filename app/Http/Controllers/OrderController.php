@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Log;
+use App\Models\MessageTemplate;
 use App\Models\Order;
+use App\Models\Place;
 use App\Models\Tableplan;
+use App\SMS\SMS;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -49,6 +53,17 @@ class OrderController extends Controller
         ]);
 
         Log::add($request,'create-order','Created order #'.$order->id);
+
+        // TODO: get SMS API token of current place and set in to send function as 4th param
+        $customer = Customer::find($request->customer_id);
+        $confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','sms-confirmation')
+            ->where('language',$customer->language)
+            ->where('active',1)
+            ->first();
+        if($confirmation_template){
+            $result = SMS::send([$customer->phone], $confirmation_template->text, env('APP_NAME'));
+        }
 
         return response()->json($order);
     }
@@ -99,6 +114,17 @@ class OrderController extends Controller
         ]);
 
         Log::add($request,'change-order','Changed order #'.$order->id);
+
+        // TODO: get SMS API token of current place and set in to send function as 4th param
+        $customer = Customer::find($request->customer_id);
+        $change_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','sms-change')
+            ->where('language',$customer->language)
+            ->where('active',1)
+            ->first();
+        if($change_template){
+            $result = SMS::send([$customer->phone], $change_template->text, env('APP_NAME'));
+        }
 
         if($res){
             $order = Order::find($id);
@@ -177,6 +203,17 @@ class OrderController extends Controller
         }
 
         Log::add($request,'delete-order','Deleted order #'.$order->id);
+
+        // TODO: get SMS API token of current place and set in to send function as 4th param
+        $customer = Customer::find($request->customer_id);
+        $delete_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','sms-delete')
+            ->where('language',$customer->language)
+            ->where('active',1)
+            ->first();
+        if($delete_template){
+            $result = SMS::send([$customer->phone], $delete_template->text, env('APP_NAME'));
+        }
 
         $order->delete();
 
@@ -529,6 +566,26 @@ class OrderController extends Controller
             'source' => 'online',
             'marks' => ''
         ]);
+
+        // TODO: get SMS API token of current place and set in to send function as 4th param
+        $confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','sms-confirmation')
+            ->where('language',Auth::user()->language)
+            ->where('active',1)
+            ->first();
+        if($confirmation_template){
+            $result = SMS::send([Auth::user()->phone], $confirmation_template->text, env('APP_NAME'));
+        }
+
+        $place = Place::find($request->place_id);
+        $notification_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','sms-notification')
+            //->where('language','en')
+            ->where('active',1)
+            ->first();
+        if($notification_template){
+            $result = SMS::send([$place->phone], $notification_template->text, env('APP_NAME'));
+        }
 
         return response()->json($order);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\TemplateHelper;
 use App\Models\Customer;
 use App\Models\Log;
 use App\Models\MessageTemplate;
@@ -62,7 +63,7 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
         if($confirmation_template){
-            $result = SMS::send([$customer->phone], $confirmation_template->text, env('APP_NAME'));
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$confirmation_template->text), env('APP_NAME'));
         }
 
         return response()->json($order);
@@ -123,7 +124,7 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
         if($change_template){
-            $result = SMS::send([$customer->phone], $change_template->text, env('APP_NAME'));
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$change_template->text), env('APP_NAME'));
         }
 
         if($res){
@@ -212,7 +213,7 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
         if($delete_template){
-            $result = SMS::send([$customer->phone], $delete_template->text, env('APP_NAME'));
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$delete_template->text), env('APP_NAME'));
         }
 
         $order->delete();
@@ -574,7 +575,7 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
         if($confirmation_template){
-            $result = SMS::send([Auth::user()->phone], $confirmation_template->text, env('APP_NAME'));
+            $result = SMS::send([Auth::user()->phone], TemplateHelper::setVariables($order,$confirmation_template->text), env('APP_NAME'));
         }
 
         $place = Place::find($request->place_id);
@@ -584,7 +585,7 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
         if($notification_template){
-            $result = SMS::send([$place->phone], $notification_template->text, env('APP_NAME'));
+            $result = SMS::send([$place->phone], TemplateHelper::setVariables($order,$notification_template->text), env('APP_NAME'));
         }
 
         return response()->json($order);

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 
+use App\Helpers\TemplateHelper;
 use App\Models\Customer;
 use App\Models\MessageTemplate;
 use App\Models\Order;
@@ -45,7 +46,7 @@ class ReminderNotification implements ShouldQueue
                     ->where('active',1)
                     ->first();
                 if($reminder_template){
-                    $result = SMS::send([$customer->phone], $reminder_template->text, env('APP_NAME'));
+                    $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$reminder_template->text), env('APP_NAME'));
                 }
                 $marks = $order->marks;
                 $marks['reminded'] = true;

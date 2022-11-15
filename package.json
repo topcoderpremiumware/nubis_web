@@ -54,6 +54,7 @@
         "i18next": "^21.8.5",
         "i18next-browser-languagedetector": "^6.1.4",
         "i18next-http-backend": "^1.4.1",
+        "interactjs": "^1.10.17",
         "jquery": "^3.6.0",
         "material-ui-color": "^1.2.0",
         "moment": "^2.29.3",

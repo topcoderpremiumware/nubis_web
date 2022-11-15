@@ -12,6 +12,7 @@ import LoadingPage from "./LoadingPage";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import SmsTemplate from "./pages/SmsTemplate/SmsTemplate";
+import SmsApiKeys from './pages/SmsApiKeys/SmsApiKeys';
 import EmailTemplate from "./pages/EmailTemplate/EmailTemplate";
 import TablePlanSetup from "./pages/TablePlanSetup/TablePlanSetup";
 import Areas from "./pages/Areas/Areas";
@@ -20,6 +21,7 @@ import CustomBookingLength from "./pages/CustomBookingLength/CustomBookingLength
 
 import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInformation';
 import Pictures from './pages/GeneralSettings/Pictures/Pictures';
+import Pricing from './pages/Pricing/Pricing';
 
 function App() {
   if(localStorage.getItem('token')){
@@ -47,6 +49,7 @@ function App() {
                   <Route path='/Activity' exact element={<Activity/>}/>
                   <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
                   <Route path='/Areas' exact element={<Areas/>}/>
+                  <Route path='/SmsKeys' exact element={<SmsApiKeys/>}/>
                   <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
                   <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
                   <Route path='/OpeningTimes' exact element={<OpeningTimes/>}/>
@@ -55,6 +58,8 @@ function App() {
                   <Route path='/Pictures' exact element={<Pictures/>} />
 
                   <Route path='/CustomBookingLength' exact element={<CustomBookingLength/>}/>
+
+                  <Route path='/pricing' exact element={<Pricing/>}/>
                 </Routes>
               </div>
             </>

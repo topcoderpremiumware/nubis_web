@@ -27,7 +27,7 @@ import ButtonSave from './ButtonSave';
 import CkeckBoxSms from './CkeckBoxSms';
 import CkeckBoxEmail from './CkeckBoxEmail';
 
-import GuestTables from './tables/GuestTables';
+import GuestTablesApi from './tables/GuestTablesApi';
 import {
   CircularProgress,
   FormControl,
@@ -42,17 +42,41 @@ import DatePicker from "react-datepicker";
 import Moment from "moment";
 import {useTranslation} from "react-i18next";
 import eventBus from "../../../../../../../eventBus";
+import axios from 'axios';
 
 export default function TabNewBooking(props) {
   const {t} = useTranslation();
+
   const [order, setOrder] = React.useState({})
+  const [customers, setCustomers] = React.useState([])
   const [areas, setAreas] = React.useState([])
   const [times, setTimes] = React.useState([])
   const [tables, setTables] = React.useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(async () => {
-    getAreas()
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true)
+  
+        // get areas
+        await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
+          setAreas(response.data)
+        })
+        // get customers
+        await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/customers`, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        }).then(response => {
+          setCustomers(response.data)
+        })
+      } catch (err) {
+        console.log('err', err)
+      } finally {
+        setLoading(false)
+      }
+    })()
   }, [])
 
   useEffect(async () => {
@@ -64,15 +88,6 @@ export default function TabNewBooking(props) {
     getTimes()
     getTables()
   }, [order])
-
-  const getAreas = () => {
-    setLoading(true)
-    axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
-      setAreas(response.data)
-      setLoading(false)
-    }).catch(error => {
-    })
-  }
 
   const getTimes = () => {
     axios.get(`${process.env.APP_URL}/api/work_time`,{
@@ -211,167 +226,200 @@ export default function TabNewBooking(props) {
     return order.table_ids
   }
 
-  return (<>{loading ? <div><CircularProgress/></div> :
-    <div className="row pt-3 TabNewBooking__container">
-      <div className="col-md-4">
-        <FormControl size="small" fullWidth className="datePickerFullWidth" sx={{mb:2}}>
-          <InputLabel htmlFor="date" shrink>{t('Date')}</InputLabel>
-          <DatePicker
-            dateFormat='LLLL dd yyyy'
-            selected={new Date(order.reservation_time || new Date())} id="date"
-            onSelect={e => {
-              onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
-            }}
-            onChange={e => {
-              onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
-            }}
-          />
-        </FormControl>
-        <FormControl size="small" fullWidth sx={{mb:2}}>
-          <InputLabel id="label_area_id">{t('Area')}</InputLabel>
-          <Select label={t('Area')} value={order.area_id || ''} required
-                  labelId="label_area_id" id="area_id" name="area_id"
-                  onChange={onChange}>
-            {areas.map((el, key) => {
-              return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
-            })}
-          </Select>
-        </FormControl>
-        <div className="row">
-          <div className="col-6">
-            <FormControl size="small" fullWidth sx={{mb:2}}>
-              <InputLabel id="label_seats">{t('Seats')}</InputLabel>
-              <Select label={t('Seats')} value={order.seats || ''} required
-                      labelId="label_seats" id="seats" name="seats"
-                      onChange={onChange}>
-                {seatsOptions().map((el, key) => {
-                  return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
-                })}
-              </Select>
-            </FormControl>
+  const setTableOrder = (data) => {
+    setOrder(prev => ({
+      ...prev,
+      customer: {
+        first_name: data.first_name || '',
+        last_name: data.last_name || '',
+        email: data.email || '',
+        phone: data.phone || '',
+        zip_code: data.zip_code || '',
+        language: data.language || '',
+        allow_send_emails: data.allow_send_emails || false,
+        allow_send_news: data.allow_send_news || false,
+      }
+    }))
+  }
+
+  return (
+  <>
+    {loading ? <div><CircularProgress/></div> :
+      <div className="row pt-3 TabNewBooking__container">
+        <div className="col-md-4">
+          <FormControl size="small" fullWidth className="datePickerFullWidth" sx={{mb:2}}>
+            <InputLabel htmlFor="date" shrink>{t('Date')}</InputLabel>
+            <DatePicker
+              dateFormat='LLLL dd yyyy'
+              selected={new Date(order.reservation_time || new Date())} id="date"
+              onSelect={e => {
+                onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
+              }}
+              onChange={e => {
+                onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
+              }}
+            />
+          </FormControl>
+          <FormControl size="small" fullWidth sx={{mb:2}}>
+            <InputLabel id="label_area_id">{t('Area')}</InputLabel>
+            <Select label={t('Area')} value={order.area_id || ''} required
+                    labelId="label_area_id" id="area_id" name="area_id"
+                    onChange={onChange}>
+              {areas.map((el, key) => {
+                return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+              })}
+            </Select>
+          </FormControl>
+          <div className="row">
+            <div className="col-6">
+              <FormControl size="small" fullWidth sx={{mb:2}}>
+                <InputLabel id="label_seats">{t('Seats')}</InputLabel>
+                <Select label={t('Seats')} value={order.seats || ''} required
+                        labelId="label_seats" id="seats" name="seats"
+                        onChange={onChange}>
+                  {seatsOptions().map((el, key) => {
+                    return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
+            </div>
+            <div className="col-6">
+              <FormControl size="small" fullWidth sx={{mb:2}}>
+                <InputLabel id="label_length">{t('Length')}</InputLabel>
+                <Select label={t('Length')} value={order.length || ''} required
+                        labelId="label_length" id="length" name="length"
+                        onChange={onChange}>
+                  {lengthOptions().map((el, key) => {
+                    return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
+            </div>
           </div>
-          <div className="col-6">
-            <FormControl size="small" fullWidth sx={{mb:2}}>
-              <InputLabel id="label_length">{t('Length')}</InputLabel>
-              <Select label={t('Length')} value={order.length || ''} required
-                      labelId="label_length" id="length" name="length"
-                      onChange={onChange}>
-                {lengthOptions().map((el, key) => {
-                  return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
-                })}
-              </Select>
-            </FormControl>
+          <div className="row">
+            <div className="col-6">
+              <FormControl size="small" fullWidth sx={{mb:2}}>
+                <InputLabel id="label_time">{t('Time')}</InputLabel>
+                <Select label={t('Time')} value={Moment(order.reservation_time).format('HH:mm') || ''} required
+                        labelId="label_time" id="time" name="time"
+                        onChange={onChange}>
+                  {timeOptions().map((el, key) => {
+                    return <MenuItem key={key} value={Moment(el).format('HH:mm')}>{Moment(el).format('HH:mm')}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
+            </div>
+            <div className="col-6">
+              <FormControl size="small" fullWidth sx={{mb:2}}>
+                <InputLabel id="label_tables">{t('Tables')}</InputLabel>
+                <Select label={t('Tables')} value={getSelectedTables() || ''} required
+                        labelId="label_table_ids" id="table_ids" name="table_ids" multiple
+                        onChange={onChange}>
+                  {tablesOptions().map((el, key) => {
+                    return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
+            </div>
+          </div>
+          <TextField label={t('Note')} size="small" fullWidth multiline rows="2" sx={{mb:2}}
+                    type="text" id="comment" name="comment"
+                    onChange={onChange}
+                    value={order.comment}/>
+          <FormControl size="small" fullWidth sx={{mb:2}}>
+            <InputLabel id="label_status">{t('Status')}</InputLabel>
+            <Select label={t('Language')} value={order.status}
+                    labelId="label_status" id="status" name="status"
+                    onChange={onChange}>
+              <MenuItem value="ordered">{t('Ordered')}</MenuItem>
+              <MenuItem value="waiting">{t('Waiting')}</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControlLabel label={t('Take away')} labelPlacement="start" sx={{mb:2}}
+                            control={
+                              <Switch onChange={onChange}
+                                      name="is_take_away"
+                                      checked={Boolean(order.is_take_away)} />
+                            }/>
+        </div>
+        <div className="col-md-8">
+          <div className="row">
+            <div className="col-md-6">
+              <TextField label={t('Phone')} size="small" fullWidth sx={{mb:2}}
+                        type="text" id="customer_phone" name="customer_phone"
+                        InputLabelProps={{ shrink: !!order.customer.phone }}
+                        value={order.customer.phone}
+                        onChange={onChange}/>
+            </div>
+            <div className="col-md-6">
+              <TextField label={t('First name')} size="small" fullWidth sx={{mb:2}}
+                        type="text" id="customer_first_name" name="customer_first_name"
+                        InputLabelProps={{ shrink: !!order.customer.first_name }}
+                        value={order.customer.first_name}
+                        onChange={onChange}/>
+            </div>
+            <div className="col-md-6">
+              <TextField label={t('Last name')} size="small" fullWidth sx={{mb:2}}
+                        type="text" id="customer_last_name" name="customer_last_name"
+                        InputLabelProps={{ shrink: !!order.customer.last_name }}
+                        value={order.customer.last_name}
+                        onChange={onChange}/>
+            </div>
+            <div className="col-md-6">
+              <TextField label={t('Email address')} size="small" fullWidth sx={{mb:2}}
+                        type="email" id="customer_email" name="customer_email"
+                        InputLabelProps={{ shrink: !!order.customer.email }}
+                        value={order.customer.email}
+                        onChange={onChange}/>
+            </div>
+            <div className="col-md-6">
+              <TextField label={t('Zip code')} size="small" fullWidth sx={{mb:2}}
+                        type="text" id="customer_zip_code" name="customer_zip_code"
+                        InputLabelProps={{ shrink: !!order.customer.zip_code }}
+                        value={order.customer.zip_code}
+                        onChange={onChange}/>
+            </div>
+            <div className="col-md-6">
+              <FormControl size="small" fullWidth sx={{mb:2}}>
+                <InputLabel id="label_language">{t('Language')}</InputLabel>
+                <Select label={t('Language')} value={order.customer.language || ''}
+                        labelId="label_language" id="customer_language" name="customer_language"
+                        onChange={onChange}>
+                  {window.langs.map((lang,key) => {
+                    return <MenuItem key={key} value={lang.lang}>{lang.title}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
+            </div>
+            <div className="col-md-6">
+              <FormControlLabel label={t('Allow send emails')} labelPlacement="start" sx={{mb:2}}
+                                control={
+                                  <Switch onChange={onChange}
+                                          name="customer_allow_send_emails"
+                                          checked={Boolean(order.customer.allow_send_emails)} />
+                                }/>
+            </div>
+            <div className="col-md-6">
+              <FormControlLabel label={t('Allow send news')} labelPlacement="start" sx={{mb:2}}
+                                control={
+                                  <Switch onChange={onChange}
+                                          name="customer_allow_send_news"
+                                          checked={Boolean(order.customer.allow_send_news)} />
+                                }/>
+            </div>
+          </div>
+          <div className="row">
+            <div className='GuestInfoBottom__container'>
+              <div className='GuestInfoActiveTable'>
+                <GuestTablesApi
+                  data={customers}
+                  onClick={setTableOrder}
+                />
+              </div>
+            </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-6">
-            <FormControl size="small" fullWidth sx={{mb:2}}>
-              <InputLabel id="label_time">{t('Time')}</InputLabel>
-              <Select label={t('Time')} value={Moment(order.reservation_time).format('HH:mm') || ''} required
-                      labelId="label_time" id="time" name="time"
-                      onChange={onChange}>
-                {timeOptions().map((el, key) => {
-                  return <MenuItem key={key} value={Moment(el).format('HH:mm')}>{Moment(el).format('HH:mm')}</MenuItem>
-                })}
-              </Select>
-            </FormControl>
-          </div>
-          <div className="col-6">
-            <FormControl size="small" fullWidth sx={{mb:2}}>
-              <InputLabel id="label_tables">{t('Tables')}</InputLabel>
-              <Select label={t('Tables')} value={getSelectedTables() || ''} required
-                      labelId="label_table_ids" id="table_ids" name="table_ids" multiple
-                      onChange={onChange}>
-                {tablesOptions().map((el, key) => {
-                  return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
-                })}
-              </Select>
-            </FormControl>
-          </div>
-        </div>
-        <TextField label={t('Note')} size="small" fullWidth multiline rows="2" sx={{mb:2}}
-                   type="text" id="comment" name="comment"
-                   onChange={onChange}
-                   value={order.comment}/>
-        <FormControl size="small" fullWidth sx={{mb:2}}>
-          <InputLabel id="label_status">{t('Status')}</InputLabel>
-          <Select label={t('Language')} value={order.status}
-                  labelId="label_status" id="status" name="status"
-                  onChange={onChange}>
-            <MenuItem value="ordered">{t('Ordered')}</MenuItem>
-            <MenuItem value="waiting">{t('Waiting')}</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControlLabel label={t('Take away')} labelPlacement="start" sx={{mb:2}}
-                          control={
-                            <Switch onChange={onChange}
-                                    name="is_take_away"
-                                    checked={Boolean(order.is_take_away)} />
-                          }/>
       </div>
-      <div className="col-md-8">
-        <div className="row">
-          <div className="col-md-6">
-            <TextField label={t('Phone')} size="small" fullWidth sx={{mb:2}}
-                       type="text" id="customer_phone" name="customer_phone"
-                       value={order.customer.phone}
-                       onChange={onChange}/>
-          </div>
-          <div className="col-md-6">
-            <TextField label={t('First name')} size="small" fullWidth sx={{mb:2}}
-                       type="text" id="customer_first_name" name="customer_first_name"
-                       value={order.customer.first_name}
-                       onChange={onChange}/>
-          </div>
-          <div className="col-md-6">
-            <TextField label={t('Last name')} size="small" fullWidth sx={{mb:2}}
-                       type="text" id="customer_last_name" name="customer_last_name"
-                       value={order.customer.last_name}
-                       onChange={onChange}/>
-          </div>
-          <div className="col-md-6">
-            <TextField label={t('Email address')} size="small" fullWidth sx={{mb:2}}
-                       type="email" id="customer_email" name="customer_email"
-                       value={order.customer.email}
-                       onChange={onChange}/>
-          </div>
-          <div className="col-md-6">
-            <TextField label={t('Zip code')} size="small" fullWidth sx={{mb:2}}
-                       type="text" id="customer_zip_code" name="customer_zip_code"
-                       value={order.customer.zip_code}
-                       onChange={onChange}/>
-          </div>
-          <div className="col-md-6">
-            <FormControl size="small" fullWidth sx={{mb:2}}>
-              <InputLabel id="label_language">{t('Language')}</InputLabel>
-              <Select label={t('Language')} value={order.customer.language || ''}
-                      labelId="label_language" id="customer_language" name="customer_language"
-                      onChange={onChange}>
-                {window.langs.map((lang,key) => {
-                  return <MenuItem key={key} value={lang.lang}>{lang.title}</MenuItem>
-                })}
-              </Select>
-            </FormControl>
-          </div>
-          <div className="col-md-6">
-            <FormControlLabel label={t('Allow send emails')} labelPlacement="start" sx={{mb:2}}
-                              control={
-                                <Switch onChange={onChange}
-                                        name="customer_allow_send_emails"
-                                        checked={Boolean(order.customer.allow_send_emails)} />
-                              }/>
-          </div>
-          <div className="col-md-6">
-            <FormControlLabel label={t('Allow send news')} labelPlacement="start" sx={{mb:2}}
-                              control={
-                                <Switch onChange={onChange}
-                                        name="customer_allow_send_news"
-                                        checked={Boolean(order.customer.allow_send_news)} />
-                              }/>
-          </div>
-        </div>
-      </div>
-    </div>
 
 // <div className='TabNewBooking__container'>
 //   <div className='TabNewBooking__TopContainer'>

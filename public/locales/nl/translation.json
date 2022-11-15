@@ -207,5 +207,12 @@
     "Pictures": "Billeder",
     "Upload": "Upload",
     "Online booking picture": "Online booking billede",
-    "Basic Information": "Grundlæggende oplysninger"
+    "Basic Information": "Grundlæggende oplysninger",
+    "API Keys": "API nøgler",
+    "Key": "Nøgle",
+    "Secret": "Hemmelighed",
+    "Token": "Polet",
+    "Get API keys": "Hent API-nøgler",
+    "Pricing": "Prissætning",
+    "Select Area": "Vælge Område"
 }

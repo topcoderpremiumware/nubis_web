@@ -121,6 +121,10 @@ export const SidebarData = [
     iconOpened: <KeyboardArrowUp />,
     subNav: [
       {
+        title: 'API Keys',
+        path: '/SmsKeys'
+      },
+      {
         title: 'Confirmation',
         path: '/SmsTemplates/confirmation'
       },
@@ -217,9 +221,8 @@ export const SidebarData = [
     iconOpened: <KeyboardArrowUp />,
     subNav: [
       {
-        title: 'sub-nav',
-        path: '',
-        cName: 'sub-nav'
+        title: 'Pricing',
+        path: '/pricing'
       }
     ]
   }

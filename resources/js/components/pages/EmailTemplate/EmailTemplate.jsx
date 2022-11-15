@@ -6,6 +6,61 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import eventBus from "../../../eventBus";
 import {Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField} from "@mui/material";
+import { useRef } from "react";
+
+const options = [
+  '#ADDRESS#',
+  '#AREA_DAY#',
+  '#BOOK_DAY#',
+  '#BOOK_DAY_NAME#',
+  '#BOOK_TIME#',
+  '#BOOK_TIME_AMPM#',
+  '#BOOK_HOUR#',
+  '#BOOK_HOUR_END#',
+  '#BOOK_ID#',
+  '#BOOK_LENGTH#',
+  '#BOOK_MIN#',
+  '#BOOK_ENDTIME#',
+  '#BOOK_ENDTIME_AMPM#',
+  '#BOOK_MIN_END#',
+  '#BOOK_MONTH#',
+  '#BOOK_MONTH_NAME#',
+  '#BOOK_YEAR#',
+  '#BOOK_COMMENT#',
+  '#CALENDAR_LINK#',
+  '#CANCEL_LINK#',
+  '#RECONFIRM_LINK#',
+  '#CHECK_CREDIT_CARD_LINK#',
+  '#CITY#',
+  '#COMPANY#',
+  '#CONTACT_PERSON#',
+  '#CONTACT_PHONE#',
+  '#CUSTOM_BOOK_LENGTH_NAME#',
+  '#EMAIL#',
+  '#FIRST_NAME#',
+  '#LAST_NAME#',
+  '#FULL_NAME#',
+  '#MAP_LINK#',
+  '#NUMBER_OF_GUESTS#',
+  '#PAY_BOOKING_LINK#',
+  '#PHONE#',
+  '#RESTAURANT_ADDRESS#',
+  '#RESTAURANT_CITY#',
+  '#RESTAURANT_VAT#',
+  '#RESTAURANT_COUNTRY#',
+  '#RESTAURANT_EMAIL#',
+  '#RESTAURANT_HOMEPAGE#',
+  '#RESTAURANT_NAME#',
+  '#RESTAURANT_PHONE#',
+  '#RESTAURANT_PHOTO#',
+  '#RESTAURANT_ZIPCODE#',
+  '#ZIPCODE#',
+  '#LANDING_PAGE#',
+  '#MAX_PAX_PAGE#',
+  '#CANCEL_BOOKING_PAGE#',
+  '#ALTERNATIVE_RESTAURANTS_PAGE#',
+  '#UNSUBSCRIBE_LINK#',
+]
 
 export default function EmailTemplate() {
   const { t } = useTranslation();
@@ -25,6 +80,7 @@ export default function EmailTemplate() {
   const [subjectError, setSubjectError] = useState([])
   const [textError, setTextError] = useState([])
 
+  const select = useRef()
 
   useEffect(() => {
     setActive(1)
@@ -128,18 +184,28 @@ export default function EmailTemplate() {
                            }/>
               </div>
               <div className="mb-3">
-                <label htmlFor="text" className="form-label">{t('Message')}</label>
+                <label htmlFor="text" className="d-flex justify-content-between form-label">
+                  {t('Message')}
+                  <select ref={select}>
+                    <option value="">Insert dynamic data</option>
+                    {options.map(i => (
+                      <option key={i} value={i}>{i}</option>
+                    ))}
+                  </select>
+                </label>
                 <CKEditor
                   className={`${textError.length > 0 ? 'is-invalid' : ''}`}
                   editor={ClassicEditor}
                   data={text}
                   onChange={(event, editor) => onChange({target: {name: 'text', value: editor.getData()}})}
-                  // onReady={(editor) => {
-                  //   editor.plugins.get('FileRepository')
-                  //     .createUploadAdapter = (loader) => {
-                  //     return new UploadAdapter(loader)
-                  //   }
-                  // }}
+                  onReady={(editor) => {
+                    select.current.addEventListener('change', (ev) => {
+                      editor.model.change(writer => {
+                        const insertPosition = editor.model.document.selection.getFirstPosition();
+                        writer.insertText(ev.target.value, insertPosition);
+                      });
+                    })
+                  }}
                 />
                 {textError.length > 0 &&
                   <>{textError.map(el => {return <div className="invalid-feedback">{t(el)}</div>})}</>

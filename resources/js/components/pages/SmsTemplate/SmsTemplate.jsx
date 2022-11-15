@@ -5,6 +5,40 @@ import {useParams} from "react-router-dom";
 import eventBus from "../../../eventBus";
 import {Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField} from "@mui/material";
 
+const options = [
+  "#ADDRESS#",
+  "#AREA_NAME#",
+  "#BOOK_DAY#",
+  "#BOOK_DAY_NAME#",
+  "#BOOK_HOUR#",
+  "#BOOK_HOUR_END#",
+  "#BOOK_ID#",
+  "#BOOK_LENGTH#",
+  "#BOOK_MIN#",
+  "#BOOK_MIN_END#",
+  "#BOOK_MONTH#",
+  "#BOOK_MONTH_NAME#",
+  "#BOOK_YEAR#",
+  "#CANCEL_LINK#",
+  "#CITY#",
+  "#COMPANY#",
+  "#CONTACT_PERSON#",
+  "#CONTACT_PHONE#",
+  "#EMAIL#",
+  "#FIRST_NAME#",
+  "#LAST_NAME#",
+  "#NUMBER_OF_GUESTS#",
+  "#PHONE#",
+  "#RESTAURANT_ADDRESS#",
+  "#RESTAURANT_CITY#",
+  "#RESTAURANT_COUNTRY#",
+  "#RESTAURANT_EMAIL#",
+  "#RESTAURANT_HOMEPAGE#",
+  "#RESTAURANT_NAME#",
+  "#RESTAURANT_PHONE#",
+  "#RESTAURANT_ZIPCODE#",
+  "#ZIPCODE#",
+]
 export default function SmsTemplate() {
   const { t } = useTranslation();
   let { purpose } = useParams();
@@ -20,6 +54,7 @@ export default function SmsTemplate() {
   const [text, setText] = useState('')
   const [testPhone, setTestPhone] = useState('')
   const [textError, setTextError] = useState([])
+  const [caretPosition, setCaretPosition] = useState(null)
 
 
   useEffect(() => {
@@ -75,8 +110,21 @@ export default function SmsTemplate() {
   const onChange = (e) => {
     if(e.target.name === 'language') setLanguage(e.target.value)
     if(e.target.name === 'active') setActive(e.target.checked)
-    if(e.target.name === 'text') setText(e.target.value)
+    if(e.target.name === 'text') {
+      setText(e.target.value)
+      setCaretPosition(e.target.value.length)
+    }
     if(e.target.name === 'phone') setTestPhone(e.target.value)
+  }
+
+  const changeText = (ev) => {
+    let newText = text
+    if (newText.length > 0 && caretPosition === null) {
+      newText += ev.target.value
+    } else {
+      newText = newText.slice(0, caretPosition) + ev.target.value + newText.slice(caretPosition)
+    }
+    setText(newText)
   }
 
   return (
@@ -109,6 +157,13 @@ export default function SmsTemplate() {
                                   }/>
               </div>
               <div className="mb-3">
+                <select className="mb-3" onChange={changeText}>
+                  <option value="">Insert dynamic data</option>
+                  {options.map(i => (
+                    <option key={i} value={i}>{i}</option>
+                  ))}
+                </select>
+
                 <TextField label={t('Message')} size="small" fullWidth
                            type="text" id="text" name="text" required
                            onChange={onChange} value={text}
@@ -116,7 +171,9 @@ export default function SmsTemplate() {
                            error={textError.length > 0}
                            helperText={
                              <>{textError.map(el => {return t(el)})}</>
-                           }/>
+                           }
+                           onClick={ev => setCaretPosition(ev.target.selectionStart)}
+                           />
               </div>
               <Button variant="contained" type="submit">{t('Save template')}</Button>
             </form>

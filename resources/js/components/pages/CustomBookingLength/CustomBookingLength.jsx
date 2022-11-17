@@ -17,6 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomBookingLengthEditPopup from "./CustomBookingLengthEditPopup"
 import Moment from "moment";
+import { generateFormData } from "../../../helper";
 
 export default function CustomBookingLength() {
   const {t} = useTranslation();
@@ -69,7 +70,7 @@ export default function CustomBookingLength() {
       url = `${process.env.APP_URL}/api/custom_booking_lengths/${customLength.id}`
     }
 
-    axios.post(url, customLength,{
+    axios.post(url, generateFormData(customLength), {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }

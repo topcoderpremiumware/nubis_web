@@ -20,12 +20,14 @@ import ListSubheader from "@mui/material/ListSubheader";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import PictureUploadButton from "../GeneralSettings/Pictures/PictureUploadButton";
 
 export default function CustomBookingLengthEditPopup(props) {
   const { t } = useTranslation();
   const [areas, setAreas] = useState([])
   const [lengths, setLengths] = useState({})
   const [selectedLang, setSelectedLang] = useState(localStorage.getItem('i18nextLng'))
+  const [img, setImg] = useState('')
 
   useEffect(() => {
     if(props.lengths.hasOwnProperty('start_date')){
@@ -96,6 +98,15 @@ export default function CustomBookingLengthEditPopup(props) {
       if(index !== -1) area_ids.splice(index, 1);
       if(e.target.checked) area_ids.push(value)
       setLengths(prev => ({...prev, area_ids: area_ids}))
+    }
+    if(e.target.name === 'image') {
+      const file = e.target.files[0];
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        setImg(reader.result)
+        setLengths(prev => ({ ...prev, image: file }))
+      };
     }
     if(e.target.name === 'name') setLengths(prev => ({...prev, name: e.target.value}))
     if(e.target.name === 'length') setLengths(prev => ({...prev, length: e.target.value}))
@@ -210,6 +221,13 @@ export default function CustomBookingLengthEditPopup(props) {
           }}><CloseIcon /></IconButton>
       </DialogTitle>
       <DialogContent dividers>
+        <PictureUploadButton name="image" onChange={onChange} />
+        {img && 
+          <div>
+            <br />
+            <img src={img} alt="image" width={200} height={'auto'} />
+          </div>
+        }
         <ListSubheader component="div" disableSticky sx={{mb:2}}>{t('General Info')}</ListSubheader>
         <Grid container spacing={2} sx={{pb: 2}}>
           <Grid item xs={12} sm={4}>

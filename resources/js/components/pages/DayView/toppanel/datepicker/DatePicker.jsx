@@ -6,6 +6,7 @@ import './DatePickerCustom.scss';
 import Moment from "moment";
 import eventBus from "../../../../../eventBus";
 import { FaAngleDoubleRight, FaAngleRight, FaAngleDoubleLeft, FaAngleLeft } from "react-icons/fa";
+import { CgCalendarToday } from "react-icons/cg";
 // CSS Modules, react-datepicker-cssmodules.css
 // import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
@@ -114,6 +115,13 @@ import { FaAngleDoubleRight, FaAngleRight, FaAngleDoubleLeft, FaAngleLeft } from
         title="Next week"
       >
         <FaAngleDoubleRight />
+      </button>
+      <button
+        className="DataPicker__btn mx-1" 
+        onClick={() => onChange(Date.now())}
+        title="To today"
+      >
+        <CgCalendarToday />
       </button>
     </div>
   );

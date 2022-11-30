@@ -31,7 +31,7 @@ export default function AreasSelect() {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
       }).then(response => {
-        setAreas(response.data)
+        setAreas([{id: 'all', name: 'All areas'}, ...response.data])
       }).catch(error => {
       })
     }

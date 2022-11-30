@@ -207,11 +207,14 @@
     "Upload": "Upload",
     "Online booking picture": "Online booking picture",
     "Basic Information": "Basic Information",
-    "API Keys": "API Keys",
+    "SMS Keys": "SMS Keys",
     "Key": "Key",
     "Secret": "Secret",
     "Token": "Token",
     "Get API keys": "Get API keys",
     "Pricing": "Pricing",
-    "Select Area": "Select Area"
+    "Select Area": "Select Area",
+    "Stripe Keys": "Stripe Keys",
+    "C Key": "C Key",
+    "P Key": "P Key"
 }

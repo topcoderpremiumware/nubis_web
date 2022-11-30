@@ -40,6 +40,7 @@ export default function DayViewTableWaiting() {
     { field: 'comment', headerName: t('Note'), width: 200},
     { field: 'order_date', headerName: t('Order date'), width: 140 },
     { field: 'status', headerName: t('Status'), width: 100 },
+    { field: 'area', headerName: t('Area'), width: 160 },
   ];
 
 
@@ -48,6 +49,14 @@ export default function DayViewTableWaiting() {
     if(localStorage.getItem('place_id') &&
       localStorage.getItem('area_id') &&
       localStorage.getItem('time')){
+      let areas = []
+      await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        areas = response.data
+      })
       let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
       let time = JSON.parse(localStorage.getItem('time'))
       await axios.get(`${process.env.APP_URL}/api/orders`, {
@@ -68,6 +77,7 @@ export default function DayViewTableWaiting() {
           item.first_name = item.customer.first_name
           item.last_name = item.customer.last_name
           item.order_date = Moment(item.created_at).format('YYYY-MM-DD HH:mm')
+          item.area = areas.find(i => i.id === item.area_id).name
           return item
         }).filter(x => x)
 

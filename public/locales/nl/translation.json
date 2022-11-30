@@ -208,11 +208,14 @@
     "Upload": "Upload",
     "Online booking picture": "Online booking billede",
     "Basic Information": "Grundlæggende oplysninger",
-    "API Keys": "API nøgler",
+    "SMS Keys": "SMS nøgler",
     "Key": "Nøgle",
     "Secret": "Hemmelighed",
     "Token": "Polet",
     "Get API keys": "Hent API-nøgler",
     "Pricing": "Prissætning",
-    "Select Area": "Vælge Område"
+    "Select Area": "Vælge Område",
+    "Stripe Keys": "Stripe nøgler",
+    "C Key": "C Nøgle",
+    "P Key": "P Nøgle"
 }

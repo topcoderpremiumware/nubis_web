@@ -41,6 +41,7 @@ export default function DayViewTableWaiting() {
     { field: 'email', headerName: t('Email'), width: 150 },
     { field: 'deleted_at', headerName: t('Deleted date'), width: 140 },
     { field: 'status', headerName: t('Status'), width: 100 },
+    { field: 'area', headerName: t('Area'), width: 160 },
   ];
 
 
@@ -49,6 +50,14 @@ export default function DayViewTableWaiting() {
     if(localStorage.getItem('place_id') &&
       localStorage.getItem('area_id') &&
       localStorage.getItem('time')){
+      let areas = []
+      await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        areas = response.data
+      })
       let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
       let time = JSON.parse(localStorage.getItem('time'))
       await axios.get(`${process.env.APP_URL}/api/orders?deleted=1`, {
@@ -70,6 +79,7 @@ export default function DayViewTableWaiting() {
           item.phone = item.customer.phone
           item.email = item.customer.email
           item.deleted_at = Moment(item.deleted_at).format('YYYY-MM-DD HH:mm')
+          item.area = areas.find(i => i.id === item.area_id).name
           return item
         })
 

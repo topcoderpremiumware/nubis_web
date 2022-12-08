@@ -23,6 +23,7 @@ import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInfo
 import Pictures from './pages/GeneralSettings/Pictures/Pictures';
 import Pricing from './pages/Pricing/Pricing';
 import StripeApiKeys from './pages/GeneralSettings/StripeApiKeys/StripeApiKeys';
+import ReminderTime from './pages/GeneralSettings/ReminderTime/ReminderTime';
 
 function App() {
   if(localStorage.getItem('token')){
@@ -58,6 +59,7 @@ function App() {
                   <Route path='/Pictures' exact element={<Pictures/>} />
                   <Route path='/SmsKeys' exact element={<SmsApiKeys/>}/>
                   <Route path='/StripeKeys' exact element={<StripeApiKeys/>}/>
+                  <Route path='/ReminderTime' exact element={<ReminderTime/>}/>
 
                   <Route path='/CustomBookingLength' exact element={<CustomBookingLength/>}/>
 

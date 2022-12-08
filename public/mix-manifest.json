@@ -1,8 +1,6 @@
 {
     "/js/app.js": "/js/app.js",
     "/js/book.js": "/js/book.js",
-    "/js/giftcard.js": "/js/giftcard.js",
-    "/js/feedback.js": "/js/feedback.js",
     "/css/app.css": "/css/app.css",
     "/css/book.css": "/css/book.css"
 }

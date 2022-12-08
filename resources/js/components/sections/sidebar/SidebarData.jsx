@@ -94,6 +94,11 @@ export const SidebarData = [
         path: '/StripeKeys',
         cName: 'sub-nav'
       },
+      {
+        title: 'Reminder Time',
+        path: '/ReminderTime',
+        cName: 'sub-nav'
+      },
     ]
   },
   {

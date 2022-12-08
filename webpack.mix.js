@@ -18,3 +18,9 @@ mix.js('resources/js/app.js', 'public/js')
 mix.js('resources/js/book.js', 'public/js')
   .react()
   .sass('resources/sass/book.scss', 'public/css');
+
+mix.js('resources/js/giftcard.js', 'public/js')
+  .react();
+
+mix.js('resources/js/feedback.js', 'public/js')
+  .react();

@@ -33,6 +33,7 @@ export default function CustomBookingLengthEditPopup(props) {
     if(props.lengths.hasOwnProperty('start_date')){
       setAreas(props.areas)
       setLengths(props.lengths)
+      setImg(props.lengths.image_url)
     }
   },[props])
 
@@ -222,7 +223,7 @@ export default function CustomBookingLengthEditPopup(props) {
       </DialogTitle>
       <DialogContent dividers>
         <PictureUploadButton name="image" onChange={onChange} />
-        {img && 
+        {img &&
           <div>
             <br />
             <img src={img} alt="image" width={200} height={'auto'} />

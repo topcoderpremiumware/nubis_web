@@ -24,5 +24,7 @@ Route::get('/test', function () {
     \Illuminate\Support\Facades\Mail::raw('Hello World!', function($msg) {$msg->to('2ovob4ehko@gmail.com')->subject('Test Email'); });
 });
 
+Route::view('/giftcard', 'giftcard')->name('giftcard');
+Route::view('/feedback/{order_id}', 'feedback')->name('feedback');
 Route::view('/book/{place_id}', 'book')->name('book');
 Route::view('/{path?}/{path2?}', 'app')->name('home');

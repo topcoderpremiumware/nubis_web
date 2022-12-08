@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class CustomBookingLength extends Model
 {
@@ -11,7 +12,7 @@ class CustomBookingLength extends Model
 
     protected $guarded = [];
 
-    protected $appends = ['area_ids'];
+    protected $appends = ['area_ids','image_url'];
 
     protected $casts = [
         'max' => 'integer',
@@ -32,6 +33,11 @@ class CustomBookingLength extends Model
     public function getAreaIdsAttribute()
     {
         return $this->areas()->pluck('area_id');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return Storage::disk('public')->url($this->image);
     }
 
     public function areas()

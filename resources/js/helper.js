@@ -4,13 +4,20 @@ export const generateFormData = data => {
   const formData = new FormData()
 
   for (const [key, value] of Object.entries(data)) {
+    console.log('formData',key, value)
     if (value !== undefined) {
-      if (Array.isArray(value) && value.length) {
-        value.forEach(i => {
-          formData.append(key, i)
-        })
+      if (Array.isArray(value)) {
+        if(value.length){
+          value.forEach(i => {
+            let i_temp = typeof i == 'object' ? JSON.stringify(i) : i
+            formData.append(key+'[]', i_temp)
+          })
+        }else{
+          formData.append(key+'[]', null)
+        }
       } else {
-        formData.append(key, value)
+        let value_temp = typeof value == 'object' ? JSON.stringify(value) : value
+        formData.append(key, value_temp)
       }
     }
   }

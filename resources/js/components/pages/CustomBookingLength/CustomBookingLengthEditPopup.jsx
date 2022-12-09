@@ -40,7 +40,7 @@ export default function CustomBookingLengthEditPopup(props) {
   const onChange = (e) => {
     if(e.target.name.startsWith('week_days[')){
       let value = parseInt(e.target.name.replace(/\D/g, ""))
-      let week_days = lengths.week_days
+      let week_days = lengths.week_days.map(i => Number(i))
       let index = week_days.indexOf(value)
       if(index !== -1) week_days.splice(index, 1);
       if(e.target.checked) week_days.push(value)
@@ -55,7 +55,7 @@ export default function CustomBookingLengthEditPopup(props) {
     }
     if(e.target.name.startsWith('month_days[')){
       let value = parseInt(e.target.name.replace(/\D/g, ""))
-      let month_days = lengths.month_days
+      let month_days = lengths.month_days.map(i => Number(i))
       let index = month_days.indexOf(value)
       if(index !== -1) month_days.splice(index, 1);
       if(e.target.checked) month_days.push(value)
@@ -292,7 +292,7 @@ export default function CustomBookingLengthEditPopup(props) {
                     key={key}
                     control={
                       <Checkbox sx={{py:0}} name={`week_days[${key}]`}
-                                checked={lengths.week_days.includes(key)} onChange={onChange}/>
+                                checked={lengths.week_days.map(i => Number(i)).includes(key)} onChange={onChange}/>
                     }
                     label={item}
                   />
@@ -317,7 +317,7 @@ export default function CustomBookingLengthEditPopup(props) {
                     key={key}
                     control={
                       <Checkbox sx={{py:0}} name={`month_days[${item}]`}
-                                checked={lengths.month_days.includes(item)} onChange={onChange}/>
+                                checked={lengths.month_days.map(i => Number(i)).includes(item)} onChange={onChange}/>
                     }
                     label={item}
                   />

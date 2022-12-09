@@ -17,7 +17,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomBookingLengthEditPopup from "./CustomBookingLengthEditPopup"
 import Moment from "moment";
-import { generateFormData } from "../../../helper";
 
 export default function CustomBookingLength() {
   const {t} = useTranslation();
@@ -90,6 +89,40 @@ export default function CustomBookingLength() {
         console.log('Error', error.message)
       }
     })
+  }
+
+  const generateFormData = (data) => {
+    const formData = new FormData()
+    for (const [key, value] of Object.entries(data)) {
+      if (['week_days','month_days','area_ids'].includes(key)) {
+        if(value.length){
+          value.forEach(i => {
+            formData.append(key+'[]', i)
+          })
+        }else{
+          formData.append(key+'[]', null)
+        }
+      }else if(['spec_dates','time_intervals'].includes(key)) {
+        if(value.length){
+          value.forEach((i,index) => {
+            for (const [data_key, data_value] of Object.entries(i)) {
+              formData.append(key + '['+index+']['+data_key+']', data_value)
+            }
+          })
+        }else{
+          formData.append(key, null)
+        }
+      }else if(key == 'labels'){
+        for (const [lang_key, lang_value] of Object.entries(value)) {
+          for (const [data_key, data_value] of Object.entries(lang_value)) {
+            formData.append(key+'['+lang_key+']['+data_key+']', data_value)
+          }
+        }
+      }else{
+        formData.append(key, value)
+      }
+    }
+    return formData
   }
 
   const openEditPopup = (time) => {

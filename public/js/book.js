@@ -5382,7 +5382,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _i18nextConf__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./../i18nextConf */ "./resources/js/i18nextConf.js");
 /* harmony import */ var _components_LoadingPage__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../components/LoadingPage */ "./resources/js/components/LoadingPage.jsx");
 /* harmony import */ var _components_SelectArea_SelectArea__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./components/SelectArea/SelectArea */ "./resources/js/book/components/SelectArea/SelectArea.jsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 /* provided dependency */ var process = __webpack_require__(/*! process/browser.js */ "./node_modules/process/browser.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
@@ -5409,6 +5411,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 
@@ -5570,7 +5573,7 @@ var App = function App() {
       showSelectAreas = _useState44[0],
       setShowSelectAreas = _useState44[1];
 
-  var myAxios = axios.create({
+  var myAxios = axios__WEBPACK_IMPORTED_MODULE_14___default().create({
     baseURL: process.env.APP_URL,
     responseType: "json"
   });
@@ -5767,7 +5770,7 @@ var App = function App() {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return axios.get("".concat(process.env.APP_URL, "/api/places/").concat(getPlaceId(), "/areas")).then(function (response) {
+              return axios__WEBPACK_IMPORTED_MODULE_14___default().get("".concat(process.env.APP_URL, "/api/places/").concat(getPlaceId(), "/areas")).then(function (response) {
                 var availableAreas = response.data.filter(function (i) {
                   return !!i.online_available;
                 });
@@ -5798,7 +5801,7 @@ var App = function App() {
   }();
 
   var getPlaceData = function getPlaceData() {
-    axios.get("".concat(process.env.APP_URL, "/api/places/").concat(getPlaceId())).then(function (response) {
+    axios__WEBPACK_IMPORTED_MODULE_14___default().get("".concat(process.env.APP_URL, "/api/places/").concat(getPlaceId())).then(function (response) {
       setRestaurantInfo(function (prev) {
         return _objectSpread(_objectSpread(_objectSpread({}, prev), response.data), {}, {
           country: response.data.country.name
@@ -5864,10 +5867,10 @@ var App = function App() {
   }; // Getting extra time
 
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(react__WEBPACK_IMPORTED_MODULE_0__.Suspense, {
-    fallback: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_components_LoadingPage__WEBPACK_IMPORTED_MODULE_12__["default"], {}),
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsxs)(react_responsive_carousel__WEBPACK_IMPORTED_MODULE_3__.Carousel, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(react__WEBPACK_IMPORTED_MODULE_0__.Suspense, {
+    fallback: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_components_LoadingPage__WEBPACK_IMPORTED_MODULE_12__["default"], {}),
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsxs)(react_responsive_carousel__WEBPACK_IMPORTED_MODULE_3__.Carousel, {
         swipeable: false,
         showArrows: false,
         showStatus: false,
@@ -5875,8 +5878,8 @@ var App = function App() {
         showThumbs: false,
         autoPlay: false,
         ref: ref,
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_components_FirstBlock_MainBlock_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_components_FirstBlock_MainBlock_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
             handleChangeItem: handleChangeItem,
             increment: increment,
             decrement: decrement,
@@ -5913,8 +5916,8 @@ var App = function App() {
             filteredOrder: filteredOrder,
             getDatesTimeInfo: getDatesTimeInfo
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_components_SelectArea_SelectArea__WEBPACK_IMPORTED_MODULE_13__["default"], {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_components_SelectArea_SelectArea__WEBPACK_IMPORTED_MODULE_13__["default"], {
             areas: areas,
             restaurantInfo: restaurantInfo,
             guestValue: guestValue,
@@ -5923,8 +5926,8 @@ var App = function App() {
             blockType: blockType,
             setBlockType: setBlockType
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_components_SecondBlock_SecondBlock__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_components_SecondBlock_SecondBlock__WEBPACK_IMPORTED_MODULE_4__["default"], {
             getPlaceId: getPlaceId,
             handleChangeItem: handleChangeItem,
             handlePrevItem: handlePrevItem,
@@ -5956,8 +5959,8 @@ var App = function App() {
             setExtraTime: setExtraTime,
             extraTime: extraTime
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)("div", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(_components_LastBlock_LastBlock__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(_components_LastBlock_LastBlock__WEBPACK_IMPORTED_MODULE_5__["default"], {
             handleChangeItem: handleChangeItem,
             handlePrevItem: handlePrevItem,
             guestValue: guestValue,
@@ -5993,7 +5996,7 @@ var App = function App() {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 
 if (document.getElementById('app')) {
-  react_dom__WEBPACK_IMPORTED_MODULE_8__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_14__.jsx)(App, {}), document.getElementById('app'));
+  react_dom__WEBPACK_IMPORTED_MODULE_8__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_15__.jsx)(App, {}), document.getElementById('app'));
 }
 
 /***/ }),

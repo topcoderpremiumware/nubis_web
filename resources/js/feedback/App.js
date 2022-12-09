@@ -1,32 +1,153 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './../i18nextConf';
 import "./App.css";
 
 import LoadingPage from "../components/LoadingPage";
+import { FormControlLabel, Radio, RadioGroup, Rating } from '@mui/material';
+import axios from 'axios';
+import { useLayoutEffect } from 'react';
 
 function App() {
-  if(localStorage.getItem('token')){
-    axios.get(`${process.env.APP_URL}/api/user`).then(response => {
-    }).catch(error => {
-      if (error.response.status === 401){
-        localStorage.clear()
-        window.location.href="/"
-      }
-    })
+  const [userId, setUserId] = useState(null)
+  const [food, setFood] = useState(0)
+  const [service, setService] = useState(0)
+  const [ambiance, setAmbiance] = useState(0)
+  const [experience, setExperience] = useState(0)
+  const [price, setPrice] = useState(0)
+  const [recommend, setRecommend] = useState(1)
+  const [comment, setComment] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  
+  const onSubmit = async () => {
+    try {
+      setIsLoading(true)
+
+      await axios.post(`${process.env.APP_URL}/api/feedbacks`, {
+        customer_id: userId,
+        place_id: localStorage.getItem('place_id'),
+        order_id: window.location.pathname.split('/')[2],
+        comment,
+        status: 'public',
+        food_mark: food,
+        service_mark: service,
+        ambiance_mark: ambiance,
+        experience_mark: experience,
+        price_mark: price,
+        is_recommend: Number(recommend)
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+
+      setIsLoading(false)
+      setIsSubmitted(true)
+    } catch(err) {
+      console.log('err', err)
+      setIsLoading(false)
+    }
   }
+
+  useLayoutEffect(() => {
+    if(localStorage.getItem('token')){
+      axios.get(`${process.env.APP_URL}/api/user`).then(response => {
+        setUserId(response.data?.id)
+      }).catch(error => {
+        if (error.response.status === 401){
+          localStorage.clear()
+          window.location.href="/"
+        }
+      })
+    }
+  }, [])
+
   return (
     <Suspense fallback={<LoadingPage/>}>
-      <div className="content">
+      <div className="feedback-content">
         {localStorage.getItem('token') ?
           <>
-            hello, feedback for order {window.location.pathname.split('/')[2]}
+            <h1 className="feedback-title">Feedback</h1>
+            <p className="feedback-text">Please, tell us what you think about your recent visit at restaurant</p>
+            {isSubmitted ? (
+              <h3 className="feedback-title feedback-success">Thank you!</h3>
+            ) : (
+              <div className="feedback-wrapper">
+                <div className="feedback-item">
+                  <span>Food:</span>
+                  <Rating
+                    value={food}
+                    onChange={(event, newValue) => {
+                      setFood(newValue);
+                    }}
+                  />
+                </div>
+                <div className="feedback-item">
+                  <span>Service:</span>
+                  <Rating
+                    value={service}
+                    onChange={(event, newValue) => {
+                      setService(newValue);
+                    }}
+                  />
+                </div>
+                <div className="feedback-item">
+                  <span>Ambiance:</span>
+                  <Rating
+                    value={ambiance}
+                    onChange={(event, newValue) => {
+                      setAmbiance(newValue);
+                    }}
+                  />
+                </div>
+                <div className="feedback-item">
+                  <span>Overall experience:</span>
+                  <Rating
+                    value={experience}
+                    onChange={(event, newValue) => {
+                      setExperience(newValue);
+                    }}
+                  />
+                </div>
+                <div className="feedback-item">
+                  <span>Value for money:</span>
+                  <Rating
+                    name="simple-controlled"
+                    value={price}
+                    onChange={(event, newValue) => {
+                      setPrice(newValue);
+                    }}
+                  />
+                </div>
+                <div className="feedback-item">
+                  <span>Would recommend:</span>
+                    <RadioGroup
+                      row
+                      value={recommend}
+                      onChange={ev => setRecommend(ev.target.value)}
+                    >
+                      <FormControlLabel value="1" control={<Radio color="default" size="small" />} label="Yes" />
+                      <FormControlLabel value="0" control={<Radio color="default" size="small" />} label="No" />
+                    </RadioGroup>
+                </div>
+                <div className="feedback-item feedback-item-column">
+                  <span>Comment:</span>
+                  <textarea 
+                    name="comment" 
+                    rows="3" 
+                    value={comment} 
+                    onChange={ev => setComment(ev.target.value)}
+                  ></textarea>
+                </div>
+                <button className="feedback-btn" onClick={onSubmit} disabled={isLoading}>
+                  {isLoading ? 'Loading...' : 'Submit'}
+                </button>
+              </div>
+            )}
           </>
           :
-          <div>
-
-          </div>
+          null
         }
       </div>
     </Suspense>

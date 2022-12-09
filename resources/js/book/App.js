@@ -14,6 +14,7 @@ import './../i18nextConf';
 import LoadingPage from "../components/LoadingPage";
 import {useTranslation} from "react-i18next";
 import SelectArea from "./components/SelectArea/SelectArea";
+import axios from "axios";
 
 const App = () => {
   const ref = useRef(null);

@@ -22295,11 +22295,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/getUrl.js */ "./node_modules/css-loader/dist/runtime/getUrl.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _assets_food_bg_jpg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../assets/food-bg.jpg */ "./resources/assets/food-bg.jpg");
 // Imports
 
+
+
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+var ___CSS_LOADER_URL_REPLACEMENT_0___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_1___default()(_assets_food_bg_jpg__WEBPACK_IMPORTED_MODULE_2__["default"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "body {\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n.feedback-content {\r\n  min-height: 100vh;\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: flex-start;\r\n  font-family: \"Inter\", sans-serif;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 135%;\r\n  color: #333333;\r\n}\r\n.feedback-title {\r\n  font-family: \"Lusitana\", serif;\r\n  font-size: 52px;\r\n  line-height: 68px;\r\n  letter-spacing: 4px;\r\n  text-align: center;\r\n  margin: 60px 0 0;\r\n}\r\n.feedback-success {\r\n  font-size: 30px;\r\n  line-height: 40px;\r\n  margin: 0;\r\n}\r\n.feedback-text {\r\n  text-align: center;\r\n  color: #989898;\r\n  margin: 10px 0 60px;\r\n}\r\n.feedback-wrapper {\r\n  width: 100%;\r\n  max-width: 450px;\r\n  box-sizing: border-box;\r\n  padding: 32px;\r\n  border-radius: 16px;\r\n  background: #fff;\r\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);\r\n}\r\n.feedback-item {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  margin-bottom: 8px;\r\n}\r\n.feedback-item-column {\r\n  flex-direction: column;\r\n  align-items: flex-start;\r\n}\r\n.feedback-item span {\r\n  font-weight: 500;\r\n}\r\n.MuiFormControlLabel-label {\r\n  font-family: \"Inter\", sans-serif !important;\r\n  font-weight: 400 !important;\r\n  font-size: 16px !important;\r\n  line-height: 135% !important;\r\n  color: #333333 !important;\r\n}\r\n.MuiFormGroup-row {\r\n  margin-right: -16px !important;\r\n}\r\ntextarea {\r\n  width: 100%;\r\n  display: block;\r\n  margin-top: 8px;\r\n  margin-bottom: -8px;\r\n  border: 1px solid #ccc;\r\n  resize: none;\r\n  font-family: \"Inter\", sans-serif;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 135%;\r\n  color: #333333;\r\n  outline: none;\r\n  padding: 8px;\r\n  box-sizing: border-box;\r\n}\r\n.feedback-btn {\r\n  font-family: \"Lusitana\";\r\n  font-weight: 400;\r\n  font-size: 18px;\r\n  line-height: 100%;\r\n  margin-top: 20px;\r\n  background: #000;\r\n  color: #fff;\r\n  text-align: center;\r\n  letter-spacing: 2px;\r\n  width: 192px;\r\n  height: 47px;\r\n  cursor: pointer;\r\n  border: none;\r\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "body {\r\n  margin: 0;\r\n  padding: 0;\r\n  background: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ") no-repeat center center;\r\n  background-size: cover;\r\n  position: relative;\r\n}\r\nbody::before {\r\n  content: '';\r\n  position: absolute;\r\n  top: 0;\r\n  right: 0;\r\n  bottom: 0;\r\n  left: 0;\r\n  background: rgba(232, 232, 232, 0.7);\r\n}\r\n.feedback-content {\r\n  position: relative;\r\n  z-index: 5;\r\n  min-height: 100vh;\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: flex-start;\r\n  font-family: \"Inter\", sans-serif;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 135%;\r\n  color: #333333;\r\n}\r\n.feedback-title {\r\n  font-family: \"Lusitana\", serif;\r\n  font-size: 52px;\r\n  line-height: 68px;\r\n  letter-spacing: 4px;\r\n  text-align: center;\r\n  margin: 60px 0 0;\r\n}\r\n.feedback-success {\r\n  font-size: 30px;\r\n  line-height: 40px;\r\n  margin: 15vh 0 0;\r\n}\r\n.feedback-text {\r\n  text-align: center;\r\n  /* color: #989898; */\r\n  margin: 10px 0 60px;\r\n  font-weight: 500;\r\n}\r\n.feedback-wrapper {\r\n  width: 100%;\r\n  max-width: 450px;\r\n  box-sizing: border-box;\r\n  padding: 32px;\r\n  border-radius: 16px;\r\n  background: #fff;\r\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);\r\n}\r\n.feedback-item {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  margin-bottom: 8px;\r\n}\r\n.feedback-item-column {\r\n  flex-direction: column;\r\n  align-items: flex-start;\r\n}\r\n.feedback-item span {\r\n  font-weight: 500;\r\n}\r\n.MuiFormControlLabel-label {\r\n  font-family: \"Inter\", sans-serif !important;\r\n  font-weight: 400 !important;\r\n  font-size: 16px !important;\r\n  line-height: 135% !important;\r\n  color: #333333 !important;\r\n}\r\n.MuiFormGroup-row {\r\n  margin-right: -16px !important;\r\n}\r\ntextarea {\r\n  width: 100%;\r\n  display: block;\r\n  margin-top: 8px;\r\n  margin-bottom: -8px;\r\n  border: 1px solid #ccc;\r\n  resize: none;\r\n  font-family: \"Inter\", sans-serif;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 135%;\r\n  color: #333333;\r\n  outline: none;\r\n  padding: 8px;\r\n  box-sizing: border-box;\r\n}\r\n.feedback-btn {\r\n  font-family: \"Lusitana\";\r\n  font-weight: 400;\r\n  font-size: 18px;\r\n  line-height: 100%;\r\n  margin-top: 20px;\r\n  background: #000;\r\n  color: #fff;\r\n  text-align: center;\r\n  letter-spacing: 2px;\r\n  width: 192px;\r\n  height: 47px;\r\n  cursor: pointer;\r\n  border: none;\r\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -22379,6 +22385,65 @@ module.exports = function (cssWithMappingToString) {
 
   return list;
 };
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/runtime/getUrl.js":
+/*!********************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/getUrl.js ***!
+  \********************************************************/
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = function (url, options) {
+  if (!options) {
+    // eslint-disable-next-line no-param-reassign
+    options = {};
+  } // eslint-disable-next-line no-underscore-dangle, no-param-reassign
+
+
+  url = url && url.__esModule ? url.default : url;
+
+  if (typeof url !== "string") {
+    return url;
+  } // If url is already wrapped in quotes, remove them
+
+
+  if (/^['"].*['"]$/.test(url)) {
+    // eslint-disable-next-line no-param-reassign
+    url = url.slice(1, -1);
+  }
+
+  if (options.hash) {
+    // eslint-disable-next-line no-param-reassign
+    url += options.hash;
+  } // Should url be wrapped?
+  // See https://drafts.csswg.org/css-values-3/#urls
+
+
+  if (/["'() \t\n]/.test(url) || options.needQuotes) {
+    return "\"".concat(url.replace(/"/g, '\\"').replace(/\n/g, "\\n"), "\"");
+  }
+
+  return url;
+};
+
+/***/ }),
+
+/***/ "./resources/assets/food-bg.jpg":
+/*!**************************************!*\
+  !*** ./resources/assets/food-bg.jpg ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("/images/food-bg.jpg?a51df65bbd404af9c62bd06183f072d9");
 
 /***/ }),
 

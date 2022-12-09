@@ -1,3 +1,54 @@
-h1 {
-  color: red;
+body {
+  margin: 0;
+  padding: 0;
+  background: url('../../assets//food-bg.jpg') no-repeat center center;
+  background-size: cover;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(232, 232, 232, 0.7);
+}
+.gift-content {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 135%;
+  color: #333333;
+}
+
+.gift-title {
+  font-family: "Lusitana", serif;
+  font-size: 52px;
+  line-height: 68px;
+  letter-spacing: 4px;
+  text-align: center;
+  margin: 60px 0 0;
+}
+.gift-text {
+  text-align: center;
+  color: #989898;
+  margin: 10px 0 60px;
+}
+
+.gift-wrapper {
+  width: 100%;
+  max-width: 450px;
+  box-sizing: border-box;
+  padding: 32px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
 }

@@ -1,8 +1,22 @@
 body {
   margin: 0;
   padding: 0;
+  background: url('../../assets//food-bg.jpg') no-repeat center center;
+  background-size: cover;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(232, 232, 232, 0.7);
 }
 .feedback-content {
+  position: relative;
+  z-index: 5;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -25,12 +39,13 @@ body {
 .feedback-success {
   font-size: 30px;
   line-height: 40px;
-  margin: 0;
+  margin: 15vh 0 0;
 }
 .feedback-text {
   text-align: center;
-  color: #989898;
+  /* color: #989898; */
   margin: 10px 0 60px;
+  font-weight: 500;
 }
 .feedback-wrapper {
   width: 100%;

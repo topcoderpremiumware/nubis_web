@@ -1,0 +1,30 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  width: 150px;
+}
+.counter {
+  width: 150px;
+}
+.counter-max {
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+.title-counter {
+  border: none;
+  width: 40px;
+  outline: none;
+  margin: 0 auto;
+  text-align: center;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   padding: 0;
@@ -20,8 +23,6 @@ body::before {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
   font-family: "Inter", sans-serif;
   font-weight: 400;
   font-size: 16px;
@@ -35,20 +36,59 @@ body::before {
   line-height: 68px;
   letter-spacing: 4px;
   text-align: center;
-  margin: 60px 0 0;
+  margin: 60px 0;
 }
 .gift-text {
   text-align: center;
   color: #989898;
-  margin: 10px 0 60px;
+  margin: 0 0 20px;
 }
-
 .gift-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 300px;
   width: 100%;
-  max-width: 450px;
-  box-sizing: border-box;
+  max-width: 600px;
   padding: 32px;
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
+  margin: 30px auto;
+}
+.gift-carousel {
+  width: 100%;
+}
+.gift-btn {
+  font-family: "Lusitana";
+  font-weight: 400;
+  font-size: 16px;
+  background: #000;
+  color: #fff;
+  letter-spacing: 2px;
+  width: 130px;
+  height: 42px;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: .15s;
+}
+.gift-btn:disabled {
+  background: #777;
+}
+.gift-btns-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.gift-step-1-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
 }

@@ -165,6 +165,10 @@ class CustomBookingLengthController extends Controller
             ], 400);
         }
 
+        if($custom_booking_length->image){
+            Storage::disk('public')->delete($custom_booking_length->image);
+        }
+
         Log::add($request,'delete-custom_booking_length','Deleted custom booking length #'.$custom_booking_length->id);
 
         $custom_booking_length->delete();

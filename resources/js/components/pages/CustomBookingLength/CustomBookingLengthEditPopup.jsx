@@ -33,7 +33,7 @@ export default function CustomBookingLengthEditPopup(props) {
     if(props.lengths.hasOwnProperty('start_date')){
       setAreas(props.areas)
       setLengths(props.lengths)
-      setImg(props.lengths.image_url)
+      if(props.lengths.image) setImg(props.lengths.image_url)
     }
   },[props])
 

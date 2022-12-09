@@ -100,7 +100,7 @@ export default function CustomBookingLength() {
             formData.append(key+'[]', i)
           })
         }else{
-          formData.append(key+'[]', null)
+          formData.append(key, null)
         }
       }else if(['spec_dates','time_intervals'].includes(key)) {
         if(value.length){

@@ -30,9 +30,9 @@ class CustomBookingLengthController extends Controller
             'area_ids' => 'required|array',
             'priority' => 'required|integer',
             'labels' => 'required',
-            'month_days' => 'array',
-            'week_days' => 'array',
-            'spec_dates' => 'array',
+//            'month_days' => 'array',
+//            'week_days' => 'array',
+//            'spec_dates' => 'array',
             'time_intervals' => 'required|array',
         ]);
 
@@ -62,10 +62,10 @@ class CustomBookingLengthController extends Controller
             'min' => $request->min,
             'priority' => $request->priority,
             'labels' => $request->labels,
-            'month_days' => $request->has('month_days') ? $request->month_days : [],
-            'week_days' => $request->has('week_days') ? $request->week_days : [],
-            'spec_dates' => $request->has('spec_dates') ? $request->spec_dates : [],
-            'time_intervals' => $request->has('time_intervals') ? $request->time_intervals : [],
+            'month_days' => $request->has('month_days') && $request->month_days != 'null' ? $request->month_days : [],
+            'week_days' => $request->has('week_days') && $request->week_days != 'null' ? $request->week_days : [],
+            'spec_dates' => $request->has('spec_dates') && $request->spec_dates != 'null' ? $request->spec_dates : [],
+            'time_intervals' => $request->has('time_intervals') && $request->time_intervals != 'null' ? $request->time_intervals : [],
             'image' => $filename,
         ]);
 
@@ -94,9 +94,9 @@ class CustomBookingLengthController extends Controller
             'area_ids' => 'required|array',
             'priority' => 'required|integer',
             'labels' => 'required',
-            'month_days' => 'array',
-            'week_days' => 'array',
-            'spec_dates' => 'array',
+//            'month_days' => 'array',
+//            'week_days' => 'array',
+//            'spec_dates' => 'array',
             'time_intervals' => 'required|array',
         ]);
 
@@ -109,10 +109,6 @@ class CustomBookingLengthController extends Controller
             ], 400);
         }
 
-        if($custom_booking_length->image){
-            Storage::disk('public')->delete($custom_booking_length->image);
-        }
-
         $filename = null;
 
         if($request->file('image')){
@@ -120,6 +116,10 @@ class CustomBookingLengthController extends Controller
             $filename = $request->place_id.'/'.$file_upload->getClientOriginalName();
             $content = $file_upload->getContent();
             Storage::disk('public')->put($filename,$content);
+        }
+
+        if($custom_booking_length->image && $filename && $custom_booking_length->image != $filename){
+            Storage::disk('public')->delete($custom_booking_length->image);
         }
 
         $res = $custom_booking_length->update([
@@ -133,10 +133,10 @@ class CustomBookingLengthController extends Controller
             'min' => $request->min,
             'priority' => $request->priority,
             'labels' => $request->labels,
-            'month_days' => $request->has('month_days') ? $request->month_days : [],
-            'week_days' => $request->has('week_days') ? $request->week_days : [],
-            'spec_dates' => $request->has('spec_dates') ? $request->spec_dates : [],
-            'time_intervals' => $request->has('time_intervals') ? $request->time_intervals : [],
+            'month_days' => $request->has('month_days') && $request->month_days != 'null' ? $request->month_days : [],
+            'week_days' => $request->has('week_days') && $request->week_days != 'null' ? $request->week_days : [],
+            'spec_dates' => $request->has('spec_dates') && $request->spec_dates != 'null' ? $request->spec_dates : [],
+            'time_intervals' => $request->has('time_intervals') && $request->time_intervals != 'null' ? $request->time_intervals : [],
             'image' => $filename ? $filename : $custom_booking_length->image,
         ]);
 
@@ -163,6 +163,10 @@ class CustomBookingLengthController extends Controller
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
+        }
+
+        if($custom_booking_length->image){
+            Storage::disk('public')->delete($custom_booking_length->image);
         }
 
         Log::add($request,'delete-custom_booking_length','Deleted custom booking length #'.$custom_booking_length->id);

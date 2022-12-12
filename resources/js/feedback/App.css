@@ -109,4 +109,8 @@ textarea {
   height: 47px;
   cursor: pointer;
   border: none;
+  transition: .15s;
+}
+.feedback-btn:disabled {
+  background: #777;
 }

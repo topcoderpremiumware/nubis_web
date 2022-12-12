@@ -1,0 +1,34 @@
+.amount-input {
+  border: 1px solid #000;
+  border-radius: 0;
+  outline: none;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  padding: 0 10px;
+  height: 49px;
+}
+.amount-wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.amount-set {
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+.amount-currency {
+  position: absolute;
+  right: 10px;
+  top: 13px;
+  font-size: 14px;
+}
+.amount {
+  position: relative;
+}
+.amount-input-error {
+  border-color: #ff0000;
+}

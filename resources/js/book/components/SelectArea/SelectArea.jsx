@@ -18,10 +18,13 @@ function SelectArea(props) {
     props.setBlockType("secondblock");
   }
 
-  const [selectedArea, setSelectedArea] = useState(props.areas[0].id)
+  const [selectedArea, setSelectedArea] = useState('')
 
   useEffect(() => {
-    localStorage.setItem('area_id', props.areas[0].id)
+    if(props.areas.length > 0){
+      localStorage.setItem('area_id', props.areas[0].id)
+      setSelectedArea(props.areas[0].id)
+    }
   }, [])
 
   return (

@@ -8105,7 +8105,7 @@ function SelectArea(props) {
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
           className: "title second-title",
           children: t('Select Area')
-        }), props.areas.map(function (i) {
+        }), props.areas.map(function (i, key) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
             style: {
               textAlign: 'left'
@@ -8122,7 +8122,7 @@ function SelectArea(props) {
                 }
               }, i.id), "\xA0", i.name]
             })
-          });
+          }, key);
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
           className: "button-main next-button",
           onClick: checkToken,

@@ -46,8 +46,8 @@ function SelectArea(props) {
             <Trans>Reserved {{ val: props.guestValue }} Guests</Trans>
           </div>
           <div className="title second-title">{t('Select Area')}</div>
-          {props.areas.map(i => (
-            <div style={{textAlign: 'left'}}>
+          {props.areas.map((i,key) => (
+            <div style={{textAlign: 'left'}} key={key}>
               <label>
                 <input
                   key={i.id}

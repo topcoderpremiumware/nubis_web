@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Feedback;
 use App\Models\Log;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,23 +12,43 @@ class FeedbackController extends Controller
 {
     public function create(Request $request)
     {
+        if(!Auth::user()->tokenCan('customer')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        if(!Auth::user()->orders || !Auth::user()->orders->contains($request->order_id)){
+            return response()->json([
+                'message' => 'It\'s not your order'
+            ], 400);
+        }
+
+        $feedback = Feedback::where('order_id',$request->order_id)->first();
+        if($feedback){
+            return response()->json([
+                'message' => 'Feedback has already been created'
+            ], 400);
+        }
+
         $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'place_id' => 'required|exists:places,id',
+//            'customer_id' => 'required|exists:customers,id',
+//            'place_id' => 'required|exists:places,id',
             'order_id' => 'required|exists:orders,id',
             'comment' => 'required',
             'status' => 'required',
-            'food_mark' => 'required|number',
-            'service_mark' => 'required|number',
-            'ambiance_mark' => 'required|number',
-            'experience_mark' => 'required|number',
-            'price_mark' => 'required|number',
+            'food_mark' => 'required|numeric',
+            'service_mark' => 'required|numeric',
+            'ambiance_mark' => 'required|numeric',
+            'experience_mark' => 'required|numeric',
+            'price_mark' => 'required|numeric',
             'is_recommend' => 'required|boolean'
         ]);
+
+        $order = Order::find($request->order_id);
+
         $marks = [$request->food_mark,$request->service_mark,$request->ambiance_mark,$request->experience_mark,$request->price_mark];
         $feedback = Feedback::create([
-            'customer_id' => $request->customer_id,
-            'place_id' => $request->place_id,
+            'customer_id' => $order->customer_id,
+            'place_id' => $order->place_id,
             'order_id' => $request->order_id,
             'comment' => $request->comment,
             'status' => $request->status,
@@ -40,7 +61,7 @@ class FeedbackController extends Controller
             'is_recommend' => $request->is_recommend,
         ]);
 
-        Log::add($request,'create-feedback','Created feedback #'.$feedback->id);
+        //Log::add($request,'create-feedback','Created feedback #'.$feedback->id);
 
         return response()->json($feedback);
     }
@@ -57,12 +78,12 @@ class FeedbackController extends Controller
             'order_id' => 'required|exists:orders,id',
             'comment' => 'required',
             'status' => 'required',
-            'food_mark' => 'required|number',
-            'service_mark' => 'required|number',
-            'ambiance_mark' => 'required|number',
-            'experience_mark' => 'required|number',
-            'price_mark' => 'required|number',
-            'average_mark' => 'required|number',
+            'food_mark' => 'required|numeric',
+            'service_mark' => 'required|numeric',
+            'ambiance_mark' => 'required|numeric',
+            'experience_mark' => 'required|numeric',
+            'price_mark' => 'required|numeric',
+            'average_mark' => 'required|numeric',
             'is_recommend' => 'required|boolean'
         ]);
 
@@ -137,11 +158,11 @@ class FeedbackController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
-        }
+//        if(!Auth::user()->places->contains($request->place_id)){
+//            return response()->json([
+//                'message' => 'It\'s not your place'
+//            ], 400);
+//        }
 
         $feedbacks = Feedback::where('place_id',$request->place_id)
             ->where('status','public')

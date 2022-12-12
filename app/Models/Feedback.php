@@ -10,6 +10,7 @@ class Feedback extends Model
     use HasFactory;
 
     protected $guarded = [];
+    protected $table = 'feedbacks';
 
     public function place()
     {

@@ -16413,8 +16413,8 @@ function App() {
               setIsLoading(true);
               _context.next = 4;
               return axios__WEBPACK_IMPORTED_MODULE_5___default().post("".concat(process.env.APP_URL, "/api/feedbacks"), {
-                customer_id: userId,
-                place_id: localStorage.getItem('place_id'),
+                //customer_id: userId,
+                //place_id: localStorage.getItem('place_id'),
                 order_id: window.location.pathname.split('/')[2],
                 comment: comment,
                 status: 'public',
@@ -16456,17 +16456,15 @@ function App() {
   }();
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect)(function () {
-    if (localStorage.getItem('token')) {
-      axios__WEBPACK_IMPORTED_MODULE_5___default().get("".concat(process.env.APP_URL, "/api/user")).then(function (response) {
-        var _response$data;
-
-        setUserId((_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.id);
-      })["catch"](function (error) {
-        if (error.response.status === 401) {
-          localStorage.clear();
-          window.location.href = "/";
-        }
-      });
+    if (!localStorage.getItem('token')) {
+      window.location.href = "/"; // axios.get(`${process.env.APP_URL}/api/user`).then(response => {
+      //   setUserId(response.data?.id)
+      // }).catch(error => {
+      //   if (error.response.status === 401){
+      //     localStorage.clear()
+      //     window.location.href="/"
+      //   }
+      // })
     }
   }, []);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react__WEBPACK_IMPORTED_MODULE_0__.Suspense, {

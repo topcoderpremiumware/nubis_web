@@ -66,6 +66,8 @@ Route::middleware('auth:customer_api')->group(function(){
 
     Route::post('make_order',[OrderController::class, 'makeOrder']);
     Route::delete('cancel_order/{id}',[OrderController::class, 'cancel']);
+
+    Route::post('feedbacks',[FeedbackController::class, 'create']);
 });
 Route::middleware('auth:user_api')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);
@@ -146,11 +148,10 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('coupons_check',[CouponController::class, 'getByCode']);
     Route::delete('coupons',[CouponController::class, 'delete']);
 
-    Route::post('feedbacks',[FeedbackController::class, 'create']);
+
     Route::get('feedbacks/{id}',[FeedbackController::class, 'getId']);
     Route::post('feedbacks/{id}',[FeedbackController::class, 'save']);
     Route::get('feedbacks',[FeedbackController::class, 'getAllByPlace']);
-    Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);
 
     Route::post('files/{purpose}',[FileController::class, 'set']);
     Route::get('files',[FileController::class, 'getAllByPlace']);
@@ -162,3 +163,4 @@ Route::middleware('auth:user_api')->group(function(){
 });
 
 Route::get('places/{id}',[PlaceController::class, 'getId']);
+Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);

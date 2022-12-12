@@ -19,14 +19,14 @@ function App() {
   const [comment, setComment] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
-  
+
   const onSubmit = async () => {
     try {
       setIsLoading(true)
 
       await axios.post(`${process.env.APP_URL}/api/feedbacks`, {
-        customer_id: userId,
-        place_id: localStorage.getItem('place_id'),
+        //customer_id: userId,
+        //place_id: localStorage.getItem('place_id'),
         order_id: window.location.pathname.split('/')[2],
         comment,
         status: 'public',
@@ -51,15 +51,16 @@ function App() {
   }
 
   useLayoutEffect(() => {
-    if(localStorage.getItem('token')){
-      axios.get(`${process.env.APP_URL}/api/user`).then(response => {
-        setUserId(response.data?.id)
-      }).catch(error => {
-        if (error.response.status === 401){
-          localStorage.clear()
-          window.location.href="/"
-        }
-      })
+    if(!localStorage.getItem('token')){
+      window.location.href="/"
+      // axios.get(`${process.env.APP_URL}/api/user`).then(response => {
+      //   setUserId(response.data?.id)
+      // }).catch(error => {
+      //   if (error.response.status === 401){
+      //     localStorage.clear()
+      //     window.location.href="/"
+      //   }
+      // })
     }
   }, [])
 
@@ -133,10 +134,10 @@ function App() {
                 </div>
                 <div className="feedback-item feedback-item-column">
                   <span>Comment:</span>
-                  <textarea 
-                    name="comment" 
-                    rows="3" 
-                    value={comment} 
+                  <textarea
+                    name="comment"
+                    rows="3"
+                    value={comment}
                     onChange={ev => setComment(ev.target.value)}
                   ></textarea>
                 </div>

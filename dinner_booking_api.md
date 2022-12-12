@@ -789,7 +789,6 @@ curl -X GET https://dinner-book.vasilkoff.info/api/feedbacks \
 ```cmd
 curl -X GET https://dinner-book.vasilkoff.info/api/feedbacks_public \
 -H "X-Requested-With: XMLHttpRequest" \
--H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
 -d '{"place_id":1}'
 ```

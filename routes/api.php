@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthApiController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomBookingLengthController;
@@ -160,6 +161,8 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'getId']);
     Route::post('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'save']);
     Route::delete('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'delete']);
+
+    Route::get('billing/get_payment_link',[BillingController::class, 'getInvoiceByPrice']);
 });
 
 Route::get('places/{id}',[PlaceController::class, 'getId']);

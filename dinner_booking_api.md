@@ -18,6 +18,8 @@
 - [Feedbacks](#feedbacks)
 - [Files](#files)
 - [Countries](#countries)
+- [Custom booking lengths](#custom_booking_lengths)
+- [Billing](#billing)
 
 ---
 <a id="auth"></a>
@@ -756,7 +758,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/feedbacks \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"customer_id":1,"place_id":1,"order_id":1,"comment":"Good food","status":"public","food_mark":5.0,"service_mark":5.0,"ambiance_mark":5.0,"experience_mark":5.0,"price_mark":5.0,"is_recommend":1}'
+-d '{"order_id":1,"comment":"Good food","status":"public","food_mark":5.0,"service_mark":5.0,"ambiance_mark":5.0,"experience_mark":5.0,"price_mark":5.0,"is_recommend":1}'
 ```
 #### Get one
 > GET /api/feedbacks/{id}
@@ -904,3 +906,16 @@ curl -X DELETE https://dinner-book.vasilkoff.info/api/custom_booking_lengths/1 \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
+---
+<a id="billing"></a>
+## Billing
+#### Get payment link
+> GET /api/billing/get_payment_link
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/billing/get_payment_link \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"place_id":1,"price_id":"price_1MED982eZvKYlo2CZLQdP554"}'
+```
+

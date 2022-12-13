@@ -21,7 +21,21 @@ use Illuminate\Support\Facades\Route;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-    \Illuminate\Support\Facades\Mail::raw('Hello World!', function($msg) {$msg->to('2ovob4ehko@gmail.com')->subject('Test Email'); });
+//    \Illuminate\Support\Facades\Mail::raw('Hello World!', function($msg) {$msg->to('2ovob4ehko@gmail.com')->subject('Test Email'); });
+    $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+    $link = $stripe->paymentLinks->create(
+        [
+            'line_items' => [['price' => 'price_1MED982eZvKYlo2CZLQdP554', 'quantity' => 1]],
+            'after_completion' => [
+                'type' => 'redirect',
+                'redirect' => ['url' => env('APP_URL')],
+            ],
+        ]
+    );
+//    $products = $stripe->prices->all();
+    echo '<pre>';
+    var_dump($link->url);
+    echo '</pre>';
 });
 
 Route::view('/giftcard', 'giftcard')->name('giftcard');

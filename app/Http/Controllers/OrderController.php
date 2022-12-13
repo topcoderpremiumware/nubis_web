@@ -57,13 +57,23 @@ class OrderController extends Controller
 
         // TODO: get SMS API token of current place and set in to send function as 4th param
         $customer = Customer::find($request->customer_id);
-        $confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+        $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','sms-confirmation')
             ->where('language',$customer->language)
             ->where('active',1)
             ->first();
-        if($confirmation_template){
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$confirmation_template->text), env('APP_NAME'));
+        if($sms_confirmation_template){
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'));
+        }
+        $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','email-confirmation')
+            ->where('language',$customer->language)
+            ->where('active',1)
+            ->first();
+        if($email_confirmation_template){
+            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($email_confirmation_template, $customer) {
+                $msg->to($customer->email)->subject($email_confirmation_template->subject);
+            });
         }
 
         return response()->json($order);
@@ -118,13 +128,23 @@ class OrderController extends Controller
 
         // TODO: get SMS API token of current place and set in to send function as 4th param
         $customer = Customer::find($request->customer_id);
-        $change_template = MessageTemplate::where('place_id',$request->place_id)
+        $sms_change_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','sms-change')
             ->where('language',$customer->language)
             ->where('active',1)
             ->first();
-        if($change_template){
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$change_template->text), env('APP_NAME'));
+        if($sms_change_template){
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_change_template->text), env('APP_NAME'));
+        }
+        $email_change_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','email-change')
+            ->where('language',$customer->language)
+            ->where('active',1)
+            ->first();
+        if($email_change_template){
+            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text), function($msg) use ($email_change_template, $customer) {
+                $msg->to($customer->email)->subject($email_change_template->subject);
+            });
         }
 
         if($res){
@@ -207,13 +227,23 @@ class OrderController extends Controller
 
         // TODO: get SMS API token of current place and set in to send function as 4th param
         $customer = Customer::find($request->customer_id);
-        $delete_template = MessageTemplate::where('place_id',$request->place_id)
+        $sms_delete_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','sms-delete')
             ->where('language',$customer->language)
             ->where('active',1)
             ->first();
-        if($delete_template){
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$delete_template->text), env('APP_NAME'));
+        if($sms_delete_template){
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_NAME'));
+        }
+        $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','email-delete')
+            ->where('language',$customer->language)
+            ->where('active',1)
+            ->first();
+        if($email_delete_template){
+            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text), function($msg) use ($email_delete_template, $customer) {
+                $msg->to($customer->email)->subject($email_delete_template->subject);
+            });
         }
 
         $order->delete();
@@ -569,23 +599,33 @@ class OrderController extends Controller
         ]);
 
         // TODO: get SMS API token of current place and set in to send function as 4th param
-        $confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+        $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','sms-confirmation')
             ->where('language',Auth::user()->language)
             ->where('active',1)
             ->first();
-        if($confirmation_template){
-            $result = SMS::send([Auth::user()->phone], TemplateHelper::setVariables($order,$confirmation_template->text), env('APP_NAME'));
+        if($sms_confirmation_template){
+            $result = SMS::send([Auth::user()->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'));
+        }
+        $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','email-confirmation')
+            ->where('language',Auth::user()->language)
+            ->where('active',1)
+            ->first();
+        if($email_confirmation_template){
+            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($email_confirmation_template) {
+                $msg->to(Auth::user()->email)->subject($email_confirmation_template->subject);
+            });
         }
 
         $place = Place::find($request->place_id);
-        $notification_template = MessageTemplate::where('place_id',$request->place_id)
+        $sms_notification_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','sms-notification')
             //->where('language','en')
             ->where('active',1)
             ->first();
-        if($notification_template){
-            $result = SMS::send([$place->phone], TemplateHelper::setVariables($order,$notification_template->text), env('APP_NAME'));
+        if($sms_notification_template){
+            $result = SMS::send([$place->phone], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_NAME'));
         }
 
         return response()->json($order);

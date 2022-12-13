@@ -106,4 +106,28 @@ class MessageTemplateController extends Controller
 
         return response()->json(['message' => 'The message has been sent', 'result' => $result]);
     }
+
+    public function sendTestEmail(Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'text' => 'required',
+            'subject' => 'required',
+            'mail' => 'required'
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        \Illuminate\Support\Facades\Mail::html($request->text, function($msg) use ($request) {$msg->to($request->mail)->subject($request->subject); });
+
+        return response()->json(['message' => 'The message has been sent']);
+    }
 }

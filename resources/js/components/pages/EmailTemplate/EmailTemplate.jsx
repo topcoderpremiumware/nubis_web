@@ -134,7 +134,30 @@ export default function EmailTemplate() {
 
   const testMessage = (e) => {
     e.preventDefault();
-
+    axios.post(process.env.APP_URL+'/api/message_tempates_test_email', {
+      place_id: localStorage.getItem('place_id'),
+      mail: testEmail,
+      subject: subject,
+      text: text
+    },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'The message has been sent'});
+    }).catch(error => {
+      setTextError([])
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          if(key === 'text') setTextError(value)
+        }
+      }else if(error.response.status === 401){
+        setTextError(['Authorization error'])
+      } else {
+        setTextError([error.message])
+        console.log('Error', error)
+      }
+    })
   }
 
   const onChange = (e) => {

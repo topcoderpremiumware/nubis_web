@@ -6,6 +6,7 @@ use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Stripe\StripeClient;
+use Stripe\Webhook;
 
 class BillingController extends Controller
 {
@@ -42,5 +43,35 @@ class BillingController extends Controller
         );
 
         return response()->json(['url'=> $link->url]);
+    }
+
+    public function webhook(Request $request)
+    {
+        try {
+            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('billing webhook header: '.json_encode($request->header())));
+            $event = Webhook::constructEvent(
+                $request->getContent(),
+                $request->headers->get('Stripe-Signature'),
+                env('STRIPE_WEBHOOK_SECRET')
+            );
+        } catch(\UnexpectedValueException $e) {
+            // Invalid payload
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+            exit();
+        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+            // Invalid signature
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+            exit();
+        }
+        if ($event->type == 'invoice.payment_succeeded') {
+            // All the verification checks passed
+            $verification_session = $event->data->object;
+            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('billing webhook object: '.json_encode($verification_session)));
+        }
+        return response()->json(['result'=> 'OK']);
     }
 }

@@ -168,3 +168,5 @@ Route::middleware('auth:user_api')->group(function(){
 
 Route::get('places/{id}',[PlaceController::class, 'getId']);
 Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);
+
+Route::get('billing/webhook',[BillingController::class, 'webhook']);

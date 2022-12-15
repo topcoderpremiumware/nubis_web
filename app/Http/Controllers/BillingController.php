@@ -70,7 +70,13 @@ class BillingController extends Controller
         if ($event->type == 'invoice.payment_succeeded') {
             // All the verification checks passed
             $verification_session = $event->data->object;
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('billing webhook object: '.json_encode($verification_session)));
+            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('billing webhook payment_succeeded object: '.json_encode($verification_session)));
+        }
+
+        if ($event->type == 'payment_intent.succeeded') {
+            // All the verification checks passed
+            $verification_session = $event->data->object;
+            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('billing webhook payment_intent object: '.json_encode($verification_session)));
         }
         return response()->json(['result'=> 'OK']);
     }

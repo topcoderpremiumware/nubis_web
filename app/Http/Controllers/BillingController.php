@@ -31,9 +31,17 @@ class BillingController extends Controller
         $link = $stripe->paymentLinks->create(
             [
                 'line_items' => [['price' => $request->price_id, 'quantity' => 1]], //price_1MED982eZvKYlo2CZLQdP554
-                'metadata' => [
-                    'place_id' => $request->place_id,
-                    'type' => 'billing'
+                'payment_intent_data' => [
+                    'metadata' => [
+                        'place_id' => $request->place_id,
+                        'type' => 'billing'
+                    ]
+                ],
+                'subscription_data' => [
+                    'metadata' => [
+                        'place_id' => $request->place_id,
+                        'type' => 'billing'
+                    ]
                 ],
                 'after_completion' => [
                     'type' => 'redirect',

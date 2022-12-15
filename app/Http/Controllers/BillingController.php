@@ -37,12 +37,6 @@ class BillingController extends Controller
                         'type' => 'billing'
                     ]
                 ],
-                'subscription_data' => [
-                    'metadata' => [
-                        'place_id' => $request->place_id,
-                        'type' => 'billing'
-                    ]
-                ],
                 'after_completion' => [
                     'type' => 'redirect',
                     'redirect' => ['url' => env('APP_URL')],

@@ -48,10 +48,10 @@ class BillingController extends Controller
     public function webhook(Request $request)
     {
         try {
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('billing webhook header: '.json_encode($request->header())));
+            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('billing webhook header: '.json_encode($_SERVER['HTTP_STRIPE_SIGNATURE'])));
             $event = Webhook::constructEvent(
                 $request->getContent(),
-                $request->headers->get('stripe-signature'),
+                $_SERVER['HTTP_STRIPE_SIGNATURE'],
                 env('STRIPE_WEBHOOK_SECRET')
             );
         } catch(\UnexpectedValueException $e) {

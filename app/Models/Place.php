@@ -78,6 +78,18 @@ class Place extends Model
         return $this->belongsTo(Country::class);
     }
 
+    public function paid_bills()
+    {
+        return $this->hasMany(PaidBill::class);
+    }
+
+    public function is_bill_paid()
+    {
+        $bill = $this->paid_bills()->orderByDesc('expire_date')->first();
+        if(!$bill) return false;
+        return $bill->expire_date > \Carbon\Carbon::now();
+    }
+
     public function admins()
     {
         $admins = collect([]);

@@ -49,6 +49,7 @@ Route::get('work_dates',[OrderController::class, 'workDates']);
 Route::get('work_time',[OrderController::class, 'workTime']);
 Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace']);
 Route::get('places/{place_id}/lengths',[CustomBookingLengthController::class, 'getAllByParams']);
+Route::get('places/{place_id}/is_bill_paid',[PlaceController::class, 'isBillPaid']);
 
 Route::get('files_purpose',[FileController::class, 'getByPurpose']);
 Route::get('countries',[CountryController::class, 'getAll']);
@@ -92,6 +93,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('places/{place_id}/timetables',[TimetableController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/customers',[PlaceController::class, 'getCustomers']);
+    Route::get('places/{place_id}/is_trial_paid',[PlaceController::class, 'isTrialBillPaid']);
 
     Route::post('roles',[RoleController::class, 'create']);
     Route::get('roles',[RoleController::class, 'getAll']);

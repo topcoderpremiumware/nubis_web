@@ -191,6 +191,21 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/customers \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json'
 ```
+#### Get is trial paid
+> GET /api/places/{id}/is_trial_paid
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/is_trial_paid \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
+#### Get is bill paid
+> GET /api/places/{id}/is_bill_paid
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/is_bill_paid \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json'
+```
 ---
 <a id="settings"></a>
 ## Settings

@@ -122,4 +122,18 @@ class PlaceController extends Controller
 
         return response()->json($customers);
     }
+
+    public function isBillPaid($place_id, Request $request)
+    {
+        $place = Place::find($request->place_id);
+        return response()->json($place->is_bill_paid());
+    }
+
+    public function isTrialBillPaid($place_id, Request $request)
+    {
+        $place = Place::find($request->place_id);
+        $trial_bill = $this->paid_bills()->where('name','Trial')->first();
+
+        return response()->json(boolval($trial_bill));
+    }
 }

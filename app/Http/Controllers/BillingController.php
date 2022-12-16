@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Log;
+use App\Models\PaidBill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Stripe\StripeClient;
@@ -28,14 +29,21 @@ class BillingController extends Controller
         }
 
         $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $price = $stripe->prices->retrieve($request->price_id);
+        $product = $stripe->products->retrieve($price->product);
+        if(!property_exists($product,'metadata') || !property_exists($product->metadata,'duration')){
+            return response()->json([
+                'message' => 'There is no product metadata.duration parameter'
+            ], 400);
+        }
+
         $link = $stripe->paymentLinks->create(
             [
                 'line_items' => [['price' => $request->price_id, 'quantity' => 1]], //price_1MED982eZvKYlo2CZLQdP554
-                'payment_intent_data' => [
-                    'metadata' => [
-                        'place_id' => $request->place_id,
-                        'type' => 'billing'
-                    ]
+                'metadata' => [
+                    'place_id' => $request->place_id,
+                    'duration' => $product->metadata->duration,
+                    'name' => $product->name
                 ],
                 'after_completion' => [
                     'type' => 'redirect',
@@ -50,7 +58,6 @@ class BillingController extends Controller
     public function webhook(Request $request)
     {
         try {
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('billing webhook header: '.json_encode($_SERVER['HTTP_STRIPE_SIGNATURE'])));
             $event = Webhook::constructEvent(
                 @file_get_contents('php://input'),
                 $_SERVER['HTTP_STRIPE_SIGNATURE'],
@@ -69,16 +76,29 @@ class BillingController extends Controller
             ], 400);
             exit();
         }
-        if ($event->type == 'invoice.payment_succeeded') {
-            // All the verification checks passed
-            $verification_session = $event->data->object;
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('billing webhook payment_succeeded object: '.json_encode($verification_session)));
-        }
-
         if ($event->type == 'payment_intent.succeeded') {
-            // All the verification checks passed
-            $verification_session = $event->data->object;
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('billing webhook payment_intent object: '.json_encode($verification_session)));
+            $stripe = new StripeClient(env('STRIPE_SECRET'));
+            $object = $event->data->object;
+
+            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
+            if(count($sessions->data) > 0){
+                $metadata = $sessions->data[0]->metadata;
+                $place_id = $metadata->place_id;
+                $duration = $metadata->duration;
+                $product_name = $metadata->name;
+
+                PaidBill::create([
+                    'place_id' => $place_id,
+                    'amount' => $object->amount / 100,
+                    'currency' => strtoupper($object->currency),
+                    'payment_date' => \Carbon\Carbon::now()->timestamp($object->created),
+                    'product_name' => $product_name,
+                    'duration' => $duration,
+                    'expire_date' => \Carbon\Carbon::now()->addMonths($duration),
+                    'payment_intent_id' => $object->id,
+                    'receipt_url' => $object->charges->data[0]->receipt_url
+                ]);
+            }
         }
         return response()->json(['result'=> 'OK']);
     }

@@ -21,20 +21,12 @@ use Illuminate\Support\Facades\Route;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-//    $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-//    $link = $stripe->paymentLinks->create(
-//        [
-//            'line_items' => [['price' => 'price_1MED982eZvKYlo2CZLQdP554', 'quantity' => 1]],
-//            'after_completion' => [
-//                'type' => 'redirect',
-//                'redirect' => ['url' => env('APP_URL')],
-//            ],
-//        ]
-//    );
-////    $products = $stripe->prices->all();
-//    echo '<pre>';
-//    var_dump($link->url);
-//    echo '</pre>';
+    $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+    $price = $stripe->prices->retrieve('price_1MExCVCVi0riU70PbXhcxZb3');
+    $product = $stripe->products->retrieve($price->product);
+    echo '<pre>';
+    var_dump($product);
+    echo '</pre>';
 });
 
 Route::view('/giftcard', 'giftcard')->name('giftcard');

@@ -208,3 +208,15 @@
 ### Countries
 - id
 - name
+
+### Paid bills
+- id
+- place_id
+- amount
+- currency
+- payment_date
+- product_name
+- duration
+- expire_date
+- payment_intent_id
+- receipt_url

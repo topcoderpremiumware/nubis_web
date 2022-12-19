@@ -206,6 +206,14 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/is_bill_paid \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json'
 ```
+#### Pay trial
+> POST /api/places/{id}/pay_trial
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/places/1/pay_trial \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```
 ---
 <a id="settings"></a>
 ## Settings

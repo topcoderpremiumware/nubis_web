@@ -217,6 +217,6 @@
 - payment_date
 - product_name
 - duration
-- expire_date
+- expired_at
 - payment_intent_id
 - receipt_url

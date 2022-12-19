@@ -132,7 +132,7 @@ class PlaceController extends Controller
     public function isTrialBillPaid($place_id, Request $request)
     {
         $place = Place::find($request->place_id);
-        $trial_bill = $this->paid_bills()->where('name','Trial')->first();
+        $trial_bill = $place->paid_bills()->where('product_name','Trial')->first();
 
         return response()->json(boolval($trial_bill));
     }

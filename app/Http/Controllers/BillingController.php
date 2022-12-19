@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Log;
 use App\Models\PaidBill;
+use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Stripe\StripeClient;
@@ -31,7 +32,7 @@ class BillingController extends Controller
         $stripe = new StripeClient(env('STRIPE_SECRET'));
         $price = $stripe->prices->retrieve($request->price_id);
         $product = $stripe->products->retrieve($price->product);
-        if(!property_exists($product,'metadata') || !property_exists($product->metadata,'duration')){
+        if(!@$product->metadata->duration){
             return response()->json([
                 'message' => 'There is no product metadata.duration parameter'
             ], 400);
@@ -53,6 +54,44 @@ class BillingController extends Controller
         );
 
         return response()->json(['url'=> $link->url]);
+    }
+
+    public function payTrial($place_id, Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        if(!Auth::user()->places->contains($place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $place = Place::find($place_id);
+        $trial_bill = $place->paid_bills()->where('product_name','Trial')->first();
+
+        if($trial_bill){
+            return response()->json([
+                'message' => 'Trial has already been used'
+            ], 400);
+        }
+
+        $months_duration = 1;
+
+        PaidBill::create([
+            'place_id' => $place_id,
+            'amount' => 0,
+            'currency' => 'DKK',
+            'payment_date' => \Carbon\Carbon::now(),
+            'product_name' => 'Trial',
+            'duration' => $months_duration,
+            'expired_at' => \Carbon\Carbon::now()->addMonths($months_duration),
+            'payment_intent_id' => '',
+            'receipt_url' => ''
+        ]);
+
+        return response()->json(['result'=> 'OK']);
     }
 
     public function webhook(Request $request)
@@ -94,7 +133,7 @@ class BillingController extends Controller
                     'payment_date' => \Carbon\Carbon::now()->timestamp($object->created),
                     'product_name' => $product_name,
                     'duration' => $duration,
-                    'expire_date' => \Carbon\Carbon::now()->addMonths($duration),
+                    'expired_at' => \Carbon\Carbon::now()->addMonths($duration),
                     'payment_intent_id' => $object->id,
                     'receipt_url' => $object->charges->data[0]->receipt_url
                 ]);

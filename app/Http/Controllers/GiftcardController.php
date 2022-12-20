@@ -11,15 +11,18 @@ class GiftcardController extends Controller
 {
     public function create(Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
+//        if(!Auth::user()->tokenCan('admin')) return response()->json([
+//            'message' => 'Unauthorized.'
+//        ], 401);
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
             'name' => 'required',
             'expired_at' => 'required|date_format:Y-m-d H:i:s',
             'initial_amount' => 'required|numeric',
+            'email' => 'required|email',
+            'receiver_name' => 'required',
+            'receiver_email' => 'required'
         ]);
 
         $giftcard = Giftcard::create([
@@ -28,7 +31,16 @@ class GiftcardController extends Controller
             'expired_at' => $request->expired_at,
             'initial_amount' => $request->initial_amount,
             'spend_amount' => $request->spend_amount ?? 0,
-            'code' => str()->random(6)
+            'code' => str()->random(6),
+            'email' => $request->email,
+            'receiver_name' => $request->receiver_name,
+            'receiver_email' => $request->receiver_email,
+            'company_name' => $request->company_name,
+            'company_address' => $request->company_address,
+            'post_code' => $request->post_code,
+            'company_city' => $request->company_city,
+            'vat_number' => $request->vat_number,
+            'country_id' => $request->country_id
         ]);
 
         Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
@@ -47,6 +59,9 @@ class GiftcardController extends Controller
             'name' => 'required',
             'expired_at' => 'required|date_format:Y-m-d H:i:s',
             'initial_amount' => 'required|numeric',
+            'email' => 'required|email',
+            'receiver_name' => 'required',
+            'receiver_email' => 'required'
         ]);
 
         $giftcard = Giftcard::find($id);
@@ -64,6 +79,15 @@ class GiftcardController extends Controller
             'expired_at' => $request->expired_at,
             'initial_amount' => $request->initial_amount,
             'spend_amount' => $request->spend_amount ?? 0,
+            'email' => $request->email,
+            'receiver_name' => $request->receiver_name,
+            'receiver_email' => $request->receiver_email,
+            'company_name' => $request->company_name,
+            'company_address' => $request->company_address,
+            'post_code' => $request->post_code,
+            'company_city' => $request->company_city,
+            'vat_number' => $request->vat_number,
+            'country_id' => $request->country_id
         ]);
 
         Log::add($request,'change-giftcard','Changed giftcard #'.$giftcard->id);

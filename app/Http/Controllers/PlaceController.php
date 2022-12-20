@@ -7,6 +7,7 @@ use App\Models\Log;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,6 +42,17 @@ class PlaceController extends Controller
         Auth::user()->roles()
         ->wherePivot('place_id',$place->id)
         ->syncWithPivotValues([$role->id], ['place_id' => $place->id]);
+
+        //Attach superadmin to this place as admin
+        $superadmins = User::where('is_superadmin',1)->get();
+        if(count($superadmins) > 0){
+            foreach ($superadmins as $superadmin){
+                $superadmin->places()->attach($place->id);
+                $superadmin->roles()
+                    ->wherePivot('place_id',$place->id)
+                    ->syncWithPivotValues([$role->id], ['place_id' => $place->id]);
+            }
+        }
 
         Log::add($request,'create-place','Created place #'.$place->id);
 

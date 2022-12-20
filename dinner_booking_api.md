@@ -670,7 +670,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/giftcards \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"place_id":1,"name":"Max","expired_at":"2022-02-02 12:00:00","initial_amount":100,"spend_amount":0}'
+-d '{"place_id":1,"name":"Max","email":"2@ukr.net","expired_at":"2022-02-02 12:00:00","initial_amount":100,"spend_amount":0,"receiver_name":"Nic","receiver_email":"3@ukr.net","company_name":"","company_address":"","post_code":"","company_city":"","vat_number":"","country_id":1}'
 ```
 #### Get one
 > GET /api/giftcards/{id}
@@ -687,7 +687,7 @@ curl -X POST https://dinner-book.vasilkoff.info/api/giftcards/1 \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -H 'Content-Type: application/json' \
--d '{"place_id":1,"name":"Max","expired_at":"2022-02-02 12:00:00","initial_amount":100,"spend_amount":50}'
+-d '{"place_id":1,"name":"Max","email":"2@ukr.net","expired_at":"2022-02-02 12:00:00","initial_amount":100,"spend_amount":50}'
 ```
 #### Get all
 > GET /api/giftcards

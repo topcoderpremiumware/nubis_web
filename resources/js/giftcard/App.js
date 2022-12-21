@@ -9,6 +9,7 @@ import GiftCounter from './components/Counter/Counter';
 import AmountInput from './components/AmountInput/AmountInput';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import GiftForm from './components/Form/Form';
+import axios from 'axios';
 
 const maxCount = 100
 const minAmount = 100
@@ -18,7 +19,8 @@ function App() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [count, setCount] = useState(1)
   const [amount, setAmount] = useState(minAmount)
-  const [email, setEmail] = useState('your')
+  const [emailType, setEmailType] = useState('your')
+  const [isError, setIsError] = useState(false)
 
   const onBack = () => {
     setCurrentSlide(prev => prev - 1)
@@ -28,14 +30,36 @@ function App() {
   }
 
   const onCreate = async (formData) => {
-    const data = {
-      count,
-      amount,
-      email,
-      ...formData
+    try {
+      const {
+        isCompany, 
+        name, 
+        email, 
+        receiver_name, 
+        receiver_email, 
+        ...companyRest
+      } = formData
+
+      const data = {
+        place_id: localStorage.getItem('place_id'),
+        name,
+        email,
+        initial_amount: amount,
+        expired_at: '',
+        ...(emailType === 'receivers' && {receiver_name, receiver_email}),
+        ...(isCompany && companyRest)
+      }
+
+      await axios.post(process.env.APP_URL+'/api/giftcards', data, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+    } catch (err) {
+      setIsError(true)
+    } finally {
+      onNext()
     }
-    console.log('data', data)
-    onNext()
   }
 
   return (
@@ -83,8 +107,8 @@ function App() {
           <div className='gift-wrapper'>
             <p className="gift-text">Choose how you would like the Gift Card(s) to be delivered</p>
             <RadioGroup
-              value={email}
-              onChange={ev => setEmail(ev.target.value)}
+              value={emailType}
+              onChange={ev => setEmailType(ev.target.value)}
             >
               <FormControlLabel value="your" control={<Radio color="default" />} label="Send to YOUR e-mail (print yourself)" />
               <FormControlLabel value="receivers" control={<Radio color="default" />} label="Send to RECEIVERS e-mail" />
@@ -97,23 +121,28 @@ function App() {
 
           <div className='gift-wrapper'>
             <p className="gift-text">
-              {email === 'your' 
+              {emailType === 'your' 
                 ? 'Type in your e-mail address below and click NEXT' 
                 : 'Type in your e-mail address, and the e-mail addres for the receiver'
               }
             </p>
             <GiftForm
+              isReceiver={emailType === 'receivers'}
               onSubmit={onCreate}
               onBack={onBack}
             />
           </div>
 
           <div className='gift-wrapper'>
-            {/* <p className="gift-text"></p> */}
-            yow
-            <div className="gift-btns-wrapper">
-              <button className="gift-btn" onClick={onBack}>← Back</button>
-            </div>
+            {isError ? 
+              <>
+                Something went wrong
+                <div className="gift-btns-wrapper">
+                  <button className="gift-btn" onClick={onBack}>← Back</button>
+                </div>
+              </> : 
+              'Thank you!'
+            }
           </div>
         </Carousel>
       </div>

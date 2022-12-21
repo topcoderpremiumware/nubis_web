@@ -1,0 +1,66 @@
+.gift-form-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  font-family: "Inter";
+  font-style: normal;
+}
+.gift-form-wrapper > div {
+  flex: 1 1 0;
+  position: relative;
+  max-width: 350px;
+}
+.gift-form-title {
+  font-weight: 500;
+  margin: 0 0 50px;
+}
+.gift-form-check {
+  position: absolute;
+  left: 0;
+  top: 27px;
+}
+.gift-form-autocomplete-label,
+.gift-form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+.gift-form-autocomplete-label,
+.gift-form-label span {
+  font-size: 14px;
+  font-weight: 400;
+  text-align: left;
+  line-height: 135%;
+}
+.gift-form-label input {
+  border: 1px solid #000;
+  outline: none;
+  border-radius: 0;
+  font-size: 14px;
+  padding: 10px 5px;
+  line-height: 135%;
+}
+.gift-form-err {
+  font-size: 12px !important;
+  color: red;
+  line-height: 135%;
+}
+.MuiFormControlLabel-label {
+  font-size: 14px;
+}
+.gift-form-autocomplete-label .MuiOutlinedInput-root {
+  border: 1px solid #000 !important;
+  outline: none !important;
+  border-radius: 0 !important;
+  font-size: 14px !important;
+  padding: 10px 5px !important;
+  line-height: 135% !important;
+  height: 41px !important;
+}
+.gift-form-autocomplete-label input {
+  padding: 0 !important;
+}
+.gift-form-autocomplete-label .MuiOutlinedInput-notchedOutline {
+  border: none !important;
+}

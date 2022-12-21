@@ -12,7 +12,7 @@ const SmsApiKeys = () => {
 
   const onChange = (e) => {
     if (e.target.name === 'key') setKey(e.target.value)
-    if (e.target.name === 'secret') setSecret(e.target.checked)
+    if (e.target.name === 'secret') setSecret(e.target.value)
     if (e.target.name === 'token') setToken(e.target.value)
   }
 

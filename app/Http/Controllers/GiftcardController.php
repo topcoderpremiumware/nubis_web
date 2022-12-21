@@ -21,8 +21,8 @@ class GiftcardController extends Controller
             'expired_at' => 'required|date_format:Y-m-d H:i:s',
             'initial_amount' => 'required|numeric',
             'email' => 'required|email',
-            'receiver_name' => 'required',
-            'receiver_email' => 'required'
+//            'receiver_name' => 'required',
+//            'receiver_email' => 'required'
         ]);
 
         $giftcard = Giftcard::create([
@@ -33,8 +33,8 @@ class GiftcardController extends Controller
             'spend_amount' => $request->spend_amount ?? 0,
             'code' => str()->random(6),
             'email' => $request->email,
-            'receiver_name' => $request->receiver_name,
-            'receiver_email' => $request->receiver_email,
+            'receiver_name' => $request->receiver_name ?? '',
+            'receiver_email' => $request->receiver_email ?? '',
             'company_name' => $request->company_name,
             'company_address' => $request->company_address,
             'post_code' => $request->post_code,
@@ -60,8 +60,8 @@ class GiftcardController extends Controller
             'expired_at' => 'required|date_format:Y-m-d H:i:s',
             'initial_amount' => 'required|numeric',
             'email' => 'required|email',
-            'receiver_name' => 'required',
-            'receiver_email' => 'required'
+//            'receiver_name' => 'required',
+//            'receiver_email' => 'required'
         ]);
 
         $giftcard = Giftcard::find($id);

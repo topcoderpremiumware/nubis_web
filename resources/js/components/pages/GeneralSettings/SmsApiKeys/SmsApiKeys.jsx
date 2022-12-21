@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, TextField } from '@mui/material';
+import eventBus from "../../../../eventBus";
 
 const SmsApiKeys = () => {
   const { t } = useTranslation();
@@ -17,11 +18,78 @@ const SmsApiKeys = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    axios.post(`${process.env.APP_URL}/api/settings`, {
+      place_id: localStorage.getItem('place_id'),
+      name: 'sms-api-key',
+      value: key
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'SMS API key saved'});
+    }).catch(error => {})
+
+    axios.post(`${process.env.APP_URL}/api/settings`, {
+      place_id: localStorage.getItem('place_id'),
+      name: 'sms-api-secret',
+      value: secret
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'SMS API secret saved'});
+    }).catch(error => {})
+
+    axios.post(`${process.env.APP_URL}/api/settings`, {
+      place_id: localStorage.getItem('place_id'),
+      name: 'sms-api-token',
+      value: token
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'SMS API token saved'});
+    }).catch(error => {})
   }
 
   useEffect(() => {
-    // get users data
+    getSmsApiKey()
+    getSmsApiSecret()
+    getSmsApiToken()
   }, [])
+
+  const getSmsApiKey = () => {
+    axios.get(`${process.env.APP_URL}/api/settings`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'sms-api-key'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setKey(response.data.value)
+    }).catch(error => {})
+  }
+
+  const getSmsApiSecret = () => {
+    axios.get(`${process.env.APP_URL}/api/settings`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'sms-api-secret'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setSecret(response.data.value)
+    }).catch(error => {})
+  }
+
+  const getSmsApiToken = () => {
+    axios.get(`${process.env.APP_URL}/api/settings`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'sms-api-token'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setToken(response.data.value)
+    }).catch(error => {})
+  }
 
   return (
     <div className='pages__container'>
@@ -36,19 +104,19 @@ const SmsApiKeys = () => {
               <div className="mb-3">
                 <TextField label={t('Key')} size="small" fullWidth
                   type="text" id="key" name="key" required
-                  value={key} onChange={onChange} 
+                  value={key} onChange={onChange}
                 />
               </div>
               <div className="mb-3">
                 <TextField label={t('Secret')} size="small" fullWidth
                   type="text" id="secret" name="secret" required
-                  value={secret} onChange={onChange} 
+                  value={secret} onChange={onChange}
                 />
               </div>
               <div className="mb-3">
                 <TextField label={t('Token')} size="small" fullWidth
                   type="text" id="token" name="token" required
-                  value={token} onChange={onChange} 
+                  value={token} onChange={onChange}
                 />
               </div>
               <Button variant="contained" type="submit">{t('Save')}</Button>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Log;
 use App\Models\MessageTemplate;
+use App\Models\Place;
 use App\SMS\SMS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -100,9 +101,15 @@ class MessageTemplateController extends Controller
             ], 400);
         }
 
-        // TODO: get SMS API token of current place and set in to send function as 4th param
-
-        $result = SMS::send([$request->phone], $request->text, env('APP_NAME'));
+        $place = Place::find($request->place_id);
+        $smsApiToken = $place->setting('sms-api-token');
+        if($smsApiToken){
+            $result = SMS::send([$request->phone], $request->text, env('APP_NAME'), $smsApiToken);
+        }else{
+            return response()->json([
+                'message' => 'SMS API Token is not set'
+            ], 400);
+        }
 
         return response()->json(['message' => 'The message has been sent', 'result' => $result]);
     }

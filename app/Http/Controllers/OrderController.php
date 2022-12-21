@@ -37,6 +37,11 @@ class OrderController extends Controller
             'source' => 'required|in:online,internal'
         ]);
 
+        $place = Place::find($request->place_id);
+        if(!$place->is_bill_paid()) return response()->json([
+            'message' => 'Your place\'s bill has not been paid'
+        ], 401);
+
         $order = Order::create([
             'customer_id' => $request->customer_id,
             'place_id' => $request->place_id,
@@ -55,15 +60,15 @@ class OrderController extends Controller
 
         Log::add($request,'create-order','Created order #'.$order->id);
 
-        // TODO: get SMS API token of current place and set in to send function as 4th param
         $customer = Customer::find($request->customer_id);
         $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','sms-confirmation')
             ->where('language',$customer->language)
             ->where('active',1)
             ->first();
-        if($sms_confirmation_template){
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'));
+        $smsApiToken = $place->setting('sms-api-token');
+        if($sms_confirmation_template && $smsApiToken){
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'), $smsApiToken);
         }
         $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','email-confirmation')
@@ -126,15 +131,16 @@ class OrderController extends Controller
 
         Log::add($request,'change-order','Changed order #'.$order->id);
 
-        // TODO: get SMS API token of current place and set in to send function as 4th param
         $customer = Customer::find($request->customer_id);
         $sms_change_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','sms-change')
             ->where('language',$customer->language)
             ->where('active',1)
             ->first();
-        if($sms_change_template){
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_change_template->text), env('APP_NAME'));
+        $place = Place::find($request->place_id);
+        $smsApiToken = $place->setting('sms-api-token');
+        if($sms_change_template && $smsApiToken){
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_change_template->text), env('APP_NAME'), $smsApiToken);
         }
         $email_change_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','email-change')
@@ -225,15 +231,16 @@ class OrderController extends Controller
 
         Log::add($request,'delete-order','Deleted order #'.$order->id);
 
-        // TODO: get SMS API token of current place and set in to send function as 4th param
         $customer = Customer::find($request->customer_id);
         $sms_delete_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','sms-delete')
             ->where('language',$customer->language)
             ->where('active',1)
             ->first();
-        if($sms_delete_template){
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_NAME'));
+        $place = Place::find($request->place_id);
+        $smsApiToken = $place->setting('sms-api-token');
+        if($sms_delete_template && $smsApiToken){
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_NAME'), $smsApiToken);
         }
         $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','email-delete')
@@ -598,14 +605,15 @@ class OrderController extends Controller
             'marks' => ''
         ]);
 
-        // TODO: get SMS API token of current place and set in to send function as 4th param
         $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','sms-confirmation')
             ->where('language',Auth::user()->language)
             ->where('active',1)
             ->first();
-        if($sms_confirmation_template){
-            $result = SMS::send([Auth::user()->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'));
+        $place = Place::find($request->place_id);
+        $smsApiToken = $place->setting('sms-api-token');
+        if($sms_confirmation_template && $smsApiToken){
+            $result = SMS::send([Auth::user()->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'), $smsApiToken);
         }
         $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','email-confirmation')
@@ -618,14 +626,13 @@ class OrderController extends Controller
             });
         }
 
-        $place = Place::find($request->place_id);
         $sms_notification_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','sms-notification')
             //->where('language','en')
             ->where('active',1)
             ->first();
-        if($sms_notification_template){
-            $result = SMS::send([$place->phone], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_NAME'));
+        if($sms_notification_template && $smsApiToken){
+            $result = SMS::send([$place->phone], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_NAME'), $smsApiToken);
         }
 
         return response()->json($order);

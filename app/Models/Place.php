@@ -63,6 +63,11 @@ class Place extends Model
         return $this->hasMany(Setting::class);
     }
 
+    public function setting($name)
+    {
+        return $this->settings()->where('name',$name)->first();
+    }
+
     public function feedbacks()
     {
         return $this->hasMany(Feedback::class);
@@ -85,9 +90,9 @@ class Place extends Model
 
     public function is_bill_paid()
     {
-        $bill = $this->paid_bills()->orderByDesc('expire_date')->first();
+        $bill = $this->paid_bills()->orderByDesc('expired_at')->first();
         if(!$bill) return false;
-        return $bill->expire_date > \Carbon\Carbon::now();
+        return $bill->expired_at > \Carbon\Carbon::now();
     }
 
     public function admins()

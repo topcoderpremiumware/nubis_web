@@ -21,15 +21,10 @@ use Illuminate\Support\Facades\Route;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-    $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-    $price = $stripe->prices->retrieve('price_1MExCVCVi0riU70PbXhcxZb3');
-    $product = $stripe->products->retrieve($price->product);
-    echo '<pre>';
-    var_dump($product);
-    echo '</pre>';
+
 });
 
 Route::view('/giftcard', 'giftcard')->name('giftcard');
 Route::view('/feedback/{order_id}', 'feedback')->name('feedback');
-Route::view('/book/{place_id}', 'book')->name('book');
+Route::view('/book/{place_id}', 'book')->name('book')->middleware('bill_paid');
 Route::view('/{path?}/{path2?}', 'app')->name('home');

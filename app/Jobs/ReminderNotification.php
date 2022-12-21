@@ -7,6 +7,7 @@ use App\Helpers\TemplateHelper;
 use App\Models\Customer;
 use App\Models\MessageTemplate;
 use App\Models\Order;
+use App\Models\Place;
 use App\Models\Setting;
 use App\SMS\SMS;
 use Carbon\Carbon;
@@ -44,14 +45,15 @@ class ReminderNotification implements ShouldQueue
             $customer = $order->customer;
 
             if($order->reservation_time->diffInHours(Carbon::now()) <= $sms_hours_before){
-                // TODO: get SMS API token of current place and set in to send function as 4th param
                 $reminder_template = MessageTemplate::where('place_id',$order->place_id)
                     ->where('purpose','sms-reminder')
                     ->where('language',$customer->language)
                     ->where('active',1)
                     ->first();
-                if($reminder_template){
-                    $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$reminder_template->text), env('APP_NAME'));
+                $place = Place::find($order->place_id);
+                $smsApiToken = $place->setting('sms-api-token');
+                if($reminder_template && $smsApiToken){
+                    $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$reminder_template->text), env('APP_NAME'), $smsApiToken);
                 }
                 $marks = $order->marks;
                 $marks['sms_reminded'] = true;

@@ -42,10 +42,11 @@ function App() {
 
       const data = {
         place_id: localStorage.getItem('place_id'),
+        count,
         name,
         email,
         initial_amount: amount,
-        expired_at: '',
+        expired_at: new Date('01.01.2050'),
         ...(emailType === 'receivers' && {receiver_name, receiver_email}),
         ...(isCompany && companyRest)
       }

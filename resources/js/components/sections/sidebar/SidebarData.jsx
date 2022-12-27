@@ -5,7 +5,7 @@ import { FeaturedPlayListOutlined, SettingsOutlined, CalendarMonthOutlined, Emai
 import { TiMessages} from 'react-icons/ti';
 import { IoIosStats} from 'react-icons/io';
 import { BsCreditCard } from 'react-icons/bs';
-
+import { MdOutlineContactSupport } from "react-icons/md";
 
 export const SidebarData = [
   {
@@ -19,14 +19,6 @@ export const SidebarData = [
       {
         title: 'Day View',
         path: '/DayView',
-      },
-      {
-        title: 'Week View',
-        path: '/WeekView',
-      },
-      {
-        title: 'Activity',
-        path: '/Activity',
       },
       {
         title: 'Opening Times',
@@ -43,10 +35,6 @@ export const SidebarData = [
       {
         title: 'Areas',
         path: '/Areas',
-      },
-      {
-        title: 'Orders Setup',
-        path: '/OrdersSetup',
       },
       {
         title: 'Manage Feedback',
@@ -99,6 +87,16 @@ export const SidebarData = [
         path: '/ReminderTime',
         cName: 'sub-nav'
       },
+      {
+        title: 'Notifications Settings',
+        path: '/NotificationsSettings',
+        cName: 'sub-nav'
+      },
+      {
+        title: 'Online Payments',
+        path: '/OnlinePayments',
+        cName: 'sub-nav'
+      },
     ]
   },
   {
@@ -112,22 +110,26 @@ export const SidebarData = [
         title: 'Custom Booking Length',
         path: '/CustomBookingLength'
       },
-    ]
-  },
-  {
-    title: 'Online Booking Templates',
-    path: '#',
-    icon: <CalendarMonthOutlined />,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
-    subNav: [
       {
-        title: 'sub-nav',
-        path: '',
-        cName: 'sub-nav'
-      }
+        title: 'Booking Link Guide',
+        path: '/BookingLinkGuide'
+      },
     ]
   },
+  // {
+  //   title: 'Online Booking Templates',
+  //   path: '#',
+  //   icon: <CalendarMonthOutlined />,
+  //   iconClosed: <KeyboardArrowDown />,
+  //   iconOpened: <KeyboardArrowUp />,
+  //   subNav: [
+  //     {
+  //       title: 'sub-nav',
+  //       path: '',
+  //       cName: 'sub-nav'
+  //     }
+  //   ]
+  // },
   {
     title: 'SMS Templates',
     path: '#',
@@ -210,20 +212,20 @@ export const SidebarData = [
       }
     ]
   },
-  {
-    title: 'Statistics',
-    path: '#',
-    icon: <IoIosStats />,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
-    subNav: [
-      {
-        title: 'sub-nav',
-        path: '',
-        cName: 'sub-nav'
-      }
-    ]
-  },
+  // {
+  //   title: 'Statistics',
+  //   path: '#',
+  //   icon: <IoIosStats />,
+  //   iconClosed: <KeyboardArrowDown />,
+  //   iconOpened: <KeyboardArrowUp />,
+  //   subNav: [
+  //     {
+  //       title: 'sub-nav',
+  //       path: '',
+  //       cName: 'sub-nav'
+  //     }
+  //   ]
+  // },
   {
     title: 'Billing',
     path: '#',
@@ -234,6 +236,19 @@ export const SidebarData = [
       {
         title: 'Pricing',
         path: '/pricing'
+      }
+    ]
+  },
+  {
+    title: 'Support',
+    path: '#',
+    icon: <MdOutlineContactSupport />,
+    iconClosed: <KeyboardArrowDown />,
+    iconOpened: <KeyboardArrowUp />,
+    subNav: [
+      {
+        title: 'Support',
+        path: '/Support'
       }
     ]
   }

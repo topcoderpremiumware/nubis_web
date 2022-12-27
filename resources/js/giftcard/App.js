@@ -46,7 +46,7 @@ function App() {
         name,
         email,
         initial_amount: amount,
-        expired_at: new Date('01.01.2050'),
+        expired_at: new Date('01/01/2050'),
         ...(emailType === 'receivers' && {receiver_name, receiver_email}),
         ...(isCompany && companyRest)
       }

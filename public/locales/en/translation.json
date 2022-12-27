@@ -217,5 +217,9 @@
     "Stripe Keys": "Stripe Keys",
     "C Key": "C Key",
     "P Key": "P Key",
-    "Reminder Time": "Reminder Time"
+    "Reminder Time": "Reminder Time",
+    "Payment completed successfully": "Payment completed successfully",
+    "Thank you for your order": "Thank you for your order",
+    "Return back": "Return back",
+    "Create new restaurant": "Create new restaurant"
 }

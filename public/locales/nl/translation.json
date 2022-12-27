@@ -218,5 +218,9 @@
     "Stripe Keys": "Stripe nøgler",
     "C Key": "C Nøgle",
     "P Key": "P Nøgle",
-    "Reminder Time": "Påmindelsestid"
+    "Reminder Time": "Påmindelsestid",
+    "Payment completed successfully": "Betaling gennemført",
+    "Thank you for your order": "Tak for din ordre",
+    "Return back": "Gå tilbage",
+    "Create new restaurant": "Opret ny restaurant"
 }

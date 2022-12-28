@@ -55,7 +55,8 @@ class OrderController extends Controller
             'status' => $request->status,
             'is_take_away' => $request->is_take_away,
             'source' => $request->source,
-            'marks' => ''
+            'marks' => '',
+            'custom_booking_length_id' => $request->custom_booking_length_id
         ]);
 
         Log::add($request,'create-order','Created order #'.$order->id);
@@ -126,7 +127,8 @@ class OrderController extends Controller
             'status' => $request->status,
             'is_take_away' => $request->is_take_away,
             'source' => $request->source,
-            'marks' => $request->marks ?? ''
+            'marks' => $request->marks ?? '',
+            'custom_booking_length_id' => $request->custom_booking_length_id
         ]);
 
         Log::add($request,'change-order','Changed order #'.$order->id);
@@ -163,7 +165,7 @@ class OrderController extends Controller
 
     public function getId($id, Request $request)
     {
-        $order = Order::where('id',$id)->with('customer')->first();
+        $order = Order::where('id',$id)->with(['customer', 'custom_booking_length'])->first();
 
         if(!Auth::user()->places->contains($order->place_id)){
             return response()->json([
@@ -191,7 +193,7 @@ class OrderController extends Controller
 
         $orders = Order::where('place_id',$request->place_id)
             ->where('area_id',$request->area_id)
-            ->with('customer')
+            ->with(['customer', 'custom_booking_length'])
             ->whereBetween('reservation_time', [$request->reservation_from, $request->reservation_to]);
         if($request->has('deleted')){
             $orders = $orders->onlyTrashed();
@@ -208,6 +210,7 @@ class OrderController extends Controller
         ], 401);
 
         $orders = Order::where('customer_id',Auth::user()->id)
+            ->with('custom_booking_length')
             ->get();
 
         return response()->json($orders);
@@ -602,7 +605,8 @@ class OrderController extends Controller
             'status' => $status,
             'is_take_away' => $request->is_take_away,
             'source' => 'online',
-            'marks' => ''
+            'marks' => '',
+            'custom_booking_length_id' => $request->custom_booking_length_id
         ]);
 
         $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)

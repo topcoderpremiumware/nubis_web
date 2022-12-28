@@ -27,7 +27,8 @@ import { CgCalendarToday } from "react-icons/cg";
    };
 
    const setDate = (days) => {
-     setStartDate(new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000))
+     let date = new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000)
+     setStartDate(date)
      localStorage.setItem('date',Moment(date).format('YYYY-MM-DD'))
      eventBus.dispatch("dateChanged")
    };
@@ -35,14 +36,14 @@ import { CgCalendarToday } from "react-icons/cg";
   return (
     <div className="DataPicker__wrapper mx-3">
       <button
-        className="DataPicker__btn" 
+        className="DataPicker__btn"
         onClick={() => setDate(-7)}
         title="Prev week"
       >
         <FaAngleDoubleLeft />
       </button>
       <button
-        className="DataPicker__btn mx-1" 
+        className="DataPicker__btn mx-1"
         onClick={() => setDate(-1)}
         title="Prev day"
       >
@@ -103,21 +104,21 @@ import { CgCalendarToday } from "react-icons/cg";
       />
 
       <button
-        className="DataPicker__btn mx-1" 
+        className="DataPicker__btn mx-1"
         onClick={() => setDate(1)}
         title="Next day"
       >
         <FaAngleRight />
       </button>
       <button
-        className="DataPicker__btn" 
+        className="DataPicker__btn"
         onClick={() => setDate(7)}
         title="Next week"
       >
         <FaAngleDoubleRight />
       </button>
       <button
-        className="DataPicker__btn mx-1" 
+        className="DataPicker__btn mx-1"
         onClick={() => onChange(Date.now())}
         title="To today"
       >

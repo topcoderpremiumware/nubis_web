@@ -16,6 +16,7 @@ import SmsApiKeys from './pages/GeneralSettings/SmsApiKeys/SmsApiKeys';
 import EmailTemplate from "./pages/EmailTemplate/EmailTemplate";
 import TablePlanSetup from "./pages/TablePlanSetup/TablePlanSetup";
 import Areas from "./pages/Areas/Areas";
+import ManageFeedback from "./pages/ManageFeedback/ManageFeedback";
 import OpeningTimes from "./pages/OpeningTimes/OpeningTimes";
 import CustomBookingLength from "./pages/CustomBookingLength/CustomBookingLength"
 
@@ -51,6 +52,7 @@ function App() {
                   <Route path='/Activity' exact element={<Activity/>}/>
                   <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
                   <Route path='/Areas' exact element={<Areas/>}/>
+                  <Route path='/ManageFeedback' exact element={<ManageFeedback/>}/>
                   <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
                   <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
                   <Route path='/OpeningTimes' exact element={<OpeningTimes/>}/>

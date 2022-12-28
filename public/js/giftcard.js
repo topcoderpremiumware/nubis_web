@@ -29919,7 +29919,7 @@ function App() {
               _context.prev = 0;
               isCompany = formData.isCompany, name = formData.name, email = formData.email, receiver_name = formData.receiver_name, receiver_email = formData.receiver_email, companyRest = _objectWithoutProperties(formData, _excluded);
               data = _objectSpread(_objectSpread({
-                place_id: localStorage.getItem('place_id'),
+                place_id: window.location.pathname.split('/')[2],
                 count: count,
                 name: name,
                 email: email,

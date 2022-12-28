@@ -69,7 +69,7 @@
 - week_days (масив id днів тиждня 0 - неділя, 6 - субота) (nullable)
 - status (working/non-working day)
 
-### Areas
+### ManageFeedback
 - id
 - place_id
 - name

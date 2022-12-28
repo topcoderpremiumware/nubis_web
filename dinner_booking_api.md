@@ -6,7 +6,7 @@
 - [Settings](#settings)
 - [Roles](#roles)
 - [Tableplans](#tableplans)
-- [Areas](#areas)
+- [ManageFeedback](#areas)
 - [Timetables](#timetables)
 - [Customers](#customers)
 - [Orders](#orders)
@@ -292,7 +292,7 @@ curl -X DELETE https://dinner-book.vasilkoff.info/api/tableplans/1 \
 ```
 ---
 <a id="areas"></a>
-## Areas
+## ManageFeedback
 #### Create
 > POST /api/areas
 ```cmd

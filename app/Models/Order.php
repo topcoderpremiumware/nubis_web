@@ -42,4 +42,9 @@ class Order extends Model
     {
         return $this->hasMany(Feedback::class);
     }
+
+    public function custom_booking_length()
+    {
+        return $this->belongsTo(CustomBookingLength::class);
+    }
 }

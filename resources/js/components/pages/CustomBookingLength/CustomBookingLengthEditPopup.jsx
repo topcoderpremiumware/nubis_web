@@ -28,6 +28,7 @@ export default function CustomBookingLengthEditPopup(props) {
   const [lengths, setLengths] = useState({})
   const [selectedLang, setSelectedLang] = useState(localStorage.getItem('i18nextLng'))
   const [img, setImg] = useState('')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if(props.lengths.hasOwnProperty('start_date')){
@@ -135,8 +136,10 @@ export default function CustomBookingLengthEditPopup(props) {
   const handleClose = () => {
     props.onClose()
   }
-  const handleSave = () => {
-    props.onChange(lengths)
+  const handleSave = async () => {
+    setLoading(true)
+    let result = await props.onChange(lengths)
+    setLoading(false)
   }
 
   const bookingOptions = () => {
@@ -502,7 +505,7 @@ export default function CustomBookingLengthEditPopup(props) {
       </DialogContent>
       <DialogActions sx={{p:2}}>
         <Button variant="outlined" onClick={handleClose}>{t('Cancel')}</Button>
-        <Button variant="contained" onClick={handleSave}>{t('Save')}</Button>
+        <Button variant="contained" disabled={loading} onClick={handleSave}>{t('Save')}</Button>
       </DialogActions>
     </Dialog>}
   </>);

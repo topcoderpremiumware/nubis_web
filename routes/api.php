@@ -157,6 +157,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('feedbacks/{id}',[FeedbackController::class, 'getId']);
     Route::post('feedbacks/{id}',[FeedbackController::class, 'save']);
     Route::get('feedbacks',[FeedbackController::class, 'getAllByPlace']);
+    Route::post('feedbacks/{id}/reply',[FeedbackController::class, 'makeReply']);
 
     Route::post('files/{purpose}',[FileController::class, 'set']);
     Route::get('files',[FileController::class, 'getAllByPlace']);

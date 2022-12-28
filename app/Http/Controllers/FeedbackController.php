@@ -30,8 +30,6 @@ class FeedbackController extends Controller
         }
 
         $request->validate([
-//            'customer_id' => 'required|exists:customers,id',
-//            'place_id' => 'required|exists:places,id',
             'order_id' => 'required|exists:orders,id',
             'comment' => 'required',
             'status' => 'required',
@@ -147,6 +145,7 @@ class FeedbackController extends Controller
         }
 
         $feedbacks = Feedback::where('place_id',$request->place_id)
+            ->with(['customer','place','order.area'])
             ->get();
 
         return response()->json($feedbacks);
@@ -165,9 +164,37 @@ class FeedbackController extends Controller
 //        }
 
         $feedbacks = Feedback::where('place_id',$request->place_id)
+            ->with(['customer','order'])
             ->where('status','public')
             ->get();
 
         return response()->json($feedbacks);
+    }
+
+    public function makeReply($id, Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'reply' => 'required',
+        ]);
+
+        $feedback = Feedback::find($id);
+
+        if(!Auth::user()->places->contains($feedback->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $res = $feedback->update([
+            'reply' => $request->reply,
+        ]);
+
+        Log::add($request,'change-feedback-reply','Changed feedback #'.$feedback->id);
+
+        return response()->json(['message' => 'Feedback reply is made']);
     }
 }

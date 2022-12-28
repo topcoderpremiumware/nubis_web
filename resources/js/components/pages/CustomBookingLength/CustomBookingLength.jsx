@@ -17,6 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomBookingLengthEditPopup from "./CustomBookingLengthEditPopup"
 import Moment from "moment";
+import {wait} from "@testing-library/user-event/dist/utils";
 
 export default function CustomBookingLength() {
   const {t} = useTranslation();
@@ -62,14 +63,14 @@ export default function CustomBookingLength() {
     })
   }
 
-  const updateCustomLength = (customLength) => {
-    console.log('customLength',customLength)
+  const updateCustomLength = async (customLength) => {
+    console.log('customLength', customLength)
     let url = `${process.env.APP_URL}/api/custom_booking_lengths`
-    if(customLength.hasOwnProperty('id')){
+    if (customLength.hasOwnProperty('id')) {
       url = `${process.env.APP_URL}/api/custom_booking_lengths/${customLength.id}`
     }
 
-    axios.post(url, generateFormData(customLength), {
+    return await axios.post(url, generateFormData(customLength), {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -77,6 +78,7 @@ export default function CustomBookingLength() {
       getCustomBookingLength()
       setEditPopupOpened(false)
       eventBus.dispatch("notification", {type: 'success', message: 'Booking length saved successfully'});
+      return true
     }).catch(error => {
       if (error.response && error.response.data && error.response.data.errors) {
         for (const [key, value] of Object.entries(error.response.data.errors)) {
@@ -88,6 +90,7 @@ export default function CustomBookingLength() {
         eventBus.dispatch("notification", {type: 'error', message: error.message});
         console.log('Error', error.message)
       }
+      return false
     })
   }
 

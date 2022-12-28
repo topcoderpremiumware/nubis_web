@@ -11370,3 +11370,7 @@ a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover {
 .react-datepicker__tab-loop .react-datepicker-popper {
   z-index: 1000;
 }
+
+.MuiDataGrid-row:nth-of-type(odd) {
+  background: rgba(255, 255, 255, 0.3);
+}

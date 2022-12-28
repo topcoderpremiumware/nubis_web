@@ -78,8 +78,8 @@ export default function DayViewTableBookings() {
         let orders = response.data.map(item => {
           console.log('item', item)
           if(item.status === 'waiting') return false
-          item.from = Moment(item.reservation_time).format('HH:mm')
-          item.to = Moment(item.reservation_time).add(item.length, 'minutes').format('HH:mm')
+          item.from = Moment.utc(item.reservation_time).format('HH:mm')
+          item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').format('HH:mm')
           item.first_name = item.customer.first_name
           item.last_name = item.customer.last_name
           item.tables = item.is_take_away ? '' : item.table_ids.join(', ')

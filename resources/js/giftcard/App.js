@@ -32,16 +32,16 @@ function App() {
   const onCreate = async (formData) => {
     try {
       const {
-        isCompany, 
-        name, 
-        email, 
-        receiver_name, 
-        receiver_email, 
+        isCompany,
+        name,
+        email,
+        receiver_name,
+        receiver_email,
         ...companyRest
       } = formData
 
       const data = {
-        place_id: localStorage.getItem('place_id'),
+        place_id: window.location.pathname.split('/')[2],
         count,
         name,
         email,
@@ -94,8 +94,8 @@ function App() {
               />
             </div>
             <div className="gift-btns-wrapper">
-              <button 
-                className="gift-btn" 
+              <button
+                className="gift-btn"
                 onClick={() => {
                   if(amount >= minAmount && amount <= maxAmount) {
                     onNext()
@@ -122,8 +122,8 @@ function App() {
 
           <div className='gift-wrapper'>
             <p className="gift-text">
-              {emailType === 'your' 
-                ? 'Type in your e-mail address below and click NEXT' 
+              {emailType === 'your'
+                ? 'Type in your e-mail address below and click NEXT'
                 : 'Type in your e-mail address, and the e-mail addres for the receiver'
               }
             </p>
@@ -135,13 +135,13 @@ function App() {
           </div>
 
           <div className='gift-wrapper'>
-            {isError ? 
+            {isError ?
               <>
                 Something went wrong
                 <div className="gift-btns-wrapper">
                   <button className="gift-btn" onClick={onBack}>← Back</button>
                 </div>
-              </> : 
+              </> :
               'Thank you!'
             }
           </div>

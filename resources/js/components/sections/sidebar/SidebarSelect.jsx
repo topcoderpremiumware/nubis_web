@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export default function SidebarSelect() {
   const {t} = useTranslation();
@@ -30,9 +31,22 @@ export default function SidebarSelect() {
       <Autocomplete
         disablePortal
         id="places"
-        options={places}
+        options={[{ label: 'Create new', id: 'new' }, ...places]}
+        renderOption={(props, option) => (
+          option.id === 'new'
+            ? (
+              <Link to="/RestaurantNew" className="SidebarSelect__link">
+                <Button variant="contained" fullWidth>
+                  {option.label}
+                </Button>
+              </Link>
+            ) : (
+              <li {...props}>{option.label}</li>
+            )
+        )}
         size="small"
         onChange={(event, newValue) => {
+          if (newValue.id === 'new') return
           setPlace(newValue)
           localStorage.setItem('place_id', newValue.id)
           eventBus.dispatch("placeChanged")

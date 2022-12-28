@@ -164,7 +164,7 @@ function LastBlock(props) {
                 />
                 <label htmlFor="eathereChoice">{t('Eat here')}</label>
               </div>
-              <div className="checkbox">
+              {/* <div className="checkbox">
                 <input
                   id="first-checkbox"
                   type="checkbox"
@@ -187,7 +187,7 @@ function LastBlock(props) {
                   }}
                 />
                 {t('I would like to receive the restaurant newsletter by email.')}
-              </div>
+              </div> */}
             </div>
           </div>
 

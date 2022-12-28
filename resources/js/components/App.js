@@ -25,6 +25,13 @@ import Pictures from './pages/GeneralSettings/Pictures/Pictures';
 import Pricing from './pages/Pricing/Pricing';
 import StripeApiKeys from './pages/GeneralSettings/StripeApiKeys/StripeApiKeys';
 import ReminderTime from './pages/GeneralSettings/ReminderTime/ReminderTime';
+import RestaurantNew from './pages/RestaurantNew/RestaurantNew';
+import ThankYou from './pages/ThankYou/ThankYou';
+import ManageGiftCards from './pages/ManageGiftCards/ManageGiftCards';
+import BookingLinkGuide from './pages/BookingLinkGuide/BookingLinkGuide';
+import NotificationsSettings from './pages/GeneralSettings/NotificationsSettings/NotificationsSettings';
+import OnlinePayments from './pages/GeneralSettings/OnlinePayments/OnlinePayments';
+import Support from './pages/Support/Support';
 
 function App() {
   if(localStorage.getItem('token')){
@@ -56,16 +63,26 @@ function App() {
                   <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
                   <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
                   <Route path='/OpeningTimes' exact element={<OpeningTimes/>}/>
+                  <Route path='/ManageGiftCards' exact element={<ManageGiftCards/>}/>
 
                   <Route path='/BasicInformation' exact element={<BasicInformation/>} />
                   <Route path='/Pictures' exact element={<Pictures/>} />
                   <Route path='/SmsKeys' exact element={<SmsApiKeys/>}/>
                   <Route path='/StripeKeys' exact element={<StripeApiKeys/>}/>
                   <Route path='/ReminderTime' exact element={<ReminderTime/>}/>
+                  <Route path='/NotificationsSettings' exact element={<NotificationsSettings/>}/>
+                  <Route path='/OnlinePayments' exact element={<OnlinePayments/>}/>
 
                   <Route path='/CustomBookingLength' exact element={<CustomBookingLength/>}/>
+                  <Route path='/BookingLinkGuide' exact element={<BookingLinkGuide/>}/>
 
                   <Route path='/pricing' exact element={<Pricing/>}/>
+
+                  <Route path='/RestaurantNew' exact element={<RestaurantNew/>}/>
+
+                  <Route path='/ThankYou' exact element={<ThankYou/>}/>
+
+                  <Route path='/Support' exact element={<Support/>}/>
                 </Routes>
               </div>
             </>

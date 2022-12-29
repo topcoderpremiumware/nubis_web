@@ -23,6 +23,7 @@ function SecondBlock(props) {
     modalActive,
     timeline,
     setTimeline,
+    setTimelineId,
   } = props;
 
   const [extraTimeReq, setExtraTimeReq] = useState();
@@ -36,7 +37,8 @@ function SecondBlock(props) {
   }, []);
 
   const setTimelineType = (type) => {
-    setTimeline(type);
+    setTimeline(type.length);
+    setTimelineId(type.id)
     const extraTimesArray = (timereq) =>
       extraTimeReq
         .filter((oneBlock) => oneBlock.length === timereq)[0]
@@ -45,9 +47,9 @@ function SecondBlock(props) {
           active: true,
           shortTime: String(time.slice(11, 16)),
         }));
-    console.log("Times array Extra: ", extraTimesArray(type));
+    console.log("Times array Extra: ", extraTimesArray(type.length));
     // const setExtraTimes = ;
-    setTimes(extraTimesArray(type));
+    setTimes(extraTimesArray(type.length));
   };
 
   const newDateArray = datesArray?.map((one) => one.day);
@@ -67,7 +69,7 @@ function SecondBlock(props) {
   }
 
   const getExtraTime = (date) => {
-    axios.get(`${process.env.APP_URL}/api/custom_booking_lengths`, {
+    axios.get(`${process.env.MIX_APP_URL}/api/custom_booking_lengths`, {
         params: {
           place_id: props.getPlaceId(),
           area_id: localStorage.getItem('area_id'),
@@ -88,7 +90,7 @@ function SecondBlock(props) {
   }
 
   const getTime = (date) => {
-    axios.get(`${process.env.APP_URL}/api/free_time`, {
+    axios.get(`${process.env.MIX_APP_URL}/api/free_time`, {
         params: {
           place_id: props.getPlaceId(),
           area_id: localStorage.getItem('area_id'),
@@ -203,7 +205,7 @@ function SecondBlock(props) {
             <div>
               {extraTimeReq.length > 0 ? extraTimeReq.map((blockTime,key) => (
                 <div className="select-time" key={key}>
-                  <div onClick={() => setTimelineType(blockTime.length)}>
+                  <div onClick={() => setTimelineType(blockTime)}>
                     <p className="select-time-title">{blockTime.name}</p>
                     {blockTime.description}
                   </div>
@@ -304,7 +306,6 @@ function SecondBlock(props) {
           getUserInfoReq={props.getUserInfoReq}
           setModalActive={setModalActive}
           timeline={timeline}
-          setTimelineType={setTimelineType}
           extraTimeReq={extraTimeReq}
           getPlaceId={props.getPlaceId}
         />

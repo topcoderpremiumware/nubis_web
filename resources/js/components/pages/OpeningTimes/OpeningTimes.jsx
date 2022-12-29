@@ -42,11 +42,16 @@ export default function OpeningTimes() {
     await getAreas()
     await getTableplans()
     await getTimetables()
+    eventBus.on("placeChanged", async () => {
+      await getAreas()
+      await getTableplans()
+      await getTimetables()
+    })
   }, [])
 
   const getTimetables = async () => {
     setLoading(true)
-    await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/timetables`, {
+    await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/timetables`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -58,14 +63,14 @@ export default function OpeningTimes() {
   }
 
   const getAreas = async () => {
-    await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
+    await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
       setAreas(response.data)
     }).catch(error => {
     })
   }
 
   const getTableplans = async () => {
-    await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/tableplans`, {
+    await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/tableplans`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -77,9 +82,9 @@ export default function OpeningTimes() {
 
   const updateTimetable = (timetable) => {
     console.log('timetable',timetable)
-    let url = `${process.env.APP_URL}/api/timetables`
+    let url = `${process.env.MIX_APP_URL}/api/timetables`
     if(timetable.hasOwnProperty('id')){
-      url = `${process.env.APP_URL}/api/timetables/${timetable.id}`
+      url = `${process.env.MIX_APP_URL}/api/timetables/${timetable.id}`
     }
 
     axios.post(url, timetable,{
@@ -126,7 +131,7 @@ export default function OpeningTimes() {
   const deleteTimetable = (time) => {
     if (time.hasOwnProperty('id')) {
       if (window.confirm(t('Are you sure you want to delete this timetable?'))) {
-        axios.delete(process.env.APP_URL + '/api/timetables/' + time.id, {
+        axios.delete(process.env.MIX_APP_URL + '/api/timetables/' + time.id, {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
           }

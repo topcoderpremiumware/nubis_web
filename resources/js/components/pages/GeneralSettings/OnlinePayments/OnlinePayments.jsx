@@ -1,10 +1,18 @@
 import { Button, FormControlLabel, FormGroup, Switch, TextField } from '@mui/material'
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useState } from 'react'
+import eventBus from "../../../../eventBus";
 
 const OnlinePayments = () => {
   const [prepayment, setPrepayment] = useState(false)
   const [amount, setAmount] = useState(0)
+
+  useEffect(() => {
+
+    eventBus.on("placeChanged", () => {
+
+    })
+  },[])
 
   const onSave = async (ev) => {
     ev.preventDefault()
@@ -17,14 +25,14 @@ const OnlinePayments = () => {
       <h2>Online Payments</h2>
       <form onSubmit={onSave}>
         <FormGroup>
-          <FormControlLabel 
+          <FormControlLabel
             control={
-              <Switch 
-                checked={prepayment} 
-                onChange={(ev, checked) => setPrepayment(checked)} 
+              <Switch
+                checked={prepayment}
+                onChange={(ev, checked) => setPrepayment(checked)}
               />
-            } 
-            label="Online payment" 
+            }
+            label="Online payment"
           />
         </FormGroup>
         <div className="mt-3 mb-3">

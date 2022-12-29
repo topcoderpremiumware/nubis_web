@@ -42,6 +42,7 @@ export default function DayViewTableBookings() {
     { field: 'length', headerName: t('Booking Length'), width: 100 },
     { field: 'source', headerName: t('Source'), width: 70 },
     { field: 'comment', headerName: t('Note'), width: 200},
+    { field: 'menu', headerName: t('Menu'), width: 100},
     { field: 'order_date', headerName: t('Order date'), width: 140 },
     { field: 'status', headerName: t('Status'), width: 100 },
     { field: 'area', headerName: t('Area'), width: 160 },
@@ -54,7 +55,7 @@ export default function DayViewTableBookings() {
       localStorage.getItem('area_id') &&
       localStorage.getItem('time')){
       let areas = []
-      await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
+      await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
@@ -64,7 +65,7 @@ export default function DayViewTableBookings() {
 
       let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
       let time = JSON.parse(localStorage.getItem('time'))
-      await axios.get(`${process.env.APP_URL}/api/orders`, {
+      await axios.get(`${process.env.MIX_APP_URL}/api/orders`, {
         params: {
           place_id: localStorage.getItem('place_id'),
           area_id: localStorage.getItem('area_id'),
@@ -86,6 +87,7 @@ export default function DayViewTableBookings() {
           item.order_date = Moment(item.created_at).format('YYYY-MM-DD HH:mm')
           item.take_away = item.is_take_away ? t('yes') : t('no')
           item.area = areas.find(i => i.id === item.area_id).name
+          item.menu = item.custom_booking_length_id ? item.custom_booking_length.name : ''
           return item
         }).filter(x => x)
 

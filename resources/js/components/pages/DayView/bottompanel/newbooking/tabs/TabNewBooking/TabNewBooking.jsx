@@ -58,13 +58,13 @@ export default function TabNewBooking(props) {
     (async () => {
       try {
         setLoading(true)
-  
+
         // get areas
-        await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
+        await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
           setAreas(response.data)
         })
         // get customers
-        await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/customers`, {
+        await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/customers`, {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
           }
@@ -90,7 +90,7 @@ export default function TabNewBooking(props) {
   }, [order])
 
   const getTimes = () => {
-    axios.get(`${process.env.APP_URL}/api/work_time`,{
+    axios.get(`${process.env.MIX_APP_URL}/api/work_time`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         area_id: order.area_id,
@@ -104,7 +104,7 @@ export default function TabNewBooking(props) {
   }
 
   const getTables = () => {
-    axios.get(`${process.env.APP_URL}/api/free_tables`,{
+    axios.get(`${process.env.MIX_APP_URL}/api/free_tables`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         area_id: order.area_id,

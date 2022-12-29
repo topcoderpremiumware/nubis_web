@@ -47,10 +47,12 @@ class PlaceController extends Controller
         $superadmins = User::where('is_superadmin',1)->get();
         if(count($superadmins) > 0){
             foreach ($superadmins as $superadmin){
-                $superadmin->places()->attach($place->id);
-                $superadmin->roles()
-                    ->wherePivot('place_id',$place->id)
-                    ->syncWithPivotValues([$role->id], ['place_id' => $place->id]);
+                if($superadmin->id !== Auth::user()->id){
+                    $superadmin->places()->attach($place->id);
+                    $superadmin->roles()
+                        ->wherePivot('place_id',$place->id)
+                        ->syncWithPivotValues([$role->id], ['place_id' => $place->id]);
+                }
             }
         }
 

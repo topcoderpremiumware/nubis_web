@@ -36,8 +36,11 @@ export default function ManageFeedback() {
     },
   }));
 
-  useEffect(async () => {
-    await getFeedbacks()
+  useEffect( () => {
+    getFeedbacks()
+    eventBus.on("placeChanged", () => {
+      getFeedbacks()
+    })
   }, [])
 
   const columns = [
@@ -51,9 +54,9 @@ export default function ManageFeedback() {
         <IconButton onClick={e => {openViewPopup(params.value)}} size="small"><ViewIcon fontSize="small"/></IconButton>, },
   ];
 
-  const getFeedbacks = async () => {
+  const getFeedbacks = () => {
     setLoading(true)
-    await axios.get(`${process.env.APP_URL}/api/feedbacks`,{
+    axios.get(`${process.env.MIX_APP_URL}/api/feedbacks`,{
       params: {
         place_id: localStorage.getItem('place_id')
       },

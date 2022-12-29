@@ -16,7 +16,7 @@ export default function SidebarSelect() {
   }, [])
 
   const getPlaces = async () => {
-    await axios.get(`${process.env.APP_URL}/api/places/mine`, {
+    await axios.get(`${process.env.MIX_APP_URL}/api/places/mine`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -26,16 +26,26 @@ export default function SidebarSelect() {
     })
   }
 
+  const currentPlaceLabel = () => {
+    let pl = places.find((el) => el.id == place)
+    if(pl){
+      return pl.label
+    }else{
+      return null
+    }
+  }
+
   return (
     <div className='SidebarSelect__container'>
       <Autocomplete
         disablePortal
+        disableClearable
         id="places"
         options={[{ label: 'Create new', id: 'new' }, ...places]}
         renderOption={(props, option) => (
           option.id === 'new'
             ? (
-              <Link to="/RestaurantNew" className="SidebarSelect__link">
+              <Link {...props} to="/RestaurantNew" className="SidebarSelect__link">
                 <Button variant="contained" fullWidth>
                   {option.label}
                 </Button>
@@ -47,17 +57,17 @@ export default function SidebarSelect() {
         size="small"
         onChange={(event, newValue) => {
           if (newValue.id === 'new') return
-          setPlace(newValue)
+          setPlace(newValue.id)
           localStorage.setItem('place_id', newValue.id)
           eventBus.dispatch("placeChanged")
         }}
-        renderInput={(params) => 
-          <TextField 
-            {...params} 
-            displayEmpty 
-            placeholder="Places" 
+        renderInput={(params) =>
+          <TextField
+            {...params}
+            placeholder="Places"
           />
         }
+        value={currentPlaceLabel()}
       />
     </div>
   );

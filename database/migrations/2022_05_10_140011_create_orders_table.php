@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('area_id')->constrained()->onDelete('cascade');
             $table->string('table_ids')->default('[]');
             $table->unsignedTinyInteger('seats');
-            $table->timestamp('reservation_time');
+            $table->timestamp('reservation_time')->nullable();
             $table->text('comment');
             $table->string('status');
             $table->boolean('is_take_away');

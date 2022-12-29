@@ -3,6 +3,7 @@ import { Button, CircularProgress, Stack, Table, TableBody, TableCell, TableCont
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
+import eventBus from "../../../eventBus";
 
 const ManageGiftCards = () => {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ const ManageGiftCards = () => {
 
   const getCards = async () => {
     setLoading(true)
-    await axios.get(`${process.env.APP_URL}/api/giftcards`, {
+    await axios.get(`${process.env.MIX_APP_URL}/api/giftcards`, {
       params: {
         place_id: localStorage.getItem('place_id')
       }
@@ -39,6 +40,9 @@ const ManageGiftCards = () => {
 
   useEffect(() => {
     getCards()
+    eventBus.on("placeChanged", () => {
+      getCards()
+    })
   }, [])
 
   return (

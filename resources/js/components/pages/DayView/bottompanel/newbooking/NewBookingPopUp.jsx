@@ -31,7 +31,7 @@ export default function NewBookingPopUp() {
   useEffect(async () => {
     eventBus.on("newBookingOpen",  (data) => {
       if(data && data.hasOwnProperty('id') && data.id > 0){
-        axios.get(`${process.env.APP_URL}/api/orders/${data.id}`, {
+        axios.get(`${process.env.MIX_APP_URL}/api/orders/${data.id}`, {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
           }

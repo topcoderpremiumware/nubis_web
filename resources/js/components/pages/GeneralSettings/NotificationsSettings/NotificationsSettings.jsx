@@ -1,9 +1,17 @@
 import { Button, TextField } from '@mui/material'
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useState } from 'react'
+import eventBus from "../../../../eventBus";
 
 const NotificationsSettings = () => {
   const [number, setNumber] = useState(null)
+
+  useEffect(() => {
+
+    eventBus.on("placeChanged", () => {
+
+    })
+  },[])
 
   const onSave = async (ev) => {
     ev.preventDefault()

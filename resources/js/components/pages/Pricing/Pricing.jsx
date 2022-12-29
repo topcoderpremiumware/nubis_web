@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import './Pricing.scss'
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
+import eventBus from "../../../eventBus";
 
 const Pricing = () => {
   const { t } = useTranslation();
@@ -9,10 +10,13 @@ const Pricing = () => {
 
   useEffect(() => {
     getIsTrialPaid()
+    eventBus.on("placeChanged",  () => {
+      getIsTrialPaid()
+    })
   },[])
 
   const getIsTrialPaid = () => {
-    axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/is_trial_paid`,{
+    axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/is_trial_paid`,{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -22,7 +26,7 @@ const Pricing = () => {
   }
 
   const payTrial = () => {
-    axios.post(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`,{
+    axios.post(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`,{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -33,7 +37,7 @@ const Pricing = () => {
   }
 
   const getPaymentLink = (price_id) => {
-    axios.get(`${process.env.APP_URL}/api/billing/get_payment_link`,{
+    axios.get(`${process.env.MIX_APP_URL}/api/billing/get_payment_link`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         price_id: price_id

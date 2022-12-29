@@ -12,6 +12,9 @@ export default function Pictures() {
 
   useEffect(() => {
     getPictures()
+    eventBus.on("placeChanged", () => {
+      getPictures()
+    })
   },[])
 
   const onChange = (e) => {
@@ -19,7 +22,7 @@ export default function Pictures() {
       let formData = new FormData()
       formData.append('place_id', localStorage.getItem('place_id'))
       formData.append('file', e.target.files[0])
-      axios.post(`${process.env.APP_URL}/api/files/${e.target.name}`, formData,{
+      axios.post(`${process.env.MIX_APP_URL}/api/files/${e.target.name}`, formData,{
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -42,7 +45,7 @@ export default function Pictures() {
   }
 
   const getPictures = () => {
-    axios.get(process.env.APP_URL+'/api/files',{
+    axios.get(process.env.MIX_APP_URL+'/api/files',{
       params: {
         place_id: localStorage.getItem('place_id')
       },
@@ -55,7 +58,9 @@ export default function Pictures() {
         data[item.purpose] = item
       })
       setPictures(data)
-    }).catch(error => {})
+    }).catch(error => {
+      setPictures({})
+    })
   }
 
   const getPicture = (purpose) => {

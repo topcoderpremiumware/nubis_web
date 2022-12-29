@@ -59,6 +59,7 @@ const App = () => {
   const [isTakeAway, setIsTakeAway] = useState(0);
   const [selectedTime, setSelectedTime] = useState("");
   const [timeline, setTimeline] = useState("");
+  const [timelineId, setTimelineId] = useState(null);
   const [orderResponse, setOrderResponse] = useState();
   const [filteredOrder, setFilteredOrder] = useState();
   const [ordersError, setOrdersError] = useState(true);
@@ -69,7 +70,7 @@ const App = () => {
   const [showSelectAreas, setShowSelectAreas] = useState(false);
 
   const myAxios = axios.create({
-    baseURL: process.env.APP_URL,
+    baseURL: process.env.MIX_APP_URL,
     responseType: "json",
   });
 
@@ -254,6 +255,7 @@ const App = () => {
           is_take_away: isTakeAway,
           status: defaultModal === "submit" ? "waiting" : "ordered",
           length: timeline,
+          custom_booking_length_id: timelineId
         },
         {
           headers: {
@@ -272,7 +274,7 @@ const App = () => {
   };
 
   const getAreas = async () => {
-    await axios.get(`${process.env.APP_URL}/api/places/${getPlaceId()}/areas`).then(response => {
+    await axios.get(`${process.env.MIX_APP_URL}/api/places/${getPlaceId()}/areas`).then(response => {
       const availableAreas = response.data.filter(i => !!i.online_available)
       setAreas(availableAreas)
       if(availableAreas.length > 1) {
@@ -287,7 +289,7 @@ const App = () => {
   }
 
   const getPlaceData = () => {
-    axios.get(`${process.env.APP_URL}/api/places/${getPlaceId()}`).then(response => {
+    axios.get(`${process.env.MIX_APP_URL}/api/places/${getPlaceId()}`).then(response => {
       setRestaurantInfo((prev) => ({
         ...prev,
         ...response.data,
@@ -435,6 +437,7 @@ const App = () => {
               setBlockType={setBlockType}
               timeline={timeline}
               setTimeline={setTimeline}
+              setTimelineId={setTimelineId}
               setExtraTime={setExtraTime}
               extraTime={extraTime}
             />

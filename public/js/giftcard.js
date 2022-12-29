@@ -29819,7 +29819,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_10__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-/* provided dependency */ var process = __webpack_require__(/*! process/browser.js */ "./node_modules/process/browser.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 var _excluded = ["isCompany", "name", "email", "receiver_name", "receiver_email"];
@@ -29930,7 +29929,7 @@ function App() {
                 receiver_email: receiver_email
               }), isCompany && companyRest);
               _context.next = 5;
-              return axios__WEBPACK_IMPORTED_MODULE_10___default().post(process.env.APP_URL + '/api/giftcards', data, {
+              return axios__WEBPACK_IMPORTED_MODULE_10___default().post("http://127.0.0.1:8000" + '/api/giftcards', data, {
                 headers: {
                   Authorization: 'Bearer ' + localStorage.getItem('token')
                 }

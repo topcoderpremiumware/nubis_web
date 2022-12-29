@@ -12,12 +12,12 @@ export default function Login() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(process.env.APP_URL+'/api/login', {
+    axios.post(process.env.MIX_APP_URL+'/api/login', {
       email: email,
       password: password
     }).then(response => {
       localStorage.setItem('token',response.data.token)
-      axios.get(process.env.APP_URL+'/api/places/mine', {
+      axios.get(process.env.MIX_APP_URL+'/api/places/mine', {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }

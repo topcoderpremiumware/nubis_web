@@ -56,11 +56,20 @@ export default function SmsTemplate() {
   const [textError, setTextError] = useState([])
   const [caretPosition, setCaretPosition] = useState(null)
 
+  useEffect(() => {
+    eventBus.on("placeChanged",  () => {
+      getTemplate()
+    })
+  },[])
 
   useEffect(() => {
+    getTemplate()
+  },[language,purpose])
+
+  const getTemplate = () => {
     setActive(1)
     setText('')
-    axios.get(process.env.APP_URL+'/api/message_tempates/sms-'+purpose,{
+    axios.get(process.env.MIX_APP_URL+'/api/message_tempates/sms-'+purpose,{
       params: {
         place_id: localStorage.getItem('place_id'),
         language: language
@@ -72,11 +81,11 @@ export default function SmsTemplate() {
       setActive(response.data.active)
       setText(response.data.text)
     }).catch(error => {})
-  },[language,purpose])
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(process.env.APP_URL+'/api/message_tempates/sms-'+purpose, {
+    axios.post(process.env.MIX_APP_URL+'/api/message_tempates/sms-'+purpose, {
       place_id: localStorage.getItem('place_id'),
       language: language,
       active: active,
@@ -104,7 +113,7 @@ export default function SmsTemplate() {
 
   const testMessage = (e) => {
     e.preventDefault();
-    axios.post(process.env.APP_URL+'/api/message_tempates_test_sms', {
+    axios.post(process.env.MIX_APP_URL+'/api/message_tempates_test_sms', {
       place_id: localStorage.getItem('place_id'),
       phone: testPhone,
       text: text

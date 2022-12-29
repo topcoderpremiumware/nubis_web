@@ -36,13 +36,16 @@ export default function Areas() {
     },
   }));
 
-  useEffect(async () => {
-    await getAreas()
+  useEffect( () => {
+    getAreas()
+    eventBus.on("placeChanged", () => {
+      getAreas()
+    })
   }, [])
 
-  const getAreas = async () => {
+  const getAreas = () => {
     setLoading(true)
-    await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
+    axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
       setAreas(response.data)
       setLoading(false)
     }).catch(error => {
@@ -50,9 +53,9 @@ export default function Areas() {
   }
 
   const updateArea = (area) => {
-    let url = `${process.env.APP_URL}/api/areas`
+    let url = `${process.env.MIX_APP_URL}/api/areas`
     if(area.hasOwnProperty('id')){
-      url = `${process.env.APP_URL}/api/areas/${area.id}`
+      url = `${process.env.MIX_APP_URL}/api/areas/${area.id}`
     }
 
     axios.post(url, area,{
@@ -93,7 +96,7 @@ export default function Areas() {
   const deleteArea = (area) => {
     if (area.hasOwnProperty('id')) {
       if (window.confirm(t('Are you sure you want to delete this area?'))) {
-        axios.delete(process.env.APP_URL + '/api/areas/' + area.id, {
+        axios.delete(process.env.MIX_APP_URL + '/api/areas/' + area.id, {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
           }

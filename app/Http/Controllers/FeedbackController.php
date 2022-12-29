@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\TemplateHelper;
 use App\Models\Feedback;
 use App\Models\Log;
 use App\Models\Order;
+use App\SMS\SMS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -192,6 +194,14 @@ class FeedbackController extends Controller
         $res = $feedback->update([
             'reply' => $request->reply,
         ]);
+
+        $customer = $feedback->customer;
+        $smsApiToken = $feedback->place->setting('sms-api-token');
+        $result = SMS::send([$customer->phone], $request->reply, env('APP_NAME'), $smsApiToken);
+
+        \Illuminate\Support\Facades\Mail::html($request->reply, function($msg) use ($customer) {
+            $msg->to($customer->email)->subject('Reply to feedback');
+        });
 
         Log::add($request,'change-feedback-reply','Changed feedback #'.$feedback->id);
 

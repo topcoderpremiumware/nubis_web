@@ -66,7 +66,7 @@ export default function PlanCanvas(props) {
 
   const getPlan = () => {
     let time = JSON.parse(localStorage.getItem('time'))
-    axios.get(`${process.env.APP_URL}/api/tableplans/${time['tableplan_id']}`, {
+    axios.get(`${process.env.MIX_APP_URL}/api/tableplans/${time['tableplan_id']}`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -80,7 +80,7 @@ export default function PlanCanvas(props) {
   const getOrders = () => {
     let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
     let time = JSON.parse(localStorage.getItem('time'))
-    axios.get(`${process.env.APP_URL}/api/orders`, {
+    axios.get(`${process.env.MIX_APP_URL}/api/orders`, {
       params: {
         place_id: localStorage.getItem('place_id'),
         area_id: localStorage.getItem('area_id'),

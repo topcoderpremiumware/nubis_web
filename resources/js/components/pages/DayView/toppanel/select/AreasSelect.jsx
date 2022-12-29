@@ -26,7 +26,7 @@ export default function AreasSelect() {
 
   const getArea = async () => {
     if(localStorage.getItem('place_id')){
-      await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
+      await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }

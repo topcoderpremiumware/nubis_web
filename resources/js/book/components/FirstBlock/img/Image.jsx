@@ -10,7 +10,7 @@ function Image() {
   const [mainImage, setMainImage] = useState(null);
 
   const getImage = () => {
-    axios.get(`${process.env.APP_URL}/api/files_purpose`, {
+    axios.get(`${process.env.MIX_APP_URL}/api/files_purpose`, {
         params: {
           place_id: getPlaceId(),
           purpose: "online_booking_picture",

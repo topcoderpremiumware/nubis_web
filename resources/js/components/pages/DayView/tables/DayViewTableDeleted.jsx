@@ -51,7 +51,7 @@ export default function DayViewTableWaiting() {
       localStorage.getItem('area_id') &&
       localStorage.getItem('time')){
       let areas = []
-      await axios.get(`${process.env.APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
+      await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
@@ -60,7 +60,7 @@ export default function DayViewTableWaiting() {
       })
       let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
       let time = JSON.parse(localStorage.getItem('time'))
-      await axios.get(`${process.env.APP_URL}/api/orders?deleted=1`, {
+      await axios.get(`${process.env.MIX_APP_URL}/api/orders?deleted=1`, {
         params: {
           place_id: localStorage.getItem('place_id'),
           area_id: localStorage.getItem('area_id'),
@@ -72,8 +72,8 @@ export default function DayViewTableWaiting() {
         }
       }).then(response => {
         let orders = response.data.map(item => {
-          item.from = Moment(item.reservation_time).format('HH:mm')
-          item.to = Moment(item.reservation_time).add(item.length, 'minutes').format('HH:mm')
+          item.from = Moment.utc(item.reservation_time).format('HH:mm')
+          item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').format('HH:mm')
           item.first_name = item.customer.first_name
           item.last_name = item.customer.last_name
           item.phone = item.customer.phone

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, TextField } from '@mui/material';
+import eventBus from "../../../../eventBus";
 
 const StripeApiKeys = () => {
   const { t } = useTranslation();
@@ -19,6 +20,9 @@ const StripeApiKeys = () => {
 
   useEffect(() => {
     // get users data
+    eventBus.on("placeChanged", () => {
+
+    })
   }, [])
 
   return (

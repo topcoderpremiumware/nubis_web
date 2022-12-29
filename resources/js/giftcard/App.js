@@ -51,7 +51,7 @@ function App() {
         ...(isCompany && companyRest)
       }
 
-      await axios.post(process.env.APP_URL+'/api/giftcards', data, {
+      await axios.post(process.env.MIX_APP_URL+'/api/giftcards', data, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }

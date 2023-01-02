@@ -27,7 +27,7 @@ export default function Register() {
   const [countryId,setCountryId] = useState('')
 
   useEffect(() => {
-    axios.get(`${process.env.MIX_APP_URL}/api/countries`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
       setCountries(response.data)
     }).catch(error => {
     })
@@ -35,7 +35,7 @@ export default function Register() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(process.env.MIX_APP_URL+'/api/register', {
+    axios.post(process.env.MIX_API_URL+'/api/register', {
       first_name: firstName,
       last_name: lastName,
       email: email,
@@ -45,7 +45,7 @@ export default function Register() {
     }).then(response => {
       localStorage.setItem('token',response.data.token)
       if(place === '1'){
-        axios.post(process.env.MIX_APP_URL+'/api/places', {
+        axios.post(process.env.MIX_API_URL+'/api/places', {
           name: placeName,
           address: address,
           city: city,

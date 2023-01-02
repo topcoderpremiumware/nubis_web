@@ -29929,7 +29929,7 @@ function App() {
                 receiver_email: receiver_email
               }), isCompany && companyRest);
               _context.next = 5;
-              return axios__WEBPACK_IMPORTED_MODULE_10___default().post("http://127.0.0.1:8000" + '/api/giftcards', data, {
+              return axios__WEBPACK_IMPORTED_MODULE_10___default().post("" + '/api/giftcards', data, {
                 headers: {
                   Authorization: 'Bearer ' + localStorage.getItem('token')
                 }

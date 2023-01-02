@@ -16,7 +16,7 @@ export default function SidebarSelect() {
   }, [])
 
   const getPlaces = async () => {
-    await axios.get(`${process.env.MIX_APP_URL}/api/places/mine`, {
+    await axios.get(`${process.env.MIX_API_URL}/api/places/mine`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }

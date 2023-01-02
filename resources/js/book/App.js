@@ -70,7 +70,7 @@ const App = () => {
   const [showSelectAreas, setShowSelectAreas] = useState(false);
 
   const myAxios = axios.create({
-    baseURL: process.env.MIX_APP_URL,
+    baseURL: process.env.MIX_API_URL,
     responseType: "json",
   });
 
@@ -274,7 +274,7 @@ const App = () => {
   };
 
   const getAreas = async () => {
-    await axios.get(`${process.env.MIX_APP_URL}/api/places/${getPlaceId()}/areas`).then(response => {
+    await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/areas`).then(response => {
       const availableAreas = response.data.filter(i => !!i.online_available)
       setAreas(availableAreas)
       if(availableAreas.length > 1) {
@@ -289,7 +289,7 @@ const App = () => {
   }
 
   const getPlaceData = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/places/${getPlaceId()}`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}`).then(response => {
       setRestaurantInfo((prev) => ({
         ...prev,
         ...response.data,

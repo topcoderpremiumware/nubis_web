@@ -18,7 +18,7 @@ const SmsApiKeys = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'sms-api-key',
       value: key
@@ -26,7 +26,7 @@ const SmsApiKeys = () => {
       eventBus.dispatch("notification", {type: 'success', message: 'SMS API key saved'});
     }).catch(error => {})
 
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'sms-api-secret',
       value: secret
@@ -34,7 +34,7 @@ const SmsApiKeys = () => {
       eventBus.dispatch("notification", {type: 'success', message: 'SMS API secret saved'});
     }).catch(error => {})
 
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'sms-api-token',
       value: token
@@ -55,7 +55,7 @@ const SmsApiKeys = () => {
   }, [])
 
   const getSmsApiKey = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'sms-api-key'
@@ -71,7 +71,7 @@ const SmsApiKeys = () => {
   }
 
   const getSmsApiSecret = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'sms-api-secret'
@@ -87,7 +87,7 @@ const SmsApiKeys = () => {
   }
 
   const getSmsApiToken = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'sms-api-token'

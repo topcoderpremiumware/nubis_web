@@ -12,7 +12,7 @@ const BookingLinkGuide = () => {
   const [place, setPlace] = useState({})
 
   const getPlace = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}`).then(response => {
       setPlace(response.data)
     }).catch(error => {
     })

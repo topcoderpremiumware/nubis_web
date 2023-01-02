@@ -50,7 +50,7 @@ export default function DayViewTableWaiting() {
       localStorage.getItem('area_id') &&
       localStorage.getItem('time')){
       let areas = []
-      await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
+      await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
@@ -59,7 +59,7 @@ export default function DayViewTableWaiting() {
       })
       let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
       let time = JSON.parse(localStorage.getItem('time'))
-      await axios.get(`${process.env.MIX_APP_URL}/api/orders`, {
+      await axios.get(`${process.env.MIX_API_URL}/api/orders`, {
         params: {
           place_id: localStorage.getItem('place_id'),
           area_id: localStorage.getItem('area_id'),

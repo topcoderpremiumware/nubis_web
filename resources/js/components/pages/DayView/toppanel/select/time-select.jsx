@@ -31,7 +31,7 @@ export default function TimeSelect() {
 
   const getTime = async () => {
     if(localStorage.getItem('area_id')){
-      await axios.get(`${process.env.MIX_APP_URL}/api/areas/${localStorage.getItem('area_id')}/working`, {
+      await axios.get(`${process.env.MIX_API_URL}/api/areas/${localStorage.getItem('area_id')}/working`, {
         params: {
           date: localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
         },

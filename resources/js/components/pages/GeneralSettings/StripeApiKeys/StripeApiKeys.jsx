@@ -18,7 +18,7 @@ const StripeApiKeys = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'stripe-key',
       value: stripeKey
@@ -26,7 +26,7 @@ const StripeApiKeys = () => {
       eventBus.dispatch("notification", {type: 'success', message: 'Stripe Key saved'});
     }).catch(error => {})
 
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'stripe-secret',
       value: stripeSecret
@@ -34,7 +34,7 @@ const StripeApiKeys = () => {
       eventBus.dispatch("notification", {type: 'success', message: 'Stripe Secret saved'});
     }).catch(error => {})
 
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'stripe-webhook-secret',
       value: stripeWebhookSecret
@@ -55,7 +55,7 @@ const StripeApiKeys = () => {
   }, [])
 
   const getStripeKey = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'stripe-key'
@@ -71,7 +71,7 @@ const StripeApiKeys = () => {
   }
 
   const getStripeSecret = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'stripe-secret'
@@ -87,7 +87,7 @@ const StripeApiKeys = () => {
   }
 
   const getStripeWebhookSecret = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'stripe-webhook-secret'

@@ -21,7 +21,7 @@ const ReminderTime = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'sms-remind-hours-before',
       value: smsTime
@@ -29,7 +29,7 @@ const ReminderTime = () => {
       eventBus.dispatch("notification", {type: 'success', message: 'SMS Settings saved'});
     }).catch(error => {})
 
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'email-remind-hours-before',
       value: emailTime
@@ -39,7 +39,7 @@ const ReminderTime = () => {
   }
 
   const getSmsTime = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'sms-remind-hours-before'
@@ -55,7 +55,7 @@ const ReminderTime = () => {
   }
 
   const getEmailTime = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'email-remind-hours-before'

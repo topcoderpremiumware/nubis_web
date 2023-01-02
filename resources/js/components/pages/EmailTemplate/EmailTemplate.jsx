@@ -96,7 +96,7 @@ export default function EmailTemplate() {
     setActive(1)
     setSubject('')
     setText('')
-    axios.get(process.env.MIX_APP_URL+'/api/message_tempates/email-'+purpose,{
+    axios.get(process.env.MIX_API_URL+'/api/message_tempates/email-'+purpose,{
       params: {
         place_id: localStorage.getItem('place_id'),
         language: language
@@ -113,7 +113,7 @@ export default function EmailTemplate() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(process.env.MIX_APP_URL+'/api/message_tempates/email-'+purpose, {
+    axios.post(process.env.MIX_API_URL+'/api/message_tempates/email-'+purpose, {
       place_id: localStorage.getItem('place_id'),
       language: language,
       active: active,
@@ -144,7 +144,7 @@ export default function EmailTemplate() {
 
   const testMessage = (e) => {
     e.preventDefault();
-    axios.post(process.env.MIX_APP_URL+'/api/message_tempates_test_email', {
+    axios.post(process.env.MIX_API_URL+'/api/message_tempates_test_email', {
       place_id: localStorage.getItem('place_id'),
       mail: testEmail,
       subject: subject,

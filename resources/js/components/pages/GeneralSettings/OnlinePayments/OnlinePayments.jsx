@@ -23,7 +23,7 @@ const OnlinePayments = () => {
   },[])
 
   const getPrepayment = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'is-online-payment'
@@ -39,7 +39,7 @@ const OnlinePayments = () => {
   }
 
   const getAmount = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'online-payment-amount'
@@ -55,7 +55,7 @@ const OnlinePayments = () => {
   }
 
   const getCurrency = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/settings`,{
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         name: 'online-payment-currency'
@@ -72,7 +72,7 @@ const OnlinePayments = () => {
 
   const onSave = async (e) => {
     e.preventDefault()
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'is-online-payment',
       value: prepayment
@@ -80,7 +80,7 @@ const OnlinePayments = () => {
       eventBus.dispatch("notification", {type: 'success', message: 'Online payment saved'});
     }).catch(error => {})
 
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'online-payment-amount',
       value: amount
@@ -88,7 +88,7 @@ const OnlinePayments = () => {
       eventBus.dispatch("notification", {type: 'success', message: 'Online payment amount saved'});
     }).catch(error => {})
 
-    axios.post(`${process.env.MIX_APP_URL}/api/settings`, {
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'online-payment-currency',
       value: currency

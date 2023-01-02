@@ -5578,7 +5578,7 @@ var App = function App() {
       setShowSelectAreas = _useState46[1];
 
   var myAxios = axios__WEBPACK_IMPORTED_MODULE_14___default().create({
-    baseURL: "http://127.0.0.1:8000",
+    baseURL: "",
     responseType: "json"
   });
 
@@ -5775,7 +5775,7 @@ var App = function App() {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return axios__WEBPACK_IMPORTED_MODULE_14___default().get("".concat("http://127.0.0.1:8000", "/api/places/").concat(getPlaceId(), "/areas")).then(function (response) {
+              return axios__WEBPACK_IMPORTED_MODULE_14___default().get("".concat("", "/api/places/").concat(getPlaceId(), "/areas")).then(function (response) {
                 var availableAreas = response.data.filter(function (i) {
                   return !!i.online_available;
                 });
@@ -5806,7 +5806,7 @@ var App = function App() {
   }();
 
   var getPlaceData = function getPlaceData() {
-    axios__WEBPACK_IMPORTED_MODULE_14___default().get("".concat("http://127.0.0.1:8000", "/api/places/").concat(getPlaceId())).then(function (response) {
+    axios__WEBPACK_IMPORTED_MODULE_14___default().get("".concat("", "/api/places/").concat(getPlaceId())).then(function (response) {
       setRestaurantInfo(function (prev) {
         return _objectSpread(_objectSpread(_objectSpread({}, prev), response.data), {}, {
           country: response.data.country.name
@@ -6682,7 +6682,7 @@ function Image() {
       setMainImage = _useState2[1];
 
   var getImage = function getImage() {
-    axios.get("".concat("http://127.0.0.1:8000", "/api/files_purpose"), {
+    axios.get("".concat("", "/api/files_purpose"), {
       params: {
         place_id: getPlaceId(),
         purpose: "online_booking_picture"
@@ -7405,7 +7405,7 @@ function SecondBlock(props) {
   };
 
   var getExtraTime = function getExtraTime(date) {
-    axios.get("".concat("http://127.0.0.1:8000", "/api/custom_booking_lengths"), {
+    axios.get("".concat("", "/api/custom_booking_lengths"), {
       params: {
         place_id: props.getPlaceId(),
         area_id: localStorage.getItem('area_id'),
@@ -7425,7 +7425,7 @@ function SecondBlock(props) {
   };
 
   var getTime = function getTime(date) {
-    axios.get("".concat("http://127.0.0.1:8000", "/api/free_time"), {
+    axios.get("".concat("", "/api/free_time"), {
       params: {
         place_id: props.getPlaceId(),
         area_id: localStorage.getItem('area_id'),
@@ -7789,7 +7789,7 @@ function WaitingModal(props) {
   };
 
   var getTime = function getTime() {
-    axios.get("".concat("http://127.0.0.1:8000", "/api/work_time"), {
+    axios.get("".concat("", "/api/work_time"), {
       params: {
         place_id: props.getPlaceId(),
         area_id: localStorage.getItem('area_id'),

@@ -16,7 +16,7 @@ const Pricing = () => {
   },[])
 
   const getIsTrialPaid = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/is_trial_paid`,{
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/is_trial_paid`,{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -26,7 +26,7 @@ const Pricing = () => {
   }
 
   const payTrial = () => {
-    axios.post(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`,{
+    axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`,{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -37,7 +37,7 @@ const Pricing = () => {
   }
 
   const getPaymentLink = (price_id) => {
-    axios.get(`${process.env.MIX_APP_URL}/api/billing/get_payment_link`,{
+    axios.get(`${process.env.MIX_API_URL}/api/billing/get_payment_link`,{
       params: {
         place_id: localStorage.getItem('place_id'),
         price_id: price_id

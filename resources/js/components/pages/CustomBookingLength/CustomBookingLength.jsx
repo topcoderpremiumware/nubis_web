@@ -49,7 +49,7 @@ export default function CustomBookingLength() {
 
   const getCustomBookingLength = async () => {
     setLoading(true)
-    await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/custom_booking_lengths`, {
+    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/custom_booking_lengths`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -61,7 +61,7 @@ export default function CustomBookingLength() {
   }
 
   const getAreas = async () => {
-    await axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
+    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
       setAreas(response.data)
     }).catch(error => {
     })
@@ -69,9 +69,9 @@ export default function CustomBookingLength() {
 
   const updateCustomLength = async (customLength) => {
     console.log('customLength', customLength)
-    let url = `${process.env.MIX_APP_URL}/api/custom_booking_lengths`
+    let url = `${process.env.MIX_API_URL}/api/custom_booking_lengths`
     if (customLength.hasOwnProperty('id')) {
-      url = `${process.env.MIX_APP_URL}/api/custom_booking_lengths/${customLength.id}`
+      url = `${process.env.MIX_API_URL}/api/custom_booking_lengths/${customLength.id}`
     }
 
     return await axios.post(url, generateFormData(customLength), {
@@ -157,7 +157,7 @@ export default function CustomBookingLength() {
   const deleteCustomLength = (customLength) => {
     if (customLength.hasOwnProperty('id')) {
       if (window.confirm(t('Are you sure you want to delete this booking length?'))) {
-        axios.delete(process.env.MIX_APP_URL + '/api/custom_booking_lengths/' + customLength.id, {
+        axios.delete(process.env.MIX_API_URL + '/api/custom_booking_lengths/' + customLength.id, {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
           }

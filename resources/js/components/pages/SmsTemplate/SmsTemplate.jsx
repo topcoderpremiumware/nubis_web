@@ -69,7 +69,7 @@ export default function SmsTemplate() {
   const getTemplate = () => {
     setActive(1)
     setText('')
-    axios.get(process.env.MIX_APP_URL+'/api/message_tempates/sms-'+purpose,{
+    axios.get(process.env.MIX_API_URL+'/api/message_tempates/sms-'+purpose,{
       params: {
         place_id: localStorage.getItem('place_id'),
         language: language
@@ -85,7 +85,7 @@ export default function SmsTemplate() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(process.env.MIX_APP_URL+'/api/message_tempates/sms-'+purpose, {
+    axios.post(process.env.MIX_API_URL+'/api/message_tempates/sms-'+purpose, {
       place_id: localStorage.getItem('place_id'),
       language: language,
       active: active,
@@ -113,7 +113,7 @@ export default function SmsTemplate() {
 
   const testMessage = (e) => {
     e.preventDefault();
-    axios.post(process.env.MIX_APP_URL+'/api/message_tempates_test_sms', {
+    axios.post(process.env.MIX_API_URL+'/api/message_tempates_test_sms', {
       place_id: localStorage.getItem('place_id'),
       phone: testPhone,
       text: text

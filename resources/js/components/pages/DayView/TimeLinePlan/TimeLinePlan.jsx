@@ -40,7 +40,7 @@ export default function TimeLinePlan(props) {
   },[])
 
   const getPlan = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/tableplans/${selectedTime['tableplan_id']}`, {
+    axios.get(`${process.env.MIX_API_URL}/api/tableplans/${selectedTime['tableplan_id']}`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -57,7 +57,7 @@ export default function TimeLinePlan(props) {
   }
 
   const getOrders = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/orders`, {
+    axios.get(`${process.env.MIX_API_URL}/api/orders`, {
       params: {
         place_id: localStorage.getItem('place_id'),
         area_id: localStorage.getItem('area_id'),

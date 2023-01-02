@@ -24,7 +24,7 @@ function App() {
     try {
       setIsLoading(true)
 
-      await axios.post(`${process.env.MIX_APP_URL}/api/feedbacks`, {
+      await axios.post(`${process.env.MIX_API_URL}/api/feedbacks`, {
         //customer_id: userId,
         //place_id: localStorage.getItem('place_id'),
         order_id: window.location.pathname.split('/')[2],
@@ -53,7 +53,7 @@ function App() {
   useLayoutEffect(() => {
     if(!localStorage.getItem('token')){
       window.location.href="/"
-      // axios.get(`${process.env.MIX_APP_URL}/api/user`).then(response => {
+      // axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
       //   setUserId(response.data?.id)
       // }).catch(error => {
       //   if (error.response.status === 401){

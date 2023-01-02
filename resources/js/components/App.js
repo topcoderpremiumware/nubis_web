@@ -35,7 +35,7 @@ import Support from './pages/Support/Support';
 
 function App() {
   if(localStorage.getItem('token')){
-    axios.get(`${process.env.MIX_APP_URL}/api/user`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
     }).catch(error => {
       if (error.response.status === 401){
         localStorage.clear()

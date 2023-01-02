@@ -32,7 +32,7 @@ export default function FeedbackViewPopup(props) {
   }
 
   const handleSave = () => {
-    axios.post(`${process.env.MIX_APP_URL}/api/feedbacks/${feedback.id}/reply`, {
+    axios.post(`${process.env.MIX_API_URL}/api/feedbacks/${feedback.id}/reply`, {
       reply: feedback.reply
     },{
       headers: {

@@ -23,7 +23,7 @@ const ManageGiftCards = () => {
 
   const getCards = async () => {
     setLoading(true)
-    await axios.get(`${process.env.MIX_APP_URL}/api/giftcards`, {
+    await axios.get(`${process.env.MIX_API_URL}/api/giftcards`, {
       params: {
         place_id: localStorage.getItem('place_id')
       }

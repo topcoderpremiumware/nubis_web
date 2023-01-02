@@ -56,7 +56,7 @@ export default function ManageFeedback() {
 
   const getFeedbacks = () => {
     setLoading(true)
-    axios.get(`${process.env.MIX_APP_URL}/api/feedbacks`,{
+    axios.get(`${process.env.MIX_API_URL}/api/feedbacks`,{
       params: {
         place_id: localStorage.getItem('place_id')
       },

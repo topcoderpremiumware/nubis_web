@@ -18,7 +18,7 @@ const RestaurantNew = () => {
   const [countryId, setCountryId] = useState('')
 
   useEffect(() => {
-    axios.get(`${process.env.MIX_APP_URL}/api/countries`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
       setCountries(response.data)
     }).catch(error => {
     })
@@ -26,7 +26,7 @@ const RestaurantNew = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(process.env.MIX_APP_URL + '/api/places', {
+    axios.post(process.env.MIX_API_URL + '/api/places', {
       name: placeName,
       address: address,
       city: city,

@@ -69,7 +69,7 @@ function SecondBlock(props) {
   }
 
   const getExtraTime = (date) => {
-    axios.get(`${process.env.MIX_APP_URL}/api/custom_booking_lengths`, {
+    axios.get(`${process.env.MIX_API_URL}/api/custom_booking_lengths`, {
         params: {
           place_id: props.getPlaceId(),
           area_id: localStorage.getItem('area_id'),
@@ -90,7 +90,7 @@ function SecondBlock(props) {
   }
 
   const getTime = (date) => {
-    axios.get(`${process.env.MIX_APP_URL}/api/free_time`, {
+    axios.get(`${process.env.MIX_API_URL}/api/free_time`, {
         params: {
           place_id: props.getPlaceId(),
           area_id: localStorage.getItem('area_id'),

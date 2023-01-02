@@ -36,7 +36,7 @@ export default function TablePlanSetup() {
   }
 
   const getTableplans = (selectedId = null) => {
-    axios.get(process.env.MIX_APP_URL+'/api/places/'+localStorage.getItem('place_id')+'/tableplans',{
+    axios.get(process.env.MIX_API_URL+'/api/places/'+localStorage.getItem('place_id')+'/tableplans',{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -76,9 +76,9 @@ export default function TablePlanSetup() {
   }
 
   const savePlan = () => {
-    let url = process.env.MIX_APP_URL+'/api/tableplans'
+    let url = process.env.MIX_API_URL+'/api/tableplans'
     if(selectedPlan.hasOwnProperty('id')){
-      url = process.env.MIX_APP_URL+'/api/tableplans/'+selectedPlan.id
+      url = process.env.MIX_API_URL+'/api/tableplans/'+selectedPlan.id
     }
 
     axios.post(url, selectedPlan,{
@@ -105,7 +105,7 @@ export default function TablePlanSetup() {
   const deletePlan = () => {
     if(selectedPlan.hasOwnProperty('id')){
       if(window.confirm(t('Are you sure you want to delete this plan?'))){
-        axios.delete(process.env.MIX_APP_URL+'/api/tableplans/'+selectedPlan.id,{
+        axios.delete(process.env.MIX_API_URL+'/api/tableplans/'+selectedPlan.id,{
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
           }

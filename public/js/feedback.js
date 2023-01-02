@@ -16411,7 +16411,7 @@ function App() {
               _context.prev = 0;
               setIsLoading(true);
               _context.next = 4;
-              return axios__WEBPACK_IMPORTED_MODULE_5___default().post("".concat("http://127.0.0.1:8000", "/api/feedbacks"), {
+              return axios__WEBPACK_IMPORTED_MODULE_5___default().post("".concat("", "/api/feedbacks"), {
                 //customer_id: userId,
                 //place_id: localStorage.getItem('place_id'),
                 order_id: window.location.pathname.split('/')[2],
@@ -16456,7 +16456,7 @@ function App() {
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect)(function () {
     if (!localStorage.getItem('token')) {
-      window.location.href = "/"; // axios.get(`${process.env.MIX_APP_URL}/api/user`).then(response => {
+      window.location.href = "/"; // axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
       //   setUserId(response.data?.id)
       // }).catch(error => {
       //   if (error.response.status === 401){

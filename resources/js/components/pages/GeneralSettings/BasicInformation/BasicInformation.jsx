@@ -18,14 +18,14 @@ export default function BasicInformation() {
   },[])
 
   const getPlace = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}`).then(response => {
       setPlace(response.data)
     }).catch(error => {
     })
   }
 
   const getCountries = () => {
-    axios.get(`${process.env.MIX_APP_URL}/api/countries`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
       setCountries(response.data)
     }).catch(error => {
     })
@@ -37,7 +37,7 @@ export default function BasicInformation() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}`, place).then(response => {
+    axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}`, place).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Information saved'});
     }).catch(error => {
       if (error.response && error.response.data && error.response.data.errors) {

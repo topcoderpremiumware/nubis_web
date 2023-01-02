@@ -174,3 +174,4 @@ Route::get('places/{id}',[PlaceController::class, 'getId']);
 Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);
 
 Route::post('billing/webhook',[BillingController::class, 'webhook']);
+Route::post('places/{place_id}/webhook',[OrderController::class, 'webhook']);

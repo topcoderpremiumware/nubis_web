@@ -14,6 +14,8 @@ use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Stripe\StripeClient;
+use Stripe\Webhook;
 
 class OrderController extends Controller
 {
@@ -609,37 +611,89 @@ class OrderController extends Controller
             'custom_booking_length_id' => $request->custom_booking_length_id
         ]);
 
-        $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
-            ->where('purpose','sms-confirmation')
-            ->where('language',Auth::user()->language)
-            ->where('active',1)
-            ->first();
-        $place = Place::find($request->place_id);
-        $smsApiToken = $place->setting('sms-api-token');
-        if($sms_confirmation_template && $smsApiToken){
-            $result = SMS::send([Auth::user()->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'), $smsApiToken);
-        }
-        $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
-            ->where('purpose','email-confirmation')
-            ->where('language',Auth::user()->language)
-            ->where('active',1)
-            ->first();
-        if($email_confirmation_template){
-            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($email_confirmation_template) {
-                $msg->to(Auth::user()->email)->subject($email_confirmation_template->subject);
-            });
+        $prepayment_url = $this->getPrepaymentUrl($request,$order);
+        if($prepayment_url){
+            $order->status = 'pending';
+            $order->timestamps = false;
+            $order->save();
         }
 
-        $sms_notification_template = MessageTemplate::where('place_id',$request->place_id)
-            ->where('purpose','sms-notification')
-            //->where('language','en')
-            ->where('active',1)
-            ->first();
-        if($sms_notification_template && $smsApiToken){
-            $result = SMS::send([$place->phone], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_NAME'), $smsApiToken);
+        if(!$prepayment_url){
+            $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+                ->where('purpose','sms-confirmation')
+                ->where('language',Auth::user()->language)
+                ->where('active',1)
+                ->first();
+            $place = Place::find($request->place_id);
+            $smsApiToken = $place->setting('sms-api-token');
+            if($sms_confirmation_template && $smsApiToken){
+                $result = SMS::send([Auth::user()->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'), $smsApiToken);
+            }
+            $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+                ->where('purpose','email-confirmation')
+                ->where('language',Auth::user()->language)
+                ->where('active',1)
+                ->first();
+            if($email_confirmation_template){
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($email_confirmation_template) {
+                    $msg->to(Auth::user()->email)->subject($email_confirmation_template->subject);
+                });
+            }
+
+            $sms_notification_template = MessageTemplate::where('place_id',$request->place_id)
+                ->where('purpose','sms-notification')
+                //->where('language','en')
+                ->where('active',1)
+                ->first();
+            if($sms_notification_template && $smsApiToken){
+                $result = SMS::send([$place->phone], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_NAME'), $smsApiToken);
+            }
         }
 
+        $order->prepayment_url = $prepayment_url;
         return response()->json($order);
+    }
+
+    private function getPrepaymentUrl($request,$order)
+    {
+        $url = '';
+        $place = Place::find($request->place_id);
+        $is_online_payment = $place->setting('is-online-payment');
+
+        if(intval($is_online_payment) === 1){
+            $online_payment_amount = $place->setting('online-payment-amount');
+            $online_payment_currency = $place->setting('online-payment-currecy');
+            $stripe_secret = $place->setting('stripe-secret');
+            $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
+
+            if($stripe_secret && $stripe_webhook_secret && $online_payment_currency){
+                $stripe = new StripeClient($stripe_secret);
+                $price = $stripe->prices->create([
+                    'unit_amount' => $online_payment_amount,
+                    'currency' => $online_payment_currency,
+                    'product_data' => [
+                        'name' => 'Prepayment'
+                    ]
+                ]);
+
+                $link = $stripe->paymentLinks->create(
+                    [
+                        'line_items' => [['price' => $price->id, 'quantity' => 1]],
+                        'metadata' => [
+                            'place_id' => $request->place_id,
+                            'order_id' => $order->id
+                        ],
+                        'after_completion' => [
+                            'type' => 'redirect',
+                            'redirect' => ['url' => env('APP_URL')],
+                        ],
+                    ]
+                );
+                $url = $link->url;
+            }
+        }
+
+        return $url;
     }
 
     public function freeTables(Request $request)
@@ -671,5 +725,46 @@ class OrderController extends Controller
         $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
 
         return response()->json($free_tables);
+    }
+
+    public function webhook($place_id, Request $request)
+    {
+        $place = Place::find($place_id);
+        $stripe_secret = $place->setting('stripe-secret');
+        $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
+        try {
+            $event = Webhook::constructEvent(
+                @file_get_contents('php://input'),
+                $_SERVER['HTTP_STRIPE_SIGNATURE'],
+                $stripe_webhook_secret
+            );
+        } catch(\UnexpectedValueException $e) {
+            // Invalid payload
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+            exit();
+        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+            // Invalid signature
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+            exit();
+        }
+        if ($event->type == 'payment_intent.succeeded') {
+            $stripe = new StripeClient($stripe_secret);
+            $object = $event->data->object;
+
+            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
+            if(count($sessions->data) > 0){
+                $metadata = $sessions->data[0]->metadata;
+                $order_id = $metadata->order_id;
+
+                $order = Order::find($order_id);
+                $order->status = 'ordered';
+                $order->save();
+            }
+        }
+        return response()->json(['result'=> 'OK']);
     }
 }

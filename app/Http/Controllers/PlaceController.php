@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\TemplateHelper;
 use App\Models\Customer;
 use App\Models\Log;
 use App\Models\Order;
@@ -32,7 +33,8 @@ class PlaceController extends Controller
             'phone' => $request->phone ?? '',
             'email' => $request->email ?? '',
             'home_page' => $request->home_page ?? '',
-            'country_id' => $request->country_id
+            'country_id' => $request->country_id,
+            'tax_number' => $request->tax_number
         ]);
 
         Auth::user()->places()->attach($place->id);
@@ -86,7 +88,8 @@ class PlaceController extends Controller
             'phone' => $request->phone ?? '',
             'email' => $request->email ?? '',
             'home_page' => $request->home_page ?? '',
-            'country_id' => $request->country_id
+            'country_id' => $request->country_id,
+            'tax_number' => $request->tax_number
         ]);
 
         Log::add($request,'change-place','Changed place #'.$id);
@@ -149,5 +152,25 @@ class PlaceController extends Controller
         $trial_bill = $place->paid_bills()->where('product_name','Trial')->first();
 
         return response()->json(boolval($trial_bill));
+    }
+
+    public function sendSupport(Request $request)
+    {
+        $request->validate([
+            'subject' => 'required',
+            'message' => 'required',
+            'place_id' => 'required'
+        ]);
+
+        $superadmins = User::where('is_superadmin',1)->get();
+        if(count($superadmins) > 0){
+            foreach ($superadmins as $superadmin){
+                if($superadmin->id !== Auth::user()->id){
+                    \Illuminate\Support\Facades\Mail::html($request->message, function($msg) use ($request, $superadmin) {
+                        $msg->to($superadmin->email)->subject('Place ID: '.$request->place_id.' '.$request->subject);
+                    });
+                }
+            }
+        }
     }
 }

@@ -87,6 +87,7 @@ Route::middleware('auth:user_api')->group(function(){
 
     Route::post('places',[PlaceController::class, 'create']);
     Route::get('places/mine',[PlaceController::class, 'getAllMine']);
+    Route::post('places/send_support',[PlaceController::class, 'sendSupport']);
     Route::post('places/{id}',[PlaceController::class, 'save']);
     Route::get('places/{place_id}/menus',[MenuController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace']);

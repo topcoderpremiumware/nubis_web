@@ -21,7 +21,7 @@ export default function SidebarSelect() {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setPlaces(response.data.map(i => ({label: i.name, id: i.id})))
+      setPlaces(response.data.map(i => ({label: i.name+' ('+i.id+')', id: i.id})))
     }).catch(error => {
     })
   }

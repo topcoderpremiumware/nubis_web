@@ -14,15 +14,15 @@ class FeedbackController extends Controller
 {
     public function create(Request $request)
     {
-        if(!Auth::user()->tokenCan('customer')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
+//        if(!Auth::user()->tokenCan('customer')) return response()->json([
+//            'message' => 'Unauthorized.'
+//        ], 401);
 
-        if(!Auth::user()->orders || !Auth::user()->orders->contains($request->order_id)){
-            return response()->json([
-                'message' => 'It\'s not your order'
-            ], 400);
-        }
+//        if(!Auth::user()->orders || !Auth::user()->orders->contains($request->order_id)){
+//            return response()->json([
+//                'message' => 'It\'s not your order'
+//            ], 400);
+//        }
 
         $feedback = Feedback::where('order_id',$request->order_id)->first();
         if($feedback){

@@ -25,6 +25,7 @@ export default function Register() {
   const [homePage, setHomePage] = useState('')
   const [countries,setCountries] = useState([])
   const [countryId,setCountryId] = useState('')
+  const [taxNumber,setTaxNumber] = useState('')
 
   useEffect(() => {
     axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
@@ -53,7 +54,8 @@ export default function Register() {
           phone: phone,
           email: placeEmail,
           home_page: homePage,
-          country_id: countryId
+          country_id: countryId,
+          tax_number: taxNumber
         },{
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -128,6 +130,9 @@ export default function Register() {
         break;
       case 'country_id':
         setCountryId(e.target.value)
+        break;
+      case 'tax_number':
+        setTaxNumber(e.target.value)
         break;
     }
   }
@@ -238,6 +243,12 @@ export default function Register() {
                 <div className="mb-3">
                   <TextField label={t('Email address')} size="small" fullWidth
                              type="email" id="place_email" name="place_email"
+                             onChange={onChange}/>
+                </div>
+                <div className="mb-3">
+                  <TextField label={t('Tax number')} size="small" fullWidth
+                             type="text" id="tax_number" name="tax_number"
+                             required={true}
                              onChange={onChange}/>
                 </div>
                 <div className="mb-3">

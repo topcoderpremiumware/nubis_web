@@ -107,6 +107,12 @@ export default function BasicInformation() {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
+            <TextField label={t('Tax number')} size="small" fullWidth
+                       type="text" id="tax_number" name="tax_number"
+                       required={true}
+                       onChange={onChange} value={place.tax_number || ''}/>
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <TextField label={t('Home page')} size="small" fullWidth
                        type="text" id="home_page" name="home_page"
                        onChange={onChange} value={place.home_page || ''}

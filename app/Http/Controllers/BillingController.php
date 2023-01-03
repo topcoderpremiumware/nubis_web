@@ -38,13 +38,16 @@ class BillingController extends Controller
             ], 400);
         }
 
+        $place = Place::find($request->place_id);
+
         $link = $stripe->paymentLinks->create(
             [
                 'line_items' => [['price' => $request->price_id, 'quantity' => 1]], //price_1MED982eZvKYlo2CZLQdP554
                 'metadata' => [
                     'place_id' => $request->place_id,
                     'duration' => $product->metadata->duration,
-                    'name' => $product->name
+                    'name' => $product->name,
+                    'tax_number' => $place->tax_number
                 ],
                 'after_completion' => [
                     'type' => 'redirect',

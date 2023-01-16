@@ -23,15 +23,17 @@ import CustomBookingLength from "./pages/CustomBookingLength/CustomBookingLength
 import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInformation';
 import Pictures from './pages/GeneralSettings/Pictures/Pictures';
 import Pricing from './pages/Pricing/Pricing';
-import StripeApiKeys from './pages/GeneralSettings/StripeApiKeys/StripeApiKeys';
 import ReminderTime from './pages/GeneralSettings/ReminderTime/ReminderTime';
 import RestaurantNew from './pages/RestaurantNew/RestaurantNew';
 import ThankYou from './pages/ThankYou/ThankYou';
 import ManageGiftCards from './pages/ManageGiftCards/ManageGiftCards';
 import BookingLinkGuide from './pages/BookingLinkGuide/BookingLinkGuide';
 import NotificationsSettings from './pages/GeneralSettings/NotificationsSettings/NotificationsSettings';
-import OnlinePayments from './pages/GeneralSettings/OnlinePayments/OnlinePayments';
 import Support from './pages/Support/Support';
+import PaymentGateway from './pages/GuestPayment/PaymentGateway/PaymentGateway';
+import PaymentSettings from './pages/GuestPayment/PaymentSettings/PaymentSettings';
+import VideoGuideSettings from './pages/VideoGuideSettings/VideoGuideSettings';
+import VideoGuides from './pages/VideoGuides/VideoGuides';
 
 function App() {
   if(localStorage.getItem('token')){
@@ -68,10 +70,11 @@ function App() {
                   <Route path='/BasicInformation' exact element={<BasicInformation/>} />
                   <Route path='/Pictures' exact element={<Pictures/>} />
                   <Route path='/SmsKeys' exact element={<SmsApiKeys/>}/>
-                  <Route path='/StripeKeys' exact element={<StripeApiKeys/>}/>
+                  <Route path='/PaymentGateway' exact element={<PaymentGateway/>}/>
                   <Route path='/ReminderTime' exact element={<ReminderTime/>}/>
                   <Route path='/NotificationsSettings' exact element={<NotificationsSettings/>}/>
-                  <Route path='/OnlinePayments' exact element={<OnlinePayments/>}/>
+                  <Route path='/PaymentSettings' exact element={<PaymentSettings/>}/>
+                  <Route path='/VideoGuideSettings' exact element={<VideoGuideSettings/>}/>
 
                   <Route path='/CustomBookingLength' exact element={<CustomBookingLength/>}/>
                   <Route path='/BookingLinkGuide' exact element={<BookingLinkGuide/>}/>
@@ -81,6 +84,8 @@ function App() {
                   <Route path='/RestaurantNew' exact element={<RestaurantNew/>}/>
 
                   <Route path='/ThankYou' exact element={<ThankYou/>}/>
+
+                  <Route path='/VideoGuides' exact element={<VideoGuides/>}/>
 
                   <Route path='/Support' exact element={<Support/>}/>
                 </Routes>

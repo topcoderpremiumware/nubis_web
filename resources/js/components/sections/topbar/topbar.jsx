@@ -39,6 +39,9 @@ export default function Topbar() {
                 <a className="nav-link" aria-current="page" href="#">Country</a>
               </li>
               <li className="nav-item ms-0 ms-lg-auto">
+                <Link className="nav-link" to="/VideoGuides">See Guide</Link>
+              </li>
+              <li className="nav-item">
                 <a className="nav-link" href="#">My Restaurants</a>
               </li>
               <li className="nav-item">

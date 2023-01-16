@@ -78,11 +78,6 @@ export const SidebarData = [
         cName: 'sub-nav'
       },
       {
-        title: 'Stripe Keys',
-        path: '/StripeKeys',
-        cName: 'sub-nav'
-      },
-      {
         title: 'Reminder Time',
         path: '/ReminderTime',
         cName: 'sub-nav'
@@ -93,8 +88,28 @@ export const SidebarData = [
         cName: 'sub-nav'
       },
       {
-        title: 'Online Payments',
-        path: '/OnlinePayments',
+        title: 'Video Guide Settings',
+        path: '/VideoGuideSettings',
+        cName: 'sub-nav'
+      },
+    ]
+  },
+  {
+    title: 'Guest Payment',
+    path: '#',
+    icon: <BsCreditCard />,
+    iconClosed: <KeyboardArrowDown />,
+    iconOpened: <KeyboardArrowUp />,
+
+    subNav: [
+      {
+        title: 'Payment Gateaway',
+        path: '/PaymentGateway',
+        cName: 'sub-nav'
+      },
+      {
+        title: 'Payment Settings',
+        path: '/PaymentSettings',
         cName: 'sub-nav'
       },
     ]

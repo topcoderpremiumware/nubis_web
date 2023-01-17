@@ -75,6 +75,14 @@ export default function TablePlanSetup() {
     setSelectedName('')
   }
 
+  const copySelected = () => {
+    let plan = {...selectedPlan}
+    delete plan.id
+    plan.name = selectedName+' copy'
+    setSelectedPlan({...plan})
+    setSelectedName(selectedName+' copy')
+  }
+
   const savePlan = () => {
     let url = process.env.MIX_API_URL+'/api/tableplans'
     if(selectedPlan.hasOwnProperty('id')){
@@ -126,6 +134,7 @@ export default function TablePlanSetup() {
       <div className="container-fluid">
         <Stack spacing={2} sx={{mb:2}} direction="row">
           <Button variant="contained" type="button" onClick={createNew}>{t('New')}</Button>
+          {selectedPlan.hasOwnProperty('id') && <Button variant="contained" type="button" onClick={copySelected}>{t('Copy')}</Button>}
           <Button variant="contained" type="button" color="success" onClick={savePlan}>{t('Save')}</Button>
           <Button variant="contained" type="button" color="error" onClick={deletePlan}>{t('Delete')}</Button>
         </Stack>

@@ -646,7 +646,7 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($sms_notification_template && $smsApiToken){
-                $result = SMS::send([$place->phone], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_NAME'), $smsApiToken);
+                $result = SMS::send([$place->setting('sms-notification-number')], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_NAME'), $smsApiToken);
             }
         }
 

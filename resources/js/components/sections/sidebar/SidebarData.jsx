@@ -83,12 +83,7 @@ export const SidebarData = [
         cName: 'sub-nav'
       },
       {
-        title: 'Reminder Time',
-        path: '/ReminderTime',
-        cName: 'sub-nav'
-      },
-      {
-        title: 'Notifications Settings',
+        title: 'Notification Settings',
         path: '/NotificationsSettings',
         cName: 'sub-nav'
       },

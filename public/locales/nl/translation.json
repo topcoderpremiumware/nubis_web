@@ -270,5 +270,22 @@
     "Gift cards": "Gavekort",
     "Booking page": "Booking side",
     "Send": "Sende",
-    "Copy": "Kopier"
+    "Copy": "Kopier",
+    "Payment Gateway": "Payment Gateway",
+    "Payment Settings": "Betalingsindstillinger",
+    "If you want to accept advance payment or deposits from your guests, you can create one or more payment setups below.": "Hvis du ønsker at acceptere forudbetaling eller indbetalinger fra dine gæster, kan du oprette en eller flere betalingsopsætninger nedenfor.",
+    "Method": "Metode",
+    "Cancellation": "Aflysning",
+    "Select": "Vælg",
+    "Deduct": "Fradrage",
+    "The amount is withdrawn immediately": "Beløbet hæves med det samme",
+    "Reserve": "Reservere",
+    "The amount is reserved and waithdrawn 6 hours before arrival or in case of late cancellation": "Beløbet reserveres og ventes trukket 6 timer før ankomst eller i tilfælde af for sen aflysning",
+    "No-show": "Udeblivelse",
+    "Stores credit card information and charges a no-show or late cancellation fee": "Gemmer kreditkortoplysninger og opkræver et gebyr for udeblivelse eller for sen afbestilling",
+    "Price": "Pris",
+    "Cancellation deadline": "Fortrydelsesfrist",
+    "Video Guide Settings": "Indstillinger for videoguide",
+    "Setup": "Opsætning",
+    "Video Guides": "Videoguider"
 }

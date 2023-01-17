@@ -78,11 +78,6 @@ export const SidebarData = [
         cName: 'sub-nav'
       },
       {
-        title: 'Stripe Keys',
-        path: '/StripeKeys',
-        cName: 'sub-nav'
-      },
-      {
         title: 'Notification Settings',
         path: '/NotificationsSettings',
         cName: 'sub-nav'

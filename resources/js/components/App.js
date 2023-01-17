@@ -23,7 +23,6 @@ import CustomBookingLength from "./pages/CustomBookingLength/CustomBookingLength
 import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInformation';
 import Pictures from './pages/GeneralSettings/Pictures/Pictures';
 import Pricing from './pages/Pricing/Pricing';
-import StripeApiKeys from './pages/GeneralSettings/StripeApiKeys/StripeApiKeys';
 import RestaurantNew from './pages/RestaurantNew/RestaurantNew';
 import ThankYou from './pages/ThankYou/ThankYou';
 import ManageGiftCards from './pages/ManageGiftCards/ManageGiftCards';
@@ -70,7 +69,6 @@ function App() {
                   <Route path='/BasicInformation' exact element={<BasicInformation/>} />
                   <Route path='/Pictures' exact element={<Pictures/>} />
                   <Route path='/SmsKeys' exact element={<SmsApiKeys/>}/>
-                  <Route path='/StripeKeys' exact element={<StripeApiKeys/>}/>
                   <Route path='/PaymentGateway' exact element={<PaymentGateway/>}/>
                   <Route path='/NotificationsSettings' exact element={<NotificationsSettings/>}/>
                   <Route path='/PaymentSettings' exact element={<PaymentSettings/>}/>

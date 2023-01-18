@@ -6762,6 +6762,11 @@ function LastBlock(props) {
       modalActive = _useState2[0],
       setModalActive = _useState2[1];
 
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+      _useState4 = _slicedToArray(_useState3, 2),
+      comment = _useState4[0],
+      setComment = _useState4[1];
+
   var selectedDay = props.selectedDay,
       selectedTime = props.selectedTime,
       restaurantInfo = props.restaurantInfo,
@@ -6902,7 +6907,11 @@ function LastBlock(props) {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
                 type: "text",
                 className: "form-name__comment",
-                placeholder: t('Add the comment')
+                placeholder: t('Add the comment'),
+                value: comment,
+                onChange: function onChange(ev) {
+                  return setComment(ev.target.value);
+                }
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
               className: "second-checkbox",
@@ -6966,11 +6975,49 @@ function LastBlock(props) {
           userData: props.userData,
           setUserData: props.setUserData
         }), props.defaultModal === "done" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_5__["default"], {
-          title: t('DONE!'),
+          title: t('Thanks!'),
           active: modalActive,
           setActive: setModalActive,
           defaultModal: "done",
-          orderResponse: orderResponse
+          orderResponse: orderResponse,
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+            className: "info-body info-body-modal",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+                className: "restaurant-name",
+                children: restaurantInfo.name
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                className: "adress",
+                children: [restaurantInfo.address, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), restaurantInfo.zip_code, " ", restaurantInfo.city, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), restaurantInfo.country]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                className: "guests-date",
+                children: [t('Guests'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("b", {
+                  children: props.guestValue
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), t('Day/time'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("b", {
+                  children: ["".concat(selectedDay.day, "-").concat(selectedDay.month, "-").concat(selectedDay.year), " ", selectedTime.slice(0, 5)]
+                })]
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+                className: "client-title",
+                children: t('Your contact information')
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                className: "client-adress",
+                children: [props.userData.first_name, " ", props.userData.last_name, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), props.userData.email, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), props.userData.phone, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), props.userData.zip_code, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                  style: {
+                    marginTop: '10px'
+                  },
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("b", {
+                    children: "Comment:"
+                  }), " ", comment || '-']
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("b", {
+                    children: "Type:"
+                  }), " ", props.isTakeAway ? t('Take away') : t('Eat here')]
+                })]
+              })]
+            })]
+          })
         })]
       })
     })]
@@ -7054,7 +7101,7 @@ function MainModal(props) {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "title modal-title",
         children: title
-      }), defaultModal !== "done" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
+      }), defaultModal === "done" && props.children ? props.children : null, defaultModal !== "done" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
         className: "form form-modal",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
           className: "form-name",
@@ -7276,9 +7323,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _WaitingModal_WaitingModal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./WaitingModal/WaitingModal */ "./resources/js/book/components/SecondBlock/WaitingModal/WaitingModal.jsx");
 /* harmony import */ var _helper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../helper */ "./resources/js/helper.js");
 /* harmony import */ var _eventBus__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../eventBus */ "./resources/js/eventBus.js");
-/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/useTranslation.js");
-/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/Trans.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/useTranslation.js");
+/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/Trans.js");
+/* harmony import */ var _SelectRestaurantModal_SelectRestaurantModal__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./SelectRestaurantModal/SelectRestaurantModal */ "./resources/js/book/components/SecondBlock/SelectRestaurantModal/SelectRestaurantModal.jsx");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -7321,8 +7369,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 function SecondBlock(props) {
-  var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_13__.useTranslation)(),
+  var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_14__.useTranslation)(),
       t = _useTranslation.t;
 
   var restaurantInfo = props.restaurantInfo,
@@ -7335,7 +7384,7 @@ function SecondBlock(props) {
       setTimeline = props.setTimeline,
       setTimelineId = props.setTimelineId;
 
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(),
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
       _useState2 = _slicedToArray(_useState, 2),
       extraTimeReq = _useState2[0],
       setExtraTimeReq = _useState2[1];
@@ -7414,7 +7463,6 @@ function SecondBlock(props) {
         language: localStorage.getItem('i18nextLng')
       }
     }).then(function (response) {
-      console.log('response', response);
       setExtraTimeReq(response.data);
 
       if (response.data.length === 0) {
@@ -7498,6 +7546,12 @@ function SecondBlock(props) {
     getExtraTime(selectedDay);
   };
 
+  var showSelectRestaurantModal = function showSelectRestaurantModal(e) {
+    e.preventDefault();
+    props.setDefaultModal("noTime");
+    setModalActive(true);
+  };
+
   var checkToken = function checkToken() {
     console.log('selectedTime', props.selectedTime);
 
@@ -7517,23 +7571,23 @@ function SecondBlock(props) {
     waiting: t('Please select a waiting list'),
     agreements: t('Confirm waiting list conditions'),
     submit: t('You are about to be added to the waiting list'),
-    ordered: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_i18next__WEBPACK_IMPORTED_MODULE_14__.Trans, {
+    ordered: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_i18next__WEBPACK_IMPORTED_MODULE_15__.Trans, {
       children: ["Thanks ", {
         name: props.userData.first_name
       }, " - you have been added to the waiting list"]
     })
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
     className: "content",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_FirstBlock_img_Image__WEBPACK_IMPORTED_MODULE_1__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_FirstBlock_img_Image__WEBPACK_IMPORTED_MODULE_1__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
       className: "content-wrapper",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
         className: "main-block__body",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
           className: "nav",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
             className: "back",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("a", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("a", {
               href: "/#",
               className: "back-link",
               onClick: function onClick(e) {
@@ -7541,38 +7595,38 @@ function SecondBlock(props) {
               },
               children: ["\u2190 ", t('Back')]
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
             className: "second-step__lang",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_FirstBlock_SelectLang_SelectLang__WEBPACK_IMPORTED_MODULE_3__["default"], {})
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_FirstBlock_SelectLang_SelectLang__WEBPACK_IMPORTED_MODULE_3__["default"], {})
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
           className: "overhead second-overhead",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)(react_i18next__WEBPACK_IMPORTED_MODULE_14__.Trans, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_i18next__WEBPACK_IMPORTED_MODULE_15__.Trans, {
             children: ["Reserved ", {
               val: props.guestValue
             }, " Guests"]
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
           className: "title second-title",
           children: t('Select Date And Time')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
           className: "second-block__datepicker",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
             className: "calendar-arrows",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("button", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
               className: "arrows",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("span", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("span", {
                 onClick: setMonthDown,
                 children: "\u2190"
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("button", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
               className: "arrows",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("span", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("span", {
                 onClick: setMonthUp,
                 children: " \u2192 "
               })
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(react_modern_calendar_datepicker__WEBPACK_IMPORTED_MODULE_8__.Calendar, {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(react_modern_calendar_datepicker__WEBPACK_IMPORTED_MODULE_8__.Calendar, {
             value: selectedDay,
             onChange: function onChange(day) {
               return setCalendarValue(day);
@@ -7580,60 +7634,82 @@ function SecondBlock(props) {
             shouldHighlightWeekends: true,
             disabledDays: getDisabledDays()
           })]
-        }), props.blockType === "secondblock" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
+        }), props.blockType === "secondblock" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
           children: extraTimeReq.length > 0 ? extraTimeReq.map(function (blockTime, key) {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
               className: "select-time",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
                 onClick: function onClick() {
                   return setTimelineType(blockTime);
                 },
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("p", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("p", {
                   className: "select-time-title",
                   children: blockTime.name
                 }), blockTime.description]
-              }), timeline === blockTime.length && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_Calendar_Time__WEBPACK_IMPORTED_MODULE_5__["default"], {
+              }), timeline === blockTime.length && times.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Calendar_Time__WEBPACK_IMPORTED_MODULE_5__["default"], {
                 setSelectedTime: props.setSelectedTime,
                 times: times
+              }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
+                className: "select-time-flex",
+                children: [t("We don't have empty table for you. You can "), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
+                  className: "waiting-list",
+                  onClick: showModalWindow,
+                  children: t('join our waiting list')
+                }), ' ', t("or you can "), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
+                  className: "waiting-list",
+                  onClick: showSelectRestaurantModal,
+                  children: t('select another restaurant')
+                })]
               })]
             }, key);
-          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
             className: "select-time",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("div", {
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("p", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("div", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("p", {
                 className: "select-time-title",
                 children: t('Select time')
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_Calendar_Time__WEBPACK_IMPORTED_MODULE_5__["default"], {
+            }), times.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Calendar_Time__WEBPACK_IMPORTED_MODULE_5__["default"], {
               setSelectedTime: props.setSelectedTime,
               times: times
+            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
+              className: "select-time-flex",
+              children: [t("We don't have empty table for you. You can "), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
+                className: "waiting-list",
+                onClick: showModalWindow,
+                children: t('join our waiting list')
+              }), ' ', t("or you can "), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
+                className: "waiting-list",
+                onClick: showSelectRestaurantModal,
+                children: t('select another restaurant')
+              })]
             })]
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
           className: "button-main next-button",
           onClick: checkToken,
           style: {
             marginTop: "40px"
           },
           children: [t('Next'), " \u2192"]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsxs)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
           className: "footer",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("p", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("p", {
             className: "subtitle",
             children: t('Cannot find a suitable time?')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)("button", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
             href: "/#",
             className: "waiting-list",
             onClick: function onClick(e) {
               return showModalWindow(e);
             },
             children: t('Add me to the waiting list')
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_FirstBlock_Copyrigth_Copyrigth__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_FirstBlock_Copyrigth_Copyrigth__WEBPACK_IMPORTED_MODULE_4__["default"], {
             restaurantInfo: restaurantInfo
           })]
         })]
       })
-    }), (props.defaultModal === "email" || props.defaultModal === "emailWait") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    }), (props.defaultModal === "email" || props.defaultModal === "emailWait") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_6__["default"], {
       title: t('Please enter your email to continue'),
       active: modalActive,
       setActive: setModalActive,
@@ -7642,7 +7718,7 @@ function SecondBlock(props) {
       defaultModal: props.defaultModal,
       userData: props.userData,
       setUserData: props.setUserData
-    }), (props.defaultModal === "login" || props.defaultModal === "loginWait") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    }), (props.defaultModal === "login" || props.defaultModal === "loginWait") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_6__["default"], {
       title: t('Please enter your email and password to continue'),
       active: modalActive,
       setActive: setModalActive,
@@ -7651,7 +7727,7 @@ function SecondBlock(props) {
       mainProps: props.mainProps,
       userData: props.userData,
       setUserData: props.setUserData
-    }), props.defaultModal === "register" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    }), props.defaultModal === "register" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_6__["default"], {
       title: t('Enter your contact details'),
       active: modalActive,
       setActive: setModalActive,
@@ -7661,7 +7737,7 @@ function SecondBlock(props) {
       mainProps: props.mainProps,
       userData: props.userData,
       setUserData: props.setUserData
-    }), (props.defaultModal === "waiting" || props.defaultModal === "agreements" || props.defaultModal === "submit" || props.defaultModal === "ordered") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_12__.jsx)(_WaitingModal_WaitingModal__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    }), (props.defaultModal === "waiting" || props.defaultModal === "agreements" || props.defaultModal === "submit" || props.defaultModal === "ordered") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_WaitingModal_WaitingModal__WEBPACK_IMPORTED_MODULE_9__["default"], {
       title: getTitle[props.defaultModal] || "",
       active: modalActive,
       setActive: setModalActive,
@@ -7683,11 +7759,62 @@ function SecondBlock(props) {
       timeline: timeline,
       extraTimeReq: extraTimeReq,
       getPlaceId: props.getPlaceId
+    }), props.defaultModal === "noTime" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_SelectRestaurantModal_SelectRestaurantModal__WEBPACK_IMPORTED_MODULE_12__["default"], {
+      active: modalActive,
+      setActive: setModalActive
     })]
   });
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SecondBlock);
+
+/***/ }),
+
+/***/ "./resources/js/book/components/SecondBlock/SelectRestaurantModal/SelectRestaurantModal.jsx":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/book/components/SecondBlock/SelectRestaurantModal/SelectRestaurantModal.jsx ***!
+  \**************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/useTranslation.js");
+/* harmony import */ var _SelectRestaurantModal_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SelectRestaurantModal.scss */ "./resources/js/book/components/SecondBlock/SelectRestaurantModal/SelectRestaurantModal.scss");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
+
+
+
+
+var SelectRestaurantModal = function SelectRestaurantModal(props) {
+  var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_3__.useTranslation)(),
+      t = _useTranslation.t;
+
+  var active = props.active,
+      setActive = props.setActive;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    className: active ? "modal active" : "modal",
+    onClick: function onClick() {
+      return setActive(false);
+    },
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      className: "modal__content",
+      onClick: function onClick(e) {
+        return e.stopPropagation();
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "title modal-title",
+        children: "SelectRestaurantModal"
+      })
+    })
+  });
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SelectRestaurantModal);
 
 /***/ }),
 
@@ -14287,7 +14414,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".last-info {\r\n  background-color: #f6f6f6;\r\n  max-width: 608px;\r\n}\r\n\r\n.info-body {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  text-align: left;\r\n}\r\n\r\n.restaurant-name {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  width: 240px;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.restaurant-info {\r\n  margin: 9px 0px 0px 20px;\r\n}\r\n\r\n.adress {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.guests-date {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.client-info {\r\n  margin: 9px 21px 0px 0px;\r\n}\r\n\r\n.client-title {\r\n  display: inline-block;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 21px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.client-adress {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 12px;\r\n}\r\n\r\n.editing {\r\n  display: flex;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.guests-date {\r\n  margin-top: 12px;\r\n}\r\n\r\n.form-name__comment {\r\n  padding: 12px 16px;\r\n  width: 399px;\r\n  height: 47px;\r\n  margin-right: 15px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n}\r\n\r\n.client-title__comment {\r\n  margin: 17px 0px 7px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  width: 240px;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.form-name__comment {\r\n  margin: 0px 0px 14px 20px;\r\n}\r\n\r\n.checkbox {\r\n  display: flex;\r\n  justify-content: left;\r\n  text-align: left;\r\n  margin: 0px 8px 0px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 12px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  padding-bottom: 11px;\r\n}\r\n\r\n.second-checkbox {\r\n  display: flex;\r\n  justify-content: left;\r\n  margin: 0px 8px 0px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 12px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  padding-bottom: 10px;\r\n}\r\n\r\n.copyrigth-footer {\r\n  margin: 0px 60px 57px 0px;\r\n}\r\n\r\n.second-next-button {\r\n  width: 271px;\r\n}\r\n@media (max-width: 1024px) {\r\n  .info-body {\r\n    flex-direction: column;\r\n  }\r\n\r\n  .client-info {\r\n    margin-left: 20px;\r\n  }\r\n\r\n  .form-name__comment {\r\n    max-width: 399px;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .form {\r\n    text-align: center;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-info {\r\n    text-align: center;\r\n  }\r\n  .third-info {\r\n    margin: 0 auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .second-info {\r\n    font-size: 13px;\r\n  }\r\n  .third-info {\r\n    width: 100%;\r\n  }\r\n  .form-name__comment {\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-next-button {\r\n    display: flex;\r\n    justify-content: center;\r\n    margin: 40px auto;\r\n    text-align: center;\r\n  }\r\n  .copyrigth-footer {\r\n    margin: 0;\r\n  }\r\n  .form-name__comment {\r\n    display: block;\r\n  }\r\n  .checkbox {\r\n    display: flex;\r\n    justify-content: left;\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .last-info {\r\n    margin: auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .last-info {\r\n    margin-right: 10px;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .cancel-booking {\r\n    margin: auto;\r\n    text-align: center;\r\n  }\r\n  .checkbox {\r\n    display: inline-block;\r\n    text-align: left;\r\n  }\r\n}\r\n\r\n.react_time_range__time_range_container {\r\n  margin: 0;\r\n  padding: 0;\r\n  margin-top: 50px;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .react_time_range__time_range_container {\r\n    margin: 20% auto;\r\n  }\r\n}\r\n.form-comment {\r\n  text-align: left;\r\n}\r\n\r\n.PhoneInput {\r\n  /* This is done to stretch the contents of this component. */\r\n  display: flex;\r\n  align-items: center;\r\n  margin-right: 29px;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .PhoneInput {\r\n    margin-right: 0;\r\n  }\r\n}\r\n\r\n.form-password {\r\n  max-width: 400px;\r\n  margin: auto;\r\n}\r\n\r\n@media (max-width: 475px) {\r\n  .form-password {\r\n    max-width: 190px;\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .form-password {\r\n    max-width: 190px;\r\n  }\r\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".last-info {\r\n  background-color: #f6f6f6;\r\n  max-width: 608px;\r\n}\r\n\r\n.info-body {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  text-align: left;\r\n}\r\n\r\n.info-body-modal {\r\n  flex-direction: column;\r\n  gap: 20px;\r\n}\r\n.info-body-modal .client-adress {\r\n  flex-direction: column;\r\n  align-items: flex-start;\r\n}\r\n\r\n.restaurant-name {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  width: 240px;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.restaurant-info {\r\n  margin: 9px 0px 0px 20px;\r\n}\r\n\r\n.adress {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.guests-date {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.client-info {\r\n  margin: 9px 21px 0px 0px;\r\n}\r\n\r\n.client-title {\r\n  display: inline-block;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 21px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.client-adress {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 12px;\r\n}\r\n\r\n.editing {\r\n  display: flex;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.guests-date {\r\n  margin-top: 12px;\r\n}\r\n\r\n.form-name__comment {\r\n  padding: 12px 16px;\r\n  width: 399px;\r\n  height: 47px;\r\n  margin-right: 15px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n}\r\n\r\n.client-title__comment {\r\n  margin: 17px 0px 7px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  width: 240px;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.form-name__comment {\r\n  margin: 0px 0px 14px 20px;\r\n}\r\n\r\n.checkbox {\r\n  display: flex;\r\n  justify-content: left;\r\n  text-align: left;\r\n  margin: 0px 8px 0px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 12px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  padding-bottom: 11px;\r\n}\r\n\r\n.second-checkbox {\r\n  display: flex;\r\n  justify-content: left;\r\n  margin: 0px 8px 0px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 12px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  padding-bottom: 10px;\r\n}\r\n\r\n.copyrigth-footer {\r\n  margin: 0px 60px 57px 0px;\r\n}\r\n\r\n.second-next-button {\r\n  width: 271px;\r\n}\r\n@media (max-width: 1024px) {\r\n  .info-body {\r\n    flex-direction: column;\r\n  }\r\n\r\n  .client-info {\r\n    margin-left: 20px;\r\n  }\r\n\r\n  .form-name__comment {\r\n    max-width: 399px;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .form {\r\n    text-align: center;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-info {\r\n    text-align: center;\r\n  }\r\n  .third-info {\r\n    margin: 0 auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .second-info {\r\n    font-size: 13px;\r\n  }\r\n  .third-info {\r\n    width: 100%;\r\n  }\r\n  .form-name__comment {\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-next-button {\r\n    display: flex;\r\n    justify-content: center;\r\n    margin: 40px auto;\r\n    text-align: center;\r\n  }\r\n  .copyrigth-footer {\r\n    margin: 0;\r\n  }\r\n  .form-name__comment {\r\n    display: block;\r\n  }\r\n  .checkbox {\r\n    display: flex;\r\n    justify-content: left;\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .last-info {\r\n    margin: auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .last-info {\r\n    margin-right: 10px;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .cancel-booking {\r\n    margin: auto;\r\n    text-align: center;\r\n  }\r\n  .checkbox {\r\n    display: inline-block;\r\n    text-align: left;\r\n  }\r\n}\r\n\r\n.react_time_range__time_range_container {\r\n  margin: 0;\r\n  padding: 0;\r\n  margin-top: 50px;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .react_time_range__time_range_container {\r\n    margin: 20% auto;\r\n  }\r\n}\r\n.form-comment {\r\n  text-align: left;\r\n}\r\n\r\n.PhoneInput {\r\n  /* This is done to stretch the contents of this component. */\r\n  display: flex;\r\n  align-items: center;\r\n  margin-right: 29px;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .PhoneInput {\r\n    margin-right: 0;\r\n  }\r\n}\r\n\r\n.form-password {\r\n  max-width: 400px;\r\n  margin: auto;\r\n}\r\n\r\n@media (max-width: 475px) {\r\n  .form-password {\r\n    max-width: 190px;\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .form-password {\r\n    max-width: 190px;\r\n  }\r\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -14359,7 +14486,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".nav {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n}\r\n\r\n.back {\r\n  margin-top: 25px;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .back {\r\n    margin: 20px 0px 0px 40px;\r\n  }\r\n}\r\n\r\n.back-link {\r\n  text-decoration: none;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 500;\r\n  font-size: 14px;\r\n  line-height: 100%;\r\n  margin: 25px 0px 0px 0px;\r\n  color: #333333;\r\n}\r\n\r\n.second-step__lang {\r\n  margin: 0;\r\n}\r\n\r\n.second-overhead {\r\n  margin-top: 16px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n}\r\n\r\n.second-title {\r\n  margin-top: 18px;\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 50px;\r\n  line-height: 100%;\r\n  letter-spacing: 4px;\r\n  color: #333333;\r\n}\r\n\r\n.modal-title {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  text-align: center;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.modal-email {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n}\r\n\r\n.modal-button {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  margin-bottom: 30px;\r\n}\r\n\r\n.next-button {\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 18px;\r\n  line-height: 100%;\r\n  display: flex;\r\n  margin-top: 0px;\r\n  background: #000;\r\n  color: #fff;\r\n  align-items: center;\r\n  text-align: center;\r\n  letter-spacing: 2px;\r\n  width: 192px;\r\n  height: 47px;\r\n  justify-content: center;\r\n}\r\n\r\n.next {\r\n  text-decoration: none;\r\n  color: #fff;\r\n}\r\n\r\n.footer {\r\n  margin-top: 20px;\r\n  display: flex;\r\n  align-items: center;\r\n}\r\n\r\n.subtitle {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n  margin-right: 8px;\r\n}\r\n\r\n.waiting-list {\r\n  display: flex;\r\n  justify-content: left;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  margin-right: 100px;\r\n  border: none;\r\n  outline: none;\r\n  background-color: transparent;\r\n  color: #67a1e5;\r\n  cursor: pointer;\r\n}\r\n\r\n.second-block__datepicker {\r\n  max-width: 330px;\r\n}\r\n\r\n.calendar-arrows {\r\n  display: flex;\r\n  justify-content: space-between;\r\n}\r\n\r\n.arrows {\r\n  cursor: pointer;\r\n  border: none;\r\n  outline: none;\r\n  background-color: transparent;\r\n  width: 1.7em;\r\n  height: 1.7em;\r\n  font-size: 20px;\r\n}\r\n\r\n.Calendar__monthArrowWrapper {\r\n  display: none;\r\n}\r\n\r\n.select-time-title {\r\n  margin-top: 18px;\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 30px;\r\n  line-height: 100%;\r\n  letter-spacing: 4px;\r\n  color: #333333;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-block__datepicker {\r\n    margin: auto;\r\n  }\r\n  .button-main {\r\n    display: flex;\r\n    justify-content: center;\r\n    margin: 40px auto;\r\n    text-align: center;\r\n  }\r\n  .footer {\r\n    margin: 0 auto;\r\n    display: block;\r\n    justify-content: center;\r\n  }\r\n  .subtitle {\r\n    display: block;\r\n    justify-content: center;\r\n    margin: 0;\r\n  }\r\n  .waiting-list {\r\n    display: block;\r\n    justify-content: center;\r\n    margin: 0;\r\n    border: none;\r\n    outline: none;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".nav {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n}\r\n\r\n.back {\r\n  margin-top: 25px;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .back {\r\n    margin: 20px 0px 0px 40px;\r\n  }\r\n}\r\n\r\n.back-link {\r\n  text-decoration: none;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 500;\r\n  font-size: 14px;\r\n  line-height: 100%;\r\n  margin: 25px 0px 0px 0px;\r\n  color: #333333;\r\n}\r\n\r\n.second-step__lang {\r\n  margin: 0;\r\n}\r\n\r\n.second-overhead {\r\n  margin-top: 16px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n}\r\n\r\n.second-title {\r\n  margin-top: 18px;\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 50px;\r\n  line-height: 100%;\r\n  letter-spacing: 4px;\r\n  color: #333333;\r\n}\r\n\r\n.modal-title {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  text-align: center;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.modal-email {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n}\r\n\r\n.modal-button {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  margin-bottom: 30px;\r\n}\r\n\r\n.next-button {\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 18px;\r\n  line-height: 100%;\r\n  display: flex;\r\n  margin-top: 0px;\r\n  background: #000;\r\n  color: #fff;\r\n  align-items: center;\r\n  text-align: center;\r\n  letter-spacing: 2px;\r\n  width: 192px;\r\n  height: 47px;\r\n  justify-content: center;\r\n}\r\n\r\n.next {\r\n  text-decoration: none;\r\n  color: #fff;\r\n}\r\n\r\n.footer {\r\n  margin-top: 20px;\r\n  display: flex;\r\n  align-items: center;\r\n}\r\n\r\n.subtitle {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n  margin-right: 8px;\r\n}\r\n\r\n.waiting-list {\r\n  display: flex;\r\n  justify-content: left;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  margin-right: 100px;\r\n  border: none;\r\n  outline: none;\r\n  background-color: transparent;\r\n  color: #67a1e5;\r\n  cursor: pointer;\r\n}\r\n\r\n.second-block__datepicker {\r\n  max-width: 330px;\r\n}\r\n\r\n.calendar-arrows {\r\n  display: flex;\r\n  justify-content: space-between;\r\n}\r\n\r\n.arrows {\r\n  cursor: pointer;\r\n  border: none;\r\n  outline: none;\r\n  background-color: transparent;\r\n  width: 1.7em;\r\n  height: 1.7em;\r\n  font-size: 20px;\r\n}\r\n\r\n.Calendar__monthArrowWrapper {\r\n  display: none;\r\n}\r\n\r\n.select-time-title {\r\n  margin-top: 18px;\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 30px;\r\n  line-height: 100%;\r\n  letter-spacing: 4px;\r\n  color: #333333;\r\n}\r\n.select-time-flex {\r\n  margin-top: 10px;\r\n}\r\n.select-time-flex .waiting-list {\r\n  display: inline;\r\n  margin: 0;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-block__datepicker {\r\n    margin: auto;\r\n  }\r\n  .button-main {\r\n    display: flex;\r\n    justify-content: center;\r\n    margin: 40px auto;\r\n    text-align: center;\r\n  }\r\n  .footer {\r\n    margin: 0 auto;\r\n    display: block;\r\n    justify-content: center;\r\n  }\r\n  .subtitle {\r\n    display: block;\r\n    justify-content: center;\r\n    margin: 0;\r\n  }\r\n  .waiting-list {\r\n    display: block;\r\n    justify-content: center;\r\n    margin: 0;\r\n    border: none;\r\n    outline: none;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -14384,6 +14511,30 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, ".modal {\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgba(0, 0, 0, 0.4);\r\n  position: absolute;\r\n  top: 0%;\r\n  left: 0%;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  opacity: 0;\r\n  pointer-events: none;\r\n  transition: 0.5s;\r\n  z-index: 10;\r\n}\r\n.form__wrapper {\r\n  width: 100%;\r\n}\r\n.modal.active {\r\n  opacity: 1;\r\n  pointer-events: all;\r\n}\r\n\r\n.modal__content {\r\n  padding: 20px;\r\n  border-radius: 12px;\r\n  background-color: #fff;\r\n  width: 50%;\r\n  max-height: 75%;\r\n}\r\n\r\n@media (max-width: 375px) {\r\n  .modal__content {\r\n    width: 60%;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .modal__content {\r\n    width: 70%;\r\n  }\r\n}\r\n\r\n.modal__content.active {\r\n  transform: scale(1);\r\n}\r\n\r\n.react-tel-input > * {\r\n  color: #989898;\r\n\r\n  /* padding: 12px 16px;\r\n    width: 151px;\r\n    height: 47px;\r\n    margin-right: 15px;\r\n    font-family: \"Inter\";\r\n    font-style: normal;\r\n    font-weight: 400;\r\n    font-size: 16px;\r\n    line-height: 150%;\r\n    align-items: center;\r\n    color: #989898;\r\n    border: 1px solid #000000; */\r\n}\r\n.title-comment-waiting {\r\n  margin: 17px 0px 7px 0px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 7px;\r\n}\r\n.form-comment-waiting {\r\n  padding: 12px 16px;\r\n  width: 399px;\r\n  height: 47px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n  margin: 0px 0px 14px 0px;\r\n}\r\n\r\n.waiting-footer {\r\n  text-decoration: none;\r\n}\r\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[3]!./resources/js/book/components/SecondBlock/SelectRestaurantModal/SelectRestaurantModal.scss":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[3]!./resources/js/book/components/SecondBlock/SelectRestaurantModal/SelectRestaurantModal.scss ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".modal {\n  height: 100%;\n  width: 100%;\n  background-color: rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 0%;\n  left: 0%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  pointer-events: none;\n  transition: 0.5s;\n  z-index: 10;\n}\n\n.form__wrapper {\n  width: 100%;\n}\n\n.modal.active {\n  opacity: 1;\n  pointer-events: all;\n}\n\n.modal__content {\n  padding: 20px;\n  border-radius: 12px;\n  background-color: #fff;\n  width: 50%;\n  max-height: 75%;\n}\n\n@media (max-width: 375px) {\n  .modal__content {\n    width: 60%;\n  }\n}\n@media (max-width: 425px) {\n  .modal__content {\n    width: 70%;\n  }\n}\n.modal__content.active {\n  transform: scale(1);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -67796,6 +67947,36 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_7_oneOf_1_use_1_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_7_oneOf_1_use_2_WaitingModal_css__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
+/***/ "./resources/js/book/components/SecondBlock/SelectRestaurantModal/SelectRestaurantModal.scss":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/book/components/SecondBlock/SelectRestaurantModal/SelectRestaurantModal.scss ***!
+  \***************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_8_oneOf_1_use_1_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_8_oneOf_1_use_2_node_modules_sass_loader_dist_cjs_js_ruleSet_1_rules_8_oneOf_1_use_3_SelectRestaurantModal_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[1]!../../../../../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[2]!../../../../../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[3]!./SelectRestaurantModal.scss */ "./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[8].oneOf[1].use[3]!./resources/js/book/components/SecondBlock/SelectRestaurantModal/SelectRestaurantModal.scss");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_8_oneOf_1_use_1_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_8_oneOf_1_use_2_node_modules_sass_loader_dist_cjs_js_ruleSet_1_rules_8_oneOf_1_use_3_SelectRestaurantModal_scss__WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_ruleSet_1_rules_8_oneOf_1_use_1_node_modules_postcss_loader_dist_cjs_js_ruleSet_1_rules_8_oneOf_1_use_2_node_modules_sass_loader_dist_cjs_js_ruleSet_1_rules_8_oneOf_1_use_3_SelectRestaurantModal_scss__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 

@@ -9,7 +9,7 @@ import {Trans, useTranslation} from "react-i18next";
 function LastBlock(props) {
   const { t } = useTranslation();
   const [modalActive, setModalActive] = useState(false);
-
+  const [comment, setComment] = useState('')
   const { selectedDay, selectedTime, restaurantInfo, orderResponse } = props;
 
   const showModalWindow = (e) => {
@@ -131,6 +131,8 @@ function LastBlock(props) {
                   type="text"
                   className="form-name__comment"
                   placeholder={t('Add the comment')}
+                  value={comment}
+                  onChange={ev => setComment(ev.target.value)}
                 />
               </div>
               <div
@@ -214,12 +216,51 @@ function LastBlock(props) {
 
           {props.defaultModal === "done" && (
             <MainModal
-              title={t('DONE!')}
+              title={t('Thanks!')}
               active={modalActive}
               setActive={setModalActive}
               defaultModal={"done"}
               orderResponse={orderResponse}
-            />
+            >
+              <div className="info-body info-body-modal">
+                <div>
+                  <div className="restaurant-name">{restaurantInfo.name}</div>
+                  <div className="adress">
+                    {restaurantInfo.address}
+                    <br />
+                    {restaurantInfo.zip_code} {restaurantInfo.city}
+                    <br />
+                    {restaurantInfo.country}
+                  </div>
+                  <div className="guests-date">
+                    {t('Guests')}: &nbsp;
+                    <b>{props.guestValue}</b>
+                    <br />
+                    {t('Day/time')}: &nbsp;
+                    <b>
+                      {`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`}{" "}
+                      {selectedTime.slice(0, 5)}
+                    </b>
+                  </div>
+                </div>
+                <div>
+                  <div className="client-title">{t('Your contact information')}</div>
+                  <div className="client-adress">
+                    {props.userData.first_name} {props.userData.last_name}
+                    <br />
+                    {props.userData.email}
+                    <br />
+                    {props.userData.phone}
+                    <br />
+                    {props.userData.zip_code}
+                    <br />
+                    <div style={{marginTop: '10px'}}><b>Comment:</b> {comment || '-'}</div>
+                    <br />
+                    <div><b>Type:</b> {props.isTakeAway ? t('Take away') : t('Eat here')}</div>
+                  </div>
+                </div>
+              </div>
+            </MainModal>
           )}
         </div>
       </div>

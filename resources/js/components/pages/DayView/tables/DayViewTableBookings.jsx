@@ -8,7 +8,7 @@ import Moment from "moment";
 import {DataGrid} from "@mui/x-data-grid";
 import eventBus from "../../../../eventBus";
 
-export default function DayViewTableBookings() {
+export default function DayViewTableBookings({ setSelectedOrder }) {
   const {t} = useTranslation();
 
   const [orders, setOrders] = useState([])
@@ -101,6 +101,10 @@ export default function DayViewTableBookings() {
     }
   }
 
+  const doubleClickHandler = (params, event, details) => {
+    setSelectedOrder(params.row)
+  }
+
   return (<>{loading ? <div><CircularProgress/></div> :
     <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
@@ -108,6 +112,7 @@ export default function DayViewTableBookings() {
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
+        onRowDoubleClick={doubleClickHandler}
         // checkboxSelection
       />
     </div>

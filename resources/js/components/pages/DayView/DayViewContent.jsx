@@ -51,6 +51,7 @@ export default function DayViewContent() {
 
   const [value, setValue] = useState(0);
   const [tableSidebar, setTableSidebar] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState(null)
 
   useEffect(() => {
     eventBus.on("openTableSidebar",(data) => {
@@ -87,7 +88,7 @@ export default function DayViewContent() {
             </Tabs>
           </Box>
           <TabPanel className='DayView__BoxItem' value={value} index={0}>
-            <DayViewTableBookings/>
+            <DayViewTableBookings setSelectedOrder={setSelectedOrder} />
           </TabPanel>
           <TabPanel className='DayView__BoxItem' value={value} index={1}>
             <DayViewTableWaiting/>
@@ -103,7 +104,7 @@ export default function DayViewContent() {
           <PlanCanvas/>
         </div>}
       </div>
-      <BottomPanel/>
+      <BottomPanel selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
     </div>
   );
 }

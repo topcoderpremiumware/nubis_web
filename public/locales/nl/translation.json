@@ -287,5 +287,9 @@
     "Cancellation deadline": "Fortrydelsesfrist",
     "Video Guide Settings": "Indstillinger for videoguide",
     "Setup": "Opsætning",
-    "Video Guides": "Videoguider"
+    "Video Guides": "Videoguider",
+    "We don't have empty table for you. You can ": "Vi har ikke et tomt bord til dig. Du kan ",
+    "join our waiting list": "tilmelde dig vores venteliste",
+    "or you can ": "eller du kan ",
+    "select another restaurant": "vælge en anden restaurant"
 }

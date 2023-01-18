@@ -159,6 +159,13 @@
   letter-spacing: 4px;
   color: #333333;
 }
+.select-time-flex {
+  margin-top: 10px;
+}
+.select-time-flex .waiting-list {
+  display: inline;
+  margin: 0;
+}
 
 @media (max-width: 1024px) {
   .second-block__datepicker {

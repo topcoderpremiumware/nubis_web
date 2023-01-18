@@ -34,7 +34,7 @@ function SecondBlock(props) {
     eventBus.on("langChanged", () => {
       getExtraTime(selectedDay)
     })
-  }, []);
+  }, [props.guestValue]);
 
   const setTimelineType = (type) => {
     setTimeline(type.length);

@@ -38,6 +38,7 @@ function SecondBlock(props) {
 
   const setTimelineType = (type) => {
     setTimeline(type.length);
+    console.log('setTimelineId',type)
     setTimelineId(type.id)
     const extraTimesArray = (timereq) =>
       extraTimeReq

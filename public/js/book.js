@@ -5741,6 +5741,7 @@ var App = function App() {
 
 
   var makeOrder = function makeOrder() {
+    console.log('custom_booking_length_id', timelineId);
     myAxios.post("/api/make_order", {
       place_id: getPlaceId(),
       area_id: localStorage.getItem('area_id'),
@@ -7365,6 +7366,7 @@ function SecondBlock(props) {
 
   var setTimelineType = function setTimelineType(type) {
     setTimeline(type.length);
+    console.log('setTimelineId', type);
     setTimelineId(type.id);
 
     var extraTimesArray = function extraTimesArray(timereq) {

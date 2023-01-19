@@ -255,6 +255,7 @@ class CustomBookingLengthController extends Controller
 
             if(count($times) > 0){
                 array_push($lengths_data,[
+                    'id' => $custom_length->id,
                     'name' => $custom_length->labels[$request->language]['name'],
                     'description' => $custom_length->labels[$request->language]['description'],
                     'image' => Storage::disk('public')->url($custom_length->image),

@@ -50,6 +50,7 @@ Route::get('work_time',[OrderController::class, 'workTime']);
 Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace']);
 Route::get('places/{place_id}/lengths',[CustomBookingLengthController::class, 'getAllByParams']);
 Route::get('places/{place_id}/is_bill_paid',[PlaceController::class, 'isBillPaid']);
+Route::get('places/{place_id}/alternative',[PlaceController::class, 'getAlternative']);
 
 Route::get('files_purpose',[FileController::class, 'getByPurpose']);
 Route::get('countries',[CountryController::class, 'getAll']);

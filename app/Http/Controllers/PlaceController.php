@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Place;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -172,5 +173,18 @@ class PlaceController extends Controller
                 }
             }
         }
+    }
+
+    public function getAlternative($place_id, Request $request)
+    {
+        $place = Place::find($place_id);
+
+        $users = $place->admins()->pluck('id')->toArray();
+
+        $places = Place::whereHas('users',function (Builder $q) use ($users) {
+            $q->whereIn('id',$users);
+        })->where('id','!=',$place_id)->get();
+
+        return response()->json($places);
     }
 }

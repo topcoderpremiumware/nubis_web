@@ -65,7 +65,12 @@ class Place extends Model
 
     public function setting($name)
     {
-        return $this->settings()->where('name',$name)->first();
+        $setting = $this->settings()->where('name',$name)->first();
+        if($setting){
+            return $setting->value;
+        }else{
+            return null;
+        }
     }
 
     public function feedbacks()

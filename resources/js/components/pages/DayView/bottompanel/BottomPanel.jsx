@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import {useTranslation} from "react-i18next";
 import eventBus from "../../../../eventBus";
 
-export default function BottomPanel() {
+export default function BottomPanel({ selectedOrder, setSelectedOrder }) {
   const {t} = useTranslation();
 
   const openNewBooking = () => {
@@ -17,7 +17,7 @@ export default function BottomPanel() {
     <div className='DayViewBottomPanel__container'>
       <div className='DayViewBottomPanel'>
         <Button variant="contained" onClick={openNewBooking}>{t('New Booking')}</Button>
-        <NewBookingPopUp/>
+        <NewBookingPopUp selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
       </div>
     </div>
   )

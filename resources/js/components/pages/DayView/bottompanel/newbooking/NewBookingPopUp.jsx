@@ -23,12 +23,21 @@ const style = {
   p: 4,
 };
 
-export default function NewBookingPopUp() {
+export default function NewBookingPopUp({selectedOrder, setSelectedOrder}) {
   const [open, setOpen] = React.useState(false);
   const [order, setOrder] = React.useState({});
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedOrder(null)
+  }
 
   useEffect(async () => {
+    if(Object.keys(selectedOrder).length) {
+      setOrder(selectedOrder)
+      setOpen(true)
+      return
+    }
+
     eventBus.on("newBookingOpen",  (data) => {
       if(data && data.hasOwnProperty('id') && data.id > 0){
         axios.get(`${process.env.MIX_API_URL}/api/orders/${data.id}`, {
@@ -59,7 +68,7 @@ export default function NewBookingPopUp() {
       }
       setOpen(true);
     });
-  }, [])
+  }, [selectedOrder])
 
   return (
     <div>

@@ -21,6 +21,10 @@ export const SidebarData = [
         path: '/DayView',
       },
       {
+        title: 'Month View',
+        path: '/MonthView',
+      },
+      {
         title: 'Opening Times',
         path: '/OpeningTimes',
       },

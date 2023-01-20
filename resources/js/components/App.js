@@ -33,6 +33,7 @@ import PaymentGateway from './pages/GuestPayment/PaymentGateway/PaymentGateway';
 import PaymentSettings from './pages/GuestPayment/PaymentSettings/PaymentSettings';
 import VideoGuideSettings from './pages/VideoGuideSettings/VideoGuideSettings';
 import VideoGuides from './pages/VideoGuides/VideoGuides';
+import MonthView from './pages/MonthView/MonthView';
 
 function App() {
   if(localStorage.getItem('token')){
@@ -57,6 +58,7 @@ function App() {
                   {/* <Route path='/dailyuse' exact element={<DailyUse/>}/> */}
                   <Route path='/DayView' exact element={<DayView/>}/>
                   <Route path='/WeekView' exact element={<WeekView/>}/>
+                  <Route path='/MonthView' exact element={<MonthView/>}/>
                   <Route path='/Activity' exact element={<Activity/>}/>
                   <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
                   <Route path='/Areas' exact element={<Areas/>}/>

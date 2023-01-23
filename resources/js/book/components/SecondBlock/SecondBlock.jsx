@@ -27,11 +27,13 @@ function SecondBlock(props) {
     setTimelineId,
   } = props;
 
+  const [alternativeRestaurants, setAlternativeRestaurants] = useState([])
   const [extraTimeReq, setExtraTimeReq] = useState([]);
   const [times, setTimes] = useState([]);
 
   useEffect(async () => {
     getExtraTime(selectedDay)
+    getAlternativeRestaurants()
     eventBus.on("langChanged", () => {
       getExtraTime(selectedDay)
     })
@@ -68,6 +70,16 @@ function SecondBlock(props) {
       }
     }
     return newDates;
+  }
+
+  const getAlternativeRestaurants = async () => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${props.getPlaceId()}/alternative`)
+      .then((response) => {
+        setAlternativeRestaurants(response.data)
+      })
+      .catch((error) => {
+        console.log("Alternative restaurants error: ", error);
+      });
   }
 
   const getExtraTime = (date) => {
@@ -228,14 +240,15 @@ function SecondBlock(props) {
                       >
                         {t('join our waiting list')}
                       </button>{' '}
-                      {/* { if another restaurant length > 0} */}
-                      {t("or you can ")}
-                      <button
-                        className="waiting-list"
-                        onClick={showSelectRestaurantModal}
-                      >
-                        {t('select another restaurant')}
-                      </button>
+                      {alternativeRestaurants.length > 0 && <>
+                        {t("or you can ")}
+                        <button
+                          className="waiting-list"
+                          onClick={showSelectRestaurantModal}
+                        >
+                          {t('select another restaurant')}
+                        </button>
+                      </>}
                     </div>
                   )}
                 </div>
@@ -255,13 +268,15 @@ function SecondBlock(props) {
                       >
                         {t('join our waiting list')}
                       </button>{' '}
-                      {t("or you can ")}
-                      <button
-                        className="waiting-list"
-                        onClick={showSelectRestaurantModal}
-                      >
-                        {t('select another restaurant')}
-                      </button>
+                      {alternativeRestaurants.length > 0 && <>
+                        {t("or you can ")}
+                        <button
+                          className="waiting-list"
+                          onClick={showSelectRestaurantModal}
+                        >
+                          {t('select another restaurant')}
+                        </button>
+                      </>}
                     </div>
                   )}
                 </div>
@@ -357,6 +372,7 @@ function SecondBlock(props) {
         )}
       {(props.defaultModal === "noTime") && (
         <SelectRestaurantModal
+          data={alternativeRestaurants}
           active={modalActive}
           setActive={setModalActive}
         />

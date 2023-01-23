@@ -5,6 +5,7 @@ import SelectLang from "../FirstBlock/SelectLang/SelectLang";
 import Copyrigth from "../FirstBlock/Copyrigth/Copyrigth";
 import MainModal from "../MainModal/MainModal";
 import {Trans, useTranslation} from "react-i18next";
+import PrepaymentModal from "./PrepaymentModal/PrepaymentModal";
 
 function LastBlock(props) {
   const { t } = useTranslation();
@@ -262,6 +263,16 @@ function LastBlock(props) {
               </div>
             </MainModal>
           )}
+          {props.defaultModal === 'prepayment' &&
+            <PrepaymentModal
+              active={modalActive}
+              setActive={setModalActive}
+              restaurantInfo={restaurantInfo}
+              selectedDay={selectedDay}
+              selectedTime={selectedTime}
+              guestValue={props.guestValue}
+            />
+          } 
         </div>
       </div>
     </div>

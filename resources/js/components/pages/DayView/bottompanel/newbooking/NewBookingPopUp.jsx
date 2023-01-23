@@ -32,7 +32,7 @@ export default function NewBookingPopUp({selectedOrder, setSelectedOrder}) {
   }
 
   useEffect(async () => {
-    if(Object.keys(selectedOrder).length) {
+    if(selectedOrder && Object.keys(selectedOrder).length) {
       setOrder(selectedOrder)
       setOpen(true)
       return

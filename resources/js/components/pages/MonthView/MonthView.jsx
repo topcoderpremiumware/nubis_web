@@ -20,14 +20,14 @@ const MonthView = () => {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       },
-      params: { 
-        place_id: localStorage.getItem('place_id'), 
-        area_id: localStorage.getItem('area_id'), 
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        area_id: localStorage.getItem('area_id'),
         reservation_from: moment({
           year: moment(reservationDate).year(),
           month: moment(reservationDate).month(),
           day: 1
-        }).format('YYYY-MM-DD HH:mm:ss'), 
+        }).format('YYYY-MM-DD HH:mm:ss'),
         reservation_to: moment({
           year: moment(reservationDate).year(),
           month: moment(reservationDate).month() + 1,
@@ -51,9 +51,9 @@ const MonthView = () => {
         localizer={localizer}
         views={''}
         events={orders.map(i => ({
-          title: moment(i.reservation_time).format('HH:mm'),
+          title: moment(i.reservation_time).format('HH:mm')+' '+i.id,
           start: moment(i.reservation_time),
-          end: moment(i.reservation_time)
+          end: moment(i.reservation_time).add(i.length,'minutes')
         }))}
         startAccessor="start"
         endAccessor="end"
@@ -66,10 +66,10 @@ const MonthView = () => {
       />
 
       {moreData.length > 0 &&
-        <ShowMoreModal 
-          data={moreData} 
-          active={active} 
-          setActive={setActive} 
+        <ShowMoreModal
+          data={moreData}
+          active={active}
+          setActive={setActive}
         />
       }
     </div>

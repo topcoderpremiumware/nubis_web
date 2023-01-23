@@ -64,6 +64,11 @@ export default function WaitingModal(props) {
     setModalActive(true);
   };
 
+  const showAlternativeModal = () => {
+    setDefaultModal("alternative");
+    setModalActive(true);
+  };
+
   const makeOrderDone = () => {
     props.makeOrder();
     props.setModalActive(true);
@@ -79,8 +84,9 @@ export default function WaitingModal(props) {
     >
       <div className="modal__content" onClick={(e) => e.stopPropagation()}>
         <div className="title modal-title">{title}</div>
-        {defaultModal === "waiting" ? (
+        {(defaultModal === "waiting" || defaultModal === "noTime") ? (
           <div className="choose-time">
+            <b>{t("Join our waiting list")}</b>
             <div className="selected-date" style={{ marginBottom: "10px" }}>
               {t('You have chosen a date')}{" "}
               <b>{`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`}</b>
@@ -94,6 +100,15 @@ export default function WaitingModal(props) {
                 <Time setSelectedTime={props.setSelectedTime} times={times} />
               </div>
             </div>
+
+            {(defaultModal === "noTime" && props.alternativeRestaurants.length > 0) &&
+              <b 
+                style={{textDecoration: 'underline', cursor: 'pointer'}}
+                onClick={showAlternativeModal}
+              >
+                {t("Or select other our restaurant")}
+              </b>
+            }
           </div>
         ) : (
           <div className="no-choose-time">
@@ -159,6 +174,7 @@ export default function WaitingModal(props) {
         )}
         {defaultModal !== "waiting" &&
           defaultModal !== "agreements" &&
+          defaultModal !== "noTime" &&
           defaultModal !== "ordered" && (
             <div className="form">
               <div className="title-comment-waiting">{t('Add a comment')}</div>

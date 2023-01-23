@@ -25371,8 +25371,9 @@ function Image() {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
     className: "main-image_picture",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
-      className: "main-image",
-      src: mainImage,
+      className: "main-image" // src={mainImage}
+      ,
+      src: 'https://images.unsplash.com/photo-1574410009028-ed14f6f17c4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=876&q=80',
       alt: ""
     })
   });
@@ -26325,7 +26326,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-
 function SecondBlock(props) {
   var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_14__.useTranslation)(),
       t = _useTranslation.t;
@@ -26373,6 +26373,12 @@ function SecondBlock(props) {
       }
     }, _callee);
   })), [props.guestValue]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!(times !== null && times !== void 0 && times.length) || !(extraTimeReq !== null && extraTimeReq !== void 0 && extraTimeReq.length)) {
+      props.setDefaultModal("noTime");
+      setModalActive(true);
+    }
+  }, [times, extraTimeReq]);
 
   var setTimelineType = function setTimelineType(type) {
     setTimeline(type.length);
@@ -26534,12 +26540,6 @@ function SecondBlock(props) {
     getExtraTime(selectedDay);
   };
 
-  var showSelectRestaurantModal = function showSelectRestaurantModal(e) {
-    e.preventDefault();
-    props.setDefaultModal("noTime");
-    setModalActive(true);
-  };
-
   var checkToken = function checkToken() {
     console.log('selectedTime', props.selectedTime);
 
@@ -26556,6 +26556,7 @@ function SecondBlock(props) {
   };
 
   var getTitle = {
+    noTime: t("We don't have empty table for you"),
     waiting: t('Please select a waiting list'),
     agreements: t('Confirm waiting list conditions'),
     submit: t('You are about to be added to the waiting list'),
@@ -26634,22 +26635,9 @@ function SecondBlock(props) {
                   className: "select-time-title",
                   children: blockTime.name
                 }), blockTime.description]
-              }), timeline === blockTime.length && times.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Calendar_Time__WEBPACK_IMPORTED_MODULE_5__["default"], {
+              }), timeline === blockTime.length && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Calendar_Time__WEBPACK_IMPORTED_MODULE_5__["default"], {
                 setSelectedTime: props.setSelectedTime,
                 times: times
-              }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
-                className: "select-time-flex",
-                children: [t("We don't have empty table for you. You can "), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
-                  className: "waiting-list",
-                  onClick: showModalWindow,
-                  children: t('join our waiting list')
-                }), ' ', alternativeRestaurants.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
-                  children: [t("or you can "), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
-                    className: "waiting-list",
-                    onClick: showSelectRestaurantModal,
-                    children: t('select another restaurant')
-                  })]
-                })]
               })]
             }, key);
           }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
@@ -26659,22 +26647,9 @@ function SecondBlock(props) {
                 className: "select-time-title",
                 children: t('Select time')
               })
-            }), times.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Calendar_Time__WEBPACK_IMPORTED_MODULE_5__["default"], {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Calendar_Time__WEBPACK_IMPORTED_MODULE_5__["default"], {
               setSelectedTime: props.setSelectedTime,
               times: times
-            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
-              className: "select-time-flex",
-              children: [t("We don't have empty table for you. You can "), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
-                className: "waiting-list",
-                onClick: showModalWindow,
-                children: t('join our waiting list')
-              }), ' ', alternativeRestaurants.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.Fragment, {
-                children: [t("or you can "), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("button", {
-                  className: "waiting-list",
-                  onClick: showSelectRestaurantModal,
-                  children: t('select another restaurant')
-                })]
-              })]
             })]
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
@@ -26729,7 +26704,7 @@ function SecondBlock(props) {
       mainProps: props.mainProps,
       userData: props.userData,
       setUserData: props.setUserData
-    }), (props.defaultModal === "waiting" || props.defaultModal === "agreements" || props.defaultModal === "submit" || props.defaultModal === "ordered") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_WaitingModal_WaitingModal__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    }), (props.defaultModal === "waiting" || props.defaultModal === "noTime" || props.defaultModal === "agreements" || props.defaultModal === "submit" || props.defaultModal === "ordered") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_WaitingModal_WaitingModal__WEBPACK_IMPORTED_MODULE_9__["default"], {
       title: getTitle[props.defaultModal] || "",
       active: modalActive,
       setActive: setModalActive,
@@ -26750,8 +26725,9 @@ function SecondBlock(props) {
       setModalActive: setModalActive,
       timeline: timeline,
       extraTimeReq: extraTimeReq,
-      getPlaceId: props.getPlaceId
-    }), props.defaultModal === "noTime" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_SelectRestaurantModal_SelectRestaurantModal__WEBPACK_IMPORTED_MODULE_12__["default"], {
+      getPlaceId: props.getPlaceId,
+      alternativeRestaurants: alternativeRestaurants
+    }), props.defaultModal === "alternative" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_SelectRestaurantModal_SelectRestaurantModal__WEBPACK_IMPORTED_MODULE_12__["default"], {
       data: alternativeRestaurants,
       active: modalActive,
       setActive: setModalActive
@@ -27007,6 +26983,11 @@ function WaitingModal(props) {
     setModalActive(true);
   };
 
+  var showAlternativeModal = function showAlternativeModal() {
+    setDefaultModal("alternative");
+    setModalActive(true);
+  };
+
   var makeOrderDone = function makeOrderDone() {
     props.makeOrder();
     props.setModalActive(true);
@@ -27027,9 +27008,11 @@ function WaitingModal(props) {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         className: "title modal-title",
         children: title
-      }), defaultModal === "waiting" ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+      }), defaultModal === "waiting" || defaultModal === "noTime" ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
         className: "choose-time",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("b", {
+          children: t("Join our waiting list")
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
           className: "selected-date",
           style: {
             marginBottom: "10px"
@@ -27052,6 +27035,13 @@ function WaitingModal(props) {
               times: times
             })]
           })
+        }), defaultModal === "noTime" && props.alternativeRestaurants.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("b", {
+          style: {
+            textDecoration: 'underline',
+            cursor: 'pointer'
+          },
+          onClick: showAlternativeModal,
+          children: t("Or select other our restaurant")
         })]
       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         className: "no-choose-time",
@@ -27109,7 +27099,7 @@ function WaitingModal(props) {
             })]
           })]
         })
-      }), defaultModal !== "waiting" && defaultModal !== "agreements" && defaultModal !== "ordered" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+      }), defaultModal !== "waiting" && defaultModal !== "agreements" && defaultModal !== "noTime" && defaultModal !== "ordered" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
         className: "form",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
           className: "title-comment-waiting",

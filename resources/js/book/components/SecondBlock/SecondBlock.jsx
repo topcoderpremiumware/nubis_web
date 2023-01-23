@@ -39,6 +39,13 @@ function SecondBlock(props) {
     })
   }, [props.guestValue]);
 
+  useEffect(() => {
+    if(!times?.length || !extraTimeReq?.length) {
+      props.setDefaultModal("noTime");
+      setModalActive(true)
+    }
+  }, [times, extraTimeReq])
+
   const setTimelineType = (type) => {
     setTimeline(type.length);
     console.log('setTimelineId',type)
@@ -160,12 +167,6 @@ function SecondBlock(props) {
     getExtraTime(selectedDay);
   }
 
-  const showSelectRestaurantModal = (e) => {
-    e.preventDefault();
-    props.setDefaultModal("noTime");
-    setModalActive(true);
-  }
-
   const checkToken = () => {
     console.log('selectedTime', props.selectedTime)
     if (props.selectedTime) {
@@ -180,6 +181,7 @@ function SecondBlock(props) {
   }
 
   const getTitle = {
+    noTime: t("We don't have empty table for you"),
     waiting: t('Please select a waiting list'),
     agreements: t('Confirm waiting list conditions'),
     submit: t('You are about to be added to the waiting list'),
@@ -229,56 +231,16 @@ function SecondBlock(props) {
                     <p className="select-time-title">{blockTime.name}</p>
                     {blockTime.description}
                   </div>
-                  {(timeline === blockTime.length && times.length > 0) ? (
+                  {timeline === blockTime.length && 
                     <Time setSelectedTime={props.setSelectedTime} times={times} />
-                  ) : (
-                    <div className="select-time-flex">
-                      {t("We don't have empty table for you. You can ")}
-                      <button
-                        className="waiting-list"
-                        onClick={showModalWindow}
-                      >
-                        {t('join our waiting list')}
-                      </button>{' '}
-                      {alternativeRestaurants.length > 0 && <>
-                        {t("or you can ")}
-                        <button
-                          className="waiting-list"
-                          onClick={showSelectRestaurantModal}
-                        >
-                          {t('select another restaurant')}
-                        </button>
-                      </>}
-                    </div>
-                  )}
+                  }
                 </div>
               )) :
                 <div className="select-time">
                   <div>
                     <p className="select-time-title">{t('Select time')}</p>
                   </div>
-                  {times.length > 0 ? (
-                    <Time setSelectedTime={props.setSelectedTime} times={times} />
-                  ) : (
-                    <div className="select-time-flex">
-                      {t("We don't have empty table for you. You can ")}
-                      <button
-                        className="waiting-list"
-                        onClick={showModalWindow}
-                      >
-                        {t('join our waiting list')}
-                      </button>{' '}
-                      {alternativeRestaurants.length > 0 && <>
-                        {t("or you can ")}
-                        <button
-                          className="waiting-list"
-                          onClick={showSelectRestaurantModal}
-                        >
-                          {t('select another restaurant')}
-                        </button>
-                      </>}
-                    </div>
-                  )}
+                  <Time setSelectedTime={props.setSelectedTime} times={times} />
                 </div>
               }
             </div>
@@ -343,6 +305,7 @@ function SecondBlock(props) {
         />
       )}
       {(props.defaultModal === "waiting" ||
+        props.defaultModal === "noTime" ||
         props.defaultModal === "agreements" ||
         props.defaultModal === "submit" ||
         props.defaultModal === "ordered") && (
@@ -368,9 +331,10 @@ function SecondBlock(props) {
             timeline={timeline}
             extraTimeReq={extraTimeReq}
             getPlaceId={props.getPlaceId}
+            alternativeRestaurants={alternativeRestaurants}
           />
         )}
-      {(props.defaultModal === "noTime") && (
+      {(props.defaultModal === "alternative") && (
         <SelectRestaurantModal
           data={alternativeRestaurants}
           active={modalActive}

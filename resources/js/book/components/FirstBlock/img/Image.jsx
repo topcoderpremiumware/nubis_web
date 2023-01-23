@@ -30,7 +30,10 @@ function Image() {
 
   return (
     <div className="main-image_picture">
-      <img className="main-image" src={mainImage} alt="" />
+      <img className="main-image" 
+      // src={mainImage}
+        src={'https://images.unsplash.com/photo-1574410009028-ed14f6f17c4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=876&q=80'}
+       alt="" />
     </div>
   );
 }

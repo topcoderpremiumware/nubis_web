@@ -611,43 +611,38 @@ class OrderController extends Controller
             'custom_booking_length_id' => $request->custom_booking_length_id
         ]);
 
-        $prepayment_url = $this->getPrepaymentUrl($request,$order);
-        if($prepayment_url){
-            $order->status = 'pending';
-            $order->timestamps = false;
-            $order->save();
+        $place = Place::find($request->place_id);
+        if(intval($place->setting('is-online-payment')) === 1) {
+            if ($place->setting('online-payment-method') === 'deduct') {
+                $prepayment_url = $this->getPrepaymentUrl($request, $order);
+                if ($prepayment_url) {
+                    $order->status = 'pending';
+                    $order->marks = [
+                        'method' => 'deduct',
+                        'amount' => $place->setting('online-payment-amount') * $request->seats,
+                        'currency' => $place->setting('online-payment-currency'),
+                        'cancel_deadline' => $place->setting('online-payment-cancel-deadline')
+                    ];
+                    $order->timestamps = false;
+                    $order->save();
+                }
+            } else {
+                if(!$request->has('number') || !$request->has('exp_month') || !$request->has('exp_year') || !$request->has('cvc')){
+                    return response()->json([
+                        'message' => 'There are no some card data like number, exp_month, exp_year, cvc'
+                    ], 400);
+                }
+                $marks = $this->processPaymentAlgorithm($request);
+                if ($marks) {
+                    $order->marks = $marks;
+                    $order->timestamps = false;
+                    $order->save();
+                }
+            }
         }
 
         if(!$prepayment_url){
-            $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
-                ->where('purpose','sms-confirmation')
-                ->where('language',Auth::user()->language)
-                ->where('active',1)
-                ->first();
-            $place = Place::find($request->place_id);
-            $smsApiToken = $place->setting('sms-api-token');
-            if($sms_confirmation_template && $smsApiToken){
-                $result = SMS::send([Auth::user()->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'), $smsApiToken);
-            }
-            $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
-                ->where('purpose','email-confirmation')
-                ->where('language',Auth::user()->language)
-                ->where('active',1)
-                ->first();
-            if($email_confirmation_template){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($email_confirmation_template) {
-                    $msg->to(Auth::user()->email)->subject($email_confirmation_template->subject);
-                });
-            }
-
-            $sms_notification_template = MessageTemplate::where('place_id',$request->place_id)
-                ->where('purpose','sms-notification')
-                //->where('language','en')
-                ->where('active',1)
-                ->first();
-            if($sms_notification_template && $smsApiToken){
-                $result = SMS::send([$place->setting('sms-notification-number')], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_NAME'), $smsApiToken);
-            }
+            $this->sendNewOrderNotification($order,$place);
         }
 
         $order->prepayment_url = $prepayment_url;
@@ -658,42 +653,103 @@ class OrderController extends Controller
     {
         $url = '';
         $place = Place::find($request->place_id);
-        $is_online_payment = $place->setting('is-online-payment');
 
-        if(intval($is_online_payment) === 1){
-            $online_payment_amount = $place->setting('online-payment-amount');
-            $online_payment_currency = $place->setting('online-payment-currecy');
-            $stripe_secret = $place->setting('stripe-secret');
-            $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
+        $online_payment_amount = $place->setting('online-payment-amount') * $order->seats;
+        $online_payment_currency = $place->setting('online-payment-currecy');
+        $stripe_secret = $place->setting('stripe-secret');
+        $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
 
-            if($stripe_secret && $stripe_webhook_secret && $online_payment_currency){
-                $stripe = new StripeClient($stripe_secret);
-                $price = $stripe->prices->create([
-                    'unit_amount' => $online_payment_amount,
-                    'currency' => $online_payment_currency,
-                    'product_data' => [
-                        'name' => 'Prepayment'
-                    ]
-                ]);
+        if($stripe_secret && $stripe_webhook_secret && $online_payment_currency){
+            $stripe = new StripeClient($stripe_secret);
+            $price = $stripe->prices->create([
+                'unit_amount' => $online_payment_amount,
+                'currency' => $online_payment_currency,
+                'product_data' => [
+                    'name' => 'Prepayment'
+                ]
+            ]);
 
-                $link = $stripe->paymentLinks->create(
-                    [
-                        'line_items' => [['price' => $price->id, 'quantity' => 1]],
-                        'metadata' => [
-                            'place_id' => $request->place_id,
-                            'order_id' => $order->id
-                        ],
-                        'after_completion' => [
-                            'type' => 'redirect',
-                            'redirect' => ['url' => env('APP_URL')],
-                        ],
-                    ]
-                );
-                $url = $link->url;
-            }
+            $link = $stripe->paymentLinks->create(
+                [
+                    'line_items' => [['price' => $price->id, 'quantity' => 1]],
+                    'metadata' => [
+                        'place_id' => $request->place_id,
+                        'order_id' => $order->id
+                    ],
+                    'after_completion' => [
+                        'type' => 'redirect',
+                        'redirect' => ['url' => env('APP_URL')],
+                    ],
+                ]
+            );
+            $url = $link->url;
         }
 
         return $url;
+    }
+
+    private function processPaymentAlgorithm($request)
+    {
+        $place = Place::find($request->place_id);
+        $method = $place->setting('online-payment-method');
+        $amount = $place->setting('online-payment-amount') * $request->seats;
+        $currency = $place->setting('online-payment-currency');
+        $cancel_deadline = $place->setting('online-payment-cancel-deadline');
+        $marks = [
+            'method' => $method,
+            'amount' => $amount,
+            'currency' => $currency,
+            'cancel_deadline' => $cancel_deadline
+        ];
+        $stripe_secret = $place->setting('stripe-secret');
+        $stripe = new StripeClient($stripe_secret);
+        //TODO:
+        if($method === 'reserve'){ // 2) Перший метод вже є для другого треба блокувати гроші
+
+        }elseif($method === 'no_show'){ // 3) для третього методу треба створити card_token і його ід записати в marks
+            $card_token = $stripe->tokens->create([
+                'card' => [
+                    'number' => $request->number,
+                    'exp_month' => $request->exp_month,
+                    'exp_year' => $request->exp_year,
+                    'cvc' => $request->cvc
+                ]
+            ]);
+            $marks['card_token_id'] = $card_token->id;
+        }
+
+        return $marks;
+    }
+
+    private function sendNewOrderNotification($order,$place)
+    {
+        $sms_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
+            ->where('purpose','sms-confirmation')
+            ->where('language',$order->customer->language)
+            ->where('active',1)
+            ->first();
+        $smsApiToken = $place->setting('sms-api-token');
+        if($sms_confirmation_template && $smsApiToken){
+            $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'), $smsApiToken);
+        }
+        $email_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
+            ->where('purpose','email-confirmation')
+            ->where('language',$order->customer->language)
+            ->where('active',1)
+            ->first();
+        if($email_confirmation_template){
+            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($order, $email_confirmation_template) {
+                $msg->to($order->customer->email)->subject($email_confirmation_template->subject);
+            });
+        }
+
+        $sms_notification_template = MessageTemplate::where('place_id',$order->place_id)
+            ->where('purpose','sms-notification')
+            ->where('active',1)
+            ->first();
+        if($sms_notification_template && $smsApiToken){
+            $result = SMS::send([$place->setting('sms-notification-number')], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_NAME'), $smsApiToken);
+        }
     }
 
     public function freeTables(Request $request)
@@ -763,6 +819,10 @@ class OrderController extends Controller
                 $order = Order::find($order_id);
                 $order->status = 'ordered';
                 $order->save();
+
+                if($order->marks['method'] === 'deduct'){
+                    $this->sendNewOrderNotification($order,$place);
+                }
             }
         }
         return response()->json(['result'=> 'OK']);

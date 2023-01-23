@@ -8,21 +8,53 @@ import './PaymentSettings.scss'
 const PaymentSettings = () => {
   const { t } = useTranslation();
 
-  const [method, setMethod] = useState('Deduct')
+  const [method, setMethod] = useState('deduct')
   const [prepayment, setPrepayment] = useState(false)
   const [amount, setAmount] = useState(0)
   const [currency, setCurrency] = useState('DDK')
+  const [cancelDeadline, setCancelDeadline] = useState(30)
 
   useEffect(() => {
     getPrepayment()
     getAmount()
     getCurrency()
+    getMethod()
+    getCancelDeadline()
     eventBus.on("placeChanged", () => {
       getPrepayment()
       getAmount()
       getCurrency()
+      getMethod()
+      getCancelDeadline()
     })
   },[])
+
+  const currencies = ['AUD','CAD','CHF','DKK','EUR','GBP','HKD','HUF','ISK','JPY','NOK','RON','SEK','SGD','USD']
+  const cancelTimes = [
+    {title: `30 ${t('minutes')}`, value: 30},
+    {title: `45 ${t('minutes')}`, value: 45},
+    {title: `1 ${t('hour')}`, value: 60},
+    {title: `1.5 ${t('hours')}`, value: 60*1.5},
+    {title: `2 ${t('hours')}`, value: 60*2},
+    {title: `2.5 ${t('hours')}`, value: 60*2.5},
+    {title: `3 ${t('hours')}`, value: 60*3},
+    {title: `4 ${t('hours')}`, value: 60*4},
+    {title: `5 ${t('hours')}`, value: 60*5},
+    {title: `6 ${t('hours')}`, value: 60*6},
+    {title: `8 ${t('hours')}`, value: 60*8},
+    {title: `12 ${t('hours')}`, value: 60*12},
+    {title: `24 ${t('hours')}`, value: 60*24},
+    {title: `36 ${t('hours')}`, value: 60*36},
+    {title: `48 ${t('hours')}`, value: 60*48},
+    {title: `3 ${t('days')}`, value: 60*24*3},
+    {title: `4 ${t('days')}`, value: 60*24*4},
+    {title: `5 ${t('days')}`, value: 60*24*5},
+    {title: `6 ${t('days')}`, value: 60*24*6},
+    {title: `7 ${t('days')}`, value: 60*24*7},
+    {title: `14 ${t('days')}`, value: 60*24*14},
+    {title: `21 ${t('days')}`, value: 60*24*21},
+    {title: t('Not allowed'), value: 60*24*1000},
+  ]
 
   const getPrepayment = () => {
     axios.get(`${process.env.MIX_API_URL}/api/settings`,{
@@ -72,6 +104,38 @@ const PaymentSettings = () => {
     })
   }
 
+  const getMethod = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'online-payment-method'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setMethod(response.data.value)
+    }).catch(error => {
+      setMethod('deduct')
+    })
+  }
+
+  const getCancelDeadline = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'online-payment-cancel-deadline'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setCancelDeadline(response.data.value)
+    }).catch(error => {
+      setCancelDeadline(0)
+    })
+  }
+
   const onSave = async (e) => {
     e.preventDefault()
     axios.post(`${process.env.MIX_API_URL}/api/settings`, {
@@ -96,6 +160,22 @@ const PaymentSettings = () => {
       value: currency
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Online payment currency saved'});
+    }).catch(error => {})
+
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
+      place_id: localStorage.getItem('place_id'),
+      name: 'online-payment-method',
+      value: method
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Online payment method saved'});
+    }).catch(error => {})
+
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
+      place_id: localStorage.getItem('place_id'),
+      name: 'online-payment-cancel-deadline',
+      value: cancelDeadline
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Online payment cancellation deadline saved'});
     }).catch(error => {})
   }
 
@@ -148,14 +228,16 @@ const PaymentSettings = () => {
           <b>{t('Price')}</b>
           <div className="d-flex gap-1">
             <TextField label={t('Amount')} size="small" fullWidth
-              type="text" value={amount}
+              type="number" value={amount}
               onChange={ev => setAmount(ev.target.value)}
             />
             <Select value={currency}
               size="small"
               onChange={ev => setCurrency(ev.target.value)}
             >
-              <MenuItem value="DDK">DDK</MenuItem>
+              {currencies.map((c,key) => {
+                return <MenuItem key={key} value={c}>{c}</MenuItem>
+              })}
             </Select>
             <Select value={'Per guest'}
               size="small"
@@ -168,11 +250,13 @@ const PaymentSettings = () => {
         <div className="d-flex gap-5 mb-4">
           <b>{t('Cancellation deadline')}</b>
           <div className="d-flex gap-1">
-            <Select value={'24h'}
+            <Select value={cancelDeadline}
               size="small"
-              onChange={ev => {}}
+              onChange={ev => setCancelDeadline(ev.target.value)}
             >
-              <MenuItem value="24h">24 hours</MenuItem>
+              {cancelTimes.map((c,key) => {
+                return <MenuItem key={key} value={c.value}>{c.title}</MenuItem>
+              })}
             </Select>
           </div>
         </div>

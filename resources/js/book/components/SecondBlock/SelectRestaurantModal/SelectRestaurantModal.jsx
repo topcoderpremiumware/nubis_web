@@ -20,6 +20,10 @@ const SelectRestaurantModal = (props) => {
       onClick={() => setActive(false)}
     >
       <div className="modal__content" onClick={(e) => e.stopPropagation()}>
+        <div 
+          className="close-icon" 
+          onClick={() => setActive(false)}
+        >✕</div>
         <div className="title modal-title" style={{textTransform: 'capitalize'}}>{t('select other our restaurant')}</div>
         <FormControl sx={{ m: 1, width: 300, mt: 3 }}>
           <Select

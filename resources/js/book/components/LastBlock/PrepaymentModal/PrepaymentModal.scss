@@ -30,6 +30,16 @@
   border-radius: 12px;
   background-color: #fff;
   width: 50%;
+  position: relative;
+}
+
+.close-icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
 }
 
 @media (max-width: 375px) {

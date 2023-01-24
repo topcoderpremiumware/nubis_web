@@ -227,6 +227,8 @@ function LastBlock(props) {
                 <div>
                   <div className="restaurant-name">{restaurantInfo.name}</div>
                   <div className="adress">
+                    id: {orderResponse?.id}
+                    <br />
                     {restaurantInfo.address}
                     <br />
                     {restaurantInfo.zip_code} {restaurantInfo.city}

@@ -288,10 +288,9 @@
     "Video Guide Settings": "Indstillinger for videoguide",
     "Setup": "Opsætning",
     "Video Guides": "Videoguider",
-    "We don't have empty table for you. You can ": "Vi har ikke et tomt bord til dig. Du kan ",
-    "join our waiting list": "tilmelde dig vores venteliste",
-    "or you can ": "eller du kan ",
-    "select other our restaurant": "vælg anden vores restaurant",
+    "We don't have empty table for you": "Vi har ikke et tomt bord til dig",
+    "Join our waiting list": "Tilmelde dig vores venteliste",
+    "Or select other our restaurant": "Eller vælg anden vores restaurant",
     "Pay now": "Betal nu",
     "Month View": "Månedsvisning"
 }

@@ -43,6 +43,10 @@ const PrepaymentModal = (props) => {
       onClick={() => setActive(false)}
     >
       <div className="prepayment-modal__content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="close-icon"
+          onClick={() => setActive(false)}
+        >✕</div>
         <div className="title prepayment-modal-title">Prepayment</div>
         <p>In order to complete from reservation at <b>{restaurantInfo.name}</b> the <b>{`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`} {selectedTime}</b> the following must be paid:</p>
         <div className="prepayment-form">

@@ -3,19 +3,21 @@ import axios from 'axios'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import ShowMoreModal from './ShowMoreModal/ShowMoreModal'
 import i18next from 'i18next'
+import './MonthView.scss'
+import AreasSelect from '../DayView/toppanel/select/AreasSelect';
+import eventBus from '../../../eventBus';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const MonthView = () => {
   moment.locale(i18next.language);
   const localizer = momentLocalizer(moment)
 
-  const [orders, setOrders] = useState([])
+  const [events, setEvents] = useState([])
   const [reservationDate, setReservationDate] = useState(new Date())
-  const [moreData, setMoreData] = useState([])
-  const [active, setActive] = useState(false)
 
-  const getOrders = async () => {
+  const getEvents = async () => {
     axios.get(process.env.MIX_API_URL + '/api/orders', {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -35,43 +37,74 @@ const MonthView = () => {
         }).format('YYYY-MM-DD HH:mm:ss')
       }
     }).then(response => {
-      setOrders(response.data)
+      let totals = {}
+
+      response.data.forEach(i => {
+        const date = moment(i.reservation_time).format('YYYY-MM-DD')
+        totals[date] = totals?.[date]?.length
+          ? [
+            ...totals[date],
+            { id: i.id, seats: i.seats }
+          ]
+          : [{ id: i.id, seats: i.seats }]
+      })
+
+      const events = Object.entries(totals).map((value) => ({
+        start: value[0],
+        end: value[0],
+        title: <>
+          Total booking: {value[1].length} <br />
+          Total pax: {value[1].reduce((prev, curr) => prev + curr.seats, 0)}
+        </>
+      }))
+
+      setEvents(events)
     }).catch(error => {
       console.log('Error', error)
     })
   }
 
   useEffect(() => {
-    getOrders()
+    getEvents()
+    eventBus.on("areaChanged", (data) => {
+      getEvents()
+    })
+    eventBus.on("placeChanged", (data) => {
+      getEvents()
+    })
+
+    return () => {
+      eventBus.remove("areaChanged", (data) => {
+        getEvents()
+      })
+      eventBus.remove("placeChanged", (data) => {
+        getEvents()
+      })
+    }
   }, [reservationDate])
 
   return (
-    <div>
+    <div className='pages__container'>
+      <div className='wrapper'>
+        <AreasSelect />
+
+        <DatePicker
+          selected={reservationDate}
+          onChange={(date) => setReservationDate(date)}
+          dateFormat="MM/yyyy"
+          showMonthYearPicker
+        />
+      </div>
+
       <Calendar
         localizer={localizer}
         views={''}
-        events={orders.map(i => ({
-          title: moment.utc(i.reservation_time).format('HH:mm')+' '+i.id,
-          start: moment.utc(i.reservation_time),
-          end: moment.utc(i.reservation_time).add(i.length,'minutes')
-        }))}
+        events={events}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: 600, margin: '30px' }}
+        style={{ height: 600, margin: '10px' }}
         onNavigate={(value) => setReservationDate(value)}
-        onShowMore={(value) => {
-          setMoreData(value)
-          setActive(true)
-        }}
       />
-
-      {moreData.length > 0 &&
-        <ShowMoreModal
-          data={moreData}
-          active={active}
-          setActive={setActive}
-        />
-      }
     </div>
   )
 }

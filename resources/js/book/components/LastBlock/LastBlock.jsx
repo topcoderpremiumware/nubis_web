@@ -64,7 +64,7 @@ function LastBlock(props) {
         <div className="main-block__body">
           <div className="nav">
             <div className="back">
-              <a href="/#" className="back-link" onClick={(e) => changeType(e)}>
+              <a href="/#" className="back-link" onClick={props.handlePrevItem}>
                 ← {t('Back')}
               </a>{" "}
               |{" "}
@@ -219,7 +219,6 @@ function LastBlock(props) {
             <MainModal
               title={t('Thanks!')}
               active={modalActive}
-              setActive={setModalActive}
               defaultModal={"done"}
               orderResponse={orderResponse}
             >
@@ -260,6 +259,14 @@ function LastBlock(props) {
                     <div style={{marginTop: '10px'}}><b>Comment:</b> {comment || '-'}</div>
                     <br />
                     <div><b>Type:</b> {props.isTakeAway ? t('Take away') : t('Eat here')}</div>
+                  </div>
+                </div>
+                <div className="thanks-actions">
+                  <div>
+                    {t('Cancel a booking')}
+                  </div>
+                  <div onClick={() => window.location.reload()}>
+                    {t('New booking')}
                   </div>
                 </div>
               </div>

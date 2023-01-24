@@ -438,6 +438,7 @@ const App = () => {
               setBlockType={setBlockType}
               timeline={timeline}
               setTimeline={setTimeline}
+              timelineId={timelineId}
               setTimelineId={setTimelineId}
               setExtraTime={setExtraTime}
               extraTime={extraTime}

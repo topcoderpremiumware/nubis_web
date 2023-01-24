@@ -24,6 +24,7 @@ function SecondBlock(props) {
     modalActive,
     timeline,
     setTimeline,
+    timelineId,
     setTimelineId,
   } = props;
 
@@ -32,19 +33,24 @@ function SecondBlock(props) {
   const [times, setTimes] = useState([]);
 
   useEffect(async () => {
-    getExtraTime(selectedDay)
-    getAlternativeRestaurants()
-    eventBus.on("langChanged", () => {
+    if(props.blockType === 'secondblock') {
       getExtraTime(selectedDay)
-    })
-  }, [props.guestValue]);
-
-  useEffect(() => {
-    if ((!times?.length || !extraTimeReq?.length) && props.defaultModal !== "waiting") {
-      props.setDefaultModal("noTime");
-      setModalActive(true)
+      getAlternativeRestaurants()
+      eventBus.on("langChanged", () => {
+        getExtraTime(selectedDay)
+      })
     }
-  }, [times, extraTimeReq])
+  }, [props.blockType]);
+
+  // useEffect(() => {
+  //   if ((!extraTimeReq?.length && !times?.length) && props.defaultModal !== "waiting") {
+  //     props.setDefaultModal("noTime");
+  //     setModalActive(true)
+  //   } else {
+  //     // props.setDefaultModal("");
+  //     // setModalActive(false)
+  //   }
+  // }, [times, extraTimeReq])
 
   const setTimelineType = (type) => {
     setTimeline(type.length);
@@ -102,7 +108,7 @@ function SecondBlock(props) {
       .then((response) => {
         setExtraTimeReq(response.data);
         if (response.data.length === 0) {
-          getTime(selectedDay)
+          getTime(date)
         }
       })
       .catch((error) => {
@@ -120,12 +126,17 @@ function SecondBlock(props) {
       },
     })
       .then((response) => {
-        const timesArray = response.data?.map((time) => ({
-          time: String(time.slice(11, 19)),
-          shortTime: String(time.slice(11, 16)),
-        }));
-        console.log('timesArray', timesArray)
-        setTimes(timesArray);
+        if(response.data.length) {
+          const timesArray = response.data?.map((time) => ({
+            time: String(time.slice(11, 19)),
+            shortTime: String(time.slice(11, 16)),
+          }));
+          console.log('timesArray', timesArray)
+          setTimes(timesArray);
+        } else {
+          props.setDefaultModal("noTime");
+          setModalActive(true)
+        }
       })
       .catch((error) => {
         console.log("Error: ", error);
@@ -228,13 +239,13 @@ function SecondBlock(props) {
               {extraTimeReq.length > 0 ? extraTimeReq.map((blockTime, key) => (
                 <div className="select-time" key={key}>
                   <div className="select-time-wrapper" onClick={() => setTimelineType(blockTime)}>
-                    {blockTime?.image && <img src={blockTime.image} alt={blockTime.description} />}
+                    {blockTime?.image && <img src={blockTime.image} alt="" />}
                     <div>
                       <p className="select-time-title">{blockTime.name}</p>
                       {blockTime.description}
                     </div>
                   </div>
-                  {timeline === blockTime.length &&
+                  {(timelineId === blockTime.id && timeline === blockTime.length) &&
                     <Time setSelectedTime={props.setSelectedTime} times={times} />
                   }
                 </div>

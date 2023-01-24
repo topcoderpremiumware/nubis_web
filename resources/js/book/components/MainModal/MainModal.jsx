@@ -39,10 +39,12 @@ export default function MainModal(props) {
       onClick={() => setActive(false)}
     >
       <div className="modal__content" onClick={(e) => e.stopPropagation()}>
-        <div
-          className="close-icon"
-          onClick={() => setActive(false)}
-        >✕</div>
+        {defaultModal !== "done" && (
+          <div
+            className="close-icon"
+            onClick={() => setActive(false)}
+          >✕</div>
+        )}
         <div className="title modal-title">{title}</div>
         {(defaultModal === "done" && props.children) ? props.children : null}
         {defaultModal !== "done" && (

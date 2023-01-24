@@ -46,8 +46,7 @@
   width: 460px;
   height: 70px;
   display: flex;
-  overflow-x: scroll;
-  overflow-y: hidden;
+  overflow: hidden;
   align-items: center;
   scroll-behavior: smooth;
 }

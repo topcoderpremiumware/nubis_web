@@ -173,6 +173,21 @@
 .second-next-button {
   width: 271px;
 }
+
+.thanks-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.thanks-actions div {
+  font-weight: 700;
+  text-decoration: underline;
+  font-size: 14px;
+  cursor: pointer;
+}
+
 @media (max-width: 1024px) {
   .info-body {
     flex-direction: column;

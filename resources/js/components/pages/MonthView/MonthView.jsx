@@ -51,9 +51,9 @@ const MonthView = () => {
         localizer={localizer}
         views={''}
         events={orders.map(i => ({
-          title: moment(i.reservation_time).format('HH:mm')+' '+i.id,
-          start: moment(i.reservation_time),
-          end: moment(i.reservation_time).add(i.length,'minutes')
+          title: moment.utc(i.reservation_time).format('HH:mm')+' '+i.id,
+          start: moment.utc(i.reservation_time),
+          end: moment.utc(i.reservation_time).add(i.length,'minutes')
         }))}
         startAccessor="start"
         endAccessor="end"

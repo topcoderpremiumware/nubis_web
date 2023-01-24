@@ -632,7 +632,7 @@ class OrderController extends Controller
                         'message' => 'There are no some card data like number, exp_month, exp_year, cvc'
                     ], 400);
                 }
-                $marks = $this->processPaymentAlgorithm($request);
+                $marks = $this->processPaymentAlgorithm($request, $order);
                 if ($marks) {
                     $order->marks = $marks;
                     $order->timestamps = false;
@@ -688,7 +688,7 @@ class OrderController extends Controller
         return $url;
     }
 
-    private function processPaymentAlgorithm($request)
+    private function processPaymentAlgorithm($request,$order)
     {
         $place = Place::find($request->place_id);
         $method = $place->setting('online-payment-method');
@@ -703,9 +703,38 @@ class OrderController extends Controller
         ];
         $stripe_secret = $place->setting('stripe-secret');
         $stripe = new StripeClient($stripe_secret);
-        //TODO:
-        if($method === 'reserve'){ // 2) Перший метод вже є для другого треба блокувати гроші
 
+        if($method === 'reserve'){ // 2) Перший метод вже є для другого треба блокувати гроші
+            if(Carbon::now()->diff($request->reservation_time)->days > 6){
+                // Якщо замовлення раніше ніж 6 днів тоді запланувати відсилання через крон посилання на оплату як в першому методі
+                $marks['need_send_payment_link'] = true;
+            }else{
+                // Якщо замовлення пізніже ніж 6 днів тоді створити payment_intent manual, а потім його capture через крон
+                $payment_method = $stripe->paymentMethods->create([
+                    'type' => 'card',
+                    'card' => [
+                        'number' => $request->number,
+                        'exp_month' => $request->exp_month,
+                        'exp_year' => $request->exp_year,
+                        'cvc' => $request->cvc
+                    ]
+                ]);
+                $payment_intent = $stripe->paymentIntents->create([
+                    'amount' => $amount * 100,
+                    'currency' => $currency,
+                    'confirm' => true,
+                    'off_session' => true,
+                    'payment_method' => $payment_method->id,
+                    'capture_method' => 'manual',
+                    'metadata' => [
+                        'place_id' => $request->place_id,
+                        'order_id' => $order->id
+                    ],
+                ]);
+                $marks['paymnet_method_id'] = $payment_method->id;
+                $marks['payment_intent_id'] = $payment_intent->id;
+                $marks['need_capture'] = true;
+            }
         }elseif($method === 'no_show'){ // 3) для третього методу треба створити card_token і його ід записати в marks
             $card_token = $stripe->tokens->create([
                 'card' => [

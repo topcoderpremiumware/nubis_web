@@ -53,6 +53,10 @@ export default function CancelingModal(props) {
       onClick={() => setActive(false)}
     >
       <div className="modal__content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="close-icon"
+          onClick={() => setActive(false)}
+        >✕</div>
         {defaultModal !== "morePeople" && (
           <div className="title modal-title">
             {t('Cancel reservation at')} {restaurantInfo.name}

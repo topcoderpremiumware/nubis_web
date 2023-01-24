@@ -27,6 +27,7 @@
   background-color: #fff;
   width: 50%;
   max-height: 70%;
+  position: relative;
 }
 
 @media (max-width: 375px) {
@@ -59,4 +60,14 @@
   align-items: center;
   color: #989898;
   border: 1px solid #000000; */
+}
+
+
+.close-icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
 }

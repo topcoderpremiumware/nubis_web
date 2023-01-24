@@ -77,16 +77,27 @@ export default function WaitingModal(props) {
 
   console.log("Default: ", defaultModal);
 
+  const closeHandler = () => {
+    setActive(false)
+    setDefaultModal("");
+  }
+
   return (
     <div
       className={props.active ? "modal active" : "modal"}
-      onClick={() => setActive(false)}
+      onClick={closeHandler}
     >
       <div className="modal__content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="close-icon"
+          onClick={closeHandler}
+        >✕</div>
         <div className="title modal-title">{title}</div>
         {(defaultModal === "waiting" || defaultModal === "noTime") ? (
           <div className="choose-time">
-            <b>{t("Join our waiting list")}</b>
+            {defaultModal === "noTime" &&
+              <b>{t("Join our waiting list")}</b>
+            }
             <div className="selected-date" style={{ marginBottom: "10px" }}>
               {t('You have chosen a date')}{" "}
               <b>{`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`}</b>
@@ -100,15 +111,6 @@ export default function WaitingModal(props) {
                 <Time setSelectedTime={props.setSelectedTime} times={times} />
               </div>
             </div>
-
-            {(defaultModal === "noTime" && props.alternativeRestaurants.length > 0) &&
-              <b 
-                style={{textDecoration: 'underline', cursor: 'pointer'}}
-                onClick={showAlternativeModal}
-              >
-                {t("Or select other our restaurant")}
-              </b>
-            }
           </div>
         ) : (
           <div className="no-choose-time">
@@ -188,7 +190,7 @@ export default function WaitingModal(props) {
             </div>
           )}
 
-        {(defaultModal === "waiting" || defaultModal === "agreements") && (
+        {(defaultModal === "waiting" || defaultModal === "noTime" || defaultModal === "agreements") && (
           <div className="modal-button">
             <button
               type="button"
@@ -199,6 +201,14 @@ export default function WaitingModal(props) {
             </button>
           </div>
         )}
+        {(defaultModal === "noTime" && props.alternativeRestaurants.length > 0) &&
+          <b
+            style={{ textDecoration: 'underline', cursor: 'pointer' }}
+            onClick={showAlternativeModal}
+          >
+            {t("Or select other our restaurant")}
+          </b>
+        }
         {defaultModal === "submit" && (
           <div className="modal-button">
             <button

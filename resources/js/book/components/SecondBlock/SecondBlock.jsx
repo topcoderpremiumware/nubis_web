@@ -40,7 +40,7 @@ function SecondBlock(props) {
   }, [props.guestValue]);
 
   useEffect(() => {
-    if(!times?.length || !extraTimeReq?.length) {
+    if ((!times?.length || !extraTimeReq?.length) && props.defaultModal !== "waiting") {
       props.setDefaultModal("noTime");
       setModalActive(true)
     }
@@ -48,7 +48,7 @@ function SecondBlock(props) {
 
   const setTimelineType = (type) => {
     setTimeline(type.length);
-    console.log('setTimelineId',type)
+    console.log('setTimelineId', type)
     setTimelineId(type.id)
     const extraTimesArray = (timereq) =>
       extraTimeReq
@@ -227,11 +227,14 @@ function SecondBlock(props) {
             <div>
               {extraTimeReq.length > 0 ? extraTimeReq.map((blockTime, key) => (
                 <div className="select-time" key={key}>
-                  <div onClick={() => setTimelineType(blockTime)}>
-                    <p className="select-time-title">{blockTime.name}</p>
-                    {blockTime.description}
+                  <div className="select-time-wrapper" onClick={() => setTimelineType(blockTime)}>
+                    {blockTime?.image && <img src={blockTime.image} alt={blockTime.description} />}
+                    <div>
+                      <p className="select-time-title">{blockTime.name}</p>
+                      {blockTime.description}
+                    </div>
                   </div>
-                  {timeline === blockTime.length && 
+                  {timeline === blockTime.length &&
                     <Time setSelectedTime={props.setSelectedTime} times={times} />
                   }
                 </div>

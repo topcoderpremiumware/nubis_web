@@ -24803,7 +24803,13 @@ function CancelingModal(props) {
       onClick: function onClick(e) {
         return e.stopPropagation();
       },
-      children: [defaultModal !== "morePeople" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        className: "close-icon",
+        onClick: function onClick() {
+          return setActive(false);
+        },
+        children: "\u2715"
+      }), defaultModal !== "morePeople" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "title modal-title",
         children: [t('Cancel reservation at'), " ", restaurantInfo.name]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("h2", {
@@ -25371,9 +25377,8 @@ function Image() {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
     className: "main-image_picture",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("img", {
-      className: "main-image" // src={mainImage}
-      ,
-      src: 'https://images.unsplash.com/photo-1574410009028-ed14f6f17c4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=876&q=80',
+      className: "main-image",
+      src: mainImage,
       alt: ""
     })
   });
@@ -25662,7 +25667,7 @@ function LastBlock(props) {
                 children: restaurantInfo.name
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
                 className: "adress",
-                children: [restaurantInfo.address, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), restaurantInfo.zip_code, " ", restaurantInfo.city, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), restaurantInfo.country]
+                children: ["id: ", orderResponse === null || orderResponse === void 0 ? void 0 : orderResponse.id, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), restaurantInfo.address, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), restaurantInfo.zip_code, " ", restaurantInfo.city, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), restaurantInfo.country]
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
                 className: "guests-date",
                 children: [t('Guests'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("b", {
@@ -25844,6 +25849,12 @@ var PrepaymentModal = function PrepaymentModal(props) {
         return e.stopPropagation();
       },
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "close-icon",
+        onClick: function onClick() {
+          return setActive(false);
+        },
+        children: "\u2715"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "title prepayment-modal-title",
         children: "Prepayment"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
@@ -26055,6 +26066,12 @@ function MainModal(props) {
         return e.stopPropagation();
       },
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "close-icon",
+        onClick: function onClick() {
+          return setActive(false);
+        },
+        children: "\u2715"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "title modal-title",
         children: title
       }), defaultModal === "done" && props.children ? props.children : null, defaultModal !== "done" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
@@ -26374,7 +26391,7 @@ function SecondBlock(props) {
     }, _callee);
   })), [props.guestValue]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    if (!(times !== null && times !== void 0 && times.length) || !(extraTimeReq !== null && extraTimeReq !== void 0 && extraTimeReq.length)) {
+    if ((!(times !== null && times !== void 0 && times.length) || !(extraTimeReq !== null && extraTimeReq !== void 0 && extraTimeReq.length)) && props.defaultModal !== "waiting") {
       props.setDefaultModal("noTime");
       setModalActive(true);
     }
@@ -26628,13 +26645,19 @@ function SecondBlock(props) {
             return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
               className: "select-time",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
+                className: "select-time-wrapper",
                 onClick: function onClick() {
                   return setTimelineType(blockTime);
                 },
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("p", {
-                  className: "select-time-title",
-                  children: blockTime.name
-                }), blockTime.description]
+                children: [(blockTime === null || blockTime === void 0 ? void 0 : blockTime.image) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("img", {
+                  src: blockTime.image,
+                  alt: blockTime.description
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsxs)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)("p", {
+                    className: "select-time-title",
+                    children: blockTime.name
+                  }), blockTime.description]
+                })]
               }), timeline === blockTime.length && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_13__.jsx)(_Calendar_Time__WEBPACK_IMPORTED_MODULE_5__["default"], {
                 setSelectedTime: props.setSelectedTime,
                 times: times
@@ -26801,6 +26824,12 @@ var SelectRestaurantModal = function SelectRestaurantModal(props) {
         return e.stopPropagation();
       },
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        className: "close-icon",
+        onClick: function onClick() {
+          return setActive(false);
+        },
+        children: "\u2715"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
         className: "title modal-title",
         style: {
           textTransform: 'capitalize'
@@ -26995,22 +27024,30 @@ function WaitingModal(props) {
   };
 
   console.log("Default: ", defaultModal);
+
+  var closeHandler = function closeHandler() {
+    setActive(false);
+    setDefaultModal("");
+  };
+
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
     className: props.active ? "modal active" : "modal",
-    onClick: function onClick() {
-      return setActive(false);
-    },
+    onClick: closeHandler,
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
       className: "modal__content",
       onClick: function onClick(e) {
         return e.stopPropagation();
       },
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+        className: "close-icon",
+        onClick: closeHandler,
+        children: "\u2715"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         className: "title modal-title",
         children: title
       }), defaultModal === "waiting" || defaultModal === "noTime" ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
         className: "choose-time",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("b", {
+        children: [defaultModal === "noTime" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("b", {
           children: t("Join our waiting list")
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
           className: "selected-date",
@@ -27035,13 +27072,6 @@ function WaitingModal(props) {
               times: times
             })]
           })
-        }), defaultModal === "noTime" && props.alternativeRestaurants.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("b", {
-          style: {
-            textDecoration: 'underline',
-            cursor: 'pointer'
-          },
-          onClick: showAlternativeModal,
-          children: t("Or select other our restaurant")
         })]
       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         className: "no-choose-time",
@@ -27111,7 +27141,7 @@ function WaitingModal(props) {
             placeholder: t('Add a comment')
           })
         })]
-      }), (defaultModal === "waiting" || defaultModal === "agreements") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+      }), (defaultModal === "waiting" || defaultModal === "noTime" || defaultModal === "agreements") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         className: "modal-button",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("button", {
           type: "button",
@@ -27121,6 +27151,13 @@ function WaitingModal(props) {
           },
           children: [t('Continue'), " \u2192"]
         })
+      }), defaultModal === "noTime" && props.alternativeRestaurants.length > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("b", {
+        style: {
+          textDecoration: 'underline',
+          cursor: 'pointer'
+        },
+        onClick: showAlternativeModal,
+        children: t("Or select other our restaurant")
       }), defaultModal === "submit" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         className: "modal-button",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("button", {
@@ -33390,7 +33427,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal {\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgba(0, 0, 0, 0.4);\r\n  position: absolute;\r\n  top: 0%;\r\n  left: 0%;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  opacity: 0;\r\n  pointer-events: none;\r\n  transition: 0.5s;\r\n  z-index: 10;\r\n}\r\n.form__wrapper {\r\n  width: 100%;\r\n}\r\n.modal.active {\r\n  opacity: 1;\r\n  pointer-events: all;\r\n}\r\n\r\n.modal__content {\r\n  padding: 20px;\r\n  border-radius: 12px;\r\n  background-color: #fff;\r\n  width: 50%;\r\n  max-height: 75%;\r\n}\r\n\r\n@media (max-width: 375px) {\r\n  .modal__content {\r\n    width: 60%;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .modal__content {\r\n    width: 70%;\r\n  }\r\n}\r\n\r\n.modal__content.active {\r\n  transform: scale(1);\r\n}\r\n\r\n.react-tel-input > * {\r\n  color: #989898;\r\n\r\n  /* padding: 12px 16px;\r\n      width: 151px;\r\n      height: 47px;\r\n      margin-right: 15px;\r\n      font-family: \"Inter\";\r\n      font-style: normal;\r\n      font-weight: 400;\r\n      font-size: 16px;\r\n      line-height: 150%;\r\n      align-items: center;\r\n      color: #989898;\r\n      border: 1px solid #000000; */\r\n}\r\n.canceling-footer {\r\n  text-decoration: none;\r\n  margin-top: 10px;\r\n}\r\n\r\n.cancel-inputs {\r\n  margin-top: 20px;\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n  justify-content: center;\r\n}\r\n\r\n.bookingid-input {\r\n  padding: 12px 16px;\r\n  max-width: 245px;\r\n  max-height: 47px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n  outline: none;\r\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal {\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgba(0, 0, 0, 0.4);\r\n  position: absolute;\r\n  top: 0%;\r\n  left: 0%;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  opacity: 0;\r\n  pointer-events: none;\r\n  transition: 0.5s;\r\n  z-index: 10;\r\n}\r\n.form__wrapper {\r\n  width: 100%;\r\n}\r\n.modal.active {\r\n  opacity: 1;\r\n  pointer-events: all;\r\n}\r\n\r\n.modal__content {\r\n  padding: 20px;\r\n  border-radius: 12px;\r\n  background-color: #fff;\r\n  width: 50%;\r\n  max-height: 75%;\r\n  position: relative;\r\n}\r\n\r\n.close-icon {\r\n  width: 24px;\r\n  height: 24px;\r\n  position: absolute;\r\n  top: 10px;\r\n  right: 10px;\r\n  cursor: pointer;\r\n}\r\n\r\n@media (max-width: 375px) {\r\n  .modal__content {\r\n    width: 60%;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .modal__content {\r\n    width: 70%;\r\n  }\r\n}\r\n\r\n.modal__content.active {\r\n  transform: scale(1);\r\n}\r\n\r\n.react-tel-input > * {\r\n  color: #989898;\r\n\r\n  /* padding: 12px 16px;\r\n      width: 151px;\r\n      height: 47px;\r\n      margin-right: 15px;\r\n      font-family: \"Inter\";\r\n      font-style: normal;\r\n      font-weight: 400;\r\n      font-size: 16px;\r\n      line-height: 150%;\r\n      align-items: center;\r\n      color: #989898;\r\n      border: 1px solid #000000; */\r\n}\r\n.canceling-footer {\r\n  text-decoration: none;\r\n  margin-top: 10px;\r\n}\r\n\r\n.cancel-inputs {\r\n  margin-top: 20px;\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n  justify-content: center;\r\n}\r\n\r\n.bookingid-input {\r\n  padding: 12px 16px;\r\n  max-width: 245px;\r\n  max-height: 47px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n  outline: none;\r\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33582,7 +33619,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal {\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgba(0, 0, 0, 0.4);\r\n  position: absolute;\r\n  top: 0%;\r\n  left: 0%;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  opacity: 0;\r\n  pointer-events: none;\r\n  transition: 0.5s;\r\n  z-index: 10;\r\n}\r\n.form__wrapper {\r\n  width: 100%;\r\n}\r\n.modal.active {\r\n  opacity: 1;\r\n  pointer-events: all;\r\n}\r\n\r\n.modal__content {\r\n  padding: 20px;\r\n  border-radius: 12px;\r\n  background-color: #fff;\r\n  width: 50%;\r\n  max-height: 70%;\r\n}\r\n\r\n@media (max-width: 375px) {\r\n  .modal__content {\r\n    width: 60%;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .modal__content {\r\n    width: 70%;\r\n  }\r\n}\r\n\r\n.modal__content.active {\r\n  transform: scale(1);\r\n}\r\n\r\n.react-tel-input > * {\r\n  color: #989898;\r\n\r\n  /* padding: 12px 16px;\r\n  width: 151px;\r\n  height: 47px;\r\n  margin-right: 15px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000; */\r\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal {\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgba(0, 0, 0, 0.4);\r\n  position: absolute;\r\n  top: 0%;\r\n  left: 0%;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  opacity: 0;\r\n  pointer-events: none;\r\n  transition: 0.5s;\r\n  z-index: 10;\r\n}\r\n.form__wrapper {\r\n  width: 100%;\r\n}\r\n.modal.active {\r\n  opacity: 1;\r\n  pointer-events: all;\r\n}\r\n\r\n.modal__content {\r\n  padding: 20px;\r\n  border-radius: 12px;\r\n  background-color: #fff;\r\n  width: 50%;\r\n  max-height: 70%;\r\n  position: relative;\r\n}\r\n\r\n@media (max-width: 375px) {\r\n  .modal__content {\r\n    width: 60%;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .modal__content {\r\n    width: 70%;\r\n  }\r\n}\r\n\r\n.modal__content.active {\r\n  transform: scale(1);\r\n}\r\n\r\n.react-tel-input > * {\r\n  color: #989898;\r\n\r\n  /* padding: 12px 16px;\r\n  width: 151px;\r\n  height: 47px;\r\n  margin-right: 15px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000; */\r\n}\r\n\r\n\r\n.close-icon {\r\n  width: 24px;\r\n  height: 24px;\r\n  position: absolute;\r\n  top: 10px;\r\n  right: 10px;\r\n  cursor: pointer;\r\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33630,7 +33667,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".nav {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n}\r\n\r\n.back {\r\n  margin-top: 25px;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .back {\r\n    margin: 20px 0px 0px 40px;\r\n  }\r\n}\r\n\r\n.back-link {\r\n  text-decoration: none;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 500;\r\n  font-size: 14px;\r\n  line-height: 100%;\r\n  margin: 25px 0px 0px 0px;\r\n  color: #333333;\r\n}\r\n\r\n.second-step__lang {\r\n  margin: 0;\r\n}\r\n\r\n.second-overhead {\r\n  margin-top: 16px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n}\r\n\r\n.second-title {\r\n  margin-top: 18px;\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 50px;\r\n  line-height: 100%;\r\n  letter-spacing: 4px;\r\n  color: #333333;\r\n}\r\n\r\n.modal-title {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  text-align: center;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.modal-email {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n}\r\n\r\n.modal-button {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  margin-bottom: 30px;\r\n}\r\n\r\n.next-button {\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 18px;\r\n  line-height: 100%;\r\n  display: flex;\r\n  margin-top: 0px;\r\n  background: #000;\r\n  color: #fff;\r\n  align-items: center;\r\n  text-align: center;\r\n  letter-spacing: 2px;\r\n  width: 192px;\r\n  height: 47px;\r\n  justify-content: center;\r\n}\r\n\r\n.next {\r\n  text-decoration: none;\r\n  color: #fff;\r\n}\r\n\r\n.footer {\r\n  margin-top: 20px;\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n}\r\n\r\n.subtitle {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n  margin-right: 8px;\r\n}\r\n\r\n.waiting-list {\r\n  display: flex;\r\n  justify-content: left;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  margin-right: 100px;\r\n  border: none;\r\n  outline: none;\r\n  background-color: transparent;\r\n  color: #67a1e5;\r\n  cursor: pointer;\r\n}\r\n\r\n.second-block__datepicker {\r\n  max-width: 330px;\r\n}\r\n\r\n.calendar-arrows {\r\n  display: flex;\r\n  justify-content: space-between;\r\n}\r\n\r\n.arrows {\r\n  cursor: pointer;\r\n  border: none;\r\n  outline: none;\r\n  background-color: transparent;\r\n  width: 1.7em;\r\n  height: 1.7em;\r\n  font-size: 20px;\r\n}\r\n\r\n.Calendar__monthArrowWrapper {\r\n  display: none;\r\n}\r\n\r\n.select-time-title {\r\n  margin-top: 18px;\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 30px;\r\n  line-height: 100%;\r\n  letter-spacing: 4px;\r\n  color: #333333;\r\n}\r\n.select-time-flex {\r\n  margin-top: 10px;\r\n}\r\n.select-time-flex .waiting-list {\r\n  display: inline;\r\n  margin: 0;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-block__datepicker {\r\n    margin: auto;\r\n  }\r\n  .button-main {\r\n    display: flex;\r\n    justify-content: center;\r\n    margin: 40px auto;\r\n    text-align: center;\r\n  }\r\n  .footer {\r\n    margin: 0 auto;\r\n    display: block;\r\n    justify-content: center;\r\n  }\r\n  .subtitle {\r\n    display: block;\r\n    justify-content: center;\r\n    margin: 0;\r\n  }\r\n  .waiting-list {\r\n    display: block;\r\n    justify-content: center;\r\n    margin: 0;\r\n    border: none;\r\n    outline: none;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".nav {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n}\r\n\r\n.back {\r\n  margin-top: 25px;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .back {\r\n    margin: 20px 0px 0px 40px;\r\n  }\r\n}\r\n\r\n.back-link {\r\n  text-decoration: none;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 500;\r\n  font-size: 14px;\r\n  line-height: 100%;\r\n  margin: 25px 0px 0px 0px;\r\n  color: #333333;\r\n}\r\n\r\n.second-step__lang {\r\n  margin: 0;\r\n}\r\n\r\n.second-overhead {\r\n  margin-top: 16px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n}\r\n\r\n.second-title {\r\n  margin-top: 18px;\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 50px;\r\n  line-height: 100%;\r\n  letter-spacing: 4px;\r\n  color: #333333;\r\n}\r\n\r\n.modal-title {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  text-align: center;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.modal-email {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n}\r\n\r\n.modal-button {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  margin-bottom: 30px;\r\n}\r\n\r\n.next-button {\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 18px;\r\n  line-height: 100%;\r\n  display: flex;\r\n  margin-top: 0px;\r\n  background: #000;\r\n  color: #fff;\r\n  align-items: center;\r\n  text-align: center;\r\n  letter-spacing: 2px;\r\n  width: 192px;\r\n  height: 47px;\r\n  justify-content: center;\r\n}\r\n\r\n.next {\r\n  text-decoration: none;\r\n  color: #fff;\r\n}\r\n\r\n.footer {\r\n  margin-top: 20px;\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n}\r\n\r\n.subtitle {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n  margin-right: 8px;\r\n}\r\n\r\n.waiting-list {\r\n  display: flex;\r\n  justify-content: left;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  margin-right: 100px;\r\n  border: none;\r\n  outline: none;\r\n  background-color: transparent;\r\n  color: #67a1e5;\r\n  cursor: pointer;\r\n}\r\n\r\n.second-block__datepicker {\r\n  max-width: 330px;\r\n}\r\n\r\n.calendar-arrows {\r\n  display: flex;\r\n  justify-content: space-between;\r\n}\r\n\r\n.arrows {\r\n  cursor: pointer;\r\n  border: none;\r\n  outline: none;\r\n  background-color: transparent;\r\n  width: 1.7em;\r\n  height: 1.7em;\r\n  font-size: 20px;\r\n}\r\n\r\n.Calendar__monthArrowWrapper {\r\n  display: none;\r\n}\r\n.select-time-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 20px;\r\n  cursor: pointer;\r\n}\r\n.select-time-wrapper img {\r\n  border-radius: 50%;\r\n  -o-object-fit: cover;\r\n     object-fit: cover;\r\n  width: 50px !important;\r\n  height: 50px !important;\r\n  max-width: 100%;\r\n  margin-top: 15px;\r\n}\r\n.select-time-title {\r\n  margin-top: 18px;\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 30px;\r\n  line-height: 100%;\r\n  letter-spacing: 4px;\r\n  color: #333333;\r\n}\r\n.select-time-flex {\r\n  margin-top: 10px;\r\n}\r\n.select-time-flex .waiting-list {\r\n  display: inline;\r\n  margin: 0;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-block__datepicker {\r\n    margin: auto;\r\n  }\r\n  .button-main {\r\n    display: flex;\r\n    justify-content: center;\r\n    margin: 40px auto;\r\n    text-align: center;\r\n  }\r\n  .footer {\r\n    margin: 0 auto;\r\n    display: block;\r\n    justify-content: center;\r\n  }\r\n  .subtitle {\r\n    display: block;\r\n    justify-content: center;\r\n    margin: 0;\r\n  }\r\n  .waiting-list {\r\n    display: block;\r\n    justify-content: center;\r\n    margin: 0;\r\n    border: none;\r\n    outline: none;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33654,7 +33691,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal {\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgba(0, 0, 0, 0.4);\r\n  position: absolute;\r\n  top: 0%;\r\n  left: 0%;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  opacity: 0;\r\n  pointer-events: none;\r\n  transition: 0.5s;\r\n  z-index: 10;\r\n}\r\n.form__wrapper {\r\n  width: 100%;\r\n}\r\n.modal.active {\r\n  opacity: 1;\r\n  pointer-events: all;\r\n}\r\n\r\n.modal__content {\r\n  padding: 20px;\r\n  border-radius: 12px;\r\n  background-color: #fff;\r\n  width: 50%;\r\n  max-height: 75%;\r\n}\r\n\r\n@media (max-width: 375px) {\r\n  .modal__content {\r\n    width: 60%;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .modal__content {\r\n    width: 70%;\r\n  }\r\n}\r\n\r\n.modal__content.active {\r\n  transform: scale(1);\r\n}\r\n\r\n.react-tel-input > * {\r\n  color: #989898;\r\n\r\n  /* padding: 12px 16px;\r\n    width: 151px;\r\n    height: 47px;\r\n    margin-right: 15px;\r\n    font-family: \"Inter\";\r\n    font-style: normal;\r\n    font-weight: 400;\r\n    font-size: 16px;\r\n    line-height: 150%;\r\n    align-items: center;\r\n    color: #989898;\r\n    border: 1px solid #000000; */\r\n}\r\n.title-comment-waiting {\r\n  margin: 17px 0px 7px 0px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 7px;\r\n}\r\n.form-comment-waiting {\r\n  padding: 12px 16px;\r\n  width: 399px;\r\n  height: 47px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n  margin: 0px 0px 14px 0px;\r\n}\r\n\r\n.waiting-footer {\r\n  text-decoration: none;\r\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal {\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgba(0, 0, 0, 0.4);\r\n  position: absolute;\r\n  top: 0%;\r\n  left: 0%;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  opacity: 0;\r\n  pointer-events: none;\r\n  transition: 0.5s;\r\n  z-index: 10;\r\n}\r\n.form__wrapper {\r\n  width: 100%;\r\n}\r\n.modal.active {\r\n  opacity: 1;\r\n  pointer-events: all;\r\n}\r\n\r\n.modal__content {\r\n  padding: 20px;\r\n  border-radius: 12px;\r\n  background-color: #fff;\r\n  width: 50%;\r\n  max-height: 75%;\r\n  position: relative;\r\n}\r\n\r\n@media (max-width: 375px) {\r\n  .modal__content {\r\n    width: 60%;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .modal__content {\r\n    width: 70%;\r\n  }\r\n}\r\n\r\n.modal__content.active {\r\n  transform: scale(1);\r\n}\r\n\r\n.react-tel-input > * {\r\n  color: #989898;\r\n\r\n  /* padding: 12px 16px;\r\n    width: 151px;\r\n    height: 47px;\r\n    margin-right: 15px;\r\n    font-family: \"Inter\";\r\n    font-style: normal;\r\n    font-weight: 400;\r\n    font-size: 16px;\r\n    line-height: 150%;\r\n    align-items: center;\r\n    color: #989898;\r\n    border: 1px solid #000000; */\r\n}\r\n.title-comment-waiting {\r\n  margin: 17px 0px 7px 0px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 7px;\r\n}\r\n.form-comment-waiting {\r\n  padding: 12px 16px;\r\n  width: 399px;\r\n  height: 47px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n  margin: 0px 0px 14px 0px;\r\n}\r\n\r\n.waiting-footer {\r\n  text-decoration: none;\r\n}\r\n\r\n.close-icon {\r\n  width: 24px;\r\n  height: 24px;\r\n  position: absolute;\r\n  top: 10px;\r\n  right: 10px;\r\n  cursor: pointer;\r\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33678,7 +33715,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".prepayment-modal {\n  height: 100%;\n  width: 100%;\n  background-color: rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 0%;\n  left: 0%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  pointer-events: none;\n  transition: 0.5s;\n  z-index: 10;\n  text-align: center;\n}\n\n.prepayment-modal-title {\n  text-align: center;\n  font-size: 44px;\n  margin-top: 0;\n}\n\n.prepayment-modal.active {\n  opacity: 1;\n  pointer-events: all;\n}\n\n.prepayment-modal__content {\n  padding: 20px;\n  border-radius: 12px;\n  background-color: #fff;\n  width: 50%;\n}\n\n@media (max-width: 375px) {\n  .prepayment-modal__content {\n    width: 60%;\n  }\n}\n@media (max-width: 425px) {\n  .prepayment-modal__content {\n    width: 70%;\n  }\n}\n.prepayment-form {\n  margin-top: 20px;\n  padding: 10px;\n  border: 1px solid #cee2ff;\n  background: #ebf3ff;\n}\n.prepayment-flex {\n  display: flex;\n  align-items: center;\n  gap: 20px;\n  margin-top: 15px;\n}\n.prepayment-total {\n  font-weight: 700;\n  font-size: 24px;\n  text-align: center;\n  margin: 15px 0;\n}\n.prepayment-list-title {\n  text-align: left;\n  font-weight: 600;\n  font-size: 14px;\n  line-height: 135%;\n  margin: 10px 0 5px;\n}\n.prepayment-list {\n  text-align: left;\n  list-style: circle;\n  padding-left: 15px;\n}\n.prepayment-list li {\n  list-style-type: circle;\n  font-size: 12px;\n  line-height: 135%;\n}\n.prepayment-button {\n  margin: 20px auto 0;\n  border: none;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".prepayment-modal {\n  height: 100%;\n  width: 100%;\n  background-color: rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 0%;\n  left: 0%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  pointer-events: none;\n  transition: 0.5s;\n  z-index: 10;\n  text-align: center;\n}\n\n.prepayment-modal-title {\n  text-align: center;\n  font-size: 44px;\n  margin-top: 0;\n}\n\n.prepayment-modal.active {\n  opacity: 1;\n  pointer-events: all;\n}\n\n.prepayment-modal__content {\n  padding: 20px;\n  border-radius: 12px;\n  background-color: #fff;\n  width: 50%;\n  position: relative;\n}\n\n.close-icon {\n  width: 24px;\n  height: 24px;\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  cursor: pointer;\n}\n\n@media (max-width: 375px) {\n  .prepayment-modal__content {\n    width: 60%;\n  }\n}\n@media (max-width: 425px) {\n  .prepayment-modal__content {\n    width: 70%;\n  }\n}\n.prepayment-form {\n  margin-top: 20px;\n  padding: 10px;\n  border: 1px solid #cee2ff;\n  background: #ebf3ff;\n}\n.prepayment-flex {\n  display: flex;\n  align-items: center;\n  gap: 20px;\n  margin-top: 15px;\n}\n.prepayment-total {\n  font-weight: 700;\n  font-size: 24px;\n  text-align: center;\n  margin: 15px 0;\n}\n.prepayment-list-title {\n  text-align: left;\n  font-weight: 600;\n  font-size: 14px;\n  line-height: 135%;\n  margin: 10px 0 5px;\n}\n.prepayment-list {\n  text-align: left;\n  list-style: circle;\n  padding-left: 15px;\n}\n.prepayment-list li {\n  list-style-type: circle;\n  font-size: 12px;\n  line-height: 135%;\n}\n.prepayment-button {\n  margin: 20px auto 0;\n  border: none;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33702,7 +33739,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal {\n  height: 100%;\n  width: 100%;\n  background-color: rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 0%;\n  left: 0%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  pointer-events: none;\n  transition: 0.5s;\n  z-index: 10;\n}\n\n.form__wrapper {\n  width: 100%;\n}\n\n.modal.active {\n  opacity: 1;\n  pointer-events: all;\n}\n\n.modal__content {\n  padding: 20px;\n  border-radius: 12px;\n  background-color: #fff;\n  width: 50%;\n  max-height: 75%;\n}\n\n@media (max-width: 375px) {\n  .modal__content {\n    width: 60%;\n  }\n}\n@media (max-width: 425px) {\n  .modal__content {\n    width: 70%;\n  }\n}\n.modal__content.active {\n  transform: scale(1);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal {\n  height: 100%;\n  width: 100%;\n  background-color: rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 0%;\n  left: 0%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  pointer-events: none;\n  transition: 0.5s;\n  z-index: 10;\n}\n\n.close-icon {\n  width: 24px;\n  height: 24px;\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  cursor: pointer;\n}\n\n.form__wrapper {\n  width: 100%;\n}\n\n.modal.active {\n  opacity: 1;\n  pointer-events: all;\n}\n\n.modal__content {\n  padding: 20px;\n  border-radius: 12px;\n  background-color: #fff;\n  width: 50%;\n  max-height: 75%;\n  position: relative;\n}\n\n@media (max-width: 375px) {\n  .modal__content {\n    width: 60%;\n  }\n}\n@media (max-width: 425px) {\n  .modal__content {\n    width: 70%;\n  }\n}\n.modal__content.active {\n  transform: scale(1);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -78,6 +78,6 @@ class SettingController extends Controller
                 $output[$setting->name] = $parts[0].'_'.$parts[1].'_n'.$parts[2].'s';
             }
         }
-        return $output;
+        return response()->json($output);
     }
 }

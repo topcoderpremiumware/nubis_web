@@ -25160,10 +25160,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FirstBlock_SelectLang_SelectLang__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../FirstBlock/SelectLang/SelectLang */ "./resources/js/book/components/FirstBlock/SelectLang/SelectLang.jsx");
 /* harmony import */ var _FirstBlock_Copyrigth_Copyrigth__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../FirstBlock/Copyrigth/Copyrigth */ "./resources/js/book/components/FirstBlock/Copyrigth/Copyrigth.jsx");
 /* harmony import */ var _MainModal_MainModal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../MainModal/MainModal */ "./resources/js/book/components/MainModal/MainModal.jsx");
-/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/useTranslation.js");
-/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/Trans.js");
+/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/useTranslation.js");
+/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/Trans.js");
 /* harmony import */ var _PrepaymentModal_PrepaymentModal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./PrepaymentModal/PrepaymentModal */ "./resources/js/book/components/LastBlock/PrepaymentModal/PrepaymentModal.jsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _stripe_stripe_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @stripe/stripe-js */ "./node_modules/@stripe/stripe-js/dist/stripe.esm.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -25187,8 +25198,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
+
+
 function LastBlock(props) {
-  var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_8__.useTranslation)(),
+  var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_10__.useTranslation)(),
       t = _useTranslation.t;
 
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
@@ -25205,6 +25219,16 @@ function LastBlock(props) {
       selectedTime = props.selectedTime,
       restaurantInfo = props.restaurantInfo,
       orderResponse = props.orderResponse;
+
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+      _useState6 = _slicedToArray(_useState5, 2),
+      stripeKey = _useState6[0],
+      setStripeKey = _useState6[1];
+
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+      _useState8 = _slicedToArray(_useState7, 2),
+      stripeSecret = _useState8[0],
+      setStripeSecret = _useState8[1];
 
   var showModalWindow = function showModalWindow(e) {
     e.preventDefault();
@@ -25250,22 +25274,66 @@ function LastBlock(props) {
     props.setBlockType("secondblock");
   };
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+  var getStripeKeys = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+      var res, key, secret, key_parts, clear_key_part, clear_key, stripe, secret_parts, clear_secret_part, clear_secret;
+      return _regeneratorRuntime().wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_7___default().get("".concat("", "/api/places/").concat(localStorage.getItem('place_id'), "/secret"));
+
+            case 2:
+              res = _context.sent;
+              key = res.data['stripe-key'];
+              secret = res.data['stripe-secret'];
+              key_parts = key.split('_');
+              clear_key_part = key_parts[2].slice(1, -1);
+              clear_key = key_parts[0] + '_' + key_parts[1] + '_' + clear_key_part;
+              _context.next = 10;
+              return (0,_stripe_stripe_js__WEBPACK_IMPORTED_MODULE_8__.loadStripe)(clear_key);
+
+            case 10:
+              stripe = _context.sent;
+              setStripeKey(stripe);
+              secret_parts = secret.split('_');
+              clear_secret_part = secret_parts[2].slice(1, -1);
+              clear_secret = secret_parts[0] + '_' + secret_parts[1] + '_' + clear_secret_part;
+              setStripeSecret(clear_secret);
+
+            case 16:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function getStripeKeys() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    getStripeKeys();
+  }, []);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
     className: "content",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_FirstBlock_img_Image__WEBPACK_IMPORTED_MODULE_1__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_FirstBlock_img_Image__WEBPACK_IMPORTED_MODULE_1__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
       className: "content-wrapper",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
         className: "main-block__body",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
           className: "nav",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
             className: "back",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("a", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("a", {
               href: "/#",
               className: "back-link",
               onClick: props.handlePrevItem,
               children: ["\u2190 ", t('Back')]
-            }), " ", "|", " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("a", {
+            }), " ", "|", " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("a", {
               href: "#/",
               className: "back-link",
               onClick: function onClick(e) {
@@ -25273,70 +25341,70 @@ function LastBlock(props) {
               },
               children: t('Logout')
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
             className: "second-step__lang",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_FirstBlock_SelectLang_SelectLang__WEBPACK_IMPORTED_MODULE_3__["default"], {})
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_FirstBlock_SelectLang_SelectLang__WEBPACK_IMPORTED_MODULE_3__["default"], {})
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
           className: "overhead",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_i18next__WEBPACK_IMPORTED_MODULE_9__.Trans, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)(react_i18next__WEBPACK_IMPORTED_MODULE_11__.Trans, {
             children: ["Reserved ", {
               val: props.guestValue
             }, " Guests"]
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
           className: "title third-title",
           children: t('Almost there')
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
           className: "last-info",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
             className: "info-body",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
               className: "restaurant-info",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
                 className: "restaurant-name",
                 children: restaurantInfo.name
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
                 className: "adress",
-                children: [restaurantInfo.address, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), restaurantInfo.zip_code, " ", restaurantInfo.city, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), restaurantInfo.country]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                children: [restaurantInfo.address, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), restaurantInfo.zip_code, " ", restaurantInfo.city, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), restaurantInfo.country]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
                 className: "guests-date",
-                children: [t('Guests'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("b", {
+                children: [t('Guests'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("b", {
                   children: props.guestValue
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), t('Day/time'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("b", {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), t('Day/time'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("b", {
                   children: ["".concat(selectedDay.day, "-").concat(selectedDay.month, "-").concat(selectedDay.year), " ", selectedTime.slice(0, 5)]
                 })]
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
               className: "client-info",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
                 className: "client-title",
                 children: t('Your contact information')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
                 className: "client-adress",
-                children: [props.userData.first_name, " ", props.userData.last_name, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), props.userData.email, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), props.userData.phone, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), props.userData.zip_code]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                children: [props.userData.first_name, " ", props.userData.last_name, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), props.userData.email, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), props.userData.phone, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), props.userData.zip_code]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
                 className: "guests-date",
-                children: [t('Not correct?'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("a", {
+                children: [t('Not correct?'), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("a", {
                   href: "/#",
                   onClick: function onClick(e) {
                     return showModalWindow(e);
                   },
                   children: t('Edit my information')
-                }), "\xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("a", {
+                }), "\xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("a", {
                   href: "/",
                   children: t('Not me')
                 })]
               })]
             })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
             className: "form",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
               className: "client-title__comment",
               children: t('Add a comment')
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
               className: "form-comment",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("input", {
                 type: "text",
                 className: "form-name__comment",
                 placeholder: t('Add the comment'),
@@ -25345,13 +25413,13 @@ function LastBlock(props) {
                   return setComment(ev.target.value);
                 }
               })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
               className: "second-checkbox",
               style: {
                 display: "flex",
                 paddingBottom: "10px"
               },
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("input", {
                 type: "radio",
                 id: "takeawayChoice",
                 name: "takeaway",
@@ -25359,16 +25427,16 @@ function LastBlock(props) {
                 onClick: function onClick() {
                   return props.setIsTakeAway(1);
                 }
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("label", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("label", {
                 htmlFor: "contactChoice1",
                 children: t('Take away')
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
               className: "second-checkbox",
               style: {
                 display: "flex"
               },
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("input", {
                 type: "radio",
                 id: "eathereChoice",
                 name: "takeaway",
@@ -25376,15 +25444,15 @@ function LastBlock(props) {
                 onClick: function onClick() {
                   return props.setIsTakeAway(0);
                 }
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("label", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("label", {
                 htmlFor: "eathereChoice",
                 children: t('Eat here')
               })]
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
           className: "next-button second-next-button",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("a", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("a", {
             href: "/#",
             className: "next",
             onClick: function onClick(e) {
@@ -25392,12 +25460,12 @@ function LastBlock(props) {
             },
             children: [t('Complete booking'), " \u2192"]
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
           className: "copyrigth-footer",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_FirstBlock_Copyrigth_Copyrigth__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_FirstBlock_Copyrigth_Copyrigth__WEBPACK_IMPORTED_MODULE_4__["default"], {
             restaurantInfo: restaurantInfo
           })
-        }), props.defaultModal === "edit" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        }), props.defaultModal === "edit" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_5__["default"], {
           title: t('Enter your contact details'),
           active: modalActive,
           setActive: setModalActive,
@@ -25406,52 +25474,52 @@ function LastBlock(props) {
           defaultModal: "edit",
           userData: props.userData,
           setUserData: props.setUserData
-        }), props.defaultModal === "done" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        }), props.defaultModal === "done" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_MainModal_MainModal__WEBPACK_IMPORTED_MODULE_5__["default"], {
           title: t('Thanks!'),
           active: modalActive,
           defaultModal: "done",
           orderResponse: orderResponse,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
             className: "info-body info-body-modal",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
                 className: "restaurant-name",
                 children: restaurantInfo.name
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
                 className: "adress",
-                children: ["id: ", orderResponse === null || orderResponse === void 0 ? void 0 : orderResponse.id, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), restaurantInfo.address, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), restaurantInfo.zip_code, " ", restaurantInfo.city, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), restaurantInfo.country]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                children: ["id: ", orderResponse === null || orderResponse === void 0 ? void 0 : orderResponse.id, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), restaurantInfo.address, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), restaurantInfo.zip_code, " ", restaurantInfo.city, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), restaurantInfo.country]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
                 className: "guests-date",
-                children: [t('Guests'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("b", {
+                children: [t('Guests'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("b", {
                   children: props.guestValue
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), t('Day/time'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("b", {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), t('Day/time'), ": \xA0", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("b", {
                   children: ["".concat(selectedDay.day, "-").concat(selectedDay.month, "-").concat(selectedDay.year), " ", selectedTime.slice(0, 5)]
                 })]
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
                 className: "client-title",
                 children: t('Your contact information')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
                 className: "client-adress",
-                children: [props.userData.first_name, " ", props.userData.last_name, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), props.userData.email, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), props.userData.phone, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), props.userData.zip_code, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                children: [props.userData.first_name, " ", props.userData.last_name, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), props.userData.email, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), props.userData.phone, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), props.userData.zip_code, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
                   style: {
                     marginTop: '10px'
                   },
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("b", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("b", {
                     children: "Comment:"
                   }), " ", comment || '-']
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("b", {
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("b", {
                     children: "Type:"
                   }), " ", props.isTakeAway ? t('Take away') : t('Eat here')]
                 })]
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
               className: "thanks-actions",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
                 children: t('Cancel a booking')
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
                 onClick: function onClick() {
                   return window.location.reload();
                 },
@@ -25459,14 +25527,16 @@ function LastBlock(props) {
               })]
             })]
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_PrepaymentModal_PrepaymentModal__WEBPACK_IMPORTED_MODULE_6__["default"] // active={modalActive}
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)(_PrepaymentModal_PrepaymentModal__WEBPACK_IMPORTED_MODULE_6__["default"] // active={modalActive}
         , {
           active: true,
           setActive: setModalActive,
           restaurantInfo: restaurantInfo,
           selectedDay: selectedDay,
           selectedTime: selectedTime,
-          guestValue: props.guestValue
+          guestValue: props.guestValue,
+          stripeKey: stripeKey,
+          stripeSecret: stripeSecret
         })]
       })
     })]
@@ -25488,19 +25558,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/FormControl/FormControl.js");
-/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/Select/Select.js");
-/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/OutlinedInput/OutlinedInput.js");
-/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/MenuItem/MenuItem.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/FormControl/FormControl.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/Select/Select.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/OutlinedInput/OutlinedInput.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/MenuItem/MenuItem.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/useTranslation.js");
+/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/useTranslation.js");
 /* harmony import */ var _PrepaymentModal_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PrepaymentModal.scss */ "./resources/js/book/components/LastBlock/PrepaymentModal/PrepaymentModal.scss");
-/* harmony import */ var _stripe_stripe_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @stripe/stripe-js */ "./node_modules/@stripe/stripe-js/dist/stripe.esm.js");
-/* harmony import */ var _stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @stripe/react-stripe-js */ "./node_modules/@stripe/react-stripe-js/dist/react-stripe.umd.js");
-/* harmony import */ var _stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @stripe/react-stripe-js */ "./node_modules/@stripe/react-stripe-js/dist/react-stripe.umd.js");
+/* harmony import */ var _stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -25539,11 +25606,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-
-var stripePromise = (0,_stripe_stripe_js__WEBPACK_IMPORTED_MODULE_2__.loadStripe)('pk_test_51L1AETCVi0riU70PvZ0zL3aSTGEuNo9cXGyNn7JmemKn303pbnYy2PiTFt89e17QBjJRT3K9sF5gDwDu9SvQeKpm00OsOcsOSX');
-
 var PrepaymentModal = function PrepaymentModal(props) {
-  var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_6__.useTranslation)(),
+  var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_4__.useTranslation)(),
       t = _useTranslation.t;
 
   var active = props.active,
@@ -25551,40 +25615,37 @@ var PrepaymentModal = function PrepaymentModal(props) {
       restaurantInfo = props.restaurantInfo,
       selectedDay = props.selectedDay,
       selectedTime = props.selectedTime,
-      guestValue = props.guestValue;
+      guestValue = props.guestValue,
+      stripeKey = props.stripeKey,
+      stripeSecret = props.stripeSecret;
 
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1),
       _useState2 = _slicedToArray(_useState, 2),
-      secret = _useState2[0],
-      setSecret = _useState2[1];
+      adults = _useState2[0],
+      setAdults = _useState2[1];
 
   var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1),
       _useState4 = _slicedToArray(_useState3, 2),
-      adults = _useState4[0],
-      setAdults = _useState4[1];
+      children = _useState4[0],
+      setChildren = _useState4[1];
 
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1),
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
       _useState6 = _slicedToArray(_useState5, 2),
-      children = _useState6[0],
-      setChildren = _useState6[1];
+      number = _useState6[0],
+      setNumber = _useState6[1];
 
   var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
       _useState8 = _slicedToArray(_useState7, 2),
-      number = _useState8[0],
-      setNumber = _useState8[1];
+      expiry = _useState8[0],
+      setExpiry = _useState8[1];
 
   var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
       _useState10 = _slicedToArray(_useState9, 2),
-      expiry = _useState10[0],
-      setExpiry = _useState10[1];
-
-  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
-      _useState12 = _slicedToArray(_useState11, 2),
-      cvc = _useState12[0],
-      setCvc = _useState12[1];
+      cvc = _useState10[0],
+      setCvc = _useState10[1];
 
   var options = {
-    clientSecret: secret
+    clientSecret: stripeSecret
   }; // const handleInputChange = ({ target }) => {
   //   if (target.name === "number") {
   //     setNumber(formatCreditCardNumber(target.value))
@@ -25596,11 +25657,14 @@ var PrepaymentModal = function PrepaymentModal(props) {
   // };
 
   var handleSubmit = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(ev) {
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              ev.preventDefault();
+
+            case 1:
             case "end":
               return _context.stop();
           }
@@ -25608,123 +25672,117 @@ var PrepaymentModal = function PrepaymentModal(props) {
       }, _callee);
     }));
 
-    return function handleSubmit() {
+    return function handleSubmit(_x) {
       return _ref.apply(this, arguments);
     };
   }();
 
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    axios__WEBPACK_IMPORTED_MODULE_4___default().get("".concat("", "/api/places/").concat(localStorage.getItem('place_id'), "/secret")).then(function (res) {
-      console.log('res', res);
-    });
-  }, []);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: active ? "prepayment-modal active" : "prepayment-modal",
     onClick: function onClick() {
       return setActive(false);
     },
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: "prepayment-modal__content",
       onClick: function onClick(e) {
         return e.stopPropagation();
       },
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "close-icon",
         onClick: function onClick() {
           return setActive(false);
         },
         children: "\u2715"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "title prepayment-modal-title",
         children: "Prepayment"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("p", {
-        children: ["In order to complete from reservation at ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("b", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+        children: ["In order to complete from reservation at ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("b", {
           children: restaurantInfo.name
-        }), " the ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("b", {
+        }), " the ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("b", {
           children: ["".concat(selectedDay.day, "-").concat(selectedDay.month, "-").concat(selectedDay.year), " ", selectedTime]
         }), " the following must be paid:"]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
         className: "prepayment-form",
-        children: ["Please choose from the following options for ", guestValue, " pers.:", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        children: ["Please choose from the following options for ", guestValue, " pers.:", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "prepayment-flex",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_5__["default"], {
             sx: {
               width: 60
             },
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_6__["default"], {
               displayEmpty: true,
               size: "small",
               value: adults,
               onChange: function onChange(ev) {
                 return setAdults(ev.target.value);
               },
-              input: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {}),
+              input: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], {}),
               children: _toConsumableArray(Array(guestValue).keys()).map(function (i) {
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], {
                   value: i + 1,
                   children: i + 1
                 }, i);
               })
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
             children: "Adult 20.00 EUR"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
           className: "prepayment-flex",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_5__["default"], {
             sx: {
               width: 60
             },
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_6__["default"], {
               displayEmpty: true,
               size: "small",
               value: children,
               onChange: function onChange(ev) {
                 return setChildren(ev.target.value);
               },
-              input: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {}),
+              input: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], {}),
               children: _toConsumableArray(Array(guestValue).keys()).map(function (i) {
-                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], {
                   value: i + 1,
                   children: i + 1
                 }, i);
               })
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("span", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
             children: "Child (under 12) 12.00 EUR"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
           className: "prepayment-total",
           children: "64 EUR"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3__.Elements, {
-          stripe: stripePromise,
+        }), stripeKey && stripeSecret && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_2__.Elements, {
+          stripe: stripeKey,
           options: options,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("form", {
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3__.PaymentElement, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
-              type: "submit",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
+            onSubmit: handleSubmit,
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_2__.PaymentElement, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
               className: "button-main prepayment-button" // disabled={!selectedRest}
               ,
-              onClick: handleSubmit,
               children: t('Pay now')
             })]
           })
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h5", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h5", {
         className: "prepayment-list-title",
         children: "Terms"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("ul", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("ul", {
         className: "prepayment-list",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("li", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
           children: "The full amount is refunded for cancellation up to 24 hours before reservation starts."
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("li", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
           children: "No refund or deduction for absent guests."
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("li", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
           children: "Only persons aged 18 or over may place orders."
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("li", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
           children: "Your credit card information will not be stored."
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("li", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
           children: "All questions related to reservation and payment should be directed to My Restaurant on 12345678."
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("li", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("li", {
           children: "Business information: Company Name, Main road 1, 2300 Copenhagen, VAT ID 12345678"
         })]
       })]
@@ -33178,7 +33236,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal {\n  height: 100%;\n  width: 100%;\n  background-color: rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 0%;\n  left: 0%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  pointer-events: none;\n  transition: 0.5s;\n  z-index: 10;\n}\n.form__wrapper {\n  width: 100%;\n}\n.modal.active {\n  opacity: 1;\n  pointer-events: all;\n}\n\n.modal__content {\n  padding: 20px;\n  border-radius: 12px;\n  background-color: #fff;\n  width: 50%;\n  /* max-height: 75%; */\n  position: relative;\n}\n\n.close-icon {\n  width: 24px;\n  height: 24px;\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  cursor: pointer;\n}\n\n@media (max-width: 375px) {\n  .modal__content {\n    width: 60%;\n  }\n}\n@media (max-width: 425px) {\n  .modal__content {\n    width: 70%;\n  }\n}\n\n.modal__content.active {\n  transform: scale(1);\n}\n\n.react-tel-input > * {\n  color: #989898;\n\n  /* padding: 12px 16px;\n      width: 151px;\n      height: 47px;\n      margin-right: 15px;\n      font-family: \"Inter\";\n      font-style: normal;\n      font-weight: 400;\n      font-size: 16px;\n      line-height: 150%;\n      align-items: center;\n      color: #989898;\n      border: 1px solid #000000; */\n}\n.canceling-footer {\n  text-decoration: none;\n  margin-top: 10px;\n}\n\n.cancel-inputs {\n  margin-top: 20px;\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n}\n\n.bookingid-input {\n  padding: 12px 16px;\n  max-width: 245px;\n  max-height: 47px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  align-items: center;\n  color: #989898;\n  border: 1px solid #000000;\n  outline: none;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal {\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgba(0, 0, 0, 0.4);\r\n  position: absolute;\r\n  top: 0%;\r\n  left: 0%;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  opacity: 0;\r\n  pointer-events: none;\r\n  transition: 0.5s;\r\n  z-index: 10;\r\n}\r\n.form__wrapper {\r\n  width: 100%;\r\n}\r\n.modal.active {\r\n  opacity: 1;\r\n  pointer-events: all;\r\n}\r\n\r\n.modal__content {\r\n  padding: 20px;\r\n  border-radius: 12px;\r\n  background-color: #fff;\r\n  width: 50%;\r\n  /* max-height: 75%; */\r\n  position: relative;\r\n}\r\n\r\n.close-icon {\r\n  width: 24px;\r\n  height: 24px;\r\n  position: absolute;\r\n  top: 10px;\r\n  right: 10px;\r\n  cursor: pointer;\r\n}\r\n\r\n@media (max-width: 375px) {\r\n  .modal__content {\r\n    width: 60%;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .modal__content {\r\n    width: 70%;\r\n  }\r\n}\r\n\r\n.modal__content.active {\r\n  transform: scale(1);\r\n}\r\n\r\n.react-tel-input > * {\r\n  color: #989898;\r\n\r\n  /* padding: 12px 16px;\r\n      width: 151px;\r\n      height: 47px;\r\n      margin-right: 15px;\r\n      font-family: \"Inter\";\r\n      font-style: normal;\r\n      font-weight: 400;\r\n      font-size: 16px;\r\n      line-height: 150%;\r\n      align-items: center;\r\n      color: #989898;\r\n      border: 1px solid #000000; */\r\n}\r\n.canceling-footer {\r\n  text-decoration: none;\r\n  margin-top: 10px;\r\n}\r\n\r\n.cancel-inputs {\r\n  margin-top: 20px;\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n  justify-content: center;\r\n}\r\n\r\n.bookingid-input {\r\n  padding: 12px 16px;\r\n  max-width: 245px;\r\n  max-height: 47px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n  outline: none;\r\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33322,7 +33380,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".form {\n  text-align: center;\n  display: flex;\n  flex-wrap: wrap;\n  flex-direction: column;\n}\n.third-title {\n  margin: 12px 0px 21px 0px;\n}\n\n@media (max-width: 768px) {\n  .form-name {\n    display: flex;\n    flex-wrap: wrap;\n    flex-direction: column;\n    max-width: 100%;\n  }\n}\n\n.form-name__firstname {\n  padding: 12px 16px;\n  width: 192px;\n  height: 47px;\n  margin-bottom: 16px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  align-items: center;\n  color: #989898;\n  border: 1px solid #000000;\n}\n.form-name__firstname:not(:last-child) {\n  margin-right: 15px;\n}\n@media (max-width: 375px) {\n  .form-name__firstname:not(:last-child) {\n    margin-right: 0;\n  }\n}\n@media (max-width: 425px) {\n  .form-name__firstname:not(:last-child) {\n    margin-right: 0;\n  }\n}\n@media (max-width: 768px) {\n  .form-name__firstname:not(:last-child) {\n    margin-right: 0;\n  }\n}\n.form-name__email {\n  padding: 12px 16px;\n  width: 399px;\n  height: 47px;\n  /* margin-right: 14px; */\n  margin-bottom: 16px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  color: #989898;\n  border: 1px solid #000000;\n}\n\n@media (max-width: 768px) {\n  .form-name__email {\n    max-width: 190px;\n    align-items: center;\n  }\n}\n\n.form-name__mobile > input {\n  padding: 12px 16px;\n  max-width: 200px;\n  max-height: 47px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  align-items: center;\n  color: #989898;\n  border: 1px solid #000000;\n  outline: none;\n}\n\n.PhoneInputCountry {\n  border: 1px solid #000000;\n  padding-left: 10px;\n  margin: 0;\n  outline: none;\n  border-right: none;\n}\n\n.form-name__zip {\n  padding: 12px 16px;\n  max-width: 105px;\n  height: 47px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  align-items: center;\n  color: #989898;\n  border: 1px solid #000000;\n}\n\n.second-next-button {\n  margin-top: 20px;\n}\n\n.second-info {\n  text-align: left;\n  margin-top: 40px;\n}\n\n.no-border {\n  text-decoration: none;\n  color: #67a1e5;\n}\na {\n  color: #67a1e5;\n}\n.form-password {\n  width: 100%;\n}\n.form-name__password {\n  padding: 12px 16px;\n  height: 47px;\n  margin: 26px 15px 16px 0px;\n  width: 100%;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  align-items: center;\n  color: #989898;\n  border: 1px solid #000000;\n}\n\n.form-name__confirm-password {\n  padding: 12px 16px;\n  height: 47px;\n  margin-right: 15px;\n  width: 100%;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  align-items: center;\n  color: #989898;\n  border: 1px solid #000000;\n}\n\n.error-response {\n  margin-top: 20px;\n  text-align: left;\n  color: red;\n}\n\n.error-response-list {\n  list-style-type: disc;\n  font-size: 14px;\n}\n\n.form-mobile-zip {\n  display: flex;\n  justify-content: space-between;\n  max-width: 400px;\n  /* margin-left: 111px; */\n  margin: auto;\n}\n.form-mobile-number {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  gap: 20px;\n  max-width: 100%;\n}\n\n@media (max-width: 768px) {\n  .form-mobile-zip {\n    display: block;\n    margin: 0;\n    padding: 0;\n  }\n  .form-name__zip {\n    display: block;\n    max-width: 190px;\n    margin-right: 0;\n  }\n  .PhoneInputInput {\n    width: 70%;\n  }\n  .form-mobile-number {\n    max-width: 190px;\n    flex-direction: column;\n  }\n}\n\n@media (max-width: 1024px) {\n  .form-name__confirm-password {\n    margin-right: 14px;\n  }\n\n  .error-response {\n    text-align: center;\n    margin-bottom: 40px;\n  }\n}\n\n.third-info {\n  width: 428px;\n  font-size: 14px;\n}\n\n.copyrigth-footer {\n  margin: 35px 60px 57px 41px;\n}\n\n@media (max-width: 350px) {\n  .form-name__email {\n    width: 70%;\n  }\n  .form-name__firstname {\n    width: 70%;\n  }\n  .form-name__mobile {\n    max-width: 190px;\n    margin-bottom: 16px;\n  }\n  .form-name__zip {\n    width: 70%;\n    margin-right: 0;\n  }\n  .form-name__password {\n    width: 70%;\n  }\n  .form-name__confirm-password {\n    width: 70%;\n  }\n  .PhoneInputInput {\n    margin-right: 0;\n  }\n  .PhoneInput {\n    width: 100%;\n  }\n}\n\n@media (max-width: 425px) {\n  .form-mobile-zip {\n    display: flex;\n  }\n  .modal__content {\n    /* max-height: 80%; */\n  }\n}\n\n@media (max-width: 768px) {\n  .form-mobile-zip {\n    display: flex;\n  }\n  .modal__content {\n    /* max-height: 80%; */\n  }\n}\n\n@media (max-width: 1024px) {\n  .form-mobile-zip {\n    display: flex;\n    justify-content: center;\n  }\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".form {\r\n  text-align: center;\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n  flex-direction: column;\r\n}\r\n.third-title {\r\n  margin: 12px 0px 21px 0px;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .form-name {\r\n    display: flex;\r\n    flex-wrap: wrap;\r\n    flex-direction: column;\r\n    max-width: 100%;\r\n  }\r\n}\r\n\r\n.form-name__firstname {\r\n  padding: 12px 16px;\r\n  width: 192px;\r\n  height: 47px;\r\n  margin-bottom: 16px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n}\r\n.form-name__firstname:not(:last-child) {\r\n  margin-right: 15px;\r\n}\r\n@media (max-width: 375px) {\r\n  .form-name__firstname:not(:last-child) {\r\n    margin-right: 0;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .form-name__firstname:not(:last-child) {\r\n    margin-right: 0;\r\n  }\r\n}\r\n@media (max-width: 768px) {\r\n  .form-name__firstname:not(:last-child) {\r\n    margin-right: 0;\r\n  }\r\n}\r\n.form-name__email {\r\n  padding: 12px 16px;\r\n  width: 399px;\r\n  height: 47px;\r\n  /* margin-right: 14px; */\r\n  margin-bottom: 16px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .form-name__email {\r\n    max-width: 190px;\r\n    align-items: center;\r\n  }\r\n}\r\n\r\n.form-name__mobile > input {\r\n  padding: 12px 16px;\r\n  max-width: 200px;\r\n  max-height: 47px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n  outline: none;\r\n}\r\n\r\n.PhoneInputCountry {\r\n  border: 1px solid #000000;\r\n  padding-left: 10px;\r\n  margin: 0;\r\n  outline: none;\r\n  border-right: none;\r\n}\r\n\r\n.form-name__zip {\r\n  padding: 12px 16px;\r\n  max-width: 105px;\r\n  height: 47px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n}\r\n\r\n.second-next-button {\r\n  margin-top: 20px;\r\n}\r\n\r\n.second-info {\r\n  text-align: left;\r\n  margin-top: 40px;\r\n}\r\n\r\n.no-border {\r\n  text-decoration: none;\r\n  color: #67a1e5;\r\n}\r\na {\r\n  color: #67a1e5;\r\n}\r\n.form-password {\r\n  width: 100%;\r\n}\r\n.form-name__password {\r\n  padding: 12px 16px;\r\n  height: 47px;\r\n  margin: 26px 15px 16px 0px;\r\n  width: 100%;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n}\r\n\r\n.form-name__confirm-password {\r\n  padding: 12px 16px;\r\n  height: 47px;\r\n  margin-right: 15px;\r\n  width: 100%;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n}\r\n\r\n.error-response {\r\n  margin-top: 20px;\r\n  text-align: left;\r\n  color: red;\r\n}\r\n\r\n.error-response-list {\r\n  list-style-type: disc;\r\n  font-size: 14px;\r\n}\r\n\r\n.form-mobile-zip {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  max-width: 400px;\r\n  /* margin-left: 111px; */\r\n  margin: auto;\r\n}\r\n.form-mobile-number {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  gap: 20px;\r\n  max-width: 100%;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .form-mobile-zip {\r\n    display: block;\r\n    margin: 0;\r\n    padding: 0;\r\n  }\r\n  .form-name__zip {\r\n    display: block;\r\n    max-width: 190px;\r\n    margin-right: 0;\r\n  }\r\n  .PhoneInputInput {\r\n    width: 70%;\r\n  }\r\n  .form-mobile-number {\r\n    max-width: 190px;\r\n    flex-direction: column;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .form-name__confirm-password {\r\n    margin-right: 14px;\r\n  }\r\n\r\n  .error-response {\r\n    text-align: center;\r\n    margin-bottom: 40px;\r\n  }\r\n}\r\n\r\n.third-info {\r\n  width: 428px;\r\n  font-size: 14px;\r\n}\r\n\r\n.copyrigth-footer {\r\n  margin: 35px 60px 57px 41px;\r\n}\r\n\r\n@media (max-width: 350px) {\r\n  .form-name__email {\r\n    width: 70%;\r\n  }\r\n  .form-name__firstname {\r\n    width: 70%;\r\n  }\r\n  .form-name__mobile {\r\n    max-width: 190px;\r\n    margin-bottom: 16px;\r\n  }\r\n  .form-name__zip {\r\n    width: 70%;\r\n    margin-right: 0;\r\n  }\r\n  .form-name__password {\r\n    width: 70%;\r\n  }\r\n  .form-name__confirm-password {\r\n    width: 70%;\r\n  }\r\n  .PhoneInputInput {\r\n    margin-right: 0;\r\n  }\r\n  .PhoneInput {\r\n    width: 100%;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .form-mobile-zip {\r\n    display: flex;\r\n  }\r\n  .modal__content {\r\n    /* max-height: 80%; */\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .form-mobile-zip {\r\n    display: flex;\r\n  }\r\n  .modal__content {\r\n    /* max-height: 80%; */\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .form-mobile-zip {\r\n    display: flex;\r\n    justify-content: center;\r\n  }\r\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33346,7 +33404,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".last-info {\n  background-color: #f6f6f6;\n  max-width: 608px;\n}\n\n.info-body {\n  display: flex;\n  justify-content: space-between;\n  text-align: left;\n}\n\n.info-body-modal {\n  flex-direction: column;\n  gap: 20px;\n}\n.info-body-modal .client-adress {\n  flex-direction: column;\n  align-items: flex-start;\n}\n\n.restaurant-name {\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 700;\n  font-size: 22px;\n  line-height: 150%;\n  display: flex;\n  align-items: center;\n  color: #333333;\n  width: 240px;\n  margin-bottom: 7px;\n}\n\n.restaurant-info {\n  margin: 9px 0px 0px 20px;\n}\n\n.adress {\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 14px;\n  line-height: 150%;\n  display: flex;\n  align-items: center;\n  color: #333333;\n}\n\n.guests-date {\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 14px;\n  line-height: 150%;\n\n  align-items: center;\n  color: #333333;\n}\n\n.client-info {\n  margin: 9px 21px 0px 0px;\n}\n\n.client-title {\n  display: inline-block;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 700;\n  font-size: 21px;\n  line-height: 150%;\n  display: flex;\n  align-items: center;\n  color: #333333;\n  margin-bottom: 7px;\n}\n\n.client-adress {\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 14px;\n  line-height: 150%;\n  display: flex;\n  align-items: center;\n  color: #333333;\n  margin-bottom: 12px;\n}\n\n.editing {\n  display: flex;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 14px;\n  line-height: 150%;\n  display: flex;\n  align-items: center;\n  color: #333333;\n}\n\n.guests-date {\n  margin-top: 12px;\n}\n\n.form-name__comment {\n  padding: 12px 16px;\n  width: 399px;\n  height: 47px;\n  margin-right: 15px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  align-items: center;\n  color: #989898;\n  border: 1px solid #000000;\n}\n\n.client-title__comment {\n  margin: 17px 0px 7px 20px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 700;\n  font-size: 22px;\n  line-height: 150%;\n  display: flex;\n  align-items: center;\n  color: #333333;\n  width: 240px;\n  margin-bottom: 7px;\n}\n\n.form-name__comment {\n  margin: 0px 0px 14px 20px;\n}\n\n.checkbox {\n  display: flex;\n  justify-content: left;\n  text-align: left;\n  margin: 0px 8px 0px 20px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 12px;\n  line-height: 150%;\n  display: flex;\n  align-items: center;\n  color: #333333;\n  padding-bottom: 11px;\n}\n\n.second-checkbox {\n  display: flex;\n  justify-content: left;\n  margin: 0px 8px 0px 20px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 12px;\n  line-height: 150%;\n  display: flex;\n  align-items: center;\n  color: #333333;\n  padding-bottom: 10px;\n}\n\n.copyrigth-footer {\n  margin: 0px 60px 57px 0px;\n}\n\n.second-next-button {\n  width: 271px;\n}\n\n.thanks-actions {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 20px;\n}\n\n.thanks-actions div {\n  font-weight: 700;\n  text-decoration: underline;\n  font-size: 14px;\n  cursor: pointer;\n}\n\n@media (max-width: 1024px) {\n  .info-body {\n    flex-direction: column;\n  }\n\n  .client-info {\n    margin-left: 20px;\n  }\n\n  .form-name__comment {\n    max-width: 399px;\n  }\n}\n\n@media (max-width: 1024px) {\n  .form {\n    text-align: center;\n  }\n}\n\n@media (max-width: 1024px) {\n  .second-info {\n    text-align: center;\n  }\n  .third-info {\n    margin: 0 auto;\n  }\n}\n\n@media (max-width: 425px) {\n  .second-info {\n    font-size: 13px;\n  }\n  .third-info {\n    width: 100%;\n  }\n  .form-name__comment {\n    width: 90%;\n  }\n}\n\n@media (max-width: 1024px) {\n  .second-next-button {\n    display: flex;\n    justify-content: center;\n    margin: 40px auto;\n    text-align: center;\n  }\n  .copyrigth-footer {\n    margin: 0;\n  }\n  .form-name__comment {\n    display: block;\n  }\n  .checkbox {\n    display: flex;\n    justify-content: left;\n  }\n}\n\n@media (max-width: 768px) {\n  .last-info {\n    margin: auto;\n  }\n}\n\n@media (max-width: 425px) {\n  .last-info {\n    margin-right: 10px;\n  }\n}\n\n@media (max-width: 425px) {\n  .cancel-booking {\n    margin: auto;\n    text-align: center;\n  }\n  .checkbox {\n    display: inline-block;\n    text-align: left;\n  }\n}\n\n.react_time_range__time_range_container {\n  margin: 0;\n  padding: 0;\n  margin-top: 50px;\n}\n\n@media (max-width: 1024px) {\n  .react_time_range__time_range_container {\n    margin: 20% auto;\n  }\n}\n.form-comment {\n  text-align: left;\n}\n\n.PhoneInput {\n  /* This is done to stretch the contents of this component. */\n  display: flex;\n  align-items: center;\n  margin-right: 29px;\n}\n\n@media (max-width: 768px) {\n  .PhoneInput {\n    margin-right: 0;\n  }\n}\n\n.form-password {\n  max-width: 400px;\n  margin: auto;\n}\n\n@media (max-width: 475px) {\n  .form-password {\n    max-width: 190px;\n  }\n}\n\n@media (max-width: 768px) {\n  .form-password {\n    max-width: 190px;\n  }\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".last-info {\r\n  background-color: #f6f6f6;\r\n  max-width: 608px;\r\n}\r\n\r\n.info-body {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  text-align: left;\r\n}\r\n\r\n.info-body-modal {\r\n  flex-direction: column;\r\n  gap: 20px;\r\n}\r\n.info-body-modal .client-adress {\r\n  flex-direction: column;\r\n  align-items: flex-start;\r\n}\r\n\r\n.restaurant-name {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  width: 240px;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.restaurant-info {\r\n  margin: 9px 0px 0px 20px;\r\n}\r\n\r\n.adress {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.guests-date {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.client-info {\r\n  margin: 9px 21px 0px 0px;\r\n}\r\n\r\n.client-title {\r\n  display: inline-block;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 21px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.client-adress {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 12px;\r\n}\r\n\r\n.editing {\r\n  display: flex;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.guests-date {\r\n  margin-top: 12px;\r\n}\r\n\r\n.form-name__comment {\r\n  padding: 12px 16px;\r\n  width: 399px;\r\n  height: 47px;\r\n  margin-right: 15px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n}\r\n\r\n.client-title__comment {\r\n  margin: 17px 0px 7px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  width: 240px;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.form-name__comment {\r\n  margin: 0px 0px 14px 20px;\r\n}\r\n\r\n.checkbox {\r\n  display: flex;\r\n  justify-content: left;\r\n  text-align: left;\r\n  margin: 0px 8px 0px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 12px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  padding-bottom: 11px;\r\n}\r\n\r\n.second-checkbox {\r\n  display: flex;\r\n  justify-content: left;\r\n  margin: 0px 8px 0px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 12px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  padding-bottom: 10px;\r\n}\r\n\r\n.copyrigth-footer {\r\n  margin: 0px 60px 57px 0px;\r\n}\r\n\r\n.second-next-button {\r\n  width: 271px;\r\n}\r\n\r\n.thanks-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 20px;\r\n}\r\n\r\n.thanks-actions div {\r\n  font-weight: 700;\r\n  text-decoration: underline;\r\n  font-size: 14px;\r\n  cursor: pointer;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .info-body {\r\n    flex-direction: column;\r\n  }\r\n\r\n  .client-info {\r\n    margin-left: 20px;\r\n  }\r\n\r\n  .form-name__comment {\r\n    max-width: 399px;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .form {\r\n    text-align: center;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-info {\r\n    text-align: center;\r\n  }\r\n  .third-info {\r\n    margin: 0 auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .second-info {\r\n    font-size: 13px;\r\n  }\r\n  .third-info {\r\n    width: 100%;\r\n  }\r\n  .form-name__comment {\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-next-button {\r\n    display: flex;\r\n    justify-content: center;\r\n    margin: 40px auto;\r\n    text-align: center;\r\n  }\r\n  .copyrigth-footer {\r\n    margin: 0;\r\n  }\r\n  .form-name__comment {\r\n    display: block;\r\n  }\r\n  .checkbox {\r\n    display: flex;\r\n    justify-content: left;\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .last-info {\r\n    margin: auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .last-info {\r\n    margin-right: 10px;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .cancel-booking {\r\n    margin: auto;\r\n    text-align: center;\r\n  }\r\n  .checkbox {\r\n    display: inline-block;\r\n    text-align: left;\r\n  }\r\n}\r\n\r\n.react_time_range__time_range_container {\r\n  margin: 0;\r\n  padding: 0;\r\n  margin-top: 50px;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .react_time_range__time_range_container {\r\n    margin: 20% auto;\r\n  }\r\n}\r\n.form-comment {\r\n  text-align: left;\r\n}\r\n\r\n.PhoneInput {\r\n  /* This is done to stretch the contents of this component. */\r\n  display: flex;\r\n  align-items: center;\r\n  margin-right: 29px;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .PhoneInput {\r\n    margin-right: 0;\r\n  }\r\n}\r\n\r\n.form-password {\r\n  max-width: 400px;\r\n  margin: auto;\r\n}\r\n\r\n@media (max-width: 475px) {\r\n  .form-password {\r\n    max-width: 190px;\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .form-password {\r\n    max-width: 190px;\r\n  }\r\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33370,7 +33428,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal {\n  height: 100%;\n  width: 100%;\n  background-color: rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 0%;\n  left: 0%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  pointer-events: none;\n  transition: 0.5s;\n  z-index: 10;\n}\n.form__wrapper {\n  width: 100%;\n}\n.modal.active {\n  opacity: 1;\n  pointer-events: all;\n}\n\n.modal__content {\n  padding: 20px;\n  border-radius: 12px;\n  background-color: #fff;\n  width: 50%;\n  /* max-height: 70%; */\n  position: relative;\n}\n\n@media (max-width: 375px) {\n  .modal__content {\n    width: 60%;\n  }\n}\n@media (max-width: 425px) {\n  .modal__content {\n    width: 70%;\n  }\n}\n\n.modal__content.active {\n  transform: scale(1);\n}\n\n.react-tel-input > * {\n  color: #989898;\n\n  /* padding: 12px 16px;\n  width: 151px;\n  height: 47px;\n  margin-right: 15px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  align-items: center;\n  color: #989898;\n  border: 1px solid #000000; */\n}\n\n\n.close-icon {\n  width: 24px;\n  height: 24px;\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  cursor: pointer;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal {\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgba(0, 0, 0, 0.4);\r\n  position: absolute;\r\n  top: 0%;\r\n  left: 0%;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  opacity: 0;\r\n  pointer-events: none;\r\n  transition: 0.5s;\r\n  z-index: 10;\r\n}\r\n.form__wrapper {\r\n  width: 100%;\r\n}\r\n.modal.active {\r\n  opacity: 1;\r\n  pointer-events: all;\r\n}\r\n\r\n.modal__content {\r\n  padding: 20px;\r\n  border-radius: 12px;\r\n  background-color: #fff;\r\n  width: 50%;\r\n  /* max-height: 70%; */\r\n  position: relative;\r\n}\r\n\r\n@media (max-width: 375px) {\r\n  .modal__content {\r\n    width: 60%;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .modal__content {\r\n    width: 70%;\r\n  }\r\n}\r\n\r\n.modal__content.active {\r\n  transform: scale(1);\r\n}\r\n\r\n.react-tel-input > * {\r\n  color: #989898;\r\n\r\n  /* padding: 12px 16px;\r\n  width: 151px;\r\n  height: 47px;\r\n  margin-right: 15px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000; */\r\n}\r\n\r\n\r\n.close-icon {\r\n  width: 24px;\r\n  height: 24px;\r\n  position: absolute;\r\n  top: 10px;\r\n  right: 10px;\r\n  cursor: pointer;\r\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33394,7 +33452,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".time-button {\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 600;\n  font-size: 14px;\n  width: 66px;\n  height: 48px;\n  background: #c9dcc7;\n  border: 1px solid #ffffff;\n  padding-bottom: 0;\n  cursor: pointer;\n}\n\n.time-button:active {\n  background: #000;\n  color: #ffffff;\n}\n.active-button {\n  background: #000;\n  color: #ffffff;\n}\n\n.mainblock {\n  display: flex;\n  align-items: center;\n  margin: 20px 0px 30px -40px;\n  margin: 20px 0px 30px 0px;\n  justify-content: center;\n}\n\n@media (max-width: 1024px) {\n  .mainblock {\n    margin: 40px auto;\n  }\n}\n.mainblock > img {\n  width: 10px;\n  height: 60px;\n}\n.block-buttons {\n  display: flex;\n  cursor: pointer;\n}\n\n.block-button__slider {\n  width: 460px;\n  height: 70px;\n  display: flex;\n  overflow: hidden;\n  align-items: center;\n  scroll-behavior: smooth;\n}\n\n@media (max-width: 768px) {\n  .block-button__slider {\n    display: flex;\n    margin: 30px auto;\n    text-align: center;\n  }\n}\n\n.block-button__slider::-webkit-scrollbar {\n  width: 0;\n  height: 0;\n}\n.slider_arrow {\n    background: transparent;\n    border: 0;\n    font-weight: 700;\n    cursor: pointer;\n}\n.slider_arrow.right {\n    margin-left: 18px;\n}\n.slider_arrow.left {\n  margin-right: 18px;\n}\n\n@media (max-width: 768px) {\n  .slider_arrow {\n    margin: 0px auto;\n  }\n}\n\n@media (max-width: 425px) {\n    .slider_arrow.left {\n        margin-left: 20px;\n    }\n    .slider_arrow.right {\n        margin-right: 20px;\n    }\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".time-button {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 600;\r\n  font-size: 14px;\r\n  width: 66px;\r\n  height: 48px;\r\n  background: #c9dcc7;\r\n  border: 1px solid #ffffff;\r\n  padding-bottom: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.time-button:active {\r\n  background: #000;\r\n  color: #ffffff;\r\n}\r\n.active-button {\r\n  background: #000;\r\n  color: #ffffff;\r\n}\r\n\r\n.mainblock {\r\n  display: flex;\r\n  align-items: center;\r\n  margin: 20px 0px 30px -40px;\r\n  margin: 20px 0px 30px 0px;\r\n  justify-content: center;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .mainblock {\r\n    margin: 40px auto;\r\n  }\r\n}\r\n.mainblock > img {\r\n  width: 10px;\r\n  height: 60px;\r\n}\r\n.block-buttons {\r\n  display: flex;\r\n  cursor: pointer;\r\n}\r\n\r\n.block-button__slider {\r\n  width: 460px;\r\n  height: 70px;\r\n  display: flex;\r\n  overflow: hidden;\r\n  align-items: center;\r\n  scroll-behavior: smooth;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .block-button__slider {\r\n    display: flex;\r\n    margin: 30px auto;\r\n    text-align: center;\r\n  }\r\n}\r\n\r\n.block-button__slider::-webkit-scrollbar {\r\n  width: 0;\r\n  height: 0;\r\n}\r\n.slider_arrow {\r\n    background: transparent;\r\n    border: 0;\r\n    font-weight: 700;\r\n    cursor: pointer;\r\n}\r\n.slider_arrow.right {\r\n    margin-left: 18px;\r\n}\r\n.slider_arrow.left {\r\n  margin-right: 18px;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .slider_arrow {\r\n    margin: 0px auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n    .slider_arrow.left {\r\n        margin-left: 20px;\r\n    }\r\n    .slider_arrow.right {\r\n        margin-right: 20px;\r\n    }\r\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33418,7 +33476,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".nav {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.back {\n  margin-top: 25px;\n}\n\n@media (max-width: 1024px) {\n  .back {\n    margin: 20px 0px 0px 40px;\n  }\n}\n\n.back-link {\n  text-decoration: none;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 500;\n  font-size: 14px;\n  line-height: 100%;\n  margin: 25px 0px 0px 0px;\n  color: #333333;\n}\n\n.second-step__lang {\n  margin: 0;\n}\n\n.second-overhead {\n  margin-top: 16px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  color: #989898;\n}\n\n.second-title {\n  margin-top: 18px;\n  font-family: \"Lusitana\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 50px;\n  line-height: 100%;\n  letter-spacing: 4px;\n  color: #333333;\n}\n\n.modal-title {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  text-align: center;\n  margin-bottom: 20px;\n  font-size: 40px;\n}\n\n.modal-email {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.modal-button {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  margin-bottom: 30px;\n}\n\n.next-button {\n  font-family: \"Lusitana\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 18px;\n  line-height: 100%;\n  display: flex;\n  margin-top: 0px;\n  background: #000;\n  color: #fff;\n  align-items: center;\n  text-align: center;\n  letter-spacing: 2px;\n  width: 192px;\n  height: 47px;\n  justify-content: center;\n}\n\n.next {\n  text-decoration: none;\n  color: #fff;\n}\n\n.footer {\n  margin-top: 20px;\n  display: flex;\n  align-items: center;\n  position: relative;\n}\n\n.subtitle {\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 14px;\n  line-height: 150%;\n  color: #989898;\n  margin-right: 8px;\n}\n\n.waiting-list {\n  display: flex;\n  justify-content: left;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 14px;\n  line-height: 150%;\n  margin-right: 100px;\n  border: none;\n  outline: none;\n  background-color: transparent;\n  color: #67a1e5;\n  cursor: pointer;\n}\n\n.second-block__datepicker {\n  max-width: 330px;\n}\n\n.calendar-arrows {\n  display: flex;\n  justify-content: space-between;\n}\n\n.arrows {\n  cursor: pointer;\n  border: none;\n  outline: none;\n  background-color: transparent;\n  width: 1.7em;\n  height: 1.7em;\n  font-size: 20px;\n}\n\n.Calendar__monthArrowWrapper {\n  display: none;\n}\n.select-time-wrapper {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 20px;\n  cursor: pointer;\n}\n.select-time-wrapper img {\n  border-radius: 50%;\n  -o-object-fit: cover;\n     object-fit: cover;\n  width: 50px !important;\n  height: 50px !important;\n  max-width: 100%;\n  margin-top: 15px;\n}\n.select-time-title {\n  margin-top: 18px;\n  font-family: \"Lusitana\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 30px;\n  line-height: 100%;\n  letter-spacing: 4px;\n  color: #333333;\n}\n.select-time-flex {\n  margin-top: 10px;\n}\n.select-time-flex .waiting-list {\n  display: inline;\n  margin: 0;\n}\n\n@media (max-width: 1024px) {\n  .second-block__datepicker {\n    margin: auto;\n  }\n  .button-main {\n    display: flex;\n    justify-content: center;\n    margin: 40px auto;\n    text-align: center;\n  }\n  .footer {\n    margin: 0 auto;\n    display: block;\n    justify-content: center;\n  }\n  .subtitle {\n    display: block;\n    justify-content: center;\n    margin: 0;\n  }\n  .waiting-list {\n    display: block;\n    justify-content: center;\n    margin: 0;\n    border: none;\n    outline: none;\n  }\n}\n\n@media (max-width: 1024px) {\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".nav {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n}\r\n\r\n.back {\r\n  margin-top: 25px;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .back {\r\n    margin: 20px 0px 0px 40px;\r\n  }\r\n}\r\n\r\n.back-link {\r\n  text-decoration: none;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 500;\r\n  font-size: 14px;\r\n  line-height: 100%;\r\n  margin: 25px 0px 0px 0px;\r\n  color: #333333;\r\n}\r\n\r\n.second-step__lang {\r\n  margin: 0;\r\n}\r\n\r\n.second-overhead {\r\n  margin-top: 16px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n}\r\n\r\n.second-title {\r\n  margin-top: 18px;\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 50px;\r\n  line-height: 100%;\r\n  letter-spacing: 4px;\r\n  color: #333333;\r\n}\r\n\r\n.modal-title {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  text-align: center;\r\n  margin-bottom: 20px;\r\n  font-size: 40px;\r\n}\r\n\r\n.modal-email {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n}\r\n\r\n.modal-button {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  margin-bottom: 30px;\r\n}\r\n\r\n.next-button {\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 18px;\r\n  line-height: 100%;\r\n  display: flex;\r\n  margin-top: 0px;\r\n  background: #000;\r\n  color: #fff;\r\n  align-items: center;\r\n  text-align: center;\r\n  letter-spacing: 2px;\r\n  width: 192px;\r\n  height: 47px;\r\n  justify-content: center;\r\n}\r\n\r\n.next {\r\n  text-decoration: none;\r\n  color: #fff;\r\n}\r\n\r\n.footer {\r\n  margin-top: 20px;\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n}\r\n\r\n.subtitle {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  color: #989898;\r\n  margin-right: 8px;\r\n}\r\n\r\n.waiting-list {\r\n  display: flex;\r\n  justify-content: left;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  margin-right: 100px;\r\n  border: none;\r\n  outline: none;\r\n  background-color: transparent;\r\n  color: #67a1e5;\r\n  cursor: pointer;\r\n}\r\n\r\n.second-block__datepicker {\r\n  max-width: 330px;\r\n}\r\n\r\n.calendar-arrows {\r\n  display: flex;\r\n  justify-content: space-between;\r\n}\r\n\r\n.arrows {\r\n  cursor: pointer;\r\n  border: none;\r\n  outline: none;\r\n  background-color: transparent;\r\n  width: 1.7em;\r\n  height: 1.7em;\r\n  font-size: 20px;\r\n}\r\n\r\n.Calendar__monthArrowWrapper {\r\n  display: none;\r\n}\r\n.select-time-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 20px;\r\n  cursor: pointer;\r\n}\r\n.select-time-wrapper img {\r\n  border-radius: 50%;\r\n  -o-object-fit: cover;\r\n     object-fit: cover;\r\n  width: 50px !important;\r\n  height: 50px !important;\r\n  max-width: 100%;\r\n  margin-top: 15px;\r\n}\r\n.select-time-title {\r\n  margin-top: 18px;\r\n  font-family: \"Lusitana\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 30px;\r\n  line-height: 100%;\r\n  letter-spacing: 4px;\r\n  color: #333333;\r\n}\r\n.select-time-flex {\r\n  margin-top: 10px;\r\n}\r\n.select-time-flex .waiting-list {\r\n  display: inline;\r\n  margin: 0;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-block__datepicker {\r\n    margin: auto;\r\n  }\r\n  .button-main {\r\n    display: flex;\r\n    justify-content: center;\r\n    margin: 40px auto;\r\n    text-align: center;\r\n  }\r\n  .footer {\r\n    margin: 0 auto;\r\n    display: block;\r\n    justify-content: center;\r\n  }\r\n  .subtitle {\r\n    display: block;\r\n    justify-content: center;\r\n    margin: 0;\r\n  }\r\n  .waiting-list {\r\n    display: block;\r\n    justify-content: center;\r\n    margin: 0;\r\n    border: none;\r\n    outline: none;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33442,7 +33500,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal {\n  height: 100%;\n  width: 100%;\n  background-color: rgba(0, 0, 0, 0.4);\n  position: absolute;\n  top: 0%;\n  left: 0%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  pointer-events: none;\n  transition: 0.5s;\n  z-index: 10;\n}\n.form__wrapper {\n  width: 100%;\n}\n.modal.active {\n  opacity: 1;\n  pointer-events: all;\n}\n\n.modal__content {\n  padding: 20px;\n  border-radius: 12px;\n  background-color: #fff;\n  width: 50%;\n  /* max-height: 75%; */\n  position: relative;\n}\n\n@media (max-width: 375px) {\n  .modal__content {\n    width: 60%;\n  }\n}\n@media (max-width: 425px) {\n  .modal__content {\n    width: 70%;\n  }\n}\n\n.modal__content.active {\n  transform: scale(1);\n}\n\n.react-tel-input > * {\n  color: #989898;\n\n  /* padding: 12px 16px;\n    width: 151px;\n    height: 47px;\n    margin-right: 15px;\n    font-family: \"Inter\";\n    font-style: normal;\n    font-weight: 400;\n    font-size: 16px;\n    line-height: 150%;\n    align-items: center;\n    color: #989898;\n    border: 1px solid #000000; */\n}\n.title-comment-waiting {\n  margin: 17px 0px 7px 0px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 700;\n  font-size: 22px;\n  line-height: 150%;\n  align-items: center;\n  color: #333333;\n  margin-bottom: 7px;\n}\n.form-comment-waiting {\n  padding: 12px 16px;\n  width: 399px;\n  height: 47px;\n  font-family: \"Inter\";\n  font-style: normal;\n  font-weight: 400;\n  font-size: 16px;\n  line-height: 150%;\n  align-items: center;\n  color: #989898;\n  border: 1px solid #000000;\n  margin: 0px 0px 14px 0px;\n}\n\n.waiting-footer {\n  text-decoration: none;\n}\n\n.close-icon {\n  width: 24px;\n  height: 24px;\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  cursor: pointer;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal {\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgba(0, 0, 0, 0.4);\r\n  position: absolute;\r\n  top: 0%;\r\n  left: 0%;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  opacity: 0;\r\n  pointer-events: none;\r\n  transition: 0.5s;\r\n  z-index: 10;\r\n}\r\n.form__wrapper {\r\n  width: 100%;\r\n}\r\n.modal.active {\r\n  opacity: 1;\r\n  pointer-events: all;\r\n}\r\n\r\n.modal__content {\r\n  padding: 20px;\r\n  border-radius: 12px;\r\n  background-color: #fff;\r\n  width: 50%;\r\n  /* max-height: 75%; */\r\n  position: relative;\r\n}\r\n\r\n@media (max-width: 375px) {\r\n  .modal__content {\r\n    width: 60%;\r\n  }\r\n}\r\n@media (max-width: 425px) {\r\n  .modal__content {\r\n    width: 70%;\r\n  }\r\n}\r\n\r\n.modal__content.active {\r\n  transform: scale(1);\r\n}\r\n\r\n.react-tel-input > * {\r\n  color: #989898;\r\n\r\n  /* padding: 12px 16px;\r\n    width: 151px;\r\n    height: 47px;\r\n    margin-right: 15px;\r\n    font-family: \"Inter\";\r\n    font-style: normal;\r\n    font-weight: 400;\r\n    font-size: 16px;\r\n    line-height: 150%;\r\n    align-items: center;\r\n    color: #989898;\r\n    border: 1px solid #000000; */\r\n}\r\n.title-comment-waiting {\r\n  margin: 17px 0px 7px 0px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 7px;\r\n}\r\n.form-comment-waiting {\r\n  padding: 12px 16px;\r\n  width: 399px;\r\n  height: 47px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n  margin: 0px 0px 14px 0px;\r\n}\r\n\r\n.waiting-footer {\r\n  text-decoration: none;\r\n}\r\n\r\n.close-icon {\r\n  width: 24px;\r\n  height: 24px;\r\n  position: absolute;\r\n  top: 10px;\r\n  right: 10px;\r\n  cursor: pointer;\r\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

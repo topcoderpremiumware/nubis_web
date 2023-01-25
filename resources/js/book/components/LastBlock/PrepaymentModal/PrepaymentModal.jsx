@@ -1,14 +1,10 @@
 import { FormControl, MenuItem, OutlinedInput, Select, TextField } from '@mui/material'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 // import { formatCreditCardNumber, formatCVC, formatExpirationDate } from '../../../../helper'
 import './PrepaymentModal.scss'
-import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement } from '@stripe/react-stripe-js';
-import axios from 'axios'
-
-const stripePromise = loadStripe('pk_test_51L1AETCVi0riU70PvZ0zL3aSTGEuNo9cXGyNn7JmemKn303pbnYy2PiTFt89e17QBjJRT3K9sF5gDwDu9SvQeKpm00OsOcsOSX');
 
 const PrepaymentModal = (props) => {
   const { t } = useTranslation();
@@ -19,10 +15,10 @@ const PrepaymentModal = (props) => {
     restaurantInfo,
     selectedDay,
     selectedTime,
-    guestValue
+    guestValue,
+    stripeKey,
+    stripeSecret
   } = props
-
-  const [secret, setSecret] = useState('')
 
   const [adults, setAdults] = useState(1)
   const [children, setChildren] = useState(1)
@@ -31,7 +27,7 @@ const PrepaymentModal = (props) => {
   const [cvc, setCvc] = useState('')
 
   const options = {
-    clientSecret: secret,
+    clientSecret: stripeSecret,
   };
 
   // const handleInputChange = ({ target }) => {
@@ -44,17 +40,10 @@ const PrepaymentModal = (props) => {
   //   }
   // };
 
-  const handleSubmit = async () => {
-
+  const handleSubmit = async (ev) => {
+    ev.preventDefault()
+    
   }
-
-  useEffect(() => {
-    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id') }/secret`)
-      .then(res => {
-        console.log('res', res)
-      })
-  }, [])
-  
 
   return (
     <div
@@ -114,19 +103,19 @@ const PrepaymentModal = (props) => {
           </div>
           <div className='prepayment-total'>64 EUR</div>
 
-          {/* <Elements stripe={stripePromise} options={options}>
-            <form>
-              <PaymentElement />
-              <button
-                type="submit"
-                className="button-main prepayment-button"
-                // disabled={!selectedRest}
-                onClick={handleSubmit}
-              >
-                {t('Pay now')}
-              </button>
-            </form>
-          </Elements> */}
+          {stripeKey && stripeSecret &&
+            <Elements stripe={stripeKey} options={options}>
+              <form onSubmit={handleSubmit}>
+                <PaymentElement />
+                <button
+                  className="button-main prepayment-button"
+                  // disabled={!selectedRest}
+                >
+                  {t('Pay now')}
+                </button>
+              </form>
+            </Elements>
+          }
 
           {/* <FormControl sx={{ width: "100%" }}>
             <TextField 

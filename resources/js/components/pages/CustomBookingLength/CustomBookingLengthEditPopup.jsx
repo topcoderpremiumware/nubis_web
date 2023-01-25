@@ -112,6 +112,7 @@ export default function CustomBookingLengthEditPopup(props) {
     }
     if(e.target.name === 'name') setLengths(prev => ({...prev, name: e.target.value}))
     if(e.target.name === 'length') setLengths(prev => ({...prev, length: e.target.value}))
+    if(e.target.name === 'preparation_length') setLengths(prev => ({...prev, preparation_length: e.target.value}))
     if(e.target.name === 'active') setLengths(prev => ({...prev, active: e.target.checked ? 1 : 0}))
     if(e.target.name === 'start_date') setLengths(prev => ({...prev, start_date: e.target.value}))
     if(e.target.name === 'end_date') setLengths(prev => ({...prev, end_date: e.target.value}))
@@ -145,6 +146,12 @@ export default function CustomBookingLengthEditPopup(props) {
   const bookingOptions = () => {
     let length = []
     for(var i=0;i<=1500;i+=15) length.push(i)
+    return length
+  }
+
+  const preparationOptions = () => {
+    let length = []
+    for(var i=0;i<=30;i+=15) length.push(i)
     return length
   }
 
@@ -258,6 +265,18 @@ export default function CustomBookingLengthEditPopup(props) {
               label={t('Active')}
               labelPlacement="end"
             />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_preparation_length">{t('Preparation Length')}</InputLabel>
+              <Select label={t('Preparation Length')} value={lengths.preparation_length}
+                      labelId="label_preparation_length" id="preparation_length" name="preparation_length"
+                      onChange={onChange}>
+                {preparationOptions().map((el,key) => {
+                  return <MenuItem key={key} value={el}>{el}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
         <ListSubheader component="div" disableSticky sx={{mb:2}}>{t('Calendar Selection')}</ListSubheader>

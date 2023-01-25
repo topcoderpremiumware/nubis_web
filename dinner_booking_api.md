@@ -221,6 +221,13 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/alternative \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json'
 ```
+#### Get place secret
+> GET /api/places/{id}/secret
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/secret \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json'
+```
 ---
 <a id="settings"></a>
 ## Settings

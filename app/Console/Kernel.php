@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('model:prune')->daily();
         $schedule->call('App\Jobs\ReminderNotification@handle')->everyTenMinutes();
+        $schedule->call('App\Jobs\ReserveAmountPayment@handle')->everyTenMinutes();
     }
 
     /**

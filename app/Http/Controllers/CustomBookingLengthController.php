@@ -55,6 +55,7 @@ class CustomBookingLengthController extends Controller
             'place_id' => $request->place_id,
             'name' => $request->name,
             'length' => $request->length,
+            'preparation_length' => $request->preparation_length,
             'active' => $request->active,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
@@ -126,6 +127,7 @@ class CustomBookingLengthController extends Controller
             'place_id' => $request->place_id,
             'name' => $request->name,
             'length' => $request->length,
+            'preparation_length' => $request->preparation_length,
             'active' => $request->active,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
@@ -259,7 +261,7 @@ class CustomBookingLengthController extends Controller
                     'name' => $custom_length->labels[$request->language]['name'],
                     'description' => $custom_length->labels[$request->language]['description'],
                     'image' => Storage::disk('public')->url($custom_length->image),
-                    'length' => $custom_length->length,
+                    'length' => intval($custom_length->length)+intval($custom_length->preparation_length),
                     'time' => $times
                 ]);
             }

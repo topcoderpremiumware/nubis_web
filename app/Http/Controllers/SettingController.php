@@ -65,4 +65,19 @@ class SettingController extends Controller
 
         return response()->json($setting);
     }
+
+    public function getStripeSecret($place_id, Request $request)
+    {
+        $settings = Setting::where('place_id',$place_id)
+            ->whereIn('name',['stripe-secret','stripe-key'])
+            ->get();
+        $output = [];
+        foreach ($settings as $setting) {
+            $parts = explode('_',$setting->value);
+            if(count($parts) === 3){
+                $output[$setting->name] = $parts[0].'_'.$parts[1].'_n'.$parts[2].'s';
+            }
+        }
+        return response()->json($output);
+    }
 }

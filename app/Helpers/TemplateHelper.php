@@ -99,14 +99,14 @@ class TemplateHelper
             '', //#COMPANY#
             $customer->first_name.' '.$customer->last_name, //#CONTACT_PERSON#
             $customer->phone, //#CONTACT_PHONE#
-            '', //#CUSTOM_BOOK_LENGTH_NAME#
+            $order->custom_booking_length->name, //#CUSTOM_BOOK_LENGTH_NAME#
             $customer->email, //#EMAIL#
             $customer->first_name,
             $customer->last_name,
             $customer->first_name.' '.$customer->last_name, //#FULL_NAME#
             '', //#MAP_LINK#
             $order->seats, //#NUMBER_OF_GUESTS#
-            '', //#PAY_BOOKING_LINK#
+            $order->payment_link, //#PAY_BOOKING_LINK#
             $customer->phone, //#PHONE#
             $place->address, //#RESTAURANT_ADDRESS#
             $place->city, //#RESTAURANT_CITY#

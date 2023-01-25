@@ -107,12 +107,12 @@ export default function DayViewTableWaiting() {
         <PDFDownloadLink
           document={
             <DayViewPdf
-              title={t('Bookings')}
+              title={t('Waiting List')}
               columns={columns.map(i => i.headerName)}
               data={orders}
             />
           }
-          fileName={t('Waiting List') + new Date().getTime() + ".pdf"}
+          fileName={t('Waiting_List') + new Date().getTime() + ".pdf"}
         >
           <Button variant="contained" style={{ marginTop: '10px' }}>{t('Export to PDF')}</Button>
         </PDFDownloadLink>

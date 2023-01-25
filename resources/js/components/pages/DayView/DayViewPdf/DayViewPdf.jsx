@@ -161,8 +161,7 @@ const DayViewPdf = ({ title, columns, data }) => {
             <Text style={styles.td1}>{i.id}</Text>
             <Text style={styles.td2}>{i.from}</Text>
             <Text style={styles.td3}>{i.to}</Text>
-            {/* <Text style={styles.td4}>{i.first_name}</Text> */}
-            <Text style={styles.td4}>hello</Text>
+            <Text style={styles.td4}>{i.first_name}</Text>
             <Text style={styles.td5}>{i.last_name}</Text>
             <Text style={styles.td6}>{i.seats}</Text>
             <Text style={styles.td7}>{i.take_away}</Text>

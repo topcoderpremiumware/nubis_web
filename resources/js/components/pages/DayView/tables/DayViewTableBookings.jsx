@@ -7,6 +7,9 @@ import {
 import Moment from "moment";
 import {DataGrid} from "@mui/x-data-grid";
 import eventBus from "../../../../eventBus";
+import Button from "@mui/material/Button";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import DayViewPdf from "../DayViewPdf/DayViewPdf";
 
 export default function DayViewTableBookings({ setSelectedOrder }) {
   const {t} = useTranslation();
@@ -106,7 +109,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
   }
 
   return (<>{loading ? <div><CircularProgress/></div> :
-    <div style={{ height: '100%', width: '100%' }}>
+    <div style={{ height: 'calc(100% - 55px)', width: '100%' }}>
       <DataGrid
         rows={orders}
         columns={columns}
@@ -115,6 +118,20 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
         onRowDoubleClick={doubleClickHandler}
         // checkboxSelection
       />
+      {orders.length > 0 && (
+        <PDFDownloadLink
+          document={
+            <DayViewPdf 
+              title={t('Bookings')} 
+              columns={columns.map(i => i.headerName)}
+              data={orders} 
+            />
+          }
+          fileName={t('Bookings') + new Date().getTime() + ".pdf"}
+        >
+          <Button variant="contained" style={{marginTop: '10px'}}>{t('Export to PDF')}</Button>
+        </PDFDownloadLink>
+      )}
     </div>
   }</>);
 };

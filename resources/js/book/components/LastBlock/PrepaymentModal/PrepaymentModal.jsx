@@ -1,9 +1,14 @@
 import { FormControl, MenuItem, OutlinedInput, Select, TextField } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { formatCreditCardNumber, formatCVC, formatExpirationDate } from '../../../../helper'
+// import { formatCreditCardNumber, formatCVC, formatExpirationDate } from '../../../../helper'
 import './PrepaymentModal.scss'
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, PaymentElement } from '@stripe/react-stripe-js';
+import axios from 'axios'
+
+const stripePromise = loadStripe('pk_test_51L1AETCVi0riU70PvZ0zL3aSTGEuNo9cXGyNn7JmemKn303pbnYy2PiTFt89e17QBjJRT3K9sF5gDwDu9SvQeKpm00OsOcsOSX');
 
 const PrepaymentModal = (props) => {
   const { t } = useTranslation();
@@ -17,25 +22,39 @@ const PrepaymentModal = (props) => {
     guestValue
   } = props
 
+  const [secret, setSecret] = useState('')
+
   const [adults, setAdults] = useState(1)
   const [children, setChildren] = useState(1)
   const [number, setNumber] = useState('')
   const [expiry, setExpiry] = useState('')
   const [cvc, setCvc] = useState('')
 
-  const handleInputChange = ({ target }) => {
-    if (target.name === "number") {
-      setNumber(formatCreditCardNumber(target.value))
-    } else if (target.name === "expiry") {
-      setExpiry(formatExpirationDate(target.value))
-    } else if (target.name === "cvc") {
-      setCvc(formatCVC(target.value))
-    }
+  const options = {
+    clientSecret: secret,
   };
+
+  // const handleInputChange = ({ target }) => {
+  //   if (target.name === "number") {
+  //     setNumber(formatCreditCardNumber(target.value))
+  //   } else if (target.name === "expiry") {
+  //     setExpiry(formatExpirationDate(target.value))
+  //   } else if (target.name === "cvc") {
+  //     setCvc(formatCVC(target.value))
+  //   }
+  // };
 
   const handleSubmit = async () => {
 
   }
+
+  useEffect(() => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id') }/secret`)
+      .then(res => {
+        console.log('res', res)
+      })
+  }, [])
+  
 
   return (
     <div
@@ -95,7 +114,21 @@ const PrepaymentModal = (props) => {
           </div>
           <div className='prepayment-total'>64 EUR</div>
 
-          <FormControl sx={{ width: "100%" }}>
+          {/* <Elements stripe={stripePromise} options={options}>
+            <form>
+              <PaymentElement />
+              <button
+                type="submit"
+                className="button-main prepayment-button"
+                // disabled={!selectedRest}
+                onClick={handleSubmit}
+              >
+                {t('Pay now')}
+              </button>
+            </form>
+          </Elements> */}
+
+          {/* <FormControl sx={{ width: "100%" }}>
             <TextField 
               label="Card number" 
               variant="outlined"
@@ -132,15 +165,8 @@ const PrepaymentModal = (props) => {
                 onChange={handleInputChange}
               />
             </FormControl>
-          </div>
-          <button
-            type="button"
-            className="button-main prepayment-button"
-            // disabled={!selectedRest}
-            onClick={handleSubmit}
-          >
-            {t('Pay now')}
-          </button>
+          </div> */}
+          
         </div>
 
         <h5 className='prepayment-list-title'>Terms</h5>

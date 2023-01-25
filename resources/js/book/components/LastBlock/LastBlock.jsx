@@ -272,16 +272,17 @@ function LastBlock(props) {
               </div>
             </MainModal>
           )}
-          {props.defaultModal === 'prepayment' &&
+          {/* {props.defaultModal === 'prepayment' && */}
             <PrepaymentModal
-              active={modalActive}
+              // active={modalActive}
+              active={true}
               setActive={setModalActive}
               restaurantInfo={restaurantInfo}
               selectedDay={selectedDay}
               selectedTime={selectedTime}
               guestValue={props.guestValue}
             />
-          } 
+          {/* }  */}
         </div>
       </div>
     </div>

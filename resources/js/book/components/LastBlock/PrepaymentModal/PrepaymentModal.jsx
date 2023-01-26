@@ -2,8 +2,9 @@ import { FormControl, MenuItem, OutlinedInput, Select, TextField } from '@mui/ma
 import React from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { formatCreditCardNumber, formatCVC, formatExpirationDate } from '../../../../helper'
+// import { formatCreditCardNumber, formatCVC, formatExpirationDate } from '../../../../helper'
 import './PrepaymentModal.scss'
+import { Elements, PaymentElement } from '@stripe/react-stripe-js';
 
 const PrepaymentModal = (props) => {
   const { t } = useTranslation();
@@ -14,7 +15,9 @@ const PrepaymentModal = (props) => {
     restaurantInfo,
     selectedDay,
     selectedTime,
-    guestValue
+    guestValue,
+    stripeKey,
+    stripeSecret
   } = props
 
   const [adults, setAdults] = useState(1)
@@ -23,18 +26,23 @@ const PrepaymentModal = (props) => {
   const [expiry, setExpiry] = useState('')
   const [cvc, setCvc] = useState('')
 
-  const handleInputChange = ({ target }) => {
-    if (target.name === "number") {
-      setNumber(formatCreditCardNumber(target.value))
-    } else if (target.name === "expiry") {
-      setExpiry(formatExpirationDate(target.value))
-    } else if (target.name === "cvc") {
-      setCvc(formatCVC(target.value))
-    }
+  const options = {
+    clientSecret: stripeSecret,
   };
 
-  const handleSubmit = async () => {
+  // const handleInputChange = ({ target }) => {
+  //   if (target.name === "number") {
+  //     setNumber(formatCreditCardNumber(target.value))
+  //   } else if (target.name === "expiry") {
+  //     setExpiry(formatExpirationDate(target.value))
+  //   } else if (target.name === "cvc") {
+  //     setCvc(formatCVC(target.value))
+  //   }
+  // };
 
+  const handleSubmit = async (ev) => {
+    ev.preventDefault()
+    
   }
 
   return (
@@ -95,7 +103,21 @@ const PrepaymentModal = (props) => {
           </div>
           <div className='prepayment-total'>64 EUR</div>
 
-          <FormControl sx={{ width: "100%" }}>
+          {stripeKey && stripeSecret &&
+            <Elements stripe={stripeKey} options={options}>
+              <form onSubmit={handleSubmit}>
+                <PaymentElement />
+                <button
+                  className="button-main prepayment-button"
+                  // disabled={!selectedRest}
+                >
+                  {t('Pay now')}
+                </button>
+              </form>
+            </Elements>
+          }
+
+          {/* <FormControl sx={{ width: "100%" }}>
             <TextField 
               label="Card number" 
               variant="outlined"
@@ -132,15 +154,8 @@ const PrepaymentModal = (props) => {
                 onChange={handleInputChange}
               />
             </FormControl>
-          </div>
-          <button
-            type="button"
-            className="button-main prepayment-button"
-            // disabled={!selectedRest}
-            onClick={handleSubmit}
-          >
-            {t('Pay now')}
-          </button>
+          </div> */}
+          
         </div>
 
         <h5 className='prepayment-list-title'>Terms</h5>

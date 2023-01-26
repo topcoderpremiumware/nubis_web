@@ -6,12 +6,18 @@ import Copyrigth from "../FirstBlock/Copyrigth/Copyrigth";
 import MainModal from "../MainModal/MainModal";
 import {Trans, useTranslation} from "react-i18next";
 import PrepaymentModal from "./PrepaymentModal/PrepaymentModal";
+import axios from "axios";
+import { loadStripe } from '@stripe/stripe-js';
+import { useEffect } from "react";
 
 function LastBlock(props) {
   const { t } = useTranslation();
   const [modalActive, setModalActive] = useState(false);
   const [comment, setComment] = useState('')
   const { selectedDay, selectedTime, restaurantInfo, orderResponse } = props;
+
+  const [stripeKey, setStripeKey] = useState('')
+  const [stripeSecret, setStripeSecret] = useState('')
 
   const showModalWindow = (e) => {
     e.preventDefault();
@@ -56,6 +62,27 @@ function LastBlock(props) {
     props.handlePrevItem();
     props.setBlockType("secondblock");
   };
+
+  const getStripeKeys = async () => {
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/secret`)
+    const key = res.data['stripe-key']
+    const secret = res.data['stripe-secret']
+
+    let key_parts = key.split('_')
+    let clear_key_part = key_parts[2].slice(1, -1)
+    let clear_key = key_parts[0] + '_' + key_parts[1] + '_' + clear_key_part
+    const stripe = await loadStripe(clear_key)
+    setStripeKey(stripe)
+
+    let secret_parts = secret.split('_')
+    let clear_secret_part = secret_parts[2].slice(1, -1)
+    let clear_secret = secret_parts[0] + '_' + secret_parts[1] + '_' + clear_secret_part
+    setStripeSecret(clear_secret)
+  }
+
+  useEffect(() => {
+    getStripeKeys()
+  }, [])
 
   return (
     <div className="content">
@@ -272,16 +299,19 @@ function LastBlock(props) {
               </div>
             </MainModal>
           )}
-          {props.defaultModal === 'prepayment' &&
+          {/* {props.defaultModal === 'prepayment' && */}
             <PrepaymentModal
-              active={modalActive}
+              // active={modalActive}
+              active={true}
               setActive={setModalActive}
               restaurantInfo={restaurantInfo}
               selectedDay={selectedDay}
               selectedTime={selectedTime}
               guestValue={props.guestValue}
+              stripeKey={stripeKey}
+              stripeSecret={stripeSecret}
             />
-          } 
+          {/* }  */}
         </div>
       </div>
     </div>

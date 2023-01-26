@@ -523,6 +523,7 @@ class OrderController extends Controller
 
     public function makeOrder(Request $request)
     {
+        $prepayment_url = null;
         $request->validate([
             'place_id' => 'required|exists:places,id',
             'area_id' => 'required|exists:areas,id',

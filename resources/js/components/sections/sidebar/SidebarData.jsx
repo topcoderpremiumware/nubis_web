@@ -9,6 +9,31 @@ import { MdOutlineContactSupport } from "react-icons/md";
 
 export const SidebarData = [
   {
+    title: 'Restaurant Setup',
+    path: '#',
+    icon: <SettingsOutlined />,
+    iconClosed: <KeyboardArrowDown />,
+    iconOpened: <KeyboardArrowUp />,
+    subNav: [
+      {
+        title: 'Areas',
+        path: '/Areas',
+      },
+      {
+        title: 'Pictures',
+        path: '/Pictures',
+      },
+      {
+        title: 'Opening Times',
+        path: '/OpeningTimes',
+      },
+      {
+        title: 'Table Plan Setup',
+        path: '/TablePlanSetup',
+      },
+    ]
+  },
+  {
     title: 'Daily Use',
     path: '#',
     icon: <FeaturedPlayListOutlined  className='dailyuse-icon'/>,
@@ -25,21 +50,13 @@ export const SidebarData = [
         path: '/MonthView',
       },
       {
-        title: 'Opening Times',
-        path: '/OpeningTimes',
+        title: 'Menus setup',
+        path: '/CustomBookingLength'
       },
       // {
       //   title: 'Special Opening Times',
       //   path: '/SpecialOpeningTimes',
       // },
-      {
-        title: 'Table Plan Setup',
-        path: '/TablePlanSetup',
-      },
-      {
-        title: 'Areas',
-        path: '/Areas',
-      },
       {
         title: 'Manage Feedback',
         path: '/ManageFeedback',
@@ -71,11 +88,7 @@ export const SidebarData = [
         path: '/BasicInformation',
         cName: 'sub-nav'
       },
-      {
-        title: 'Pictures',
-        path: '/Pictures',
-        cName: 'sub-nav'
-      },
+
       {
         title: 'SMS Keys',
         path: '/SmsKeys',
@@ -120,10 +133,6 @@ export const SidebarData = [
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
     subNav: [
-      {
-        title: 'Custom Booking Length',
-        path: '/CustomBookingLength'
-      },
       {
         title: 'Booking Link Guide',
         path: '/BookingLinkGuide'

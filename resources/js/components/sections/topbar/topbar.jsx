@@ -35,19 +35,7 @@ export default function Topbar() {
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav w-100">
-              <li className="nav-item">
-                <a className="nav-link" aria-current="page" href="#">Country</a>
-              </li>
-              <li className="nav-item ms-0 ms-lg-auto">
-                <Link className="nav-link" to="/VideoGuides">See Guide</Link>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">My Restaurants</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Support</a>
-              </li>
-              <li className="nav-item dropdown">
+              <li className="nav-item dropdown ms-lg-auto">
                 <a className="nav-link dropdown-toggle" type="button" id="languageDropdown"
                         data-bs-toggle="dropdown" aria-expanded="false">
                   <Flag height="13" code={ window.langs.filter(l => {
@@ -70,12 +58,6 @@ export default function Topbar() {
                   :
                   <Link className='nav-link' to="/login">{t('Sign in')}</Link>
                 }
-              </li>
-              <li className="nav-item">
-                <span className="topbarIconContainer">
-                  <NotificationsNone/>
-                  <span className='topbarIconBag'>2+</span>
-                </span>
               </li>
             </ul>
           </div>

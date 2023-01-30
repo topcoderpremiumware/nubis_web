@@ -174,7 +174,7 @@ export default function CustomBookingLength() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Custom Booking Length')}</h2>
+      <h2>{t('Menus setup')}</h2>
       <div className="container-fluid">
         <div className="row">
           {loading ? <div><CircularProgress/></div> : <TableContainer>

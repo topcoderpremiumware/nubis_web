@@ -221,13 +221,6 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/alternative \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json'
 ```
-#### Get place secret
-> GET /api/places/{id}/secret
-```cmd
-curl -X GET https://dinner-book.vasilkoff.info/api/places/1/secret \
--H "X-Requested-With: XMLHttpRequest" \
--H 'Content-Type: application/json'
-```
 ---
 <a id="settings"></a>
 ## Settings
@@ -464,6 +457,15 @@ curl -X GET https://dinner-book.vasilkoff.info/api/customers/orders \
 -H "X-Requested-With: XMLHttpRequest" \
 -H "Accept: application/json" \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f"
+```
+#### Get customer client secret by place_id
+> GET /api/customers/client_secret
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/customers/client_secret \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Accept: application/json" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f"
+-d '{"place_id":1}'
 ```
 ---
 <a id="orders"></a>

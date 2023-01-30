@@ -8,6 +8,7 @@ use App\Models\Log;
 use App\Models\MessageTemplate;
 use App\Models\Order;
 use App\Models\Place;
+use App\Models\Setting;
 use App\Models\Tableplan;
 use App\SMS\SMS;
 use Carbon\CarbonPeriod;
@@ -856,5 +857,47 @@ class OrderController extends Controller
             }
         }
         return response()->json(['result'=> 'OK']);
+    }
+
+    public function getStripeClientSecret(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id'
+        ]);
+
+        $settings = Setting::where('place_id',$request->place_id)
+            ->whereIn('name',['stripe-secret','stripe-key'])
+            ->get();
+        $output = [];
+        foreach ($settings as $setting) {
+            $parts = explode('_',$setting->value);
+            if(count($parts) === 3){
+                $keys[$setting->name] = $setting->value;
+                $output[$setting->name] = $parts[0].'_'.$parts[1].'_n'.$parts[2].'s';
+            }
+        }
+        if(!array_key_exists('stripe-secret',$keys)){
+            return response()->json([
+                'message' => 'Stripe secret key of the place is not set'
+            ], 400);
+        }
+
+        $stripe = new StripeClient($keys['stripe-secret']);
+        $customers = $stripe->customers->all(['email' => Auth::user()->email]);
+        if(count($customers->data) > 0){
+            $customer = $customers->data[0];
+        }else{
+            $customer = $stripe->customers->create([
+                'email' => Auth::user()->email,
+                'name' => Auth::user()->first_name.' '.Auth::user()->last_name,
+                'phone' => Auth::user()->phone
+            ]);
+        }
+        $setup_intent = $stripe->setupIntents->create([
+            'customer' => $customer->id
+        ]);
+
+        $output['stripe-client-secret'] = $setup_intent->client_secret;
+        return response()->json($output);
     }
 }

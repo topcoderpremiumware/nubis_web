@@ -46,7 +46,7 @@ function App() {
     })
   }
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/admin">
       <Suspense fallback={<LoadingPage/>}>
         <Topbar/>
         <div className="content">

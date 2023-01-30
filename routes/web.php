@@ -27,4 +27,5 @@ Route::get('/test', function () {
 Route::view('/giftcard/{place_id}', 'giftcard')->name('giftcard');
 Route::view('/feedback/{order_id}', 'feedback')->name('feedback');
 Route::view('/book/{place_id}', 'book')->name('book')->middleware('bill_paid');
-Route::view('/{path?}/{path2?}', 'app')->name('home');
+Route::view('/', 'home')->name('home');
+Route::view('/admin/{path?}/{path2?}', 'app')->name('admin');

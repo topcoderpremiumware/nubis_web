@@ -82,3 +82,54 @@ a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover{
 .MuiDataGrid-row:nth-of-type(odd){
     background: rgba(255, 255, 255, 0.3);
 }
+
+.navbar{
+    background: #343C48;
+    .navbar-dark .navbar-nav .nav-link{
+        color: #fff;
+        text-decoration: none;
+        &:hover{
+            color: #fff;
+        }
+    }
+    .MuiSvgIcon-root{
+        margin: 0.5rem 1rem;
+        color: rgba(255, 255, 255, 0.55);
+    }
+}
+.topbarIconContainer{
+    position: relative;
+    padding: 0;
+}
+.topbarIconBag{
+    position: absolute;
+    top: 5px;
+    right: 14px;
+    width: 14px;
+    height: 10px;
+    background-color: #F4675E;
+    color: #fff;
+    font-size: 8px;
+    line-height: 9px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#languageDropdown{
+    img{
+        width: 20px;
+        height: 13px;
+        object-fit: cover;
+        margin-right: 5px;
+    }
+}
+.language-item{
+    padding: 0 5px;
+    cursor: pointer;
+    img{
+        width: 20px;
+        height: 13px;
+        object-fit: cover;
+    }
+}

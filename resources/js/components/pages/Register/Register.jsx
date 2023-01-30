@@ -62,10 +62,10 @@ export default function Register() {
           }
         }).then(response => {
           localStorage.setItem('place_id',response.data.id)
-          window.location.href="/"
+          window.location.href="/admin"
         }).catch(error => {})
       }else{
-        window.location.href="/"
+        window.location.href="/admin"
       }
     }).catch(error => {
       setFirstNameError([])

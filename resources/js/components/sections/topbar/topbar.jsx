@@ -28,7 +28,7 @@ export default function Topbar() {
     <>
       <nav className="navbar navbar-expand-lg navbar-dark sticky-top">
         <div className="container">
-          <Link className="navbar-brand" to="/">OnlineDinnerBooker</Link>
+          <Link className="navbar-brand" to="/"><img src='/images/logo.png' width="90"/></Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                   aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"/>

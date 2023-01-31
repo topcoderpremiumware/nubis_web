@@ -16,7 +16,7 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
             <div class="container">
-                <a class="navbar-brand" href="/">OnlineDinnerBooker</a>
+                <a class="navbar-brand" href="/"><img src='/images/logo.png' width="90"/></a>
                 <ul class="navbar-nav w-100">
                     <li class="nav-item ms-lg-auto"><a class="nav-link" href="/admin/login">Sign in</a></li>
                 </ul>

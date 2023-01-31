@@ -900,4 +900,16 @@ class OrderController extends Controller
         $output['stripe-client-secret'] = $setup_intent->client_secret;
         return response()->json($output);
     }
+
+    public function getPlacePaymentMethod($place_id, Request $request)
+    {
+        $settings = Setting::where('place_id',$place_id)
+            ->whereIn('name',['is-online-payment','online-payment-amount','online-payment-currency','online-payment-method','online-payment-cancel-deadline'])
+            ->get();
+        $output = [];
+        foreach ($settings as $setting) {
+            $output[$setting->name] = $setting->value;
+        }
+        return response()->json($output);
+    }
 }

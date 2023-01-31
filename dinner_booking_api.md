@@ -221,6 +221,13 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/alternative \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json'
 ```
+#### Get payment method
+> GET /api/places/{id}/payment_method
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/payment_method \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json'
+```
 ---
 <a id="settings"></a>
 ## Settings

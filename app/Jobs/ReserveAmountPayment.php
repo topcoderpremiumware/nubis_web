@@ -38,7 +38,7 @@ class ReserveAmountPayment implements ShouldQueue
     {
         $orders = Order::where('marks','like','%need_send_payment_link%')->get();
         foreach ($orders as $order){
-            if(Carbon::now()->lt($order->reservation_time) && Carbon::now()->diff($order->reservation_time,true)->days <= 6){
+            if(Carbon::now()->lt($order->reservation_time) && Carbon::now()->diffInDays($order->reservation_time,false) <= 6){
                 $place = Place::find($order->place_id);
 
                 $online_payment_amount = $order->marks['amount'];
@@ -49,7 +49,7 @@ class ReserveAmountPayment implements ShouldQueue
                 $stripe = new StripeClient($stripe_secret);
 
                 $price = $stripe->prices->create([
-                    'unit_amount' => $online_payment_amount,
+                    'unit_amount' => $online_payment_amount * 100,
                     'currency' => $online_payment_currency,
                     'product_data' => [
                         'name' => 'Prepayment'
@@ -95,7 +95,7 @@ class ReserveAmountPayment implements ShouldQueue
     {
         $orders = Order::where('marks','like','%need_capture%')->get();
         foreach ($orders as $order){
-            if(Carbon::now()->lt($order->reservation_time) && Carbon::now()->diff($order->reservation_time,true)->h <= 6) {
+            if(Carbon::now()->lt($order->reservation_time) && Carbon::now()->diffInHours($order->reservation_time,false) <= 6) {
                 $place = Place::find($order->place_id);
                 $payment_intent_id = $order->marks['payment_intent_id'];
                 $stripe_secret = $place->setting('stripe-secret');

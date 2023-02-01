@@ -259,6 +259,8 @@ class OrderController extends Controller
             });
         }
 
+        $this->paymentAfterOrderCancel($order);
+
         $order->delete();
 
         return response()->json(['message' => 'Order is deleted']);
@@ -280,9 +282,50 @@ class OrderController extends Controller
             ], 400);
         }
 
+        $this->paymentAfterOrderCancel($order);
+
         $order->delete();
 
         return response()->json(['message' => 'Order is canceled']);
+    }
+
+    private function paymentAfterOrderCancel($order)
+    {
+        $place = $order->place;
+        $stripe_secret = $place->setting('stripe-secret');
+        $stripe = new StripeClient($stripe_secret);
+
+        if(array_key_exists('method',$order->marks)){
+            if($order->marks['method'] == 'deduct'){
+                if(array_key_exists('payment_intent_id',$order->marks)){
+                    if(Carbon::now()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']){
+                        $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
+                    }
+                }
+            }elseif($order->marks['method'] == 'reserve'){
+                if(array_key_exists('payment_intent_id',$order->marks)){
+                    if(Carbon::now()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']){
+                        $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
+                        if($payment_intent->status == 'succeeded'){
+                            $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
+                        }else{
+                            $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'requested_by_customer']);
+                        }
+                    }
+                }
+            }elseif($order->marks['method'] == 'no_show'){
+                if(array_key_exists('card_token_id',$order->marks)){
+                    if(Carbon::now()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
+                        $stripe->charges->create([
+                            'amount' => $order->marks['amount'] * 100,
+                            'currency' => $order->marks['currency'],
+                            'source' => $order->marks['card_token_id'],
+                            'description' => 'Charge no show cancellation order #'.$order->id,
+                        ]);
+                    }
+                }
+            }
+        }
     }
 
     public function setStatus($id, Request $request)
@@ -306,6 +349,17 @@ class OrderController extends Controller
         $res = $order->update([
             'status' => $request->status,
         ]);
+
+        if($request->status == 'no_show' && $order->marks['method'] == 'no_show' && array_key_exists('card_token_id',$order->marks)){
+            $stripe_secret = $order->place->setting('stripe-secret');
+            $stripe = new StripeClient($stripe_secret);
+            $stripe->charges->create([
+                'amount' => $order->marks['amount'] * 100,
+                'currency' => $order->marks['currency'],
+                'source' => $order->marks['card_token_id'],
+                'description' => 'Order changes status to no_show. Order #'.$order->id,
+            ]);
+        }
 
         Log::add($request,'change-order-status','Changed order #'.$order->id.' status '.$request->status);
 
@@ -845,14 +899,20 @@ class OrderController extends Controller
             $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
             if(count($sessions->data) > 0){
                 $metadata = $sessions->data[0]->metadata;
-                $order_id = $metadata->order_id;
 
-                $order = Order::find($order_id);
-                $order->status = 'ordered';
-                $order->save();
+                if(property_exists($metadata,'order_id')){
+                    $order_id = $metadata->order_id;
 
-                if($order->marks['method'] === 'deduct'){
-                    $this->sendNewOrderNotification($order,$place);
+                    $order = Order::find($order_id);
+                    $marks = $order->marks;
+                    $marks['payment_intent_id'] = $object->id;
+                    $order->marks = $marks;
+                    $order->status = 'ordered';
+                    $order->save();
+
+                    if($order->marks['method'] === 'deduct'){
+                        $this->sendNewOrderNotification($order,$place);
+                    }
                 }
             }
         }

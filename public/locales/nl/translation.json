@@ -295,5 +295,12 @@
     "Month View": "Månedsvisning",
     "Cancel a booking": "Annuller en reservation",
     "New booking": "Ny booking",
-    "Export to PDF": "Eksporter til PDF"
+    "Export to PDF": "Eksporter til PDF",
+    "Processing...": "Forarbejdning...",
+    "If you want to accept advance payment or deposits from your guests, you can create payment setups below.": "Hvis du ønsker at acceptere forudbetaling eller indbetalinger fra dine gæster, kan du oprette betalingsopsætninger nedenfor.",
+    "In order to complete from reservation at": "For at gennemføre fra reservation på",
+    "the": "den",
+    "the following must be paid:": "skal følgende betales:",
+    "Prepayment": "Forudbetaling",
+    "Amount for": "Beløb for"
 }

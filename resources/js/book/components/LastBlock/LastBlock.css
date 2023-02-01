@@ -172,6 +172,8 @@
 
 .second-next-button {
   width: 271px;
+  cursor: pointer;
+  border: none;
 }
 
 .thanks-actions {

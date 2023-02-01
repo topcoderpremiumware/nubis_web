@@ -1,10 +1,8 @@
-import { FormControl, MenuItem, OutlinedInput, Select, TextField } from '@mui/material'
 import React from 'react'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-// import { formatCreditCardNumber, formatCVC, formatExpirationDate } from '../../../../helper'
 import './PrepaymentModal.scss'
-import { Elements, PaymentElement } from '@stripe/react-stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import PrepaymentForm from '../PrepaymentForm/PrepaymentForm'
 
 const PrepaymentModal = (props) => {
   const { t } = useTranslation();
@@ -17,33 +15,13 @@ const PrepaymentModal = (props) => {
     selectedTime,
     guestValue,
     stripeKey,
-    stripeSecret
+    stripeSecret,
+    paymentInfo
   } = props
-
-  const [adults, setAdults] = useState(1)
-  const [children, setChildren] = useState(1)
-  const [number, setNumber] = useState('')
-  const [expiry, setExpiry] = useState('')
-  const [cvc, setCvc] = useState('')
 
   const options = {
     clientSecret: stripeSecret,
   };
-
-  // const handleInputChange = ({ target }) => {
-  //   if (target.name === "number") {
-  //     setNumber(formatCreditCardNumber(target.value))
-  //   } else if (target.name === "expiry") {
-  //     setExpiry(formatExpirationDate(target.value))
-  //   } else if (target.name === "cvc") {
-  //     setCvc(formatCVC(target.value))
-  //   }
-  // };
-
-  const handleSubmit = async (ev) => {
-    ev.preventDefault()
-    
-  }
 
   return (
     <div
@@ -55,107 +33,20 @@ const PrepaymentModal = (props) => {
           className="close-icon"
           onClick={() => setActive(false)}
         >✕</div>
-        <div className="title prepayment-modal-title">Prepayment</div>
-        <p>In order to complete from reservation at <b>{restaurantInfo.name}</b> the <b>{`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`} {selectedTime}</b> the following must be paid:</p>
+
+        <div className="title prepayment-modal-title">{t('Prepayment')}</div>
+
+        <p>{t('In order to complete from reservation at')} <b>{restaurantInfo.name}</b> {t('the')} <b>{`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`} {selectedTime}</b> {t('the following must be paid:')}</p>
+        
         <div className="prepayment-form">
-          Please choose from the following options for {guestValue} pers.:
-          <div className="prepayment-flex">
-            <FormControl sx={{width: 60}}>
-              <Select
-                displayEmpty
-                size="small"
-                value={adults}
-                onChange={(ev) => setAdults(ev.target.value)}
-                input={<OutlinedInput />}
-              >
-                {[...Array(guestValue).keys()].map((i) => (
-                  <MenuItem
-                    key={i}
-                    value={i + 1}
-                  >
-                    {i + 1}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <span>Adult 20.00 EUR</span>
-          </div>
-          <div className="prepayment-flex">
-            <FormControl sx={{width: 60}}>
-              <Select
-                displayEmpty
-                size="small"
-                value={children}
-                onChange={(ev) => setChildren(ev.target.value)}
-                input={<OutlinedInput />}
-              >
-                {[...Array(guestValue).keys()].map((i) => (
-                  <MenuItem
-                    key={i}
-                    value={i + 1}
-                  >
-                    {i + 1}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <span>Child (under 12) 12.00 EUR</span>
-          </div>
-          <div className='prepayment-total'>64 EUR</div>
+          {t('Amount for')} {guestValue} pers.:
+          <div className='prepayment-total'>{guestValue * paymentInfo['online-payment-amount']} {paymentInfo['online-payment-currency']}</div>
 
           {stripeKey && stripeSecret &&
             <Elements stripe={stripeKey} options={options}>
-              <form onSubmit={handleSubmit}>
-                <PaymentElement />
-                <button
-                  className="button-main prepayment-button"
-                  // disabled={!selectedRest}
-                >
-                  {t('Pay now')}
-                </button>
-              </form>
+              <PrepaymentForm />
             </Elements>
           }
-
-          {/* <FormControl sx={{ width: "100%" }}>
-            <TextField 
-              label="Card number" 
-              variant="outlined"
-              size="small"
-              pattern="[\d| ]{16}"
-              required
-              name="number"
-              value={number}
-              onChange={handleInputChange}
-            />
-          </FormControl>
-          <div className="prepayment-flex">
-            <FormControl sx={{ width: "100%" }}>
-              <TextField 
-                label="Valid Thru" 
-                variant="outlined"
-                size="small"
-                pattern="\d\d/\d\d"
-                required
-                name="expiry"
-                value={expiry}
-                onChange={handleInputChange}
-              />
-            </FormControl>
-            <FormControl sx={{ width: "100%" }}>
-              <TextField 
-                label="CVC" 
-                variant="outlined"
-                size="small"
-                pattern="\d{3}"
-                required
-                name="cvc"
-                value={cvc}
-                onChange={handleInputChange}
-              />
-            </FormControl>
-          </div> */}
-          
         </div>
 
         <h5 className='prepayment-list-title'>Terms</h5>

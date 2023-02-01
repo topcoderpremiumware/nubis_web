@@ -18,6 +18,7 @@ function LastBlock(props) {
 
   const [stripeKey, setStripeKey] = useState('')
   const [stripeSecret, setStripeSecret] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState({})
 
   const showModalWindow = (e) => {
     e.preventDefault();
@@ -25,14 +26,22 @@ function LastBlock(props) {
     setModalActive(true);
   };
 
-  const makeOrderDone = (e) => {
-    e.preventDefault();
-    props.makeOrder();
-    setModalActive(true);
-    // setTimeout(() => {
-    //   window.location.href = "/";
-    // }, 4000);
-    props.setDefaultModal("done");
+  const makeOrderDone = async () => {
+    const isOnline = paymentMethod?.['is-online-payment'] === '1'
+    const method = paymentMethod?.['online-payment-method']
+
+    if (!isOnline) {
+      await props.makeOrder();
+      setModalActive(true);
+      props.setDefaultModal("done");
+    } else if (method === 'deduct') {
+      await props.makeOrder();
+      // window.location.href = orderResponse?.prepayment_url
+    } else if (method === 'reserve' || method === 'no-show') {
+      setModalActive(true);
+      props.setDefaultModal("prepayment");
+      // await props.makeOrder();
+    }
   };
 
   const logout = (e) => {
@@ -64,24 +73,34 @@ function LastBlock(props) {
   };
 
   const getStripeKeys = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/secret`)
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/customers/client_secret`, {
+      params: {
+        place_id: localStorage.getItem('place_id')
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    })
     const key = res.data['stripe-key']
-    const secret = res.data['stripe-secret']
+    const secret = res.data['stripe-client-secret']
+
+    setStripeSecret(secret)
 
     let key_parts = key.split('_')
     let clear_key_part = key_parts[2].slice(1, -1)
     let clear_key = key_parts[0] + '_' + key_parts[1] + '_' + clear_key_part
     const stripe = await loadStripe(clear_key)
     setStripeKey(stripe)
+  }
 
-    let secret_parts = secret.split('_')
-    let clear_secret_part = secret_parts[2].slice(1, -1)
-    let clear_secret = secret_parts[0] + '_' + secret_parts[1] + '_' + clear_secret_part
-    setStripeSecret(clear_secret)
+  const getPaymentMethod = async () => {
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id') }/payment_method`)
+    setPaymentMethod(res.data)
   }
 
   useEffect(() => {
     getStripeKeys()
+    getPaymentMethod()
   }, [])
 
   return (
@@ -221,14 +240,18 @@ function LastBlock(props) {
             </div>
           </div>
 
-          <div className="next-button second-next-button">
-            <a href="/#" className="next" onClick={(e) => makeOrderDone(e)}>
-              {t('Complete booking')} →
-            </a>
-          </div>
+          <button
+            type="button" 
+            className="next-button second-next-button next"
+            onClick={makeOrderDone}
+          >
+            {t('Complete booking')} →
+          </button>
+
           <div className="copyrigth-footer">
             <Copyrigth restaurantInfo={restaurantInfo} />
           </div>
+
           {props.defaultModal === "edit" && (
             <MainModal
               title={t('Enter your contact details')}
@@ -299,10 +322,10 @@ function LastBlock(props) {
               </div>
             </MainModal>
           )}
-          {/* {props.defaultModal === 'prepayment' && */}
+
+          {props.defaultModal === 'prepayment' &&
             <PrepaymentModal
-              // active={modalActive}
-              active={true}
+              active={modalActive}
               setActive={setModalActive}
               restaurantInfo={restaurantInfo}
               selectedDay={selectedDay}
@@ -310,8 +333,9 @@ function LastBlock(props) {
               guestValue={props.guestValue}
               stripeKey={stripeKey}
               stripeSecret={stripeSecret}
+              paymentInfo={paymentMethod}
             />
-          {/* }  */}
+          }
         </div>
       </div>
     </div>

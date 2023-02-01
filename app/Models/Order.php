@@ -12,6 +12,14 @@ class Order extends Model
 
     protected $guarded = [];
 
+    const STATUSES = [
+            'waiting', // in the waiting list
+            'pending', // order created but not paid
+            'confirmed', // order paid
+            'arrived', // customer arrived to place
+            'completed', // order is finished
+        ];
+
     protected $casts = [
         'table_ids' => 'array',
         'marks' => 'array',

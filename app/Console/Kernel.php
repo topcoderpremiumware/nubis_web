@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Jobs\ForceOrderCompleted;
+use App\Jobs\ReminderNotification;
+use App\Jobs\ReserveAmountPayment;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -17,8 +20,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('model:prune')->daily();
-        $schedule->call('App\Jobs\ReminderNotification@handle')->everyTenMinutes();
-        $schedule->call('App\Jobs\ReserveAmountPayment@handle')->everyTenMinutes();
+        $schedule->job(new ReminderNotification)->everyTenMinutes();
+        $schedule->job(new ReserveAmountPayment)->everyTenMinutes();
+        $schedule->job(new ForceOrderCompleted)->hourly();
     }
 
     /**

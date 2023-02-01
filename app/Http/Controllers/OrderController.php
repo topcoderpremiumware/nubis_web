@@ -349,11 +349,25 @@ class OrderController extends Controller
             ], 400);
         }
 
-        $res = $order->update([
-            'status' => $request->status,
-        ]);
+        self::setOrderStatus($order,$request->status);
 
-        if($request->status == 'no_show' && $order->marks['method'] == 'no_show' && array_key_exists('card_token_id',$order->marks)){
+        Log::add($request,'change-order-status','Changed order #'.$order->id.' status '.$request->status);
+
+        return response()->json(['message' => 'Order status changed']);
+    }
+
+    public static function setOrderStatus($order,$status)
+    {
+        if($status == 'deleted'){
+            (new OrderController)->paymentAfterOrderCancel($order);
+            $order->delete();
+        }else{
+            $res = $order->update([
+                'status' => $status,
+            ]);
+        }
+
+        if($status == 'no_show' && $order->marks['method'] == 'no_show' && array_key_exists('card_token_id',$order->marks)){
             $stripe_secret = $order->place->setting('stripe-secret');
             $stripe = new StripeClient($stripe_secret);
             $stripe->charges->create([
@@ -364,9 +378,15 @@ class OrderController extends Controller
             ]);
         }
 
-        Log::add($request,'change-order-status','Changed order #'.$order->id.' status '.$request->status);
-
-        return response()->json(['message' => 'Order status changed']);
+        if($status == 'completed' && $order->customer_id){
+            $smsApiToken = $order->place->setting('sms-api-token');
+            if($smsApiToken){
+                $result = SMS::send([$order->customer->phone], env('MIX_APP_URL').'/feedback/'.$order->id, env('APP_NAME'), $smsApiToken);
+            }
+            \Illuminate\Support\Facades\Mail::html(env('MIX_APP_URL').'/feedback/'.$order->id, function($msg) use ($order) {
+                $msg->to($order->customer->email)->subject('Feedback');
+            });
+        }
     }
 
     public function freeDates(Request $request)
@@ -607,9 +627,9 @@ class OrderController extends Controller
             $length = intval($request->length);
         }
 
-        $status = ($request->has('status') && $request->status === 'waiting') ? 'waiting' : 'ordered';
+        $status = ($request->has('status') && $request->status === 'waiting') ? 'waiting' : 'confirmed';
 
-        if(!$request->is_take_away && $status === 'ordered'){
+        if(!$request->is_take_away && $status === 'confirmed'){
             $time_from = $reservation_time->copy();
             $time_from->setTime(0, 0, 0);
             $time_to = $reservation_time->copy();
@@ -909,7 +929,7 @@ class OrderController extends Controller
                     $marks = $order->marks;
                     $marks['payment_intent_id'] = $object->id;
                     $order->marks = $marks;
-                    $order->status = 'ordered';
+                    $order->status = 'confirmed';
                     $order->save();
 
                     if($order->marks['method'] === 'deduct'){

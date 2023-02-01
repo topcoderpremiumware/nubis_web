@@ -33,8 +33,11 @@ const PrepaymentModal = (props) => {
           className="close-icon"
           onClick={() => setActive(false)}
         >✕</div>
+
         <div className="title prepayment-modal-title">{t('Prepayment')}</div>
+
         <p>{t('In order to complete from reservation at')} <b>{restaurantInfo.name}</b> {t('the')} <b>{`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`} {selectedTime}</b> {t('the following must be paid:')}</p>
+        
         <div className="prepayment-form">
           {t('Amount for')} {guestValue} pers.:
           <div className='prepayment-total'>{guestValue * paymentInfo['online-payment-amount']} {paymentInfo['online-payment-currency']}</div>

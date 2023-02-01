@@ -240,9 +240,9 @@ const App = () => {
 
   // Make order request
 
-  const makeOrder = () => {
+  const makeOrder = async () => {
     console.log('custom_booking_length_id',timelineId)
-    myAxios
+    await myAxios
       .post(
         "/api/make_order",
         {

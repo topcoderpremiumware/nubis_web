@@ -294,5 +294,12 @@
     "Month View": "Month View",
     "Cancel a booking": "Cancel a booking",
     "New booking": "New booking",
-    "Export to PDF": "Export to PDF"
+    "Export to PDF": "Export to PDF",
+    "Processing...": "Processing...",
+    "If you want to accept advance payment or deposits from your guests, you can create payment setups below.": "If you want to accept advance payment or deposits from your guests, you can create payment setups below.",
+    "In order to complete from reservation at": "In order to complete from reservation at",
+    "the": "the",
+    "the following must be paid:": "the following must be paid:",
+    "Prepayment": "Prepayment",
+    "Amount for": "Amount for"
 }

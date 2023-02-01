@@ -207,4 +207,18 @@ class FeedbackController extends Controller
 
         return response()->json(['message' => 'Feedback reply is made']);
     }
+
+    public function isFeedbackExist(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required|exists:orders,id'
+        ]);
+
+        $feedback = Feedback::where('order_id',$request->order_id)->first();
+        if($feedback){
+            return response()->json(['message' => 'Feedback has already been created']);
+        }else{
+            return response()->json(['message' => 'Feedback hasn\'t been created yet']);
+        }
+    }
 }

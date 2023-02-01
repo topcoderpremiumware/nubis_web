@@ -73,6 +73,7 @@ Route::middleware('auth:customer_api')->group(function(){
     Route::delete('cancel_order/{id}',[OrderController::class, 'cancel']);
 
     Route::post('feedbacks',[FeedbackController::class, 'create']);
+    Route::post('feedbacks/is_exist',[FeedbackController::class, 'isFeedbackExist']);
 });
 Route::middleware('auth:user_api')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);

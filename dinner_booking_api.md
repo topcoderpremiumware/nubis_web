@@ -840,6 +840,15 @@ curl -X GET https://dinner-book.vasilkoff.info/api/feedbacks_public \
 -H 'Content-Type: application/json' \
 -d '{"place_id":1}'
 ```
+#### Create
+> POST /api/feedbacks/is_exist
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/feedbacks/is_exist \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"order_id":1}'
+```
 ---
 <a id="files"></a>
 ## Files

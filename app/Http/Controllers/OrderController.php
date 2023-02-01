@@ -27,7 +27,7 @@ class OrderController extends Controller
         ], 401);
 
         $request->validate([
-            'customer_id' => 'exists:customers,id',
+//            'customer_id' => 'exists:customers,id',
             'place_id' => 'required|exists:places,id',
             'tableplan_id' => 'required|exists:tableplans,id',
             'area_id' => 'required|exists:areas,id',
@@ -64,25 +64,27 @@ class OrderController extends Controller
 
         Log::add($request,'create-order','Created order #'.$order->id);
 
-        $customer = Customer::find($request->customer_id);
-        $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
-            ->where('purpose','sms-confirmation')
-            ->where('language',$customer->language)
-            ->where('active',1)
-            ->first();
-        $smsApiToken = $place->setting('sms-api-token');
-        if($sms_confirmation_template && $smsApiToken){
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'), $smsApiToken);
-        }
-        $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
-            ->where('purpose','email-confirmation')
-            ->where('language',$customer->language)
-            ->where('active',1)
-            ->first();
-        if($email_confirmation_template){
-            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($email_confirmation_template, $customer) {
-                $msg->to($customer->email)->subject($email_confirmation_template->subject);
-            });
+        if($request->customer_id){
+            $customer = Customer::find($request->customer_id);
+            $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+                ->where('purpose','sms-confirmation')
+                ->where('language',$customer->language)
+                ->where('active',1)
+                ->first();
+            $smsApiToken = $place->setting('sms-api-token');
+            if($sms_confirmation_template && $smsApiToken){
+                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'), $smsApiToken);
+            }
+            $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+                ->where('purpose','email-confirmation')
+                ->where('language',$customer->language)
+                ->where('active',1)
+                ->first();
+            if($email_confirmation_template){
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($email_confirmation_template, $customer) {
+                    $msg->to($customer->email)->subject($email_confirmation_template->subject);
+                });
+            }
         }
 
         return response()->json($order);
@@ -95,7 +97,7 @@ class OrderController extends Controller
         ], 401);
 
         $request->validate([
-            'customer_id' => 'exists:customers,id',
+//            'customer_id' => 'exists:customers,id',
             'place_id' => 'required|exists:places,id',
             'tableplan_id' => 'required|exists:tableplans,id',
             'area_id' => 'required|exists:areas,id',
@@ -135,27 +137,28 @@ class OrderController extends Controller
         ]);
 
         Log::add($request,'change-order','Changed order #'.$order->id);
-
-        $customer = Customer::find($request->customer_id);
-        $sms_change_template = MessageTemplate::where('place_id',$request->place_id)
-            ->where('purpose','sms-change')
-            ->where('language',$customer->language)
-            ->where('active',1)
-            ->first();
-        $place = Place::find($request->place_id);
-        $smsApiToken = $place->setting('sms-api-token');
-        if($sms_change_template && $smsApiToken){
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_change_template->text), env('APP_NAME'), $smsApiToken);
-        }
-        $email_change_template = MessageTemplate::where('place_id',$request->place_id)
-            ->where('purpose','email-change')
-            ->where('language',$customer->language)
-            ->where('active',1)
-            ->first();
-        if($email_change_template){
-            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text), function($msg) use ($email_change_template, $customer) {
-                $msg->to($customer->email)->subject($email_change_template->subject);
-            });
+        if($request->customer_id){
+            $customer = Customer::find($request->customer_id);
+            $sms_change_template = MessageTemplate::where('place_id',$request->place_id)
+                ->where('purpose','sms-change')
+                ->where('language',$customer->language)
+                ->where('active',1)
+                ->first();
+            $place = Place::find($request->place_id);
+            $smsApiToken = $place->setting('sms-api-token');
+            if($sms_change_template && $smsApiToken){
+                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_change_template->text), env('APP_NAME'), $smsApiToken);
+            }
+            $email_change_template = MessageTemplate::where('place_id',$request->place_id)
+                ->where('purpose','email-change')
+                ->where('language',$customer->language)
+                ->where('active',1)
+                ->first();
+            if($email_change_template){
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text), function($msg) use ($email_change_template, $customer) {
+                    $msg->to($customer->email)->subject($email_change_template->subject);
+                });
+            }
         }
 
         if($res){
@@ -683,6 +686,7 @@ class OrderController extends Controller
                     $order->save();
                 }
             } else {
+                $this->sendNewOrderNotification($order,$place);
                 if(!$request->has('number') || !$request->has('exp_month') || !$request->has('exp_year') || !$request->has('cvc')){
                     return response()->json([
                         'message' => 'There are no some card data like number, exp_month, exp_year, cvc'
@@ -695,9 +699,7 @@ class OrderController extends Controller
                     $order->save();
                 }
             }
-        }
-
-        if(!$prepayment_url){
+        }else{
             $this->sendNewOrderNotification($order,$place);
         }
 

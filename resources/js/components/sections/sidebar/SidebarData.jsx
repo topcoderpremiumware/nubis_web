@@ -16,20 +16,33 @@ export const SidebarData = [
     iconOpened: <KeyboardArrowUp />,
     subNav: [
       {
-        title: 'Areas',
-        path: '/Areas',
+        title: 'Basic Information',
+        path: '/BasicInformation',
+      },
+      {
+        title: 'Table Plan Setup',
+        path: '/TablePlanSetup',
       },
       {
         title: 'Pictures',
         path: '/Pictures',
       },
       {
+        title: 'Areas',
+        path: '/Areas',
+      },
+      {
         title: 'Opening Times',
         path: '/OpeningTimes',
       },
       {
-        title: 'Table Plan Setup',
-        path: '/TablePlanSetup',
+        title: 'Menus setup',
+        path: '/CustomBookingLength'
+      },
+      {
+        title: 'Notification Settings',
+        path: '/NotificationsSettings',
+        cName: 'sub-nav'
       },
     ]
   },
@@ -48,10 +61,6 @@ export const SidebarData = [
       {
         title: 'Month View',
         path: '/MonthView',
-      },
-      {
-        title: 'Menus setup',
-        path: '/CustomBookingLength'
       },
       // {
       //   title: 'Special Opening Times',
@@ -72,37 +81,6 @@ export const SidebarData = [
       {
         title: 'Email Campaign',
         path: '/EmailCampaign',
-      },
-    ]
-  },
-  {
-    title: 'General Settings',
-    path: '#',
-    icon: <SettingsOutlined />,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
-
-    subNav: [
-      {
-        title: 'Basic Information',
-        path: '/BasicInformation',
-        cName: 'sub-nav'
-      },
-
-      {
-        title: 'SMS Keys',
-        path: '/SmsKeys',
-        cName: 'sub-nav'
-      },
-      {
-        title: 'Notification Settings',
-        path: '/NotificationsSettings',
-        cName: 'sub-nav'
-      },
-      {
-        title: 'Video Guide Settings',
-        path: '/VideoGuideSettings',
-        cName: 'sub-nav'
       },
     ]
   },
@@ -272,7 +250,28 @@ export const SidebarData = [
       {
         title: 'Support',
         path: '/Support'
-      }
+      },
+      {
+        title: 'Video Guides',
+        path: '/VideoGuides',
+      },
+    ]
+  },
+  {
+    title: 'Admin setup',
+    path: '#',
+    icon: <SettingsOutlined />,
+    iconClosed: <KeyboardArrowDown />,
+    iconOpened: <KeyboardArrowUp />,
+    subNav: [
+      {
+        title: 'SMS Keys',
+        path: '/SmsKeys'
+      },
+      {
+        title: 'Video Guide Settings',
+        path: '/VideoGuideSettings',
+      },
     ]
   }
 ];

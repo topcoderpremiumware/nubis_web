@@ -18,8 +18,8 @@ const PrepaymentForm = () => {
     if (!stripe || !elements) return
 
     setIsLoading(true)
-
-    const { error, paymentIntent } = await stripe.confirmPayment({
+    
+    const { error, setupIntent } = await stripe.confirmSetup({
       elements,
       redirect: 'if_required'
       // confirmParams: {
@@ -28,8 +28,8 @@ const PrepaymentForm = () => {
     })
     if (error) {
       setError(error.message)
-    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-      console.log('paymentIntent', paymentIntent)
+    } else if (setupIntent && setupIntent.status === 'succeeded') {
+      console.log('setupIntent', setupIntent)
     }
 
     setIsLoading(false)

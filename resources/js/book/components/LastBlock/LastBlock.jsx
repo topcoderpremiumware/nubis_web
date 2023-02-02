@@ -98,9 +98,22 @@ function LastBlock(props) {
     setPaymentMethod(res.data)
   }
 
+  const getGiftCards = async () => {
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/giftcards`, {
+      params: {
+        place_id: localStorage.getItem('place_id')
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    })
+    console.log('res.data', res.data)
+  }
+
   useEffect(() => {
     getStripeKeys()
     getPaymentMethod()
+    getGiftCards()
   }, [])
 
   return (

@@ -22,7 +22,7 @@ const PrepaymentModal = (props) => {
   } = props
 
   const options = {
-    clientSecret: stripeSecret,
+    clientSecret: stripeSecret
   };
 
   const total = guestValue * paymentInfo['online-payment-amount']
@@ -44,15 +44,15 @@ const PrepaymentModal = (props) => {
         
         <div className="prepayment-form">
           {t('Amount for')} {guestValue} pers.
-          {discount > 0 && <p>Your discount is <b>{discount} DKK</b></p>}
+          {discount > 0 && <p>{t('Your discount is')} <b>{discount} DKK</b></p>}
           <div className='prepayment-total'>Total: {total > discount ? total - discount : 0} {paymentInfo['online-payment-currency']}</div>
 
-          {/* {stripeKey && stripeSecret ? */}
-            <Elements stripe={stripeKey} options={options}>
-              <PrepaymentForm makeOrder={makeOrder} />
-            </Elements>
-            {/* : 'Loading...'
-          } */}
+          <Elements stripe={stripeKey} options={options}>
+            <PrepaymentForm 
+              paymentInfo={paymentInfo}
+              makeOrder={makeOrder} 
+            />
+          </Elements>
         </div>
 
         <h5 className='prepayment-list-title'>Terms</h5>

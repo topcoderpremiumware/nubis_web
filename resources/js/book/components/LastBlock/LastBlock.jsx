@@ -38,10 +38,11 @@ function LastBlock(props) {
 
     try {
       if (!isOnline) {
-        await props.makeOrder();
+        await props.makeOrder()
         setModalActive(true);
         props.setDefaultModal("done");
       } else if (method === 'deduct') {
+        // spend gift
         await props.makeOrder();
         // window.location.href = orderResponse?.prepayment_url
       } else if (method === 'reserve' || method === 'no-show') {
@@ -305,7 +306,7 @@ function LastBlock(props) {
           </div>
 
           {error && <p className="error">{error}</p>}
-          {discount > 0 && <p className="discount">Your discount is <b>{discount} DKK</b></p>}
+          {discount > 0 && <p className="discount">{t('Your discount is')} <b>{discount} DKK</b></p>}
 
           <button
             type="button"

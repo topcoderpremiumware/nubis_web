@@ -66,7 +66,7 @@ const PaymentSettings = () => {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setPrepayment(response.data.value)
+      setPrepayment(Number(response.data.value))
     }).catch(error => {
       setPrepayment(false)
     })
@@ -202,22 +202,22 @@ const PaymentSettings = () => {
           <b>{t('Method')}</b>
           <div className="d-flex gap-1">
             <div
-              className={method === "deduct" ? "payment-card payment-card-selected" : "payment-card"}
-              onClick={() => setMethod('deduct')}
+              className={`payment-card ${method === "deduct" && " payment-card-selected"} ${!prepayment && " payment-card-disabled"}`}
+              onClick={() => prepayment && setMethod('deduct')}
             >
               <h4>{t('Deduct')}</h4>
               <p>{t('The amount is withdrawn immediately')}</p>
             </div>
             <div
-              className={method === "reserve" ? "payment-card payment-card-selected" : "payment-card"}
-              onClick={() => setMethod('reserve')}
+              className={`payment-card ${method === "reserve" && " payment-card-selected"} ${!prepayment && " payment-card-disabled"}`}
+              onClick={() => prepayment && setMethod('reserve')}
             >
               <h4>{t('Reserve')}</h4>
               <p>{t('The amount is reserved and waithdrawn 6 hours before arrival or in case of late cancellation')}</p>
             </div>
             <div
-              className={method === "no_show" ? "payment-card payment-card-selected" : "payment-card"}
-              onClick={() => setMethod('no_show')}
+              className={`payment-card ${method === "no_show" && " payment-card-selected"} ${!prepayment && " payment-card-disabled"}`}
+              onClick={() => prepayment && setMethod('no_show')}
             >
               <h4>{t('No-show')}</h4>
               <p>{t('Stores credit card information and charges a no-show or late cancellation fee')}</p>
@@ -230,10 +230,12 @@ const PaymentSettings = () => {
             <TextField label={t('Amount')} size="small" fullWidth
               type="number" value={amount}
               onChange={ev => setAmount(ev.target.value)}
+              disabled={!prepayment}
             />
             <Select value={currency}
               size="small"
               onChange={ev => setCurrency(ev.target.value)}
+              disabled={!prepayment}
             >
               {currencies.map((c,key) => {
                 return <MenuItem key={key} value={c}>{c}</MenuItem>
@@ -242,6 +244,7 @@ const PaymentSettings = () => {
             <Select value={'Per guest'}
               size="small"
               onChange={ev => {}}
+              disabled={!prepayment}
             >
               <MenuItem value="Per guest">Per guest</MenuItem>
             </Select>
@@ -253,6 +256,7 @@ const PaymentSettings = () => {
             <Select value={cancelDeadline}
               size="small"
               onChange={ev => setCancelDeadline(ev.target.value)}
+              disabled={!prepayment}
             >
               {cancelTimes.map((c,key) => {
                 return <MenuItem key={key} value={c.value}>{c.title}</MenuItem>

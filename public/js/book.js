@@ -24196,6 +24196,7 @@ var App = function App() {
                 });
               })["catch"](function (error) {
                 console.log("Error: ", error);
+                throw new Error(error.response.data.message);
               });
 
             case 3:
@@ -25719,7 +25720,7 @@ function LastBlock(props) {
           children: error
         }), discount > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("p", {
           className: "discount",
-          children: ["Your discount is ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("b", {
+          children: [t('Your discount is'), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("b", {
             children: [discount, " DKK"]
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("button", {
@@ -25861,7 +25862,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 var PrepaymentForm = function PrepaymentForm(_ref) {
-  var makeOrder = _ref.makeOrder;
+  var paymentInfo = _ref.paymentInfo,
+      makeOrder = _ref.makeOrder;
 
   var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_4__.useTranslation)(),
       t = _useTranslation.t;
@@ -25933,13 +25935,16 @@ var PrepaymentForm = function PrepaymentForm(_ref) {
 
                 switch (intent.setupIntent.status) {
                   case 'succeeded':
-                    // makeOrder()
+                    if ((paymentInfo === null || paymentInfo === void 0 ? void 0 : paymentInfo['online-payment-method']) === 'reserve') {// spend gift
+                    } // makeOrder()
                     // .then(res => {
                     // })
                     // .catch(err => {
                     //   setError(err.message)
                     // })
                     // setIsLoading(false)
+
+
                     break;
 
                   case 'requires_payment_method':
@@ -26051,8 +26056,8 @@ var PrepaymentModal = function PrepaymentModal(props) {
         }), " ", t('the following must be paid:')]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
         className: "prepayment-form",
-        children: [t('Amount for'), " ", guestValue, " pers.:", discount > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
-          children: ["Your discount is ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("b", {
+        children: [t('Amount for'), " ", guestValue, " pers.", discount > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("p", {
+          children: [t('Your discount is'), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("b", {
             children: [discount, " DKK"]
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
@@ -26062,6 +26067,7 @@ var PrepaymentModal = function PrepaymentModal(props) {
           stripe: stripeKey,
           options: options,
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_PrepaymentForm_PrepaymentForm__WEBPACK_IMPORTED_MODULE_3__["default"], {
+            paymentInfo: paymentInfo,
             makeOrder: makeOrder
           })
         })]
@@ -104781,4 +104787,4 @@ __webpack_require__(/*! ./book/App */ "./resources/js/book/App.js");
 })();
 
 /******/ })()
-;
+;                                                                                                                                                                                                          

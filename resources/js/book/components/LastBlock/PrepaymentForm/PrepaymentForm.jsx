@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import '../PrepaymentModal/PrepaymentModal.scss'
 
-const PrepaymentForm = ({ makeOrder }) => {
+const PrepaymentForm = ({ paymentInfo, makeOrder }) => {
   const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false)
@@ -35,6 +35,9 @@ const PrepaymentForm = ({ makeOrder }) => {
           console.log('intent.setupIntent', intent.setupIntent)
           switch (intent.setupIntent.status) {
             case 'succeeded':
+              if (paymentInfo?.['online-payment-method'] === 'reserve') {
+                // spend gift
+              }
               // makeOrder()
               // .then(res => {
 

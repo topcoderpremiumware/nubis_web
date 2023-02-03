@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import '../PrepaymentModal/PrepaymentModal.scss'
 
-const PrepaymentForm = () => {
+const PrepaymentForm = ({ paymentInfo, makeOrder }) => {
   const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false)
@@ -19,7 +19,7 @@ const PrepaymentForm = () => {
 
     setIsLoading(true)
 
-    const { error, paymentIntent } = await stripe.confirmPayment({
+    const { error, setupIntent } = await stripe.confirmSetup({
       elements,
       redirect: 'if_required'
       // confirmParams: {
@@ -28,13 +28,34 @@ const PrepaymentForm = () => {
     })
     if (error) {
       setError(error.message)
-    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-      console.log('paymentIntent', paymentIntent)
-    }
+    } else if (setupIntent && setupIntent.status === 'succeeded') {
+      await stripe
+        .retrieveSetupIntent(setupIntent.client_secret)
+        .then((intent) => {
+          console.log('intent.setupIntent', intent.setupIntent)
+          switch (intent.setupIntent.status) {
+            case 'succeeded':
+              if (paymentInfo?.['online-payment-method'] === 'reserve') {
+                // spend gift
+              }
+              // makeOrder()
+              // .then(res => {
 
-    setIsLoading(false)
+              // })
+              // .catch(err => {
+              //   setError(err.message)
+              // })
+              // setIsLoading(false)
+              break;
+            case 'requires_payment_method':
+              setError('Failed to process payment details. Please try another payment method.');
+              setIsLoading(false)
+              break;
+          }
+        });
+    }
   }
-  
+
   return (
     <form onSubmit={handleSubmit}>
       <PaymentElement />

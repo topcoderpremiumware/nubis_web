@@ -10,6 +10,7 @@ import AmountInput from './components/AmountInput/AmountInput';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import GiftForm from './components/Form/Form';
 import axios from 'axios';
+import moment from 'moment';
 
 const maxCount = 100
 const minAmount = 100
@@ -46,7 +47,8 @@ function App() {
         name,
         email,
         initial_amount: amount,
-        expired_at: new Date('01/01/2050'),
+        // expired_at: moment('01/01/2050').format('YYYY-MM-DD HH:mm:ss'),
+        expired_at: '2037-12-31 22:00:00',
         ...(emailType === 'receivers' && {receiver_name, receiver_email}),
         ...(isCompany && companyRest)
       }

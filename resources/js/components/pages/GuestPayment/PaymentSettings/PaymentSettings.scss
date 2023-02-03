@@ -18,6 +18,11 @@ b {
       background: rgba(13, 110, 253, 0.05);
     }
 
+    &-disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+
     h4 {
       font-weight: 700;
       font-size: 16px;

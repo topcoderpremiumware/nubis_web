@@ -22,6 +22,8 @@ function LastBlock(props) {
   const [gifts, setGifts] = useState([])
   const [giftCode, setGiftCode] = useState('')
   const [error, setError] = useState('')
+  const [checkingGiftCard, setCheckingGiftCard] = useState(false)
+  const [appliedGift, setAppliedGift] = useState(null)
 
   const showModalWindow = (e) => {
     e.preventDefault();
@@ -114,6 +116,33 @@ function LastBlock(props) {
       }
     })
     setGifts(res.data)
+  }
+
+  const checkGiftCard = async () => {
+    if (!giftCode) {
+      setError('Enter a code')
+      return
+    }
+
+    try {
+      setCheckingGiftCard(true)
+      setError('')
+
+      const res = await axios.get(`${process.env.MIX_API_URL}/api/giftcards_check`, {
+        params: {
+          code: giftCode
+        },
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+
+      setAppliedGift(res.data)
+    } catch (err) {
+      setError(err.response.data.message)
+    } finally {
+      setCheckingGiftCard(false)
+    }
   }
 
   useEffect(() => {
@@ -238,15 +267,29 @@ function LastBlock(props) {
                 (paymentMethod?.['online-payment-method'] === 'deduct' ||
                   paymentMethod?.['online-payment-method'] === 'reserve') && (
                   <div>
-                    <div className="client-title__comment">{t('Check discount')}</div>
-                    <div className="form-comment">
+                    <div className="client-title__comment">{t('Apply discount')}</div>
+                    <div className="discount-wrapper">
                       <input
                         type="text"
                         className="form-name__comment"
                         placeholder={t('Enter a discount code')}
                         value={giftCode}
                         onChange={ev => setGiftCode(ev.target.value)}
+                        readOnly={checkingGiftCard || appliedGift}
                       />
+                      <button
+                        type="button"
+                        className="next-button discount-btn next"
+                        disabled={checkingGiftCard || appliedGift}
+                        onClick={checkGiftCard}
+                      >
+                        {checkingGiftCard
+                          ? t('Checking...')
+                          : appliedGift
+                            ? t('Applied')
+                            : t('Apply')
+                        }
+                      </button>
                     </div>
                   </div>
                 )}

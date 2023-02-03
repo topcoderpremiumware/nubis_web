@@ -25253,6 +25253,21 @@ function LastBlock(props) {
       paymentMethod = _useState10[0],
       setPaymentMethod = _useState10[1];
 
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+      _useState12 = _slicedToArray(_useState11, 2),
+      gifts = _useState12[0],
+      setGifts = _useState12[1];
+
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+      _useState14 = _slicedToArray(_useState13, 2),
+      giftCode = _useState14[0],
+      setGiftCode = _useState14[1];
+
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+      _useState16 = _slicedToArray(_useState15, 2),
+      error = _useState16[0],
+      setError = _useState16[1];
+
   var showModalWindow = function showModalWindow(e) {
     e.preventDefault();
     props.setDefaultModal("edit");
@@ -25268,46 +25283,56 @@ function LastBlock(props) {
             case 0:
               isOnline = (paymentMethod === null || paymentMethod === void 0 ? void 0 : paymentMethod['is-online-payment']) === '1';
               method = paymentMethod === null || paymentMethod === void 0 ? void 0 : paymentMethod['online-payment-method'];
+              _context.prev = 2;
 
               if (isOnline) {
-                _context.next = 9;
+                _context.next = 10;
                 break;
               }
 
-              _context.next = 5;
+              _context.next = 6;
               return props.makeOrder();
 
-            case 5:
+            case 6:
               setModalActive(true);
               props.setDefaultModal("done");
-              _context.next = 15;
+              _context.next = 16;
               break;
 
-            case 9:
+            case 10:
               if (!(method === 'deduct')) {
-                _context.next = 14;
+                _context.next = 15;
                 break;
               }
 
-              _context.next = 12;
+              _context.next = 13;
               return props.makeOrder();
 
-            case 12:
-              _context.next = 15;
+            case 13:
+              _context.next = 16;
               break;
 
-            case 14:
+            case 15:
               if (method === 'reserve' || method === 'no-show') {
                 setModalActive(true);
-                props.setDefaultModal("prepayment"); // await props.makeOrder();
+                props.setDefaultModal("prepayment");
               }
 
-            case 15:
+            case 16:
+              _context.next = 21;
+              break;
+
+            case 18:
+              _context.prev = 18;
+              _context.t0 = _context["catch"](2);
+              setError(_context.t0.message);
+
+            case 21:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee);
+      }, _callee, null, [[2, 18]]);
     }));
 
     return function makeOrderDone() {
@@ -25434,7 +25459,7 @@ function LastBlock(props) {
 
             case 2:
               res = _context4.sent;
-              console.log('res.data', res.data);
+              setGifts(res.data);
 
             case 4:
             case "end":
@@ -25584,8 +25609,27 @@ function LastBlock(props) {
                 htmlFor: "eathereChoice",
                 children: t('Eat here')
               })]
+            }), gifts.length > 0 && (paymentMethod === null || paymentMethod === void 0 ? void 0 : paymentMethod['is-online-payment']) === '1' && ((paymentMethod === null || paymentMethod === void 0 ? void 0 : paymentMethod['online-payment-method']) === 'deduct' || (paymentMethod === null || paymentMethod === void 0 ? void 0 : paymentMethod['online-payment-method']) === 'reserve') && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("div", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+                className: "client-title__comment",
+                children: t('Check discount')
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("div", {
+                className: "form-comment",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("input", {
+                  type: "text",
+                  className: "form-name__comment",
+                  placeholder: t('Enter a discount code'),
+                  value: giftCode,
+                  onChange: function onChange(ev) {
+                    return setGiftCode(ev.target.value);
+                  }
+                })
+              })]
             })]
           })]
+        }), error && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsx)("p", {
+          className: "error",
+          children: error
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_9__.jsxs)("button", {
           type: "button",
           className: "next-button second-next-button next",
@@ -25667,7 +25711,8 @@ function LastBlock(props) {
           guestValue: props.guestValue,
           stripeKey: stripeKey,
           stripeSecret: stripeSecret,
-          paymentInfo: paymentMethod
+          paymentInfo: paymentMethod,
+          makeOrder: props.makeOrder()
         })]
       })
     })]
@@ -25722,7 +25767,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-var PrepaymentForm = function PrepaymentForm() {
+var PrepaymentForm = function PrepaymentForm(_ref) {
+  var makeOrder = _ref.makeOrder;
+
   var _useTranslation = (0,react_i18next__WEBPACK_IMPORTED_MODULE_4__.useTranslation)(),
       t = _useTranslation.t;
 
@@ -25740,7 +25787,7 @@ var PrepaymentForm = function PrepaymentForm() {
   var elements = (0,_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_0__.useElements)();
 
   var handleSubmit = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(ev) {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(ev) {
       var _yield$stripe$confirm, error, setupIntent;
 
       return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -25772,15 +25819,44 @@ var PrepaymentForm = function PrepaymentForm() {
               error = _yield$stripe$confirm.error;
               setupIntent = _yield$stripe$confirm.setupIntent;
 
-              if (error) {
-                setError(error.message);
-              } else if (setupIntent && setupIntent.status === 'succeeded') {
-                console.log('setupIntent', setupIntent);
+              if (!error) {
+                _context.next = 13;
+                break;
               }
 
-              setIsLoading(false);
+              setError(error.message);
+              _context.next = 16;
+              break;
 
-            case 11:
+            case 13:
+              if (!(setupIntent && setupIntent.status === 'succeeded')) {
+                _context.next = 16;
+                break;
+              }
+
+              _context.next = 16;
+              return stripe.retrieveSetupIntent(setupIntent.client_secret).then(function (intent) {
+                console.log('intent.setupIntent', intent.setupIntent);
+
+                switch (intent.setupIntent.status) {
+                  case 'succeeded':
+                    // makeOrder()
+                    // .then(res => {
+                    // })
+                    // .catch(err => {
+                    //   setError(err.message)
+                    // })
+                    // setIsLoading(false)
+                    break;
+
+                  case 'requires_payment_method':
+                    setError('Failed to process payment details. Please try another payment method.');
+                    setIsLoading(false);
+                    break;
+                }
+              });
+
+            case 16:
             case "end":
               return _context.stop();
           }
@@ -25789,7 +25865,7 @@ var PrepaymentForm = function PrepaymentForm() {
     }));
 
     return function handleSubmit(_x) {
-      return _ref.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }();
 
@@ -25848,7 +25924,8 @@ var PrepaymentModal = function PrepaymentModal(props) {
       guestValue = props.guestValue,
       stripeKey = props.stripeKey,
       stripeSecret = props.stripeSecret,
-      paymentInfo = props.paymentInfo;
+      paymentInfo = props.paymentInfo,
+      makeOrder = props.makeOrder;
   var options = {
     clientSecret: stripeSecret
   };
@@ -25885,7 +25962,9 @@ var PrepaymentModal = function PrepaymentModal(props) {
         }), stripeKey && stripeSecret && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_2__.Elements, {
           stripe: stripeKey,
           options: options,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_PrepaymentForm_PrepaymentForm__WEBPACK_IMPORTED_MODULE_3__["default"], {})
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_PrepaymentForm_PrepaymentForm__WEBPACK_IMPORTED_MODULE_3__["default"], {
+            makeOrder: makeOrder
+          })
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h5", {
         className: "prepayment-list-title",
@@ -33492,7 +33571,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".last-info {\r\n  background-color: #f6f6f6;\r\n  max-width: 608px;\r\n}\r\n\r\n.info-body {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  text-align: left;\r\n}\r\n\r\n.info-body-modal {\r\n  flex-direction: column;\r\n  gap: 20px;\r\n}\r\n.info-body-modal .client-adress {\r\n  flex-direction: column;\r\n  align-items: flex-start;\r\n}\r\n\r\n.restaurant-name {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  width: 240px;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.restaurant-info {\r\n  margin: 9px 0px 0px 20px;\r\n}\r\n\r\n.adress {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.guests-date {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.client-info {\r\n  margin: 9px 21px 0px 0px;\r\n}\r\n\r\n.client-title {\r\n  display: inline-block;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 21px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.client-adress {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 12px;\r\n}\r\n\r\n.editing {\r\n  display: flex;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.guests-date {\r\n  margin-top: 12px;\r\n}\r\n\r\n.form-name__comment {\r\n  padding: 12px 16px;\r\n  width: 399px;\r\n  height: 47px;\r\n  margin-right: 15px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n}\r\n\r\n.client-title__comment {\r\n  margin: 17px 0px 7px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  width: 240px;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.form-name__comment {\r\n  margin: 0px 0px 14px 20px;\r\n}\r\n\r\n.checkbox {\r\n  display: flex;\r\n  justify-content: left;\r\n  text-align: left;\r\n  margin: 0px 8px 0px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 12px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  padding-bottom: 11px;\r\n}\r\n\r\n.second-checkbox {\r\n  display: flex;\r\n  justify-content: left;\r\n  margin: 0px 8px 0px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 12px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  padding-bottom: 10px;\r\n}\r\n\r\n.copyrigth-footer {\r\n  margin: 0px 60px 57px 0px;\r\n}\r\n\r\n.second-next-button {\r\n  width: 271px;\r\n  cursor: pointer;\r\n  border: none;\r\n}\r\n\r\n.thanks-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 20px;\r\n}\r\n\r\n.thanks-actions div {\r\n  font-weight: 700;\r\n  text-decoration: underline;\r\n  font-size: 14px;\r\n  cursor: pointer;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .info-body {\r\n    flex-direction: column;\r\n  }\r\n\r\n  .client-info {\r\n    margin-left: 20px;\r\n  }\r\n\r\n  .form-name__comment {\r\n    max-width: 399px;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .form {\r\n    text-align: center;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-info {\r\n    text-align: center;\r\n  }\r\n  .third-info {\r\n    margin: 0 auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .second-info {\r\n    font-size: 13px;\r\n  }\r\n  .third-info {\r\n    width: 100%;\r\n  }\r\n  .form-name__comment {\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-next-button {\r\n    display: flex;\r\n    justify-content: center;\r\n    margin: 40px auto;\r\n    text-align: center;\r\n  }\r\n  .copyrigth-footer {\r\n    margin: 0;\r\n  }\r\n  .form-name__comment {\r\n    display: block;\r\n  }\r\n  .checkbox {\r\n    display: flex;\r\n    justify-content: left;\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .last-info {\r\n    margin: auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .last-info {\r\n    margin-right: 10px;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .cancel-booking {\r\n    margin: auto;\r\n    text-align: center;\r\n  }\r\n  .checkbox {\r\n    display: inline-block;\r\n    text-align: left;\r\n  }\r\n}\r\n\r\n.react_time_range__time_range_container {\r\n  margin: 0;\r\n  padding: 0;\r\n  margin-top: 50px;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .react_time_range__time_range_container {\r\n    margin: 20% auto;\r\n  }\r\n}\r\n.form-comment {\r\n  text-align: left;\r\n}\r\n\r\n.PhoneInput {\r\n  /* This is done to stretch the contents of this component. */\r\n  display: flex;\r\n  align-items: center;\r\n  margin-right: 29px;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .PhoneInput {\r\n    margin-right: 0;\r\n  }\r\n}\r\n\r\n.form-password {\r\n  max-width: 400px;\r\n  margin: auto;\r\n}\r\n\r\n@media (max-width: 475px) {\r\n  .form-password {\r\n    max-width: 190px;\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .form-password {\r\n    max-width: 190px;\r\n  }\r\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".last-info {\r\n  background-color: #f6f6f6;\r\n  max-width: 608px;\r\n}\r\n\r\n.info-body {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  text-align: left;\r\n}\r\n\r\n.info-body-modal {\r\n  flex-direction: column;\r\n  gap: 20px;\r\n}\r\n.info-body-modal .client-adress {\r\n  flex-direction: column;\r\n  align-items: flex-start;\r\n}\r\n\r\n.restaurant-name {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  width: 240px;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.restaurant-info {\r\n  margin: 9px 0px 0px 20px;\r\n}\r\n\r\n.adress {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.guests-date {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.client-info {\r\n  margin: 9px 21px 0px 0px;\r\n}\r\n\r\n.client-title {\r\n  display: inline-block;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 21px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.client-adress {\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  margin-bottom: 12px;\r\n}\r\n\r\n.editing {\r\n  display: flex;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 14px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n}\r\n\r\n.guests-date {\r\n  margin-top: 12px;\r\n}\r\n\r\n.form-name__comment {\r\n  padding: 12px 16px;\r\n  width: 399px;\r\n  height: 47px;\r\n  margin-right: 15px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 16px;\r\n  line-height: 150%;\r\n  align-items: center;\r\n  color: #989898;\r\n  border: 1px solid #000000;\r\n}\r\n\r\n.client-title__comment {\r\n  margin: 17px 0px 7px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 700;\r\n  font-size: 22px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  width: 240px;\r\n  margin-bottom: 7px;\r\n}\r\n\r\n.form-name__comment {\r\n  margin: 0px 0px 14px 20px;\r\n}\r\n\r\n.checkbox {\r\n  display: flex;\r\n  justify-content: left;\r\n  text-align: left;\r\n  margin: 0px 8px 0px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 12px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  padding-bottom: 11px;\r\n}\r\n\r\n.second-checkbox {\r\n  display: flex;\r\n  justify-content: left;\r\n  margin: 0px 8px 0px 20px;\r\n  font-family: \"Inter\";\r\n  font-style: normal;\r\n  font-weight: 400;\r\n  font-size: 12px;\r\n  line-height: 150%;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333333;\r\n  padding-bottom: 10px;\r\n}\r\n\r\n.copyrigth-footer {\r\n  margin: 0px 60px 57px 0px;\r\n}\r\n\r\n.second-next-button {\r\n  width: 271px;\r\n  cursor: pointer;\r\n  border: none;\r\n}\r\n\r\n.thanks-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 20px;\r\n}\r\n\r\n.thanks-actions div {\r\n  font-weight: 700;\r\n  text-decoration: underline;\r\n  font-size: 14px;\r\n  cursor: pointer;\r\n}\r\n\r\n.error {\r\n  font-size: 12px;\r\n  margin: 10px 0;\r\n  color: #dd0101;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .info-body {\r\n    flex-direction: column;\r\n  }\r\n\r\n  .client-info {\r\n    margin-left: 20px;\r\n  }\r\n\r\n  .form-name__comment {\r\n    max-width: 399px;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .form {\r\n    text-align: center;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-info {\r\n    text-align: center;\r\n  }\r\n  .third-info {\r\n    margin: 0 auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .second-info {\r\n    font-size: 13px;\r\n  }\r\n  .third-info {\r\n    width: 100%;\r\n  }\r\n  .form-name__comment {\r\n    width: 90%;\r\n  }\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .second-next-button {\r\n    display: flex;\r\n    justify-content: center;\r\n    margin: 40px auto;\r\n    text-align: center;\r\n  }\r\n  .copyrigth-footer {\r\n    margin: 0;\r\n  }\r\n  .form-name__comment {\r\n    display: block;\r\n  }\r\n  .checkbox {\r\n    display: flex;\r\n    justify-content: left;\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .last-info {\r\n    margin: auto;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .last-info {\r\n    margin-right: 10px;\r\n  }\r\n}\r\n\r\n@media (max-width: 425px) {\r\n  .cancel-booking {\r\n    margin: auto;\r\n    text-align: center;\r\n  }\r\n  .checkbox {\r\n    display: inline-block;\r\n    text-align: left;\r\n  }\r\n}\r\n\r\n.react_time_range__time_range_container {\r\n  margin: 0;\r\n  padding: 0;\r\n  margin-top: 50px;\r\n}\r\n\r\n@media (max-width: 1024px) {\r\n  .react_time_range__time_range_container {\r\n    margin: 20% auto;\r\n  }\r\n}\r\n.form-comment {\r\n  text-align: left;\r\n}\r\n\r\n.PhoneInput {\r\n  /* This is done to stretch the contents of this component. */\r\n  display: flex;\r\n  align-items: center;\r\n  margin-right: 29px;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .PhoneInput {\r\n    margin-right: 0;\r\n  }\r\n}\r\n\r\n.form-password {\r\n  max-width: 400px;\r\n  margin: auto;\r\n}\r\n\r\n@media (max-width: 475px) {\r\n  .form-password {\r\n    max-width: 190px;\r\n  }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .form-password {\r\n    max-width: 190px;\r\n  }\r\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -16,7 +16,8 @@ const PrepaymentModal = (props) => {
     guestValue,
     stripeKey,
     stripeSecret,
-    paymentInfo
+    paymentInfo,
+    makeOrder
   } = props
 
   const options = {
@@ -44,7 +45,7 @@ const PrepaymentModal = (props) => {
 
           {stripeKey && stripeSecret &&
             <Elements stripe={stripeKey} options={options}>
-              <PrepaymentForm />
+              <PrepaymentForm makeOrder={makeOrder} />
             </Elements>
           }
         </div>

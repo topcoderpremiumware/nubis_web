@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import '../PrepaymentModal/PrepaymentModal.scss'
 
-const PrepaymentForm = () => {
+const PrepaymentForm = ({ makeOrder }) => {
   const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false)
@@ -18,7 +18,7 @@ const PrepaymentForm = () => {
     if (!stripe || !elements) return
 
     setIsLoading(true)
-    
+
     const { error, setupIntent } = await stripe.confirmSetup({
       elements,
       redirect: 'if_required'
@@ -29,12 +29,30 @@ const PrepaymentForm = () => {
     if (error) {
       setError(error.message)
     } else if (setupIntent && setupIntent.status === 'succeeded') {
-      console.log('setupIntent', setupIntent)
-    }
+      await stripe
+        .retrieveSetupIntent(setupIntent.client_secret)
+        .then((intent) => {
+          console.log('intent.setupIntent', intent.setupIntent)
+          switch (intent.setupIntent.status) {
+            case 'succeeded':
+              // makeOrder()
+              // .then(res => {
 
-    setIsLoading(false)
+              // })
+              // .catch(err => {
+              //   setError(err.message)
+              // })
+              // setIsLoading(false)
+              break;
+            case 'requires_payment_method':
+              setError('Failed to process payment details. Please try another payment method.');
+              setIsLoading(false)
+              break;
+          }
+        });
+    }
   }
-  
+
   return (
     <form onSubmit={handleSubmit}>
       <PaymentElement />

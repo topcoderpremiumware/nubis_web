@@ -190,6 +190,12 @@
   cursor: pointer;
 }
 
+.error {
+  font-size: 12px;
+  margin: 10px 0;
+  color: #dd0101;
+}
+
 @media (max-width: 1024px) {
   .info-body {
     flex-direction: column;

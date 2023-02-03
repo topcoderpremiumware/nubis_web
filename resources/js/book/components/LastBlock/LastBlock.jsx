@@ -4,7 +4,7 @@ import "./LastBlock.css";
 import SelectLang from "../FirstBlock/SelectLang/SelectLang";
 import Copyrigth from "../FirstBlock/Copyrigth/Copyrigth";
 import MainModal from "../MainModal/MainModal";
-import {Trans, useTranslation} from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import PrepaymentModal from "./PrepaymentModal/PrepaymentModal";
 import axios from "axios";
 import { loadStripe } from '@stripe/stripe-js';
@@ -19,6 +19,9 @@ function LastBlock(props) {
   const [stripeKey, setStripeKey] = useState('')
   const [stripeSecret, setStripeSecret] = useState('')
   const [paymentMethod, setPaymentMethod] = useState({})
+  const [gifts, setGifts] = useState([])
+  const [giftCode, setGiftCode] = useState('')
+  const [error, setError] = useState('')
 
   const showModalWindow = (e) => {
     e.preventDefault();
@@ -30,17 +33,20 @@ function LastBlock(props) {
     const isOnline = paymentMethod?.['is-online-payment'] === '1'
     const method = paymentMethod?.['online-payment-method']
 
-    if (!isOnline) {
-      await props.makeOrder();
-      setModalActive(true);
-      props.setDefaultModal("done");
-    } else if (method === 'deduct') {
-      await props.makeOrder();
-      // window.location.href = orderResponse?.prepayment_url
-    } else if (method === 'reserve' || method === 'no-show') {
-      setModalActive(true);
-      props.setDefaultModal("prepayment");
-      // await props.makeOrder();
+    try {
+      if (!isOnline) {
+        await props.makeOrder();
+        setModalActive(true);
+        props.setDefaultModal("done");
+      } else if (method === 'deduct') {
+        await props.makeOrder();
+        // window.location.href = orderResponse?.prepayment_url
+      } else if (method === 'reserve' || method === 'no-show') {
+        setModalActive(true);
+        props.setDefaultModal("prepayment");
+      }
+    } catch (err) {
+      setError(err.message)
     }
   };
 
@@ -94,7 +100,7 @@ function LastBlock(props) {
   }
 
   const getPaymentMethod = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id') }/payment_method`)
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`)
     setPaymentMethod(res.data)
   }
 
@@ -107,7 +113,7 @@ function LastBlock(props) {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     })
-    console.log('res.data', res.data)
+    setGifts(res.data)
   }
 
   useEffect(() => {
@@ -136,7 +142,7 @@ function LastBlock(props) {
             </div>
           </div>
           <div className="overhead">
-            <Trans>Reserved {{val: props.guestValue}} Guests</Trans>
+            <Trans>Reserved {{ val: props.guestValue }} Guests</Trans>
           </div>
           <div className="title third-title">{t('Almost there')}</div>
           <div className="last-info">
@@ -226,35 +232,31 @@ function LastBlock(props) {
                 />
                 <label htmlFor="eathereChoice">{t('Eat here')}</label>
               </div>
-              {/* <div className="checkbox">
-                <input
-                  id="first-checkbox"
-                  type="checkbox"
-                  onChange={handleOnChangeEmail}
-                  style={{ width: "14px", heigth: "14px", marginRight: "8px" }}
-                />
-                <div>
-                  {t('Get restaurant news and inspiration from DinnerBooking.com on email.')}
-                  <a href="/#">{t('See our privacy policy')}</a>
-                </div>
-              </div>
-              <div className="second-checkbox">
-                <input
-                  type="checkbox"
-                  onChange={handleOnChangeNews}
-                  style={{
-                    width: "14px",
-                    heigth: "14px",
-                    marginRight: "8px",
-                  }}
-                />
-                {t('I would like to receive the restaurant newsletter by email.')}
-              </div> */}
+
+              {gifts.length > 0 &&
+                paymentMethod?.['is-online-payment'] === '1' &&
+                (paymentMethod?.['online-payment-method'] === 'deduct' ||
+                  paymentMethod?.['online-payment-method'] === 'reserve') && (
+                  <div>
+                    <div className="client-title__comment">{t('Check discount')}</div>
+                    <div className="form-comment">
+                      <input
+                        type="text"
+                        className="form-name__comment"
+                        placeholder={t('Enter a discount code')}
+                        value={giftCode}
+                        onChange={ev => setGiftCode(ev.target.value)}
+                      />
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
 
+          {error && <p className="error">{error}</p>}
+
           <button
-            type="button" 
+            type="button"
             className="next-button second-next-button next"
             onClick={makeOrderDone}
           >
@@ -319,7 +321,7 @@ function LastBlock(props) {
                     <br />
                     {props.userData.zip_code}
                     <br />
-                    <div style={{marginTop: '10px'}}><b>Comment:</b> {comment || '-'}</div>
+                    <div style={{ marginTop: '10px' }}><b>Comment:</b> {comment || '-'}</div>
                     <br />
                     <div><b>Type:</b> {props.isTakeAway ? t('Take away') : t('Eat here')}</div>
                   </div>
@@ -347,6 +349,7 @@ function LastBlock(props) {
               stripeKey={stripeKey}
               stripeSecret={stripeSecret}
               paymentInfo={paymentMethod}
+              makeOrder={props.makeOrder()}
             />
           }
         </div>

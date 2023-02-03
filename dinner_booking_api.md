@@ -6,7 +6,7 @@
 - [Settings](#settings)
 - [Roles](#roles)
 - [Tableplans](#tableplans)
-- [ManageFeedback](#areas)
+- [Areas](#areas)
 - [Timetables](#timetables)
 - [Customers](#customers)
 - [Orders](#orders)
@@ -20,6 +20,7 @@
 - [Countries](#countries)
 - [Custom booking lengths](#custom_booking_lengths)
 - [Billing](#billing)
+- [Video guides](#video_guides)
 
 ---
 <a id="auth"></a>
@@ -306,7 +307,7 @@ curl -X DELETE https://dinner-book.vasilkoff.info/api/tableplans/1 \
 ```
 ---
 <a id="areas"></a>
-## ManageFeedback
+## Areas
 #### Create
 > POST /api/areas
 ```cmd
@@ -972,4 +973,32 @@ curl -X GET https://dinner-book.vasilkoff.info/api/billing/get_payment_link \
 -H 'Content-Type: application/json' \
 -d '{"place_id":1,"price_id":"price_1MED982eZvKYlo2CZLQdP554"}'
 ```
-
+---
+<a id="video_guides"></a>
+## Video guides
+#### Save video guide
+> POST /api/video_guides
+```cmd
+curl -X POST https://dinner-book.vasilkoff.info/api/video_guides \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"id":1,"title":"Area","description":"This is guide","youtube_id":"UtJ3g90w_14","page_url":"https://dinner-book.vasilkoff.info/admin/Areas","language":"en"}'
+```
+#### Get video guides list by language
+> GET /api/video_guides
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/video_guides \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json' \
+-d '{"language":"en"}'
+```
+#### Delete video guides
+> DELETE /api/video_guides/{id}
+```cmd
+curl -X DELETE https://dinner-book.vasilkoff.info/api/video_guides/1 \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+```

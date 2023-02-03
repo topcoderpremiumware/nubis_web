@@ -1,17 +1,97 @@
-import { Button, MenuItem, Select, TextField } from '@mui/material';
-import React, { useState } from 'react'
+import {
+  Button,
+  CircularProgress,
+  FormControl, IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  styled, Table, TableBody, TableCell, TableContainer, TableHead,
+  TableRow,
+} from '@mui/material';
+import React, {useEffect, useState} from 'react'
 import { useTranslation } from 'react-i18next';
+import eventBus from "../../../eventBus";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import VideoGuideEditPopup from "./VideoGuideEditPopup";
 
 const VideoGuideSettings = () => {
   const { t } = useTranslation();
 
-  const [lang, setLang] = useState('en')
-  const [sms, setSms] = useState('')
-  const [stripe, setStripe] = useState('')
+  const [language, setLanguage] = useState(localStorage.getItem('i18nextLng'))
+  const [guides, setGuides] = useState([])
+  const [editPopupOpened, setEditPopupOpened] = useState(false)
+  const [selectedGuide, setSelectedGuide] = useState({})
+  const [loading, setLoading] = useState(true)
 
-  const onSubmit = async (ev) => {
-    ev.preventDefault()
+  const StyledTableRow = styled(TableRow)(({theme}) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+      border: 0,
+    },
+  }));
 
+  useEffect(() => {
+      getGuides()
+  },[language])
+
+  const getGuides = () => {
+    setLoading(true)
+    axios.get(process.env.MIX_API_URL+'/api/video_guides',{
+      params: {
+        language: language
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setGuides(response.data)
+      setLoading(false)
+    }).catch(error => {})
+  }
+
+  const onSubmit = (item) => {
+    axios.post(process.env.MIX_API_URL+'/api/video_guides',{
+        ...item,
+        language: language
+      },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      getGuides()
+      setEditPopupOpened(false)
+      eventBus.dispatch("notification", {type: 'success', message: 'Guide saved successfully'});
+    }).catch(error => {})
+  }
+
+  const openEditPopup = (item) => {
+    if (!item) item = {title: '',description:'',youtube_id:'',page_url:''}
+    setSelectedGuide(item)
+    setEditPopupOpened(true)
+  }
+
+  const onDelete = (e,index,item) => {
+    if(item.hasOwnProperty('id')){
+      axios.delete(process.env.MIX_API_URL + '/api/video_guides/' + item.id, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        let temp = guides
+        temp.splice(index, 1)
+        setGuides([...temp])
+        eventBus.dispatch("notification", {type: 'success', message: 'Guide deleted successfully'});
+      }).catch(error => {})
+    }else{
+      let temp = guides
+      temp.splice(index, 1)
+      setGuides([...temp])
+    }
   }
 
   return (
@@ -19,37 +99,73 @@ const VideoGuideSettings = () => {
       <h2>{t('Video Guide Settings')}</h2>
       <div className="container-fluid">
         <div className="row">
-          <div className="mt-3">
-            <form onSubmit={onSubmit}>
-              <div className="d-flex align-items-center mb-3 gap-2">
-                <h5>{t('Language')}:</h5>
-                <Select value={lang}
-                  size="small"
-                  onChange={setLang}
-                >
-                  <MenuItem value="en">English</MenuItem>
-                  <MenuItem value="dk">Dansk</MenuItem>
+          <div className="col-lg-3 col-md-6 mt-3">
+            <div className="mb-3">
+              <FormControl size="small" fullWidth>
+                <InputLabel id="label_language">{t('Language')}</InputLabel>
+                <Select label={t('Language')} value={language}
+                        labelId="label_language" id="language" name="language"
+                        onChange={(e) => setLanguage(e.target.value)}>
+                  {window.langs.map((lang,key) => {
+                    return <MenuItem key={key} value={lang.lang}>{lang.title}</MenuItem>
+                  })}
                 </Select>
-              </div>
-              <div className="mb-3">
-                <TextField label={`SMS ${t('Setup')}`} size="small" fullWidth
-                  type="text" required
-                  value={sms} onChange={ev => setSms(ev.target.value)}
-                />
-              </div>
-              <div className="mb-3">
-                <TextField label={`Stripe ${t('Setup')}`} size="small" fullWidth
-                  type="text" required
-                  value={stripe} onChange={ev => setStripe(ev.target.value)}
-                />
-              </div>
-              <Button variant="contained" type="submit">{t('Save')}</Button>
-            </form>
+              </FormControl>
+            </div>
           </div>
         </div>
+        <div className="row">
+          {loading ? <div><CircularProgress/></div> : <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell size="small">{t('Title')}</TableCell>
+                  <TableCell size="small">{t('Description')}</TableCell>
+                  <TableCell size="small">{t('YouTube id')}</TableCell>
+                  <TableCell size="small">{t('Page url')}</TableCell>
+                  <TableCell size="small" style={{minWidth: '100px'}}>{t('Actions')}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {guides.map((item, index) => {
+                  return <StyledTableRow key={index}>
+                    <TableCell size="small">{item.title}</TableCell>
+                    <TableCell size="small">{(item.description.length > 100 ? item.description.substring(0, 100)+'...' : item.description)}</TableCell>
+                    <TableCell size="small">{item.youtube_id}</TableCell>
+                    <TableCell size="small">{item.page_url}</TableCell>
+                    <TableCell size="small">
+                      <IconButton onClick={e => {
+                        openEditPopup(item)
+                      }} size="small">
+                        <EditIcon fontSize="small"/>
+                      </IconButton>
+                      <IconButton onClick={e => {
+                        onDelete(e,index,item)
+                      }} size="small">
+                        <DeleteIcon fontSize="small"/>
+                      </IconButton>
+                    </TableCell>
+                  </StyledTableRow>
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>}
+        </div>
       </div>
+      <Stack spacing={2} sx={{mt: 2}} direction="row">
+        <Button variant="contained" type="button" onClick={e => {
+          openEditPopup(false)
+        }}>{t('New')}</Button>
+      </Stack>
+      <VideoGuideEditPopup
+        open={editPopupOpened}
+        guide={selectedGuide}
+        onChange={onSubmit}
+        onClose={e => {
+          setEditPopupOpened(false)
+        }}
+      />
     </div>
-
   )
 }
 

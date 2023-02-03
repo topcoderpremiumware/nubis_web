@@ -11,7 +11,7 @@ class RoleController extends Controller
 {
     public function create(Request $request)
     {
-        if(!Auth::user()->tokenCan('superadmin')) return response()->json([
+        if(!Auth::user()->is_superadmin) return response()->json([
             'message' => 'Unauthorized.'
         ], 401);
 
@@ -30,7 +30,7 @@ class RoleController extends Controller
 
     public function getAll(Request $request)
     {
-        if(!Auth::user()->tokenCan('superadmin')) return response()->json([
+        if(!Auth::user()->is_superadmin) return response()->json([
             'message' => 'Unauthorized.'
         ], 401);
 

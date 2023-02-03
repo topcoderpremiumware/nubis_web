@@ -317,13 +317,14 @@ class OrderController extends Controller
                     }
                 }
             }elseif($order->marks['method'] == 'no_show'){
-                if(array_key_exists('card_token_id',$order->marks)){
+                if(array_key_exists('payment_method_id',$order->marks)){
                     if(Carbon::now()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
-                        $stripe->charges->create([
+                        $payment_intent = $stripe->paymentIntents->create([
                             'amount' => $order->marks['amount'] * 100,
                             'currency' => $order->marks['currency'],
-                            'source' => $order->marks['card_token_id'],
-                            'description' => 'Charge no show cancellation order #'.$order->id,
+                            'confirm' => true,
+                            'off_session' => true,
+                            'payment_method' => $order->marks['payment_method_id']
                         ]);
                     }
                 }
@@ -367,14 +368,15 @@ class OrderController extends Controller
             ]);
         }
 
-        if($status == 'no_show' && $order->marks['method'] == 'no_show' && array_key_exists('card_token_id',$order->marks)){
+        if($status == 'no_show' && $order->marks['method'] == 'no_show' && array_key_exists('payment_method_id',$order->marks)){
             $stripe_secret = $order->place->setting('stripe-secret');
             $stripe = new StripeClient($stripe_secret);
-            $stripe->charges->create([
+            $payment_intent = $stripe->paymentIntents->create([
                 'amount' => $order->marks['amount'] * 100,
                 'currency' => $order->marks['currency'],
-                'source' => $order->marks['card_token_id'],
-                'description' => 'Order changes status to no_show. Order #'.$order->id,
+                'confirm' => true,
+                'off_session' => true,
+                'payment_method' => $order->marks['payment_method_id']
             ]);
         }
 
@@ -788,41 +790,26 @@ class OrderController extends Controller
                 $marks['need_send_payment_link'] = true;
             }else{
                 // Якщо замовлення пізніже ніж 6 днів тоді створити payment_intent manual, а потім його capture через крон
-                $payment_method = $stripe->paymentMethods->create([
-                    'type' => 'card',
-                    'card' => [
-                        'number' => $request->number,
-                        'exp_month' => $request->exp_month,
-                        'exp_year' => $request->exp_year,
-                        'cvc' => $request->cvc
-                    ]
-                ]);
+                $setup_intent = $stripe->setupIntents->retrieve($request->setup_intent_id);
                 $payment_intent = $stripe->paymentIntents->create([
                     'amount' => $amount * 100,
                     'currency' => $currency,
                     'confirm' => true,
                     'off_session' => true,
-                    'payment_method' => $payment_method->id,
+                    'payment_method' => $setup_intent->payment_method,
                     'capture_method' => 'manual',
                     'metadata' => [
                         'place_id' => $request->place_id,
                         'order_id' => $order->id
                     ],
                 ]);
-                $marks['paymnet_method_id'] = $payment_method->id;
+                $marks['payment_method_id'] = $setup_intent->payment_method;
                 $marks['payment_intent_id'] = $payment_intent->id;
                 $marks['need_capture'] = true;
             }
         }elseif($method === 'no_show'){ // 3) для третього методу треба створити card_token і його ід записати в marks
-            $card_token = $stripe->tokens->create([
-                'card' => [
-                    'number' => $request->number,
-                    'exp_month' => $request->exp_month,
-                    'exp_year' => $request->exp_year,
-                    'cvc' => $request->cvc
-                ]
-            ]);
-            $marks['card_token_id'] = $card_token->id;
+            $setup_intent = $stripe->setupIntents->retrieve($request->setup_intent_id);
+            $marks['payment_method_id'] = $setup_intent->payment_method;
         }
 
         return $marks;

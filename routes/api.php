@@ -19,6 +19,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TableplanController;
 use App\Http\Controllers\TimetableController;
+use App\Http\Controllers\VideoGuideController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -173,6 +174,10 @@ Route::middleware('auth:user_api')->group(function(){
     Route::delete('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'delete']);
 
     Route::get('billing/get_payment_link',[BillingController::class, 'getInvoiceByPrice']);
+
+    Route::get('video_guides',[VideoGuideController::class, 'getByLanguage']);
+    Route::post('video_guides',[VideoGuideController::class, 'save']);
+    Route::delete('video_guides/{id}',[VideoGuideController::class, 'delete']);
 });
 
 Route::get('places/{id}',[PlaceController::class, 'getId']);

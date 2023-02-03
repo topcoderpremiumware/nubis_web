@@ -24,6 +24,7 @@ function LastBlock(props) {
   const [error, setError] = useState('')
   const [checkingGiftCard, setCheckingGiftCard] = useState(false)
   const [appliedGift, setAppliedGift] = useState(null)
+  const [discount, setDiscount] = useState(0)
 
   const showModalWindow = (e) => {
     e.preventDefault();
@@ -138,6 +139,13 @@ function LastBlock(props) {
       })
 
       setAppliedGift(res.data)
+
+      const orderTotal = props.guestValue * paymentMethod['online-payment-amount']
+      const currGiftAmount = res.data.initial_amount - res.data.spend_amount
+
+      if (currGiftAmount) {
+        setDiscount(orderTotal > currGiftAmount ? currGiftAmount : orderTotal)
+      }
     } catch (err) {
       setError(err.response.data.message)
     } finally {
@@ -297,6 +305,7 @@ function LastBlock(props) {
           </div>
 
           {error && <p className="error">{error}</p>}
+          {discount > 0 && <p className="discount">Your discount is <b>{discount} DKK</b></p>}
 
           <button
             type="button"
@@ -393,6 +402,7 @@ function LastBlock(props) {
               stripeSecret={stripeSecret}
               paymentInfo={paymentMethod}
               makeOrder={props.makeOrder()}
+              discount={discount}
             />
           }
         </div>

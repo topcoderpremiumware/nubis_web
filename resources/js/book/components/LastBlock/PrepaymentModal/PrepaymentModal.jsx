@@ -17,12 +17,15 @@ const PrepaymentModal = (props) => {
     stripeKey,
     stripeSecret,
     paymentInfo,
-    makeOrder
+    makeOrder,
+    discount
   } = props
 
   const options = {
     clientSecret: stripeSecret,
   };
+
+  const total = guestValue * paymentInfo['online-payment-amount']
 
   return (
     <div
@@ -40,8 +43,9 @@ const PrepaymentModal = (props) => {
         <p>{t('In order to complete from reservation at')} <b>{restaurantInfo.name}</b> {t('the')} <b>{`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`} {selectedTime}</b> {t('the following must be paid:')}</p>
         
         <div className="prepayment-form">
-          {t('Amount for')} {guestValue} pers.:
-          <div className='prepayment-total'>{guestValue * paymentInfo['online-payment-amount']} {paymentInfo['online-payment-currency']}</div>
+          {t('Amount for')} {guestValue} pers.
+          {discount > 0 && <p>Your discount is <b>{discount} DKK</b></p>}
+          <div className='prepayment-total'>Total: {total > discount ? total - discount : 0} {paymentInfo['online-payment-currency']}</div>
 
           {/* {stripeKey && stripeSecret ? */}
             <Elements stripe={stripeKey} options={options}>

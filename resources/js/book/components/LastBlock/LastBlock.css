@@ -200,6 +200,11 @@
   color: #dd0101;
 }
 
+.discount {
+  font-size: 12px;
+  margin: 10px 0;
+}
+
 .discount-wrapper {
   display: flex;
   align-items: center;

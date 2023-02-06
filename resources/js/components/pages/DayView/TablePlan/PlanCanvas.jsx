@@ -4,6 +4,8 @@ import {fabric} from 'fabric';
 import {circTable, landscape, rectTable} from "../../TablePlanSetup/tableTypes";
 import {Box, CircularProgress, Menu, MenuItem, Slider} from "@mui/material";
 import Moment from "moment";
+import _ from "lodash";
+import { useCallback } from "react";
 // import TablePropertiesPopup from "./TablePropertiesPopup";
 
 export default function PlanCanvas(props) {
@@ -12,6 +14,7 @@ export default function PlanCanvas(props) {
   const [plan, setPlan] = useState({})
   const [timeMarks, setTimeMarks] = useState([])
   const [selectedTime, setSelectedTime] = useState('')
+  const [debouncedSelectedTime, setDebouncedSelectedTime] = useState('')
   const [orders, setOrders] = useState([])
   const [selectedTable, setSelectedTable] = useState({})
   const [loading, setLoading] = useState(true)
@@ -49,8 +52,9 @@ export default function PlanCanvas(props) {
   },[orders])
 
   useEffect(() => {
+    console.log('log')
     markOrderedTables()
-  },[selectedTime])
+  },[debouncedSelectedTime])
 
   const getTimesList = () => {
     let timesArray = []
@@ -62,6 +66,19 @@ export default function PlanCanvas(props) {
       from.add(15, 'minutes')
     }
     setTimeMarks(timesArray)
+    
+    let lessTime = 0
+    const now = Moment(new Date('1970-01-01 ' + Moment().format('HH:mm')))
+    timesArray.forEach(i => {
+      const fullLessTime = Moment(new Date('1970-01-01 ' + lessTime))
+      const time = Moment(new Date('1970-01-01 ' + i))
+      const diff = now.diff(time)
+      if (lessTime === 0 || (fullLessTime > diff && diff > 0)) {
+        lessTime = i
+      }
+    })
+    setSelectedTime(lessTime)
+    setDebouncedSelectedTime(lessTime)
   }
 
   const getPlan = () => {
@@ -158,7 +175,7 @@ export default function PlanCanvas(props) {
           orders.forEach((order) => {
             if(order.table_ids.includes(item.number)){
               let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
-              let now = Moment(date+' '+selectedTime)
+              let now = Moment(date+' '+debouncedSelectedTime)
               if(item.order === ''){
                 if(now.isBetween(order.from,order.to) || now.isSame(order.from)){
                   let duration = Moment.duration(order.to.diff(now));
@@ -215,15 +232,18 @@ export default function PlanCanvas(props) {
     })
   }
 
+  const debouncedOnChange = useCallback(_.debounce((value) => setDebouncedSelectedTime(value), 1000), [])
+
   const onChange = (e,val) => {
-      setSelectedTime(timeMarks[val])
+    setSelectedTime(timeMarks[val])
+    debouncedOnChange(timeMarks[val])
   }
 
   return (<>
     <Box sx={{ p: 3, pb:0 }}>
       <Slider
         size="small"
-        defaultValue={0}
+        value={timeMarks.findIndex(i => i === selectedTime)}
         step={1}
         min={0}
         valueLabelFormat={value => {
@@ -234,7 +254,7 @@ export default function PlanCanvas(props) {
           }
         }}
         name="selectedTime"
-        onChangeCommitted={(e,val) => onChange(e,val)}
+        onChange={onChange}
         max={timeMarks.length - 1}
         valueLabelDisplay="on"
       />

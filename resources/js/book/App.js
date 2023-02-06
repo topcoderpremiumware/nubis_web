@@ -271,6 +271,7 @@ const App = () => {
       })
       .catch((error) => {
         console.log("Error: ", error);
+        throw new Error(error.response.data.message)
       });
   };
 

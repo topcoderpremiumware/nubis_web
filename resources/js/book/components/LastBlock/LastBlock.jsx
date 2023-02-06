@@ -4,7 +4,7 @@ import "./LastBlock.css";
 import SelectLang from "../FirstBlock/SelectLang/SelectLang";
 import Copyrigth from "../FirstBlock/Copyrigth/Copyrigth";
 import MainModal from "../MainModal/MainModal";
-import {Trans, useTranslation} from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import PrepaymentModal from "./PrepaymentModal/PrepaymentModal";
 import axios from "axios";
 import { loadStripe } from '@stripe/stripe-js';
@@ -19,6 +19,12 @@ function LastBlock(props) {
   const [stripeKey, setStripeKey] = useState('')
   const [stripeSecret, setStripeSecret] = useState('')
   const [paymentMethod, setPaymentMethod] = useState({})
+  const [gifts, setGifts] = useState([])
+  const [giftCode, setGiftCode] = useState('')
+  const [error, setError] = useState('')
+  const [checkingGiftCard, setCheckingGiftCard] = useState(false)
+  const [appliedGift, setAppliedGift] = useState(null)
+  const [discount, setDiscount] = useState(0)
 
   const showModalWindow = (e) => {
     e.preventDefault();
@@ -30,17 +36,21 @@ function LastBlock(props) {
     const isOnline = paymentMethod?.['is-online-payment'] === '1'
     const method = paymentMethod?.['online-payment-method']
 
-    if (!isOnline) {
-      await props.makeOrder();
-      setModalActive(true);
-      props.setDefaultModal("done");
-    } else if (method === 'deduct') {
-      await props.makeOrder();
-      // window.location.href = orderResponse?.prepayment_url
-    } else if (method === 'reserve' || method === 'no-show') {
-      setModalActive(true);
-      props.setDefaultModal("prepayment");
-      // await props.makeOrder();
+    try {
+      if (!isOnline) {
+        await props.makeOrder()
+        setModalActive(true);
+        props.setDefaultModal("done");
+      } else if (method === 'deduct') {
+        // spend gift
+        await props.makeOrder();
+        // window.location.href = orderResponse?.prepayment_url
+      } else if (method === 'reserve' || method === 'no-show') {
+        setModalActive(true);
+        props.setDefaultModal("prepayment");
+      }
+    } catch (err) {
+      setError(err.message)
     }
   };
 
@@ -94,13 +104,60 @@ function LastBlock(props) {
   }
 
   const getPaymentMethod = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id') }/payment_method`)
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`)
     setPaymentMethod(res.data)
+  }
+
+  const getGiftCards = async () => {
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/giftcards`, {
+      params: {
+        place_id: localStorage.getItem('place_id')
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    })
+    setGifts(res.data)
+  }
+
+  const checkGiftCard = async () => {
+    if (!giftCode) {
+      setError('Enter a code')
+      return
+    }
+
+    try {
+      setCheckingGiftCard(true)
+      setError('')
+
+      const res = await axios.get(`${process.env.MIX_API_URL}/api/giftcards_check`, {
+        params: {
+          code: giftCode
+        },
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+
+      setAppliedGift(res.data)
+
+      const orderTotal = props.guestValue * paymentMethod['online-payment-amount']
+      const currGiftAmount = res.data.initial_amount - res.data.spend_amount
+
+      if (currGiftAmount) {
+        setDiscount(orderTotal > currGiftAmount ? currGiftAmount : orderTotal)
+      }
+    } catch (err) {
+      setError(err.response.data.message)
+    } finally {
+      setCheckingGiftCard(false)
+    }
   }
 
   useEffect(() => {
     getStripeKeys()
     getPaymentMethod()
+    getGiftCards()
   }, [])
 
   return (
@@ -123,7 +180,7 @@ function LastBlock(props) {
             </div>
           </div>
           <div className="overhead">
-            <Trans>Reserved {{val: props.guestValue}} Guests</Trans>
+            <Trans>Reserved {{ val: props.guestValue }} Guests</Trans>
           </div>
           <div className="title third-title">{t('Almost there')}</div>
           <div className="last-info">
@@ -213,35 +270,46 @@ function LastBlock(props) {
                 />
                 <label htmlFor="eathereChoice">{t('Eat here')}</label>
               </div>
-              {/* <div className="checkbox">
-                <input
-                  id="first-checkbox"
-                  type="checkbox"
-                  onChange={handleOnChangeEmail}
-                  style={{ width: "14px", heigth: "14px", marginRight: "8px" }}
-                />
-                <div>
-                  {t('Get restaurant news and inspiration from DinnerBooking.com on email.')}
-                  <a href="/#">{t('See our privacy policy')}</a>
-                </div>
-              </div>
-              <div className="second-checkbox">
-                <input
-                  type="checkbox"
-                  onChange={handleOnChangeNews}
-                  style={{
-                    width: "14px",
-                    heigth: "14px",
-                    marginRight: "8px",
-                  }}
-                />
-                {t('I would like to receive the restaurant newsletter by email.')}
-              </div> */}
+
+              {gifts.length > 0 &&
+                paymentMethod?.['is-online-payment'] === '1' &&
+                (paymentMethod?.['online-payment-method'] === 'deduct' ||
+                  paymentMethod?.['online-payment-method'] === 'reserve') && (
+                  <div>
+                    <div className="client-title__comment">{t('Apply discount')}</div>
+                    <div className="discount-wrapper">
+                      <input
+                        type="text"
+                        className="form-name__comment"
+                        placeholder={t('Enter a discount code')}
+                        value={giftCode}
+                        onChange={ev => setGiftCode(ev.target.value)}
+                        readOnly={checkingGiftCard || appliedGift}
+                      />
+                      <button
+                        type="button"
+                        className="next-button discount-btn next"
+                        disabled={checkingGiftCard || appliedGift}
+                        onClick={checkGiftCard}
+                      >
+                        {checkingGiftCard
+                          ? t('Checking...')
+                          : appliedGift
+                            ? t('Applied')
+                            : t('Apply')
+                        }
+                      </button>
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
 
+          {error && <p className="error">{error}</p>}
+          {discount > 0 && <p className="discount">{t('Your discount is')} <b>{discount} DKK</b></p>}
+
           <button
-            type="button" 
+            type="button"
             className="next-button second-next-button next"
             onClick={makeOrderDone}
           >
@@ -306,7 +374,7 @@ function LastBlock(props) {
                     <br />
                     {props.userData.zip_code}
                     <br />
-                    <div style={{marginTop: '10px'}}><b>Comment:</b> {comment || '-'}</div>
+                    <div style={{ marginTop: '10px' }}><b>Comment:</b> {comment || '-'}</div>
                     <br />
                     <div><b>Type:</b> {props.isTakeAway ? t('Take away') : t('Eat here')}</div>
                   </div>
@@ -334,6 +402,8 @@ function LastBlock(props) {
               stripeKey={stripeKey}
               stripeSecret={stripeSecret}
               paymentInfo={paymentMethod}
+              makeOrder={props.makeOrder()}
+              discount={discount}
             />
           }
         </div>

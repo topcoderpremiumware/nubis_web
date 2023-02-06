@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useLayoutEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './../i18nextConf';
 import "./App.css";
@@ -6,9 +6,9 @@ import "./App.css";
 import LoadingPage from "../components/LoadingPage";
 import { FormControlLabel, Radio, RadioGroup, Rating } from '@mui/material';
 import axios from 'axios';
-import { useLayoutEffect } from 'react';
 
 function App() {
+  const [feedback, setFeedback] = useState('')
   const [userId, setUserId] = useState(null)
   const [food, setFood] = useState(0)
   const [service, setService] = useState(0)
@@ -50,7 +50,14 @@ function App() {
     }
   }
 
-  useLayoutEffect(() => {
+  const checkFeedback = async () => {
+    const res = await axios.post(`${process.env.MIX_API_URL}/api/feedbacks/is_exist`, {
+      order_id: window.location.pathname.split('/')[2],
+    })
+    setFeedback(res.data.message)
+  }
+
+  useLayoutEffect(async () => {
     if(!localStorage.getItem('token')){
       window.location.href="/"
       // axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
@@ -62,6 +69,7 @@ function App() {
       //   }
       // })
     }
+    checkFeedback()
   }, [])
 
   return (
@@ -70,81 +78,87 @@ function App() {
         {localStorage.getItem('token') ?
           <>
             <h1 className="feedback-title">Feedback</h1>
-            <p className="feedback-text">Please, tell us what you think about your recent visit at restaurant</p>
-            {isSubmitted ? (
-              <h3 className="feedback-title feedback-success">Thank you!</h3>
+            {feedback === "Feedback hasn't been created yet" ? (
+              <>
+                <p className="feedback-text">Please, tell us what you think about your recent visit at restaurant</p>
+                {isSubmitted ? (
+                  <h3 className="feedback-title feedback-success">Thank you!</h3>
+                ) : (
+                  <div className="feedback-wrapper">
+                    <div className="feedback-item">
+                      <span>Food:</span>
+                      <Rating
+                        value={food}
+                        onChange={(event, newValue) => {
+                          setFood(newValue);
+                        }}
+                      />
+                    </div>
+                    <div className="feedback-item">
+                      <span>Service:</span>
+                      <Rating
+                        value={service}
+                        onChange={(event, newValue) => {
+                          setService(newValue);
+                        }}
+                      />
+                    </div>
+                    <div className="feedback-item">
+                      <span>Ambiance:</span>
+                      <Rating
+                        value={ambiance}
+                        onChange={(event, newValue) => {
+                          setAmbiance(newValue);
+                        }}
+                      />
+                    </div>
+                    <div className="feedback-item">
+                      <span>Overall experience:</span>
+                      <Rating
+                        value={experience}
+                        onChange={(event, newValue) => {
+                          setExperience(newValue);
+                        }}
+                      />
+                    </div>
+                    <div className="feedback-item">
+                      <span>Value for money:</span>
+                      <Rating
+                        name="simple-controlled"
+                        value={price}
+                        onChange={(event, newValue) => {
+                          setPrice(newValue);
+                        }}
+                      />
+                    </div>
+                    <div className="feedback-item">
+                      <span>Would recommend:</span>
+                        <RadioGroup
+                          row
+                          value={recommend}
+                          onChange={ev => setRecommend(ev.target.value)}
+                        >
+                          <FormControlLabel value="1" control={<Radio color="default" size="small" />} label="Yes" />
+                          <FormControlLabel value="0" control={<Radio color="default" size="small" />} label="No" />
+                        </RadioGroup>
+                    </div>
+                    <div className="feedback-item feedback-item-column">
+                      <span>Comment:</span>
+                      <textarea
+                        name="comment"
+                        rows="3"
+                        value={comment}
+                        onChange={ev => setComment(ev.target.value)}
+                      ></textarea>
+                    </div>
+                    <button className="feedback-btn" onClick={onSubmit} disabled={isLoading}>
+                      {isLoading ? 'Loading...' : 'Submit'}
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="feedback-wrapper">
-                <div className="feedback-item">
-                  <span>Food:</span>
-                  <Rating
-                    value={food}
-                    onChange={(event, newValue) => {
-                      setFood(newValue);
-                    }}
-                  />
-                </div>
-                <div className="feedback-item">
-                  <span>Service:</span>
-                  <Rating
-                    value={service}
-                    onChange={(event, newValue) => {
-                      setService(newValue);
-                    }}
-                  />
-                </div>
-                <div className="feedback-item">
-                  <span>Ambiance:</span>
-                  <Rating
-                    value={ambiance}
-                    onChange={(event, newValue) => {
-                      setAmbiance(newValue);
-                    }}
-                  />
-                </div>
-                <div className="feedback-item">
-                  <span>Overall experience:</span>
-                  <Rating
-                    value={experience}
-                    onChange={(event, newValue) => {
-                      setExperience(newValue);
-                    }}
-                  />
-                </div>
-                <div className="feedback-item">
-                  <span>Value for money:</span>
-                  <Rating
-                    name="simple-controlled"
-                    value={price}
-                    onChange={(event, newValue) => {
-                      setPrice(newValue);
-                    }}
-                  />
-                </div>
-                <div className="feedback-item">
-                  <span>Would recommend:</span>
-                    <RadioGroup
-                      row
-                      value={recommend}
-                      onChange={ev => setRecommend(ev.target.value)}
-                    >
-                      <FormControlLabel value="1" control={<Radio color="default" size="small" />} label="Yes" />
-                      <FormControlLabel value="0" control={<Radio color="default" size="small" />} label="No" />
-                    </RadioGroup>
-                </div>
-                <div className="feedback-item feedback-item-column">
-                  <span>Comment:</span>
-                  <textarea
-                    name="comment"
-                    rows="3"
-                    value={comment}
-                    onChange={ev => setComment(ev.target.value)}
-                  ></textarea>
-                </div>
-                <button className="feedback-btn" onClick={onSubmit} disabled={isLoading}>
-                  {isLoading ? 'Loading...' : 'Submit'}
-                </button>
-              </div>
+              <p className="feedback-text">{feedback}</p>
             )}
           </>
           :

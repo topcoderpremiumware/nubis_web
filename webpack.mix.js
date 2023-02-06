@@ -24,3 +24,6 @@ mix.js('resources/js/giftcard.js', 'public/js')
 
 mix.js('resources/js/feedback.js', 'public/js')
   .react();
+
+mix.js('resources/js/feedbacks.js', 'public/js')
+  .react();

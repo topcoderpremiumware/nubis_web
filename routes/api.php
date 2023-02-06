@@ -14,6 +14,7 @@ use App\Http\Controllers\GiftcardController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MessageTemplateController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderWebhookController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
@@ -145,12 +146,9 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('message_tempates_test_sms',[MessageTemplateController::class, 'sendTestSms']);
     Route::post('message_tempates_test_email',[MessageTemplateController::class, 'sendTestEmail']);
 
-    Route::post('giftcards',[GiftcardController::class, 'create']);
     Route::get('giftcards/{id}',[GiftcardController::class, 'getId']);
     Route::post('giftcards/{id}',[GiftcardController::class, 'save']);
     Route::get('giftcards',[GiftcardController::class, 'getAllByPlace']);
-    Route::get('giftcards_check',[GiftcardController::class, 'getByCode']);
-    Route::post('giftcards_spend',[GiftcardController::class, 'spend']);
 
     Route::post('coupons',[CouponController::class, 'create']);
     Route::get('coupons/{id}',[CouponController::class, 'getId']);
@@ -180,8 +178,12 @@ Route::middleware('auth:user_api')->group(function(){
     Route::delete('video_guides/{id}',[VideoGuideController::class, 'delete']);
 });
 
+Route::post('giftcards',[GiftcardController::class, 'create']);
+Route::get('giftcards_check',[GiftcardController::class, 'getByCode']);
+Route::post('giftcards_spend',[GiftcardController::class, 'spend']);
+
 Route::get('places/{id}',[PlaceController::class, 'getId']);
-Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);
+Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);
 
 Route::post('billing/webhook',[BillingController::class, 'webhook']);
-Route::post('places/{place_id}/webhook',[OrderController::class, 'webhook']);
+Route::post('places/{place_id}/webhook',[OrderWebhookController::class, 'webhook']);

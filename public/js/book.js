@@ -25126,7 +25126,7 @@ function Image() {
     return pathArray.length === 3 ? pathArray[2] : 0;
   };
 
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('/images/default_place_image.png'),
       _useState2 = _slicedToArray(_useState, 2),
       mainImage = _useState2[0],
       setMainImage = _useState2[1];

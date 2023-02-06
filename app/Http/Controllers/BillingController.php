@@ -51,7 +51,7 @@ class BillingController extends Controller
                 ],
                 'after_completion' => [
                     'type' => 'redirect',
-                    'redirect' => ['url' => env('APP_URL')],
+                    'redirect' => ['url' => env('APP_URL').'/admin/ThankYou'],
                 ],
             ]
         );

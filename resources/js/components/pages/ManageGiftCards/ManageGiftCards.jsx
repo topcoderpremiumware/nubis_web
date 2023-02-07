@@ -3,12 +3,16 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
+import CheckGiftCardPopup from './CheckGiftCardPopup/CheckGiftCardPopup';
+import NewGiftCardPopup from './NewGiftCardPopup/NewGiftCardPopup';
 
 const ManageGiftCards = () => {
   const { t } = useTranslation();
 
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(true)
+  const [newPopupIsOpen, setNewPopupIsOpen] = useState(false)
+  const [checkPopupIsOpen, setCheckPopupIsOpen] = useState(false)
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
@@ -42,11 +46,17 @@ const ManageGiftCards = () => {
     eventBus.on("placeChanged", () => {
       getCards()
     })
+    eventBus.on("newGiftCard", () => {
+      getCards()
+    })
+    eventBus.on("spendGiftCard", () => {
+      getCards()
+    })
   }, [])
 
   return (
     <div className='pages__container'>
-      <h2>Manage Gift Cards</h2>
+      <h2>{t('Manage Gift Cards')}</h2>
       <div className="container-fluid">
         <div className="row">
           {loading ? <div><CircularProgress /></div> : <TableContainer>
@@ -56,7 +66,6 @@ const ManageGiftCards = () => {
                   <TableCell size="small">{t('Code')}</TableCell>
                   <TableCell size="small">{t('Initial Amount')}</TableCell>
                   <TableCell size="small">{t('Spend Amount')}</TableCell>
-                  {/* <TableCell size="small" style={{ minWidth: '100px' }}>{t('Actions')}</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -73,10 +82,27 @@ const ManageGiftCards = () => {
         </div>
       </div>
       <Stack spacing={2} sx={{ mt: 2 }} direction="row">
-        <Button variant="contained" type="button" onClick={e => {
-          // openEditPopup(false)
-        }}>{t('New')}</Button>
+        <Button 
+          variant="contained" 
+          type="button" 
+          onClick={() => setNewPopupIsOpen(true)}
+        >{t('New')}</Button>
+        <Button 
+          variant="contained" 
+          type="button" 
+          onClick={() => setCheckPopupIsOpen(true)}
+        >{t('Check')}</Button>
       </Stack>
+
+      <NewGiftCardPopup
+        open={newPopupIsOpen}
+        handleClose={() => setNewPopupIsOpen(false)}
+      />
+
+      <CheckGiftCardPopup
+        open={checkPopupIsOpen}
+        handleClose={() => setCheckPopupIsOpen(false)}
+      />
     </div>
   )
 }

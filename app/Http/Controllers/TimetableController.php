@@ -50,7 +50,8 @@ class TimetableController extends Controller
             'max' => $request->max,
             'min' => $request->min,
             'week_days' => $request->has('week_days') ? $request->week_days : [],
-            'status' => $request->status
+            'status' => $request->status,
+            'booking_limits' => $request->booking_limits
         ]);
 
         Log::add($request,'create-timetable','Created timetable #'.$timetable->id);
@@ -100,7 +101,8 @@ class TimetableController extends Controller
             'max' => $request->max,
             'min' => $request->min,
             'week_days' => $request->has('week_days') ? $request->week_days : [],
-            'status' => $request->status
+            'status' => $request->status,
+            'booking_limits' => $request->booking_limits
         ]);
 
         Log::add($request,'change-timetable','Changed timetable #'.$id);

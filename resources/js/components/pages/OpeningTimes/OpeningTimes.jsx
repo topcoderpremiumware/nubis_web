@@ -110,20 +110,35 @@ export default function OpeningTimes() {
   }
 
   const openEditPopup = (time) => {
-    if (!time) time = {
-      place_id: localStorage.getItem('place_id'),
-      start_date: Moment().format('YYYY-MM-DD'),
-      end_date: Moment().format('YYYY-MM-DD'),
-      start_time: '',
-      end_time: '',
-      week_days: [],
-      area_id: null,
-      tableplan_id: null,
-      length: 0,
-      max: 999,
-      min: 0,
-      status: 'working'
+    if (!time){
+      time = {
+        place_id: localStorage.getItem('place_id'),
+        start_date: Moment().format('YYYY-MM-DD'),
+        end_date: Moment().format('YYYY-MM-DD'),
+        start_time: '',
+        end_time: '',
+        week_days: [],
+        area_id: null,
+        tableplan_id: null,
+        length: 0,
+        max: 999,
+        min: 0,
+        status: 'working',
+        booking_limits: []
+      }
     }
+    if(!time.booking_limits){
+      time['booking_limits'] = []
+    }
+    if (time.booking_limits.length === 0){
+      for (let i=0;i<24*4;i++){
+        time['booking_limits'].push({
+          max_books:0,
+          max_seats:0
+        })
+      }
+    }
+
     setSelectedTimetable(time)
     setEditPopupOpened(true)
   }

@@ -24,6 +24,11 @@ Route::get('/test', function () {
 
 });
 
+Route::get('/change_lang/{locale}', function ($locale = null) {
+    app()->setLocale($locale);
+    session()->put('locale', $locale);
+    return redirect()->back();
+});
 Route::view('/giftcard/{place_id}', 'giftcard')->name('giftcard');
 Route::view('/feedback/{order_id}', 'feedback')->name('feedback');
 Route::view('/feedbacks/{place_id}', 'feedbacks')->name('feedbacks');

@@ -13,6 +13,7 @@ class Timetable extends Model
 
     protected $casts = [
         'week_days' => 'array', //0 - sunday..6 - saturday
+        'booking_limits' => 'array',
     ];
 
     public function place()

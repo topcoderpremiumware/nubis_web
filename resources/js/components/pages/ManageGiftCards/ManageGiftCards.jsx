@@ -1,5 +1,4 @@
-import styled from '@emotion/styled';
-import { Button, CircularProgress, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, CircularProgress, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
@@ -54,20 +53,20 @@ const ManageGiftCards = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell size="small">{t('Name')}</TableCell>
-                  <TableCell size="small">{t('Priority')}</TableCell>
-                  <TableCell size="small">{t('Online availability')}</TableCell>
-                  <TableCell size="small" style={{ minWidth: '100px' }}>{t('Actions')}</TableCell>
+                  <TableCell size="small">{t('Code')}</TableCell>
+                  <TableCell size="small">{t('Initial Amount')}</TableCell>
+                  <TableCell size="small">{t('Spend Amount')}</TableCell>
+                  {/* <TableCell size="small" style={{ minWidth: '100px' }}>{t('Actions')}</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* {cards.map((item, key) => {
+                {cards.map((item, key) => {
                   return <StyledTableRow key={key}>
-                    <TableCell size="small">{item.name}</TableCell>
-                    <TableCell size="small">{item.priority}</TableCell>
-                    <TableCell size="small">{item.online_available ? t('Yes') : t('No')}</TableCell>
+                    <TableCell size="small">{item.code}</TableCell>
+                    <TableCell size="small">{item.initial_amount} DKK</TableCell>
+                    <TableCell size="small">{item.spend_amount} DKK</TableCell>
                   </StyledTableRow>
-                })} */}
+                })}
               </TableBody>
             </Table>
           </TableContainer>}

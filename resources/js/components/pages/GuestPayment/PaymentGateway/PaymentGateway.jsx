@@ -39,6 +39,10 @@ const PaymentGateway = () => {
     }).catch(error => {})
   }
 
+  const getWebhookUrl = () => {
+    return `${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/webhook`
+  }
+
   useEffect(() => {
     getStripeKey()
     getStripeSecret()
@@ -130,6 +134,7 @@ const PaymentGateway = () => {
                 <TextField label={t('Stripe Webhook Secret')} size="small" fullWidth
                  type="text" id="stripeWebhookSecret" name="stripeWebhookSecret" required
                  value={stripeWebhookSecret} onChange={e => setStripeWebhookSecret(e.target.value)}
+                 helperText={t('Webhook address')+': ' +getWebhookUrl()}
                 />
               </div>
               <Button variant="contained" type="submit">{t('Save')}</Button>

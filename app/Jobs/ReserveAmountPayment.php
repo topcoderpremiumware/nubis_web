@@ -59,7 +59,6 @@ class ReserveAmountPayment implements ShouldQueue
                     [
                         'line_items' => [['price' => $price->id, 'quantity' => 1]],
                         'metadata' => [
-                            'place_id' => $order->place_id,
                             'order_id' => $order->id
                         ],
                         'after_completion' => [

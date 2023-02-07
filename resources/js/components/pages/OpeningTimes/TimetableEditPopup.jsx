@@ -13,9 +13,10 @@ import {
   DialogTitle, FormControl,
   FormControlLabel,
   Grid,
-  IconButton, InputLabel, MenuItem, Select, TextField,
+  IconButton, InputLabel, MenuItem, Select, styled, Table, TableBody, TableCell, TableHead, TableRow, TextField,
 } from "@mui/material";
 import DatePicker from "react-datepicker";
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function TimetableEditPopup(props) {
   const { t } = useTranslation();
@@ -23,6 +24,19 @@ export default function TimetableEditPopup(props) {
   const [areas, setAreas] = useState([])
   const [tableplans, setTableplans] = useState([])
   const [yearly, setYearly] = useState(false)
+  const [editRow, setEditRow] = useState(0)
+  const [copy, setCopy] = useState(true)
+  const [focusOn, setFocusOn] = useState('')
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+      border: 0,
+    },
+  }));
 
   useEffect(() => {
     if(props.timetable.hasOwnProperty('start_date')){
@@ -34,6 +48,7 @@ export default function TimetableEditPopup(props) {
   },[props])
 
   const onChange = (e) => {
+    if(e.target.name === 'copy') setCopy(e.target.checked)
     if(e.target.name === 'yearly') {
       setYearly(e.target.checked)
       let year = e.target.checked ? '0004' : 'YYYY'
@@ -52,6 +67,17 @@ export default function TimetableEditPopup(props) {
     if(e.target.name === 'length') setTimetable(prev => ({...prev, length: e.target.value}))
     if(e.target.name === 'max') setTimetable(prev => ({...prev, max: intWrapper(e.target.value)}))
     if(e.target.name === 'status') setTimetable(prev => ({...prev, status: e.target.value}))
+  }
+
+  const onTimeChange = (e, key) => {
+    let time = timetable.booking_limits
+    let lastKey = copy ? time.length-1 : key
+    for(var i=key;i<=lastKey;i++) {
+      if (e.target.name === 'max_books') time[i].max_books = intWrapper(e.target.value)
+      if (e.target.name === 'max_seats') time[i].max_seats = intWrapper(e.target.value)
+    }
+    setTimetable(prev => ({...prev, booking_limits: time}))
+    setFocusOn(e.target.name+'_'+key)
   }
 
   const handleClose = () => {
@@ -97,6 +123,12 @@ export default function TimetableEditPopup(props) {
   const weekDays = () => {
     Moment.locale(localStorage.getItem('i18nextLng'))
     return Moment.weekdays()
+  }
+
+  const tableTime = (key) => {
+    var tt = new Date(0);
+    tt = new Date(tt.getTime() + key*15*60000)
+    return (tt.getUTCHours()<10?'0':'')+tt.getUTCHours()+':'+(tt.getMinutes()<10?'0':'')+tt.getMinutes()
   }
 
   return (<>
@@ -240,8 +272,61 @@ export default function TimetableEditPopup(props) {
                        />
           </Grid>
         </Grid>
+        <Grid container spacing={2} sx={{pb: 2}}>
+          <Grid item xs={12}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell size="small"></TableCell>
+                  <TableCell size="small">{t('Time')}</TableCell>
+                  <TableCell size="small">{t('Max booking')}</TableCell>
+                  <TableCell size="small">{t('Max pax')}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {timetable.booking_limits.map((time,key) => {
+                  return <StyledTableRow key={key}>
+                    <TableCell size="small">
+                      {key === editRow ?
+                        <></>
+                        :
+                        <IconButton onClick={e => {setEditRow(key)}} size="small">
+                          <EditIcon fontSize="small"/>
+                        </IconButton>
+                      }
+                    </TableCell>
+                    <TableCell size="small">{tableTime(key)}</TableCell>
+                    <TableCell size="small">
+                      {key === editRow ?
+                        <TextField id={`max_books_${key}`} type="text" name="max_books" size="small" fullWidth
+                                   variant="standard" autoFocus={focusOn === `max_books_${key}`}
+                                   value={intWrapper(time.max_books)} onChange={e => {onTimeChange(e,key)}}/>
+                        :
+                        <>{time.max_books}</>
+                      }
+                    </TableCell>
+                    <TableCell size="small">
+                      {key === editRow ?
+                        <TextField id={`max_seats_${key}`} type="text" name="max_seats" size="small" fullWidth
+                                   variant="standard" autoFocus={focusOn === `max_seats_${key}`}
+                                   value={intWrapper(time.max_seats)} onChange={e => {onTimeChange(e,key)}}/>
+                        :
+                        <>{time.max_seats}</>
+                      }
+                    </TableCell>
+                  </StyledTableRow>
+                })}
+              </TableBody>
+            </Table>
+          </Grid>
+        </Grid>
       </DialogContent>
       <DialogActions sx={{p:2}}>
+        <FormControlLabel sx={{mr:'auto'}}
+                          control={<Checkbox name="copy" checked={copy} onChange={onChange}/>}
+                          label={t('Copy values down')}
+                          labelPlacement="end"
+        />
         <Button variant="outlined" onClick={handleClose}>{t('Cancel')}</Button>
         <Button variant="contained" onClick={handleSave}>{t('Save')}</Button>
       </DialogActions>

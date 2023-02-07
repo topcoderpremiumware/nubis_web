@@ -18,13 +18,15 @@
             <div class="container">
                 <a class="navbar-brand" href="/"><img src='/images/logo.png' width="90"/></a>
                 <ul class="navbar-nav w-100">
-                    <li class="nav-item ms-lg-auto"><a class="nav-link" href="/admin/login">Sign in</a></li>
+                    @include('partials/language_switcher')
+                    <li class="nav-item"><a class="nav-link" href="/admin/login">Sign in</a></li>
                 </ul>
             </div>
         </nav>
         <div>
-            Landing page here
+            {{ __('Landing page here') }}
         </div>
+        <script src="/js/home.js"></script>
     </body>
 
 </html>

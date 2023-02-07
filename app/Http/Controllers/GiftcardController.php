@@ -4,25 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Giftcard;
 use App\Models\Log;
+use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Stripe\StripeClient;
 
 class GiftcardController extends Controller
 {
     public function create(Request $request)
     {
-//        if(!Auth::user()->tokenCan('admin')) return response()->json([
-//            'message' => 'Unauthorized.'
-//        ], 401);
-
         $request->validate([
             'place_id' => 'required|exists:places,id',
             'name' => 'required',
             'expired_at' => 'required|date_format:Y-m-d H:i:s',
             'initial_amount' => 'required|numeric',
             'email' => 'required|email',
-//            'receiver_name' => 'required',
-//            'receiver_email' => 'required'
         ]);
 
         $giftcard = Giftcard::create([
@@ -40,10 +36,42 @@ class GiftcardController extends Controller
             'post_code' => $request->post_code,
             'company_city' => $request->company_city,
             'vat_number' => $request->vat_number,
-            'country_id' => $request->country_id
+            'country_id' => $request->country_id,
+            'status' => 'pending'
         ]);
 
-        Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
+        $place = Place::find($request->place_id);
+
+        $online_payment_currency = $place->setting('online-payment-currecy');
+        $stripe_secret = $place->setting('stripe-secret');
+        $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
+
+        if($stripe_secret && $stripe_webhook_secret && $online_payment_currency){
+            $stripe = new StripeClient($stripe_secret);
+            $price = $stripe->prices->create([
+                'unit_amount' => $request->initial_amount,
+                'currency' => $online_payment_currency,
+                'product_data' => [
+                    'name' => 'Giftcard'
+                ]
+            ]);
+
+            $link = $stripe->paymentLinks->create(
+                [
+                    'line_items' => [['price' => $price->id, 'quantity' => 1]],
+                    'metadata' => [
+                        'giftcard_id' => $giftcard->id
+                    ],
+                    'after_completion' => [
+                        'type' => 'redirect',
+                        'redirect' => ['url' => env('APP_URL')],
+                    ],
+                ]
+            );
+            $giftcard->payment_url = $link->url;
+        }
+
+        //Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
 
         return response()->json($giftcard);
     }
@@ -60,8 +88,6 @@ class GiftcardController extends Controller
             'expired_at' => 'required|date_format:Y-m-d H:i:s',
             'initial_amount' => 'required|numeric',
             'email' => 'required|email',
-//            'receiver_name' => 'required',
-//            'receiver_email' => 'required'
         ]);
 
         $giftcard = Giftcard::find($id);
@@ -87,7 +113,8 @@ class GiftcardController extends Controller
             'post_code' => $request->post_code,
             'company_city' => $request->company_city,
             'vat_number' => $request->vat_number,
-            'country_id' => $request->country_id
+            'country_id' => $request->country_id,
+            'status' => $request->status
         ]);
 
         Log::add($request,'change-giftcard','Changed giftcard #'.$giftcard->id);
@@ -154,6 +181,9 @@ class GiftcardController extends Controller
         if($giftcard->expired_at <= now()){
             return response()->json(['message' => 'Giftcard is expired'], 400);
         }
+        if($giftcard->status != 'confirmed'){
+            return response()->json(['message' => 'Giftcard is pending'], 400);
+        }
 
         return response()->json($giftcard);
     }
@@ -173,12 +203,15 @@ class GiftcardController extends Controller
         if($giftcard->expired_at <= now()){
             return response()->json(['message' => 'Giftcard is expired'], 400);
         }
+        if($giftcard->status != 'confirmed'){
+            return response()->json(['message' => 'Giftcard is pending'], 400);
+        }
 
         if(!$giftcard->spend($request->amount)){
             return response()->json(['message' => 'Giftcard has not enough amount'], 400);
         }
 
-        Log::add($request,'spend-giftcard','Spent giftcard #'.$giftcard->id.' by '.$request->amount);
+        //Log::add($request,'spend-giftcard','Spent giftcard #'.$giftcard->id.' by '.$request->amount);
 
         $giftcard = Giftcard::find($giftcard->id);
 

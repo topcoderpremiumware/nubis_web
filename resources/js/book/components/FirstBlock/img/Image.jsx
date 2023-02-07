@@ -7,7 +7,7 @@ function Image() {
     return pathArray.length === 3 ? pathArray[2] : 0
   };
 
-  const [mainImage, setMainImage] = useState(null);
+  const [mainImage, setMainImage] = useState('/images/default_place_image.png');
 
   const getImage = () => {
     axios.get(`${process.env.MIX_API_URL}/api/files_purpose`, {

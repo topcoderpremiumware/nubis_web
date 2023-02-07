@@ -753,7 +753,6 @@ class OrderController extends Controller
                 [
                     'line_items' => [['price' => $price->id, 'quantity' => 1]],
                     'metadata' => [
-                        'place_id' => $request->place_id,
                         'order_id' => $order->id
                     ],
                     'after_completion' => [
@@ -799,7 +798,6 @@ class OrderController extends Controller
                     'payment_method' => $setup_intent->payment_method,
                     'capture_method' => 'manual',
                     'metadata' => [
-                        'place_id' => $request->place_id,
                         'order_id' => $order->id
                     ],
                 ]);
@@ -875,57 +873,6 @@ class OrderController extends Controller
         $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
 
         return response()->json($free_tables);
-    }
-
-    public function webhook($place_id, Request $request)
-    {
-        $place = Place::find($place_id);
-        $stripe_secret = $place->setting('stripe-secret');
-        $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
-        try {
-            $event = Webhook::constructEvent(
-                @file_get_contents('php://input'),
-                $_SERVER['HTTP_STRIPE_SIGNATURE'],
-                $stripe_webhook_secret
-            );
-        } catch(\UnexpectedValueException $e) {
-            // Invalid payload
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
-            exit();
-        } catch(\Stripe\Exception\SignatureVerificationException $e) {
-            // Invalid signature
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
-            exit();
-        }
-        if ($event->type == 'payment_intent.succeeded') {
-            $stripe = new StripeClient($stripe_secret);
-            $object = $event->data->object;
-
-            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
-            if(count($sessions->data) > 0){
-                $metadata = $sessions->data[0]->metadata;
-
-                if(property_exists($metadata,'order_id')){
-                    $order_id = $metadata->order_id;
-
-                    $order = Order::find($order_id);
-                    $marks = $order->marks;
-                    $marks['payment_intent_id'] = $object->id;
-                    $order->marks = $marks;
-                    $order->status = 'confirmed';
-                    $order->save();
-
-                    if($order->marks['method'] === 'deduct'){
-                        $this->sendNewOrderNotification($order,$place);
-                    }
-                }
-            }
-        }
-        return response()->json(['result'=> 'OK']);
     }
 
     public function getStripeClientSecret(Request $request)

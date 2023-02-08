@@ -16,7 +16,7 @@ function App() {
 
   return (
     <Suspense fallback={<LoadingPage/>}>
-
+<div>yo</div>
     </Suspense>
   );
 }

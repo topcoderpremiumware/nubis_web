@@ -66,7 +66,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
         areas = response.data
       })
 
-      let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
+      let date = localStorage.getItem('date') || Moment.utc().format('YYYY-MM-DD')
       let time = JSON.parse(localStorage.getItem('time'))
       await axios.get(`${process.env.MIX_API_URL}/api/orders`, {
         params: {
@@ -82,12 +82,12 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
         let orders = response.data.map(item => {
           console.log('item', item)
           if(item.status === 'waiting') return false
-          item.from = Moment.utc(item.reservation_time).format('HH:mm')
-          item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').format('HH:mm')
+          item.from = Moment.utc(item.reservation_time).local().format('HH:mm')
+          item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').local().format('HH:mm')
           item.first_name = item.customer.first_name
           item.last_name = item.customer.last_name
           item.tables = item.is_take_away ? '' : item.table_ids.join(', ')
-          item.order_date = Moment(item.created_at).format('YYYY-MM-DD HH:mm')
+          item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm')
           item.take_away = item.is_take_away ? t('yes') : t('no')
           item.area = areas.find(i => i.id === item.area_id).name
           item.menu = item.custom_booking_length_id ? item.custom_booking_length.name : ''
@@ -121,10 +121,10 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
       {orders.length > 0 && (
         <PDFDownloadLink
           document={
-            <DayViewPdf 
-              title={t('Bookings')} 
+            <DayViewPdf
+              title={t('Bookings')}
               columns={columns.map(i => i.headerName)}
-              data={orders} 
+              data={orders}
             />
           }
           fileName={t('Bookings') + new Date().getTime() + ".pdf"}

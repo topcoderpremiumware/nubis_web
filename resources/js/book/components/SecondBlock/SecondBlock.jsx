@@ -12,6 +12,7 @@ import { normalizeNumber } from "../../../helper"
 import eventBus from "../../../eventBus";
 import { Trans, useTranslation } from "react-i18next";
 import SelectRestaurantModal from "./SelectRestaurantModal/SelectRestaurantModal";
+import moment from "moment";
 
 function SecondBlock(props) {
   const { t } = useTranslation();
@@ -60,9 +61,9 @@ function SecondBlock(props) {
       extraTimeReq
         .filter((oneBlock) => oneBlock.length === timereq)[0]
         .time.map((time) => ({
-          time: String(time.slice(11, 19)),
+          time: moment.utc(time).format('HH:mm:ss'),
           active: true,
-          shortTime: String(time.slice(11, 16)),
+          shortTime: moment.utc(time).local().format('HH:mm'),
         }));
     console.log("Times array Extra: ", extraTimesArray(type.length));
     // const setExtraTimes = ;
@@ -106,6 +107,7 @@ function SecondBlock(props) {
       },
     })
       .then((response) => {
+        console.log('getExtraTime',response.data)
         setExtraTimeReq(response.data);
         if (response.data.length === 0) {
           getTime(date)
@@ -128,8 +130,8 @@ function SecondBlock(props) {
       .then((response) => {
         if(response.data.length) {
           const timesArray = response.data?.map((time) => ({
-            time: String(time.slice(11, 19)),
-            shortTime: String(time.slice(11, 16)),
+            time: moment.utc(time).format('HH:mm:ss'),
+            shortTime: moment.utc(time).local().format('HH:mm'),
           }));
           console.log('timesArray', timesArray)
           setTimes(timesArray);

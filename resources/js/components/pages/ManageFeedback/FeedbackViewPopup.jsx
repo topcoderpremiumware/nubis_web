@@ -82,7 +82,7 @@ export default function FeedbackViewPopup(props) {
           <Grid item xs={12} sm={6}>
             <h2>{t('Booking Information')}</h2>
             <p>{t('Restaurant')}: <strong>{feedback.place.name}</strong></p>
-            <p>{t('Booking Date')}: <strong>{Moment(feedback.order.created_at).format('YYYY-MM-DD HH:mm')}</strong></p>
+            <p>{t('Booking Date')}: <strong>{Moment.utc(feedback.order.reservation_time).local().format('YYYY-MM-DD HH:mm')}</strong></p>
             <p>{t('Pax')}: <strong>{feedback.order.seats}</strong></p>
             <p>{t('Booking ID')}: <strong>{feedback.order.id}</strong></p>
             <p>{t('Area')}: <strong>{feedback.order.area.name}</strong></p>
@@ -135,7 +135,7 @@ export default function FeedbackViewPopup(props) {
             </p>
             <p style={{display: 'flex', alignItems: 'center'}}>{t('Reviewed')}:
               <span style={{display: 'flex', alignItems: 'center', marginLeft: 'auto'}}>
-                {Moment(feedback.created_at).format('YYYY-MM-DD HH:mm')}
+                {Moment.utc(feedback.created_at).local().format('YYYY-MM-DD HH:mm')}
               </span>
             </p>
           </Grid>

@@ -15,6 +15,7 @@ import eventBus from "../../../eventBus";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VideoGuideEditPopup from "./VideoGuideEditPopup";
+import moment from "moment";
 
 const VideoGuideSettings = () => {
   const { t } = useTranslation();

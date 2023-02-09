@@ -113,8 +113,8 @@ export default function OpeningTimes() {
     if (!time){
       time = {
         place_id: localStorage.getItem('place_id'),
-        start_date: Moment().format('YYYY-MM-DD'),
-        end_date: Moment().format('YYYY-MM-DD'),
+        start_date: Moment.utc().format('YYYY-MM-DD'),
+        end_date: Moment.utc().format('YYYY-MM-DD'),
         start_time: '',
         end_time: '',
         week_days: [],
@@ -181,7 +181,7 @@ export default function OpeningTimes() {
 
   const dateFromFormat = (date) => {
     if(date.startsWith('0004')){
-      return date.replace('0004',Moment().format('YYYY'))
+      return date.replace('0004',Moment.utc().format('YYYY'))
     }else{
       return date
     }
@@ -217,8 +217,8 @@ export default function OpeningTimes() {
                     <TableCell size="small">{time.status}</TableCell>
                     <TableCell size="small">{dateFromFormat(time.start_date)}</TableCell>
                     <TableCell size="small">{dateFromFormat(time.end_date)}</TableCell>
-                    <TableCell size="small">{time.start_time}</TableCell>
-                    <TableCell size="small">{time.end_time}</TableCell>
+                    <TableCell size="small">{Moment.utc(time.start_time,'HH:mm:ss').local().format('HH:mm:ss')}</TableCell>
+                    <TableCell size="small">{Moment.utc(time.end_time,'HH:mm:ss').local().format('HH:mm:ss')}</TableCell>
                     <TableCell size="small">{time.week_days.join()}</TableCell>
                     <TableCell size="small">{time.length}</TableCell>
                     <TableCell size="small">{time.max}</TableCell>

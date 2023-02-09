@@ -537,7 +537,7 @@ class OrderController extends Controller
         return response()->json($work_time);
     }
 
-    private function getFreeTables($orders,$working_hours,$seats,$boolean = true)
+    public function getFreeTables($orders,$working_hours,$seats,$boolean = true)
     {
         $free_tables = [];
         foreach ($working_hours as $working_hour){
@@ -561,7 +561,7 @@ class OrderController extends Controller
                 $indexTo = intval($reservTo->format('H'))*4 + floor(intval($reservTo->format('i'))/15);
                 foreach ($order->table_ids as $table_id){
                     if(array_key_exists($table_id,$free_tables[$order->tableplan_id])) {
-                        for($i = $indexFrom;$i<=$indexTo;$i++){
+                        for($i = $indexFrom;$i<$indexTo;$i++){ // $i<$indexTo - allow to order in same time when prev order is finished
                             $free_tables[$order->tableplan_id][$table_id]['time'][$i]['ordered'] = true;
                         }
                     }

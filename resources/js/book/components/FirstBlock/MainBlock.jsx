@@ -109,7 +109,6 @@ function MainBlock(props) {
                 selectedDay={props.selectedDay}
                 makeOrder={props.makeOrder}
                 selectedTime={props.selectedTime}
-                setSelectedTime={props.setSelectedTime}
                 setDefaultModal={props.setDefaultModal}
                 restaurantInfo={props.restaurantInfo}
                 guestValue={props.guestValue}

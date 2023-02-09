@@ -22,14 +22,14 @@ import { CgCalendarToday } from "react-icons/cg";
 
    const onChange = (date) => {
      setStartDate(date)
-     localStorage.setItem('date', Moment(date).format('YYYY-MM-DD'))
+     localStorage.setItem('date', Moment(date).utc().format('YYYY-MM-DD'))
      eventBus.dispatch("dateChanged")
    };
 
    const setDate = (days) => {
      let date = new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000)
      setStartDate(date)
-     localStorage.setItem('date',Moment(date).format('YYYY-MM-DD'))
+     localStorage.setItem('date',Moment(date).utc().format('YYYY-MM-DD'))
      eventBus.dispatch("dateChanged")
    };
 

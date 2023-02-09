@@ -9,6 +9,7 @@ import PrepaymentModal from "./PrepaymentModal/PrepaymentModal";
 import axios from "axios";
 import { loadStripe } from '@stripe/stripe-js';
 import { useEffect } from "react";
+import moment from "moment";
 
 function LastBlock(props) {
   const { t } = useTranslation();
@@ -199,10 +200,8 @@ function LastBlock(props) {
                   <b>{props.guestValue}</b>
                   <br />
                   {t('Day/time')}: &nbsp;
-                  <b>
-                    {`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`}{" "}
-                    {selectedTime.slice(0, 5)}
-                  </b>
+                  <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`)
+                    .local().format('DD-MM-YYYY HH:mm')}</b>
                 </div>
               </div>
               <div className="client-info">
@@ -357,10 +356,8 @@ function LastBlock(props) {
                     <b>{props.guestValue}</b>
                     <br />
                     {t('Day/time')}: &nbsp;
-                    <b>
-                      {`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`}{" "}
-                      {selectedTime.slice(0, 5)}
-                    </b>
+                    <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`)
+                        .local().format('DD-MM-YYYY HH:mm')}</b>
                   </div>
                 </div>
                 <div>

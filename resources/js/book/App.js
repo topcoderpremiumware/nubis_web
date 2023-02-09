@@ -384,7 +384,6 @@ const App = () => {
               errorsResp={errorsResp}
               datesArray={datesArray}
               selectedTime={selectedTime}
-              setSelectedTime={setSelectedTime}
               restaurantInfo={restaurantInfo}
               getUserInfoReq={getUserInfoReq}
               makeOrder={makeOrder}

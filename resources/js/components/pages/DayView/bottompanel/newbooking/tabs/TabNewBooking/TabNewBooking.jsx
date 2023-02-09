@@ -48,6 +48,7 @@ export default function TabNewBooking(props) {
   const {t} = useTranslation();
 
   const [order, setOrder] = React.useState({})
+  const [selectedTables, setSelectedTables] = React.useState([])
   const [customers, setCustomers] = React.useState([])
   const [areas, setAreas] = React.useState([])
   const [times, setTimes] = React.useState([])
@@ -81,6 +82,7 @@ export default function TabNewBooking(props) {
 
   useEffect(async () => {
     setOrder(props.order)
+    setSelectedTables(getSelectedTables())
   }, [props])
 
   useEffect(async () => {
@@ -95,7 +97,7 @@ export default function TabNewBooking(props) {
         place_id: localStorage.getItem('place_id'),
         area_id: order.area_id,
         seats: order.seats,
-        date: Moment(order.reservation_time).format('YYYY-MM-DD')
+        date: Moment.utc(order.reservation_time).utc().format('YYYY-MM-DD')
       }
     }).then(response => {
       setTimes(response.data)
@@ -128,13 +130,13 @@ export default function TabNewBooking(props) {
     if(e.target.name === 'date') setOrder(prev => (
       {
         ...prev,
-        reservation_time: e.target.value + ' ' + Moment(prev.reservation_time).format('HH:mm:00')
+        reservation_time: e.target.value + ' ' + Moment.utc(prev.reservation_time).format('HH:mm:00')
       }
       ))
     if(e.target.name === 'time') setOrder(prev => (
       {
         ...prev,
-        reservation_time: Moment(prev.reservation_time).format('YYYY-MM-DD') + ' ' + e.target.value+':00'
+        reservation_time: Moment.utc(prev.reservation_time).format('YYYY-MM-DD') + ' ' + Moment(e.target.value,'HH:mm').utc().format('HH:mm:00')
       }
     ))
     if(e.target.name === 'area_id') setOrder(prev => ({...prev, area_id: e.target.value}))
@@ -188,9 +190,7 @@ export default function TabNewBooking(props) {
 
   const timeOptions = () => {
     return times.map(el => {
-      el = el.replace('T',' ')
-      el = el.replace('.000000Z','')
-      return el
+      return Moment.utc(el).local().format('HH:mm')
     })
   }
 
@@ -203,27 +203,26 @@ export default function TabNewBooking(props) {
   const getTableIds = (data) => {
     let result = []
     let tableplan_id = ''
+    setSelectedTables(data)
     console.log('tables',tables)
     data.forEach(index => {
       result.push(tables[index].number)
       tableplan_id = tables[index].tableplan_id
     })
+    console.log('table result',result)
     setOrder(prev => ({...prev, tableplan_id: tableplan_id}))
     return result
   }
 
   const getSelectedTables = () => {
     let result = []
-    console.log('order.table_ids',order.table_ids)
-    order.table_ids.forEach(id => {
+    props.order.table_ids.forEach(id => {
       let index = tables.findIndex(el => {
-        return (el.tableplan_id === order.tableplan_id && el.number === id)
+        return (el.tableplan_id === oprops.orderrder.tableplan_id && el.number === id)
       })
-      console.log('index',index)
       result.push(index)
     })
-    console.log('result',result)
-    return order.table_ids
+    return result
   }
 
   const setTableOrder = (data) => {
@@ -253,10 +252,10 @@ export default function TabNewBooking(props) {
               dateFormat='LLLL dd yyyy'
               selected={new Date(order.reservation_time || new Date())} id="date"
               onSelect={e => {
-                onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
+                onChange({target: {name: 'date', value: Moment(e).utc().format('YYYY-MM-DD')}})
               }}
               onChange={e => {
-                onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
+                onChange({target: {name: 'date', value: Moment(e).utc().format('YYYY-MM-DD')}})
               }}
             />
           </FormControl>
@@ -300,11 +299,11 @@ export default function TabNewBooking(props) {
             <div className="col-6">
               <FormControl size="small" fullWidth sx={{mb:2}}>
                 <InputLabel id="label_time">{t('Time')}</InputLabel>
-                <Select label={t('Time')} value={Moment(order.reservation_time).format('HH:mm') || ''} required
+                <Select label={t('Time')} value={Moment.utc(order.reservation_time).local().format('HH:mm') || ''} required
                         labelId="label_time" id="time" name="time"
                         onChange={onChange}>
                   {timeOptions().map((el, key) => {
-                    return <MenuItem key={key} value={Moment(el).format('HH:mm')}>{Moment(el).format('HH:mm')}</MenuItem>
+                    return <MenuItem key={key} value={el}>{el}</MenuItem>
                   })}
                 </Select>
               </FormControl>
@@ -312,7 +311,7 @@ export default function TabNewBooking(props) {
             <div className="col-6">
               <FormControl size="small" fullWidth sx={{mb:2}}>
                 <InputLabel id="label_tables">{t('Tables')}</InputLabel>
-                <Select label={t('Tables')} value={getSelectedTables() || ''} required
+                <Select label={t('Tables')} value={selectedTables} required
                         labelId="label_table_ids" id="table_ids" name="table_ids" multiple
                         onChange={onChange}>
                   {tablesOptions().map((el, key) => {

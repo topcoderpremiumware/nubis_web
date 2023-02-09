@@ -52,26 +52,26 @@ export default function PlanCanvas(props) {
   },[orders])
 
   useEffect(() => {
-    console.log('log')
     markOrderedTables()
   },[debouncedSelectedTime])
 
   const getTimesList = () => {
     let timesArray = []
     let time = JSON.parse(localStorage.getItem('time'))
-    let from = Moment(new Date('1970-01-01 '+time['from']))
-    let to = Moment(new Date('1970-01-01 '+time['to']))
+    let from = Moment.utc('1970-01-01 '+time['from'])
+    let to = Moment.utc('1970-01-01 '+time['to'])
     while(from <= to) {
       timesArray.push(from.clone().format('HH:mm'))
       from.add(15, 'minutes')
     }
+    console.log('timesArray',timesArray)
     setTimeMarks(timesArray)
-    
+
     let lessTime = 0
-    const now = Moment(new Date('1970-01-01 ' + Moment().format('HH:mm')))
+    const now = Moment.utc('1970-01-01 ' + Moment.utc().format('HH:mm'))
     timesArray.forEach(i => {
-      const fullLessTime = Moment(new Date('1970-01-01 ' + lessTime))
-      const time = Moment(new Date('1970-01-01 ' + i))
+      const fullLessTime = Moment.utc('1970-01-01 ' + lessTime).valueOf()
+      const time = Moment.utc('1970-01-01 ' + i)
       const diff = now.diff(time)
       if (lessTime === 0 || (fullLessTime > diff && diff > 0)) {
         lessTime = i
@@ -95,7 +95,7 @@ export default function PlanCanvas(props) {
   }
 
   const getOrders = () => {
-    let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
+    let date = localStorage.getItem('date') || Moment().utc().format('YYYY-MM-DD')
     let time = JSON.parse(localStorage.getItem('time'))
     axios.get(`${process.env.MIX_API_URL}/api/orders`, {
       params: {
@@ -110,8 +110,8 @@ export default function PlanCanvas(props) {
     }).then(response => {
       let orders = response.data.map(item => {
         if(item.status === 'waiting' || item.is_take_away) return false
-        item.from = Moment(item.reservation_time)
-        item.to = Moment(item.reservation_time).add(item.length, 'minutes')
+        item.from = Moment.utc(item.reservation_time)
+        item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes')
         return item
       }).filter(x => x).sort((a, b) => a.from.valueOf() - b.from.valueOf())
       setOrders(orders)
@@ -174,8 +174,8 @@ export default function PlanCanvas(props) {
         if(item.type.includes('rect') || item.type.includes('circ')){
           orders.forEach((order) => {
             if(order.table_ids.includes(item.number)){
-              let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
-              let now = Moment(date+' '+debouncedSelectedTime)
+              let date = localStorage.getItem('date') || Moment().utc().format('YYYY-MM-DD')
+              let now = Moment.utc(date+' '+debouncedSelectedTime)
               if(item.order === ''){
                 if(now.isBetween(order.from,order.to) || now.isSame(order.from)){
                   let duration = Moment.duration(order.to.diff(now));
@@ -184,7 +184,7 @@ export default function PlanCanvas(props) {
                   item.order = (0+''+hours).slice(-2)+':'+(0+''+minutes).slice(-2)
                   item.markColor = '#f59827'
                 }else if(now.isBefore(order.from)){
-                  item.order = order.from.format('HH:mm')
+                  item.order = order.from.local().format('HH:mm')
                   item.markColor = '#ffd744'
                 }else{
                   item.order = ''
@@ -247,11 +247,7 @@ export default function PlanCanvas(props) {
         step={1}
         min={0}
         valueLabelFormat={value => {
-          if(timeMarks.hasOwnProperty(value)){
-            return <div>{timeMarks[value]}</div>
-          }else{
-            return <div>{value}</div>
-          }
+            return <div>{Moment.utc(timeMarks[value],'HH:mm').local().format('HH:mm')}</div>
         }}
         name="selectedTime"
         onChange={onChange}

@@ -15,7 +15,7 @@ export default function TimeLinePlan(props) {
   const [groups, setGroups] = useState([])
   const [items, setItems] = useState([])
 
-  const selectedDate = localStorage.getItem('date') || moment().format('YYYY-MM-DD')
+  const selectedDate = localStorage.getItem('date') || moment.utc().format('YYYY-MM-DD')
   const selectedTime = JSON.parse(localStorage.getItem('time'))
 
   const itemRenderer = ({item, itemContext, getItemProps, getResizeProps}) => {
@@ -70,8 +70,8 @@ export default function TimeLinePlan(props) {
     }).then(response => {
       let orders = response.data.map(item => {
         if(item.status === 'waiting' || item.is_take_away) return false
-        item.from = Moment(item.reservation_time)
-        item.to = Moment(item.reservation_time).add(item.length, 'minutes')
+        item.from = Moment.utc(item.reservation_time)
+        item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes')
         return item
       }).filter(x => x).sort((a, b) => a.from.valueOf() - b.from.valueOf())
       let it = []
@@ -84,8 +84,8 @@ export default function TimeLinePlan(props) {
             tip: tableTip(item),
             canMove: false,
             canResize: false,
-            start_time: moment(selectedDate+' '+item.from.format('HH:mm'),'YYYY-MM-DD HH:mm'),
-            end_time: moment(selectedDate+' '+item.to.format('HH:mm'),'YYYY-MM-DD HH:mm')
+            start_time: moment.utc(selectedDate+' '+item.from.utc().format('HH:mm'),'YYYY-MM-DD HH:mm'),
+            end_time: moment.utc(selectedDate+' '+item.to.utc().format('HH:mm'),'YYYY-MM-DD HH:mm')
           })
         })
       })
@@ -98,7 +98,7 @@ export default function TimeLinePlan(props) {
     return (<div>
       {order.customer.first_name+' '+order.customer.last_name}
       <br/>
-      {order.from.format('HH:mm')+' - '+order.to.format('HH:mm')}
+      {order.from.local().format('HH:mm')+' - '+order.to.local().format('HH:mm')}
       <br/>
       {order.seats+' '+t('seats')}
       <br/>
@@ -114,10 +114,10 @@ export default function TimeLinePlan(props) {
       buffer={1}
       minZoom={6 * 60 * 60 * 1000}
       maxZoom={6 * 60 * 60 * 1000}
-      // defaultTimeStart={moment(selectedDate+' '+selectedTime.from,'YYYY-MM-DD HH:mm:ss')}
-      // defaultTimeEnd={moment(selectedDate+' '+selectedTime.to,'YYYY-MM-DD HH:mm:ss')}
-      visibleTimeStart={moment(selectedDate+' '+selectedTime.from,'YYYY-MM-DD HH:mm:ss').valueOf()}
-      visibleTimeEnd={moment(selectedDate+' '+selectedTime.to,'YYYY-MM-DD HH:mm:ss').add(1,'hour').valueOf()}
+      // defaultTimeStart={moment.utc(selectedDate+' '+selectedTime.from,'YYYY-MM-DD HH:mm:ss')}
+      // defaultTimeEnd={moment.utc(selectedDate+' '+selectedTime.to,'YYYY-MM-DD HH:mm:ss')}
+      visibleTimeStart={moment.utc(selectedDate+' '+selectedTime.from,'YYYY-MM-DD HH:mm:ss').valueOf()}
+      visibleTimeEnd={moment.utc(selectedDate+' '+selectedTime.to,'YYYY-MM-DD HH:mm:ss').add(1,'hour').valueOf()}
     >
       <TimelineHeaders>
         <DateHeader labelFormat="HH:mm"/>

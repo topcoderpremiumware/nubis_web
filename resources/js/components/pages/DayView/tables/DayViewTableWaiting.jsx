@@ -60,7 +60,7 @@ export default function DayViewTableWaiting() {
       }).then(response => {
         areas = response.data
       })
-      let date = localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
+      let date = localStorage.getItem('date') || Moment.utc().format('YYYY-MM-DD')
       let time = JSON.parse(localStorage.getItem('time'))
       await axios.get(`${process.env.MIX_API_URL}/api/orders`, {
         params: {
@@ -75,11 +75,11 @@ export default function DayViewTableWaiting() {
       }).then(response => {
         let orders = response.data.map(item => {
           if(item.status !== 'waiting') return false
-          item.from = Moment.utc(item.reservation_time).format('HH:mm')
-          item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').format('HH:mm')
+          item.from = Moment.utc(item.reservation_time).local().format('HH:mm')
+          item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').local().format('HH:mm')
           item.first_name = item.customer.first_name
           item.last_name = item.customer.last_name
-          item.order_date = Moment(item.created_at).format('YYYY-MM-DD HH:mm')
+          item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm')
           item.area = areas.find(i => i.id === item.area_id).name
           return item
         }).filter(x => x)

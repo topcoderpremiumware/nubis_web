@@ -1,6 +1,7 @@
 import PhoneInput from "react-phone-number-input";
 import "./CancelingModal.css";
 import {Trans, useTranslation} from "react-i18next";
+import moment from "moment";
 
 export default function CancelingModal(props) {
   const { t } = useTranslation();
@@ -110,13 +111,7 @@ export default function CancelingModal(props) {
                   <b>{props.filteredOrder[0].seats}</b>
                   <br />
                   {t('Day/time')}: &nbsp;
-                  <b>{`${props.filteredOrder[0].reservation_time.slice(
-                    0,
-                    10
-                  )} ${props.filteredOrder[0].reservation_time.slice(
-                    11,
-                    16
-                  )}`}</b>
+                  <b>{moment.utc(props.filteredOrder[0].reservation_time).local().format('YYYY-MM-DD HH:mm')}</b>
                 </div>
               </div>
             </div>

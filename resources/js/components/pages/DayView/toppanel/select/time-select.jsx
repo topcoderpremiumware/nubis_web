@@ -33,7 +33,7 @@ export default function TimeSelect() {
     if(localStorage.getItem('area_id')){
       await axios.get(`${process.env.MIX_API_URL}/api/areas/${localStorage.getItem('area_id')}/working`, {
         params: {
-          date: localStorage.getItem('date') || Moment().format('YYYY-MM-DD')
+          date: localStorage.getItem('date') || Moment.utc().format('YYYY-MM-DD')
         },
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -62,9 +62,9 @@ export default function TimeSelect() {
           <MenuItem value="0"><em>All day</em></MenuItem>
           {times.map((el,key) => {
             return <MenuItem key={key} value={JSON.stringify(el)}>
-              {Moment(el.from,'HH:mm:ss').format('HH:mm')}
+              {Moment.utc(el.from,'HH:mm:ss').local().format('HH:mm')}
               {' - '}
-              {Moment(el.to,'HH:mm:ss').format('HH:mm')}
+              {Moment.utc(el.to,'HH:mm:ss').local().format('HH:mm')}
             </MenuItem>
           })}
         </Select>

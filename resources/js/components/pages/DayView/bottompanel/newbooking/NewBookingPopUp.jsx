@@ -58,7 +58,7 @@ export default function NewBookingPopUp({selectedOrder, setSelectedOrder}) {
           length: 120,
           marks: "",
           place_id: localStorage.getItem('place_id'),
-          reservation_time: Moment().format('YYYY-MM-DD HH:mm'),
+          reservation_time: Moment().utc().format('YYYY-MM-DD HH:mm'),
           seats: 1,
           source: "internal",
           status: "ordered",

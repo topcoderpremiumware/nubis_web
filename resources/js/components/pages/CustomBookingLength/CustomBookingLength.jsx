@@ -138,8 +138,8 @@ export default function CustomBookingLength() {
       name: '',
       length: 0,
       active: 1,
-      start_date: Moment().format('YYYY-MM-DD'),
-      end_date: Moment().format('YYYY-MM-DD'),
+      start_date: Moment().utc().format('YYYY-MM-DD'),
+      end_date: Moment().utc().format('YYYY-MM-DD'),
       max: 999,
       min: 0,
       priority: 1,
@@ -196,10 +196,10 @@ export default function CustomBookingLength() {
                   return <StyledTableRow key={key}>
                     <TableCell size="small">{item.name}</TableCell>
                     <TableCell size="small">{item.priority}</TableCell>
-                    <TableCell size="small">{Moment(item.start_date).format('YYYY-MM-DD')}</TableCell>
-                    <TableCell size="small">{Moment(item.end_date).format('YYYY-MM-DD')}</TableCell>
-                    <TableCell size="small">{Moment(item.created_at).format('YYYY-MM-DD HH:mm')}</TableCell>
-                    <TableCell size="small">{Moment(item.updated_at).format('YYYY-MM-DD HH:mm')}</TableCell>
+                    <TableCell size="small">{Moment(item.start_date).local().format('YYYY-MM-DD')}</TableCell>
+                    <TableCell size="small">{Moment(item.end_date).local().format('YYYY-MM-DD')}</TableCell>
+                    <TableCell size="small">{Moment(item.created_at).local().format('YYYY-MM-DD HH:mm')}</TableCell>
+                    <TableCell size="small">{Moment(item.updated_at).local().format('YYYY-MM-DD HH:mm')}</TableCell>
                     <TableCell size="small">{item.active ? t('Yes') : t('No')}</TableCell>
                     <TableCell size="small">
                       <IconButton onClick={e => {

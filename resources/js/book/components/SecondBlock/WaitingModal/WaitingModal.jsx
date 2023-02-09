@@ -4,6 +4,7 @@ import {Trans, useTranslation} from "react-i18next";
 import React, {useEffect, useState} from "react";
 import {normalizeNumber} from "../../../../helper";
 import eventBus from "../../../../eventBus";
+import moment from "moment/moment";
 
 export default function WaitingModal(props) {
   const { t } = useTranslation();
@@ -47,8 +48,8 @@ export default function WaitingModal(props) {
     })
       .then((response) => {
         const timesArray = response.data?.map((time) => ({
-          time: String(time.slice(11, 19)),
-          shortTime: String(time.slice(11, 16)),
+          time: moment.utc(time).format('HH:mm:ss'),
+          shortTime: moment.utc(time).local().format('HH:mm'),
         }));
         console.log('timesArray',timesArray)
         setTimes(timesArray);
@@ -146,10 +147,8 @@ export default function WaitingModal(props) {
                   <b>{props.guestValue}</b>
                   <br />
                   {t('Day/time')}: &nbsp;
-                  <b>
-                    {`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`}{" "}
-                    {selectedTime.slice(0, 5)}
-                  </b>
+                  <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`)
+                    .local().format('DD-MM-YYYY HH:mm')}</b>
                 </div>
               </div>
               <div className="client-info">

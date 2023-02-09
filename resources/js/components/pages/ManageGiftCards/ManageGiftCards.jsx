@@ -1,25 +1,28 @@
-import styled from '@emotion/styled';
-import { Button, CircularProgress, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, CircularProgress, Stack } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
+import CheckGiftCardPopup from './CheckGiftCardPopup/CheckGiftCardPopup';
+import NewGiftCardPopup from './NewGiftCardPopup/NewGiftCardPopup';
 
 const ManageGiftCards = () => {
   const { t } = useTranslation();
 
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(true)
+  const [newPopupIsOpen, setNewPopupIsOpen] = useState(false)
+  const [checkPopupIsOpen, setCheckPopupIsOpen] = useState(false)
 
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
+  const columns = [
+    { field: 'created_at', headerName: t('Created'), flex: 1, renderCell: (params) => moment(params.value).format('DD-MM-YYYY') },
+    { field: 'expired_at', headerName: t('Expiration date'), flex: 1, renderCell: (params) => moment(params.value).format('DD-MM-YYYY') },
+    { field: 'status', headerName: t('Status'), flex: 1 },
+    { field: 'spend_amount', headerName: t('Used amount'), flex: 1 },
+    { field: 'unused_amount', headerName: t('Unused amount'), flex: 1 },
+  ];
 
   const getCards = async () => {
     setLoading(true)
@@ -32,7 +35,10 @@ const ManageGiftCards = () => {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setCards(response.data)
+      setCards(response.data.map(i => ({
+        ...i,
+        unused_amount: i.initial_amount - i.spend_amount
+      })))
       setLoading(false)
     }).catch(error => {
     })
@@ -43,41 +49,50 @@ const ManageGiftCards = () => {
     eventBus.on("placeChanged", () => {
       getCards()
     })
+    eventBus.on("newGiftCard", () => {
+      getCards()
+    })
+    eventBus.on("spendGiftCard", () => {
+      getCards()
+    })
   }, [])
 
   return (
     <div className='pages__container'>
-      <h2>Manage Gift Cards</h2>
-      <div className="container-fluid">
-        <div className="row">
-          {loading ? <div><CircularProgress /></div> : <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell size="small">{t('Name')}</TableCell>
-                  <TableCell size="small">{t('Priority')}</TableCell>
-                  <TableCell size="small">{t('Online availability')}</TableCell>
-                  <TableCell size="small" style={{ minWidth: '100px' }}>{t('Actions')}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {/* {cards.map((item, key) => {
-                  return <StyledTableRow key={key}>
-                    <TableCell size="small">{item.name}</TableCell>
-                    <TableCell size="small">{item.priority}</TableCell>
-                    <TableCell size="small">{item.online_available ? t('Yes') : t('No')}</TableCell>
-                  </StyledTableRow>
-                })} */}
-              </TableBody>
-            </Table>
-          </TableContainer>}
+      <h2>{t('Manage Gift Cards')}</h2>
+      {loading ?
+        <div><CircularProgress /></div> :
+        <div style={{ width: '100%', height: 'calc(100vh - 300px)' }}>
+          <DataGrid
+            rows={cards}
+            columns={columns}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+          />
         </div>
-      </div>
+      }
       <Stack spacing={2} sx={{ mt: 2 }} direction="row">
-        <Button variant="contained" type="button" onClick={e => {
-          // openEditPopup(false)
-        }}>{t('New')}</Button>
+        <Button
+          variant="contained"
+          type="button"
+          onClick={() => setNewPopupIsOpen(true)}
+        >{t('New')}</Button>
+        <Button
+          variant="contained"
+          type="button"
+          onClick={() => setCheckPopupIsOpen(true)}
+        >{t('Check')}</Button>
       </Stack>
+
+      <NewGiftCardPopup
+        open={newPopupIsOpen}
+        handleClose={() => setNewPopupIsOpen(false)}
+      />
+
+      <CheckGiftCardPopup
+        open={checkPopupIsOpen}
+        handleClose={() => setCheckPopupIsOpen(false)}
+      />
     </div>
   )
 }

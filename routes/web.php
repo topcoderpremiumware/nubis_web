@@ -32,6 +32,7 @@ Route::get('/change_lang/{locale}', function ($locale = null) {
 Route::view('/giftcard/{place_id}', 'giftcard')->name('giftcard');
 Route::view('/feedback/{order_id}', 'feedback')->name('feedback');
 Route::view('/feedbacks/{place_id}', 'feedbacks')->name('feedbacks');
+Route::view('/videoGuides', 'videoGuides')->name('videoGuides');
 Route::view('/book/{place_id}', 'book')->name('book')->middleware('bill_paid');
 Route::view('/', 'home')->name('home');
 Route::view('/admin/{path?}/{path2?}', 'app')->name('admin');

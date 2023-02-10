@@ -42,6 +42,18 @@ class GiftcardController extends Controller
 
         $place = Place::find($request->place_id);
 
+        $currency = $place->setting('online-payment-currency');
+
+        $text = 'The '.$request->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
+        \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($request) {
+            $msg->to($request->email)->subject('Giftcard');
+        });
+        if($request->has('receiver_email') && $request->receiver_email){
+            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($request) {
+                $msg->to($request->receiver_email)->subject('Giftcard');
+            });
+        }
+
         $online_payment_currency = $place->setting('online-payment-currecy');
         $stripe_secret = $place->setting('stripe-secret');
         $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
@@ -72,6 +84,57 @@ class GiftcardController extends Controller
         }
 
         //Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
+
+        return response()->json($giftcard);
+    }
+
+    public function createAdmin(Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'name' => 'required',
+            'expired_at' => 'required|date_format:Y-m-d H:i:s',
+            'initial_amount' => 'required|numeric',
+            'email' => 'required|email',
+        ]);
+
+        $giftcard = Giftcard::create([
+            'place_id' => $request->place_id,
+            'name' => $request->name,
+            'expired_at' => $request->expired_at,
+            'initial_amount' => $request->initial_amount,
+            'spend_amount' => $request->spend_amount ?? 0,
+            'code' => str()->random(6),
+            'email' => $request->email,
+            'receiver_name' => $request->receiver_name ?? '',
+            'receiver_email' => $request->receiver_email ?? '',
+            'company_name' => $request->company_name,
+            'company_address' => $request->company_address,
+            'post_code' => $request->post_code,
+            'company_city' => $request->company_city,
+            'vat_number' => $request->vat_number,
+            'country_id' => $request->country_id,
+            'status' => 'confirmed'
+        ]);
+
+        $place = Place::find($request->place_id);
+        $currency = $place->setting('online-payment-currency');
+
+        $text = 'The '.$request->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
+        \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($request) {
+            $msg->to($request->email)->subject('Giftcard');
+        });
+        if($request->has('receiver_email') && $request->receiver_email){
+            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($request) {
+                $msg->to($request->receiver_email)->subject('Giftcard');
+            });
+        }
+
+        Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
 
         return response()->json($giftcard);
     }

@@ -55,13 +55,13 @@ export default function NewGiftCardPopup({ open, handleClose }) {
         email,
         initial_amount: amount,
         expired_at: '2037-12-31 22:00:00',
-        ...(isReceiver && { 
-          receiver_name: receiverName, 
-          receiver_email: receiverEmail 
+        ...(isReceiver && {
+          receiver_name: receiverName,
+          receiver_email: receiverEmail
         })
       }
 
-      await axios.post(process.env.MIX_API_URL + '/api/giftcards', data, {
+      await axios.post(process.env.MIX_API_URL + '/api/giftcards_admin', data, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }

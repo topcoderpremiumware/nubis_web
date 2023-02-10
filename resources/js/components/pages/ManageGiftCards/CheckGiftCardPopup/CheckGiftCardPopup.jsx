@@ -6,7 +6,7 @@ import './CheckGiftCardPopup.scss';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import { Button, TextField } from '@mui/material';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import axios from 'axios';
 import eventBus from '../../../../eventBus';
 
@@ -29,6 +29,14 @@ export default function CheckGiftCardPopup({ open, handleClose }) {
   const [cardInfo, setCardInfo] = useState(null)
   const [amount, setAmount] = useState(1)
   const [error, setError] = useState('')
+  const [currency, setCurrency] = useState('DDK')
+
+  useEffect(() => {
+    getCurrency()
+    eventBus.on("placeChanged", () => {
+      getCurrency()
+    })
+  },[])
 
   const onClose = () => {
     setCode('')
@@ -56,6 +64,22 @@ export default function CheckGiftCardPopup({ open, handleClose }) {
     } catch (err) {
       setError(err.response.data.message)
     }
+  }
+
+  const getCurrency = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'online-payment-currency'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setCurrency(response.data.value)
+    }).catch(error => {
+      setCurrency('')
+    })
   }
 
   const onSpend = async () => {
@@ -107,12 +131,12 @@ export default function CheckGiftCardPopup({ open, handleClose }) {
               <div className="col-md-6">
                 <p><b>{t('Name')}:</b> {cardInfo.name || '-'}</p>
                 <p><b>{t('Email')}:</b> {cardInfo.email || '-'}</p>
-                <p><b>{t('Initail Amount')}:</b> {cardInfo.initial_amount} DKK</p>
+                <p><b>{t('Initail Amount')}:</b> {cardInfo.initial_amount} {currency}</p>
               </div>
               <div className="col-md-6">
                 <p><b>{t('Receiver Name')}:</b> {cardInfo.receiver_name || '-'}</p>
                 <p><b>{t('Receiver Email')}:</b> {cardInfo.receiver_email || '-'}</p>
-                <p><b>{t('Spend Amount')}:</b> {cardInfo.spend_amount} DKK</p>
+                <p><b>{t('Spend Amount')}:</b> {cardInfo.spend_amount} {currency}</p>
               </div>
             </div>
             <div className="row mt-3">

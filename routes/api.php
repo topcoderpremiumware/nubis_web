@@ -149,6 +149,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('giftcards/{id}',[GiftcardController::class, 'getId']);
     Route::post('giftcards/{id}',[GiftcardController::class, 'save']);
     Route::get('giftcards',[GiftcardController::class, 'getAllByPlace']);
+    Route::post('giftcards_admin',[GiftcardController::class, 'createAdmin']);
 
     Route::post('coupons',[CouponController::class, 'create']);
     Route::get('coupons/{id}',[CouponController::class, 'getId']);

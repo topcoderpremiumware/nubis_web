@@ -35,7 +35,13 @@ export default function Topbar() {
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav w-100">
-              <li className="nav-item dropdown ms-lg-auto">
+              <li className="nav-item ms-lg-auto">
+                {localStorage.getItem('token') ?
+                  <Link className='nav-link' to="/VideoGuides">{t('Nubis Academy')}</Link>
+                  : null
+                }
+              </li>
+              <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" type="button" id="languageDropdown"
                         data-bs-toggle="dropdown" aria-expanded="false">
                   <Flag height="13" code={ window.langs.filter(l => {

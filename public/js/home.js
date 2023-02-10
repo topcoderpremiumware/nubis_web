@@ -27962,6 +27962,28 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+
+var swiper = new Swiper('.features-grid', {
+  slidesPerView: 1.2,
+  spaceBetween: 18,
+  breakpoints: {
+    481: {
+      slidesPerView: 2,
+      grid: {
+        rows: 3
+      },
+      spaceBetween: 20
+    },
+    1025: {
+      slidesPerView: 3,
+      grid: {
+        rows: 2
+      },
+      spaceBetween: 30
+    }
+  }
+});
 })();
 
 /******/ })()

@@ -118,6 +118,25 @@ const PaymentGateway = () => {
                   <MenuItem value="Stripe">Stripe</MenuItem>
                 </Select>
               </div>
+              <div className="row">
+                <div className="col-lg-6">
+                  <p>{t('In order to receive credit card payments and deposits from your guests, Nubisreservation must be connected to a Stripe account.')}</p>
+                  <p>
+                    {t('With Stripe, you can quickly start receiving payments via credit card - without costs for creation or subscription. You can read more at ')}
+                    <a href="https://stripe.com">https://stripe.com</a>
+                  </p>
+                  <p>
+                    {t('Below, you must insert the "Publishable key", "Secret key" found under Company -> Developers -> Api Keys when you are logged into Stripe.')}
+                  </p>
+                  <p>
+                    {t('То add the Webhook Secret you need to go Developers -> Webhooks -> Add endpoint. Then add this link to the requested field ')}
+                    <strong>{getWebhookUrl()}</strong>
+                  </p>
+                  <p>
+                    {t('Then under Signing secret please press Reveal button to get your Webhook Secret')}
+                  </p>
+                </div>
+              </div>
               <div className="mb-3">
                 <TextField label={t('Stripe Key')} size="small" fullWidth
                   type="text" id="stripeKey" name="stripeKey" required
@@ -134,7 +153,6 @@ const PaymentGateway = () => {
                 <TextField label={t('Stripe Webhook Secret')} size="small" fullWidth
                  type="text" id="stripeWebhookSecret" name="stripeWebhookSecret" required
                  value={stripeWebhookSecret} onChange={e => setStripeWebhookSecret(e.target.value)}
-                 helperText={t('Webhook address')+': ' +getWebhookUrl()}
                 />
               </div>
               <Button variant="contained" type="submit">{t('Save')}</Button>

@@ -485,6 +485,23 @@ class OrderController extends Controller
             for($time;$time->lt($end);$time->addMinutes(15)){
                 $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
                 if(array_key_exists($working_hour['tableplan_id'],$free_tables)) {
+
+                    if(array_key_exists('booking_limits', $working_hour) && array_key_exists($indexFrom, $working_hour['booking_limits'])){
+                        $timeOrders_seats = 0;
+                        $timeOrders = Order::where('place_id',$request->place_id)
+                            ->where('area_id',$request->area_id)
+                            ->whereDate('reservation_time','<=',$time->format('Y-m-d H:i:s'))
+                            ->whereRaw('date_add(reservation_time,interval length minute) >= \''.$time->format('Y-m-d H:i:s').'\'')
+                            ->where('is_take_away',0)
+                            ->get();
+                        foreach ($timeOrders as $timeOrder) {
+                            $timeOrders_seats += $timeOrder->seats;
+                        }
+
+                        $booking_limits = $working_hour['booking_limits'][$indexFrom];
+                        if($booking_limits['max_seats'] <= $timeOrders_seats && $booking_limits['max_books'] <= count($timeOrders)) continue;
+                    }
+
                     foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
                         if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                             if (!$time->lt(Carbon::now())) {

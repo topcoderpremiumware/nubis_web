@@ -215,7 +215,8 @@ class TimetableController extends Controller
                 array_push($working_hours,[
                     'from' => $item->start_time,
                     'to' => $item->end_time,
-                    'tableplan_id' => $item->tableplan_id ?? $default_tableplan->id
+                    'tableplan_id' => $item->tableplan_id ?? $default_tableplan->id,
+                    'booking_limits' => $item->booking_limits
                 ]);
             }
         }
@@ -247,12 +248,32 @@ class TimetableController extends Controller
             if($hours['from'] >= $item->start_time && $hours['to'] <= $item->end_time){
 //                nothing
             }elseif($hours['from'] > $item->start_time && $hours['to'] > $item->end_time){
-                $w_h[] = ['from' => $item->end_time, 'to' => $hours['to'], 'tableplan_id' => $hours['tableplan_id']];
+                $w_h[] = [
+                    'from' => $item->end_time,
+                    'to' => $hours['to'],
+                    'tableplan_id' => $hours['tableplan_id'],
+                    'booking_limits' => $hours['booking_limits']
+                ];
             }elseif($hours['from'] < $item->start_time && $hours['to'] < $item->end_time){
-                $w_h[] = ['from' => $hours['from'], 'to' => $item->start_time, 'tableplan_id' => $hours['tableplan_id']];
+                $w_h[] = [
+                    'from' => $hours['from'],
+                    'to' => $item->start_time,
+                    'tableplan_id' => $hours['tableplan_id'],
+                    'booking_limits' => $hours['booking_limits']
+                ];
             }elseif($hours['from'] < $item->start_time && $hours['to'] > $item->end_time){
-                $w_h[] = ['from' => $hours['from'], 'to' => $item->start_time, 'tableplan_id' => $hours['tableplan_id']];
-                $w_h[] = ['from' => $item->end_time, 'to' => $hours['to'], 'tableplan_id' => $hours['tableplan_id']];
+                $w_h[] = [
+                    'from' => $hours['from'],
+                    'to' => $item->start_time,
+                    'tableplan_id' => $hours['tableplan_id'],
+                    'booking_limits' => $hours['booking_limits']
+                ];
+                $w_h[] = [
+                    'from' => $item->end_time,
+                    'to' => $hours['to'],
+                    'tableplan_id' => $hours['tableplan_id'],
+                    'booking_limits' => $hours['booking_limits']
+                ];
             }else{
                 $w_h[] = $hours;
             }

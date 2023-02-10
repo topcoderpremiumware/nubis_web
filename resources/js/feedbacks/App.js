@@ -9,6 +9,8 @@ import { Rating } from '@mui/material';
 import moment from 'moment';
 import arrow from '../../assets/arrow.svg'
 import bg from '../../assets/feedback-bg.jpg'
+import ellipse from '../../assets/ellipse.png'
+import plate from '../../assets/plate-1.png'
 
 function App() {
   const [feedbacks, setFeedbacks] = useState([])
@@ -48,6 +50,9 @@ function App() {
           <p className="feedback-text">A review is a written or verbal evaluation of a product, service, or experience. It typically provides a detailed account of an individual's personal experience and their overall opinion of the product or service.</p>
         </div>
         <div className="feedback-main">
+          <img src={ellipse} alt="ellipse" className='feedback-ellipse-1' />
+          <img src={ellipse} alt="ellipse" className='feedback-ellipse-2' />
+          <img src={plate} alt="plate" className='feedback-plate' />
           <h2 className="feedback-title">Our Customers Love Us. Why?</h2>
           {feedbacks.length > 0 && feedbacks.map(i => (
             <div 

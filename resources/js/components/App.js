@@ -32,7 +32,6 @@ import Support from './pages/Support/Support';
 import PaymentGateway from './pages/GuestPayment/PaymentGateway/PaymentGateway';
 import PaymentSettings from './pages/GuestPayment/PaymentSettings/PaymentSettings';
 import VideoGuideSettings from './pages/VideoGuideSettings/VideoGuideSettings';
-import VideoGuides from './pages/VideoGuides/VideoGuides';
 import MonthView from './pages/MonthView/MonthView';
 
 function App() {
@@ -84,8 +83,6 @@ function App() {
                   <Route path='/RestaurantNew' exact element={<RestaurantNew/>}/>
 
                   <Route path='/ThankYou' exact element={<ThankYou/>}/>
-
-                  <Route path='/VideoGuides' exact element={<VideoGuides/>}/>
 
                   <Route path='/Support' exact element={<Support/>}/>
                 </Routes>

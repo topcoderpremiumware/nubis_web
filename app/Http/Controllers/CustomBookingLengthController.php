@@ -250,7 +250,9 @@ class CustomBookingLengthController extends Controller
                 $time = Carbon::parse($request->reservation_date . ' ' . $time_interval['from']);
                 $end = Carbon::parse($request->reservation_date . ' ' . $time_interval['to']);
                 for ($time; $time->lt($end); $time->addMinutes(15)) {
-                    array_push($times,$time->copy());
+                    if (!$time->lt(Carbon::now())) {
+                        array_push($times,$time->copy());
+                    }
                 }
             }
             $times = array_values(array_unique($times));

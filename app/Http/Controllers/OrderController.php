@@ -186,7 +186,7 @@ class OrderController extends Controller
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'area_id' => 'required|exists:areas,id',
+            'area_id' => 'required', //|exists:areas,id
             'reservation_from' => 'required|date_format:Y-m-d H:i:s',
             'reservation_to' => 'required|date_format:Y-m-d H:i:s',
         ]);
@@ -197,9 +197,11 @@ class OrderController extends Controller
             ], 400);
         }
 
-        $orders = Order::where('place_id',$request->place_id)
-            ->where('area_id',$request->area_id)
-            ->with(['customer', 'custom_booking_length'])
+        $orders = Order::where('place_id',$request->place_id);
+        if($request->area_id != 'all') {
+            $orders = $orders->where('area_id', $request->area_id);
+        }
+        $orders = $orders->with(['customer', 'custom_booking_length'])
             ->whereBetween('reservation_time', [$request->reservation_from, $request->reservation_to]);
         if($request->has('deleted')){
             $orders = $orders->onlyTrashed();

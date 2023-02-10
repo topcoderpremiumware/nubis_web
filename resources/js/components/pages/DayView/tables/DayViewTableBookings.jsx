@@ -72,8 +72,8 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
         params: {
           place_id: localStorage.getItem('place_id'),
           area_id: localStorage.getItem('area_id'),
-          reservation_from: date+' '+time.from,
-          reservation_to: date+' '+time.to
+          reservation_from: date+' '+(time.from || '00:00:00'),
+          reservation_to: date+' '+(time.to || '23:59:59')
         },
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')

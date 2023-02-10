@@ -12,14 +12,14 @@ const styles = StyleSheet.create({
     margin: '10px 10px 30px 10px',
     textAlign: 'center'
   },
-  thead: { 
-    flexDirection: 'row', 
-    margin: '0px 5px 0 5px', 
+  thead: {
+    flexDirection: 'row',
+    margin: '0px 5px 0 5px',
     borderTop: '1px solid #ccc'
   },
   tbody: {
     flexDirection: 'row',
-    margin: '0px 5px 0 5px', 
+    margin: '0px 5px 0 5px',
   },
   td1: {
     fontSize: 10,
@@ -153,11 +153,11 @@ const DayViewPdf = ({ title, columns, data }) => {
         </View>
         <View style={styles.thead}>
           {columns.map((i, index) => (
-            <Text style={styles[`td${index + 1}`]}>{i}</Text>
+            <Text style={styles[`td${index + 1}`]} key={index}>{i}</Text>
           ))}
         </View>
-        {data.map(i => (
-          <View style={styles.tbody}>
+        {data.map((i,index) => (
+          <View style={styles.tbody} key={index}>
             <Text style={styles.td1}>{i.id}</Text>
             <Text style={styles.td2}>{i.from}</Text>
             <Text style={styles.td3}>{i.to}</Text>

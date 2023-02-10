@@ -58,8 +58,8 @@ export default function PlanCanvas(props) {
   const getTimesList = () => {
     let timesArray = []
     let time = JSON.parse(localStorage.getItem('time'))
-    let from = Moment.utc('1970-01-01 '+time['from'])
-    let to = Moment.utc('1970-01-01 '+time['to'])
+    let from = Moment.utc('1970-01-01 '+(time['from'] || '00:00:00'))
+    let to = Moment.utc('1970-01-01 '+(time['to'] || '23:59:59'))
     while(from <= to) {
       timesArray.push(from.clone().format('HH:mm'))
       from.add(15, 'minutes')
@@ -101,8 +101,8 @@ export default function PlanCanvas(props) {
       params: {
         place_id: localStorage.getItem('place_id'),
         area_id: localStorage.getItem('area_id'),
-        reservation_from: date+' '+time.from,
-        reservation_to: date+' '+time.to
+        reservation_from: date+' '+(time.from || '00:00:00'),
+        reservation_to: date+' '+(time.to || '23:59:59')
       },
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')

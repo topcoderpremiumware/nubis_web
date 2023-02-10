@@ -61,8 +61,8 @@ export default function TimeLinePlan(props) {
       params: {
         place_id: localStorage.getItem('place_id'),
         area_id: localStorage.getItem('area_id'),
-        reservation_from: selectedDate+' '+selectedTime.from,
-        reservation_to: selectedDate+' '+selectedTime.to
+        reservation_from: selectedDate+' '+(selectedTime.from || '00:00:00'),
+        reservation_to: selectedDate+' '+(selectedTime.to || '23:59:59')
       },
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -116,8 +116,8 @@ export default function TimeLinePlan(props) {
       maxZoom={6 * 60 * 60 * 1000}
       // defaultTimeStart={moment.utc(selectedDate+' '+selectedTime.from,'YYYY-MM-DD HH:mm:ss')}
       // defaultTimeEnd={moment.utc(selectedDate+' '+selectedTime.to,'YYYY-MM-DD HH:mm:ss')}
-      visibleTimeStart={moment.utc(selectedDate+' '+selectedTime.from,'YYYY-MM-DD HH:mm:ss').valueOf()}
-      visibleTimeEnd={moment.utc(selectedDate+' '+selectedTime.to,'YYYY-MM-DD HH:mm:ss').add(1,'hour').valueOf()}
+      visibleTimeStart={moment.utc(selectedDate+' '+(selectedTime.from || '00:00:00'),'YYYY-MM-DD HH:mm:ss').valueOf()}
+      visibleTimeEnd={moment.utc(selectedDate+' '+(selectedTime.to || '22:59:59'),'YYYY-MM-DD HH:mm:ss').add(1,'hour').valueOf()}
     >
       <TimelineHeaders>
         <DateHeader labelFormat="HH:mm"/>

@@ -122,13 +122,7 @@ class BillingController extends Controller
             ], 400);
             exit();
         }
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
-        $object = $event->data->object;
-        $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
-        if(count($sessions->data) > 0) {
-            $metadata = $sessions->data[0]->metadata;
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode(json_encode($metadata)));
-        }
+        $object = $event;
         file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode(json_encode($object)));
 //        if ($event->type == 'payment_intent.succeeded') {
 //            $stripe = new StripeClient(env('STRIPE_SECRET'));

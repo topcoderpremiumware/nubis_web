@@ -352,5 +352,7 @@
     "With Stripe, you can quickly start receiving payments via credit card - without costs for creation or subscription. You can read more at ": "Med Stripe kan du hurtigt begynde at modtage betalinger via kreditkort – uden omkostninger til oprettelse eller abonnement. Du kan læse mere på ",
     "Below, you must insert the \"Publishable key\", \"Secret key\" found under Company -> Developers -> Api Keys when you are logged into Stripe.": "Nedenfor skal du indsætte \"Publishable key\", \"Secret key\" fundet under Company -> Developers -> Api Keys, når du er logget ind på Stripe.",
     "То add the Webhook Secret you need to go Developers -> Webhooks -> Add endpoint. Then add this link to the requested field ": "For at tilføje Webhook-hemmeligheden skal du gå til Developers -> Webhooks -> Add endpoint. Tilføj derefter dette link til det ønskede felt ",
-    "Then under Signing secret please press Reveal button to get your Webhook Secret": "Så under Signing secret, tryk venligst på Reveal-knappen for at få din Webhook Secret"
+    "Then under Signing secret please press Reveal button to get your Webhook Secret": "Så under Signing secret, tryk venligst på Reveal-knappen for at få din Webhook Secret",
+    "How to Use our System ?": "Hvordan bruger man vores system?",
+    "Try it Now": "Prøv det nu"
 }

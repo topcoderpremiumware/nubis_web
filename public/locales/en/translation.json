@@ -351,5 +351,7 @@
     "With Stripe, you can quickly start receiving payments via credit card - without costs for creation or subscription. You can read more at ": "With Stripe, you can quickly start receiving payments via credit card - without costs for creation or subscription. You can read more at ",
     "Below, you must insert the \"Publishable key\", \"Secret key\" found under Company -> Developers -> Api Keys when you are logged into Stripe.": "Below, you must insert the \"Publishable key\", \"Secret key\" found under Company -> Developers -> Api Keys when you are logged into Stripe.",
     "То add the Webhook Secret you need to go Developers -> Webhooks -> Add endpoint. Then add this link to the requested field ": "То add the Webhook Secret you need to go Developers -> Webhooks -> Add endpoint. Then add this link to the requested field ",
-    "Then under Signing secret please press Reveal button to get your Webhook Secret": "Then under Signing secret please press Reveal button to get your Webhook Secret"
+    "Then under Signing secret please press Reveal button to get your Webhook Secret": "Then under Signing secret please press Reveal button to get your Webhook Secret",
+    "How to Use our System ?": "How to Use our System ?",
+    "Try it Now": "Try it Now"
 }

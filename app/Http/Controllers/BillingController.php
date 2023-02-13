@@ -33,7 +33,7 @@ class BillingController extends Controller
         $price = $stripe->prices->retrieve($request->price_id);
         $product = $stripe->products->retrieve($price->product);
         $duration = $price->recurring->interval === 'month' ? $price->recurring->interval_count :
-            ($price->recurring->interval === 'year' ? $price->recurring->interval_count * 12 : 0);
+            ($price->recurring->interval === 'year' ? $price->recurring->interval_count * 12 : 1);
 //        if(!@$product->metadata->duration){
 //            return response()->json([
 //                'message' => 'There is no product metadata.duration parameter',

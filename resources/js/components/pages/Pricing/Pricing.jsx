@@ -61,7 +61,7 @@ const Pricing = () => {
           <button
             type="button"
             className="price-card-btn"
-            onClick={() => getPaymentLink('price_1MZzEwCVi0riU70Po6j0nClk')} //live price_1MZylgCVi0riU70PLpxaYmTW
+            onClick={() => getPaymentLink('price_1Maz5vCVi0riU70Pp3gtayD7')} //test price_1MZzEwCVi0riU70Po6j0nClk //live price_1MZylgCVi0riU70PLpxaYmTW
           >{t('Choose plan')}</button>
           {!trialDisabled &&
             <div

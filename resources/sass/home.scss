@@ -21,6 +21,14 @@ ul {
   list-style: none;
 }
 
+html {
+  overflow-x: hidden;
+  
+  &.hidden {
+    overflow-y: hidden;
+  }
+}
+
 body {
   font-family: 'Poppins', sans-serif;
   background: #fff;
@@ -28,6 +36,7 @@ body {
   font-size: 16px;
   line-height: 26px;
   color: #495057;
+  overflow-x: hidden;
 }
 
 .container {
@@ -59,6 +68,10 @@ body {
     align-items: center;
     justify-content: space-between;
     height: 104px;
+
+    &-mobile {
+      display: none;
+    }
   }
 
   &-actions {
@@ -76,6 +89,70 @@ body {
 
     &-accent {
       color: #F36823;
+    }
+  }
+
+  &-lang {
+    text-transform: uppercase;
+    font-size: 16px;
+    line-height: 26px;
+    color: rgba(73, 80, 87, 0.5);
+    position: relative;
+    
+    &-active, &:hover {
+      color: #F36823;
+    }
+
+    &:first-of-type {
+      margin-right: 10px;
+
+      &::after {
+        content: '/';
+        position: absolute;
+        right: -6px;
+        color: rgba(73, 80, 87, 0.5);
+      }
+
+      &:hover::after {
+        color: rgba(73, 80, 87, 0.5);
+      }
+    }
+  }
+}
+
+.hamburger {
+  width: 24px;
+  height: 24px;
+  padding: 5px 2px;
+  cursor: pointer;
+
+  &-line {
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background-color: #000;
+    margin-top: 4px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  &-top {
+    margin-top: 0;
+  }
+
+  &-active {
+    .hamburger-top {
+      transform: rotate(-45deg);
+      margin-top: 6px;
+    }
+  
+    .hamburger-bottom {
+      opacity: 0;
+      transform: rotate(45deg);
+    }
+  
+    .hamburger-mid {
+      transform: rotate(45deg);
+      margin-top: -2px;
     }
   }
 }
@@ -146,6 +223,10 @@ body {
 }
 
 .features {
+  margin-top: 117px;
+  background: url('/images/features-bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
   position: relative;
   padding: 51px 0 58px;
 
@@ -175,6 +256,163 @@ body {
   }
 }
 
+.advantages {
+  padding-top: 86px;
+  padding-bottom: 117px;
+
+  &-title {
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 46px;
+    text-align: center;
+    color: #495057;
+    margin: 0 auto 35px;
+    max-width: 790px;
+  }
+
+  &-subtitle {
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 20px;
+    color: #495057;
+    margin-bottom: 12px;
+  }
+
+  &-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+  }
+
+  &-item {
+    min-height: 470px;
+    position: relative;
+    margin-bottom: 82px;
+    display: flex;
+    align-items: center;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+
+    &:nth-of-type(even) {
+      .advantages-wrapper {
+        flex-direction: row-reverse;
+      }
+  
+      .advantages-img {
+        right: unset;
+        left: 0;
+        transform: scaleX(-1);
+      }
+    }
+  }
+
+  &-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+  }
+
+  &-text {
+    margin: 14px 0 10px;
+  }
+}
+
+.banner {
+  background: url('/images/feedback-bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  padding: 56px 0;
+  text-align: center;
+
+  &-title {
+    color: #fff;
+  }
+
+  &-text {
+    color: #fff;
+    margin: 14px auto;
+    max-width: 517px;
+    opacity: 0.8;
+  }
+  
+  &-link {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 26px;
+    color: #FFFFFF;
+  }
+}
+
+.footer {
+  padding: 96px 0 100px;
+  background: #212529;
+
+  &-logo {
+    display: flex;
+  }
+
+  &-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &-nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+
+    &-link {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 25px;
+      color: #8C8F91;
+
+      &:hover {
+        color: #F36823;
+      }
+    }
+  }
+
+  &-list {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+
+    a {
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 25px;
+      color: rgba(248, 249, 250, 0.5);
+
+      &:hover {
+        color: #F36823;
+      }
+    }
+  }
+
+  hr {
+    margin: 30px 0 40px;
+    height: 1px;
+    background: rgba(229, 229, 229, 0.2);;
+    border: none;
+  }
+
+  &-address,
+  &-copy {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 20px;
+    color: rgba(248, 249, 250, 0.5);
+  }
+}
+
 @media screen and (max-width: 1024px) {
   .features {
     &-grid {
@@ -188,6 +426,62 @@ body {
 }
 
 @media screen and (max-width: 900px) {
+  .header {
+    position: fixed;
+    width: 100%;
+    z-index: 20;
+
+    &-logo {
+      display: none;
+
+      &-mobile {
+        display: flex;
+        width: 136px;
+        margin-top: 5px;
+      }
+    }
+
+    &-wrapper {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 18;
+      height: calc(100vh - 50px);
+      padding: 40px;
+      transition: .3s;
+      transform: translateY(-110%);
+      background: #fff;
+      flex-direction: column;
+
+      &-active {
+        transform: translateY(0);
+      }
+
+      &-mobile {
+        position: relative;
+        z-index: 19;
+        background: #fff;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    &-actions {
+      flex-direction: column;
+    }
+  }
+
+  .nav {
+    flex-direction: column;
+  }
+
+  main {
+    padding-top: 50px;
+  }
+
   .title {
     font-size: 24px;
     line-height: 32px;
@@ -216,6 +510,109 @@ body {
       display: none;
     }
   }
+
+  .features {
+    margin-top: 0;
+  }
+
+  .advantages {
+    padding-top: 50px;
+    padding-bottom: 50px;
+
+    &-title {
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    &-item {
+      margin-bottom: 50px;
+
+      &:nth-of-type(even) {
+        .advantages-wrapper {
+          flex-direction: column-reverse;
+        }
+    
+        .advantages-img {
+          right: 0;
+          left: 0;
+          transform: unset;
+        }
+      }
+
+      &:first-of-type {
+        .advantages-wrapper {
+          margin-top: 50px;
+          gap: 70px;
+        }
+      }
+
+      &:nth-of-type(2) {
+        .advantages-wrapper {
+          gap: 60px;
+        }
+      }
+
+      &:last-of-type {
+        .advantages-wrapper {
+          margin-top: 40px;
+          gap: 60px;
+        }
+      }
+    }
+
+    &-img {
+      left: 0;
+      top: 0;
+      bottom: unset;
+    }
+
+    &-wrapper {
+      flex-direction: column-reverse;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .footer {
+    padding: 35px 0;
+
+    &-wrapper {
+      flex-direction: column;
+    }
+
+    &-list {
+      display: none;
+    }
+
+    &-nav {
+      gap: 17px;
+      margin-top: 19px;
+
+      &-link {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 25px;
+        color: #8C8F91;
+      }
+    }
+
+    hr {
+      margin: 17px 0;
+    }
+
+    &-address {
+      margin-bottom: 14px;
+    }
+
+    &-address, 
+    &-copy {
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 20px;
+      color: rgba(248, 249, 250, 0.5);
+      opacity: 0.6;
+    }
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -228,10 +625,66 @@ body {
 
     &-grid {
       height: 320px;
+      overflow: visible;
     }
 
     &-item {
       height: 100%;
+      padding: 18px 24px;
+    }
+  }
+
+  .advantages {
+    &-item {
+      &:first-of-type {
+        .advantages-wrapper {
+          margin-top: 40px;
+          gap: 60px;
+        }
+      }
+  
+      &:nth-of-type(2) {
+        .advantages-wrapper {
+          margin-top: 50px;
+        }
+      }
+  
+      &:last-of-type {
+        .advantages-wrapper {
+          gap: 70px;
+
+          img {
+            width: 277px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 390px) {
+  .advantages {
+    &-item {
+
+      &:last-of-type {
+        .advantages-wrapper {
+          margin-top: 30px;
+          gap: 50px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .advantages {
+    &-item {
+
+      &:last-of-type {
+        .advantages-wrapper {
+          margin-top: 20px;
+        }
+      }
     }
   }
 }

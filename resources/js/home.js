@@ -12,24 +12,36 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+const hamburger = document.querySelector('.hamburger')
+const headerWrapper = document.querySelector('.header-wrapper')
 
-const swiper = new Swiper('.features-grid', {
-  slidesPerView: 1.2,
-  spaceBetween: 18,
-  breakpoints: {
-    481: {
-      slidesPerView: 2,
-      grid: {
-        rows: 3,
+hamburger.addEventListener('click', () => {
+  document.querySelector('html').classList.toggle('hidden')
+  hamburger.classList.toggle('hamburger-active')
+  headerWrapper.classList.toggle('header-wrapper-active')
+})
+
+const featuresSwiper = document.querySelector('.features-grid')
+
+if(featuresSwiper) {
+  new Swiper(featuresSwiper, {
+    slidesPerView: 1.2,
+    spaceBetween: 18,
+    breakpoints: {
+      481: {
+        slidesPerView: 2,
+        grid: {
+          rows: 3,
+        },
+        spaceBetween: 20,
       },
-      spaceBetween: 20,
-    },
-    1025: {
-      slidesPerView: 3,
-      grid: {
-        rows: 2,
-      },
-      spaceBetween: 30,
+      1025: {
+        slidesPerView: 3,
+        grid: {
+          rows: 2,
+        },
+        spaceBetween: 30,
+      }
     }
-  }
-});
+  });
+}

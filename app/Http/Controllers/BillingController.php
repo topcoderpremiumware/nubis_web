@@ -124,7 +124,7 @@ class BillingController extends Controller
         }
         $stripe = new StripeClient(env('STRIPE_SECRET'));
         $object = $event->data;
-        file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode($object));
+        file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode(json_encode($object)));
 //        if ($event->type == 'payment_intent.succeeded') {
 //            $stripe = new StripeClient(env('STRIPE_SECRET'));
 //            $object = $event->data->object;

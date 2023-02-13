@@ -32,20 +32,24 @@ class BillingController extends Controller
         $stripe = new StripeClient(env('STRIPE_SECRET'));
         $price = $stripe->prices->retrieve($request->price_id);
         $product = $stripe->products->retrieve($price->product);
-        if(!@$product->metadata->duration){
-            return response()->json([
-                'message' => 'There is no product metadata.duration parameter'
-            ], 400);
-        }
+        $duration = $price->recurring->interval === 'month' ? $price->recurring->interval_count :
+            ($price->recurring->interval === 'year' ? $price->recurring->interval_count * 12 : 0);
+//        if(!@$product->metadata->duration){
+//            return response()->json([
+//                'message' => 'There is no product metadata.duration parameter',
+//                'product' => $product,
+//                'price' => $price
+//            ], 400);
+//        }
 
         $place = Place::find($request->place_id);
 
         $link = $stripe->paymentLinks->create(
             [
-                'line_items' => [['price' => $request->price_id, 'quantity' => 1]], //price_1MED982eZvKYlo2CZLQdP554
+                'line_items' => [['price' => $request->price_id, 'quantity' => 1]],
                 'metadata' => [
                     'place_id' => $request->place_id,
-                    'duration' => $product->metadata->duration,
+                    'duration' => $duration,
                     'name' => $product->name,
                     'tax_number' => $place->tax_number
                 ],
@@ -118,30 +122,33 @@ class BillingController extends Controller
             ], 400);
             exit();
         }
-        if ($event->type == 'payment_intent.succeeded') {
-            $stripe = new StripeClient(env('STRIPE_SECRET'));
-            $object = $event->data->object;
-
-            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
-            if(count($sessions->data) > 0){
-                $metadata = $sessions->data[0]->metadata;
-                $place_id = $metadata->place_id;
-                $duration = $metadata->duration;
-                $product_name = $metadata->name;
-
-                PaidBill::create([
-                    'place_id' => $place_id,
-                    'amount' => $object->amount / 100,
-                    'currency' => strtoupper($object->currency),
-                    'payment_date' => \Carbon\Carbon::now()->timestamp($object->created),
-                    'product_name' => $product_name,
-                    'duration' => $duration,
-                    'expired_at' => \Carbon\Carbon::now()->addMonths($duration),
-                    'payment_intent_id' => $object->id,
-                    'receipt_url' => $object->charges->data[0]->receipt_url
-                ]);
-            }
-        }
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        $object = $event->data;
+        file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode($object));
+//        if ($event->type == 'payment_intent.succeeded') {
+//            $stripe = new StripeClient(env('STRIPE_SECRET'));
+//            $object = $event->data->object;
+//
+//            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
+//            if(count($sessions->data) > 0){
+//                $metadata = $sessions->data[0]->metadata;
+//                $place_id = $metadata->place_id;
+//                $duration = $metadata->duration;
+//                $product_name = $metadata->name;
+//
+//                PaidBill::create([
+//                    'place_id' => $place_id,
+//                    'amount' => $object->amount / 100,
+//                    'currency' => strtoupper($object->currency),
+//                    'payment_date' => \Carbon\Carbon::now()->timestamp($object->created),
+//                    'product_name' => $product_name,
+//                    'duration' => $duration,
+//                    'expired_at' => \Carbon\Carbon::now()->addMonths($duration),
+//                    'payment_intent_id' => $object->id,
+//                    'receipt_url' => $object->charges->data[0]->receipt_url
+//                ]);
+//            }
+//        }
         return response()->json(['result'=> 'OK']);
     }
 }

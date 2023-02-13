@@ -122,32 +122,30 @@ class BillingController extends Controller
             ], 400);
             exit();
         }
-        $object = $event;
-        file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode(json_encode($object)));
-//        if ($event->type == 'payment_intent.succeeded') {
-//            $stripe = new StripeClient(env('STRIPE_SECRET'));
-//            $object = $event->data->object;
-//
-//            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
-//            if(count($sessions->data) > 0){
-//                $metadata = $sessions->data[0]->metadata;
-//                $place_id = $metadata->place_id;
-//                $duration = $metadata->duration;
-//                $product_name = $metadata->name;
-//
-//                PaidBill::create([
-//                    'place_id' => $place_id,
-//                    'amount' => $object->amount / 100,
-//                    'currency' => strtoupper($object->currency),
-//                    'payment_date' => \Carbon\Carbon::now()->timestamp($object->created),
-//                    'product_name' => $product_name,
-//                    'duration' => $duration,
-//                    'expired_at' => \Carbon\Carbon::now()->addMonths($duration),
-//                    'payment_intent_id' => $object->id,
-//                    'receipt_url' => $object->charges->data[0]->receipt_url
-//                ]);
-//            }
-//        }
+        if ($event->type == 'payment_intent.succeeded') {
+            $stripe = new StripeClient(env('STRIPE_SECRET'));
+            $object = $event->data->object;
+
+            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
+            if(count($sessions->data) > 0){
+                $metadata = $sessions->data[0]->metadata;
+                $place_id = $metadata->place_id;
+                $duration = $metadata->duration;
+                $product_name = $metadata->name;
+
+                PaidBill::create([
+                    'place_id' => $place_id,
+                    'amount' => $object->amount / 100,
+                    'currency' => strtoupper($object->currency),
+                    'payment_date' => \Carbon\Carbon::now()->timestamp($object->created),
+                    'product_name' => $product_name,
+                    'duration' => $duration,
+                    'expired_at' => \Carbon\Carbon::now()->addMonths($duration),
+                    'payment_intent_id' => $object->id,
+                    'receipt_url' => $object->charges->data[0]->receipt_url
+                ]);
+            }
+        }
         return response()->json(['result'=> 'OK']);
     }
 }

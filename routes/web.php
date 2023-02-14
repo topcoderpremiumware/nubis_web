@@ -36,4 +36,6 @@ Route::view('/feedback/{order_id}', 'feedback')->name('feedback');
 Route::view('/feedbacks/{place_id}', 'feedbacks')->name('feedbacks');
 Route::view('/book/{place_id}', 'book')->name('book')->middleware('bill_paid');
 Route::view('/', 'home')->name('home');
+Route::view('/pricing', 'pricing')->name('pricing');
+Route::view('/features', 'features')->name('features');
 Route::view('/admin/{path?}/{path2?}', 'app')->name('admin');

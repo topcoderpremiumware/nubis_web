@@ -110,4 +110,15 @@ class Place extends Model
         }
         return $admins;
     }
+
+    public function waiters()
+    {
+        $admins = collect([]);
+        foreach ($this->users as $user) {
+            if($user->hasRole('waiter',$this->id)){
+                $admins->push($user);
+            }
+        }
+        return $admins;
+    }
 }

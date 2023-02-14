@@ -8,11 +8,13 @@ export default function Register() {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const [firstNameError, setFirstNameError] = useState([])
   const [lastNameError, setLastNameError] = useState([])
   const [emailError, setEmailError] = useState([])
+  const [phoneError, setPhoneError] = useState([])
   const [passwordError, setPasswordError] = useState([])
   const [place, setPlace] = useState(0)
   const [placeNameError, setPlaceNameError] = useState([])
@@ -20,7 +22,7 @@ export default function Register() {
   const [address, setAddress] = useState('')
   const [city, setCity] = useState('')
   const [zipCode, setZipCode] = useState('')
-  const [phone, setPhone] = useState('')
+  const [placePhone, setPlacePhone] = useState('')
   const [placeEmail, setPlaceEmail] = useState('')
   const [homePage, setHomePage] = useState('')
   const [countries,setCountries] = useState([])
@@ -40,6 +42,7 @@ export default function Register() {
       first_name: firstName,
       last_name: lastName,
       email: email,
+      phone: phone,
       password: password,
       password_confirmation: passwordConfirmation,
       language: localStorage.getItem('i18nextLng')
@@ -51,7 +54,7 @@ export default function Register() {
           address: address,
           city: city,
           zip_code: zipCode,
-          phone: phone,
+          phone: placePhone,
           email: placeEmail,
           home_page: homePage,
           country_id: countryId,
@@ -71,12 +74,14 @@ export default function Register() {
       setFirstNameError([])
       setLastNameError([])
       setEmailError([])
+      setPhoneError([])
       setPasswordError([])
       if (error.response && error.response.data && error.response.data.errors) {
         for (const [key, value] of Object.entries(error.response.data.errors)) {
           if(key === 'first_name') setFirstNameError(value)
           if(key === 'last_name') setLastNameError(value)
           if(key === 'email') setEmailError(value)
+          if(key === 'phone') setPhoneError(value)
           if(key === 'password') setPasswordError(value)
         }
         console.log(error.response.data.errors)
@@ -91,6 +96,9 @@ export default function Register() {
     switch (e.target.name) {
       case 'email':
         setEmail(e.target.value)
+        break;
+      case 'phone':
+        setPhone(e.target.value)
         break;
       case 'password':
         setPassword(e.target.value)
@@ -119,8 +127,8 @@ export default function Register() {
       case 'zip_code':
         setZipCode(e.target.value)
         break;
-      case 'phone':
-        setPhone(e.target.value)
+      case 'place_phone':
+        setPlacePhone(e.target.value)
         break;
       case 'place_email':
         setPlaceEmail(e.target.value)
@@ -169,6 +177,15 @@ export default function Register() {
                            error={emailError.length > 0}
                            helperText={
                              <>{emailError.map(el => {return t(el)})}</>
+                           }/>
+              </div>
+              <div className="mb-3">
+                <TextField label={t('Phone')} size="small" fullWidth
+                           type="text" id="phone" name="phone"
+                           onChange={onChange}
+                           error={phoneError.length > 0}
+                           helperText={
+                             <>{phoneError.map(el => {return t(el)})}</>
                            }/>
               </div>
               <div className="mb-3">
@@ -237,7 +254,7 @@ export default function Register() {
                 </div>
                 <div className="mb-3">
                   <TextField label={t('Phone')} size="small" fullWidth
-                             type="text" id="phone" name="phone"
+                             type="text" id="place_phone" name="place_phone"
                              onChange={onChange}/>
                 </div>
                 <div className="mb-3">

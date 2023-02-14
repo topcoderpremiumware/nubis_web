@@ -81,7 +81,7 @@ export default function Login() {
               <Button variant="contained" type="submit">{t('Sign in')}</Button>
             </form>
             <hr/>
-            <Button variant="contained" href="/register">{t('Create profile')}</Button>
+            <Button variant="contained" href="/admin/register">{t('Create profile')}</Button>
           </div>
         </div>
       </div>

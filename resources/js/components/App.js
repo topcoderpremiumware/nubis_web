@@ -33,6 +33,7 @@ import PaymentGateway from './pages/GuestPayment/PaymentGateway/PaymentGateway';
 import PaymentSettings from './pages/GuestPayment/PaymentSettings/PaymentSettings';
 import VideoGuideSettings from './pages/VideoGuideSettings/VideoGuideSettings';
 import MonthView from './pages/MonthView/MonthView';
+import SendBulkSMS from "./pages/SendBulkSMS/SendBulkSMS";
 
 function App() {
   if(localStorage.getItem('token')){
@@ -85,6 +86,7 @@ function App() {
                   <Route path='/ThankYou' exact element={<ThankYou/>}/>
 
                   <Route path='/Support' exact element={<Support/>}/>
+                  <Route path='/SendBulkSMS' exact element={<SendBulkSMS/>}/>
                 </Routes>
               </div>
             </>

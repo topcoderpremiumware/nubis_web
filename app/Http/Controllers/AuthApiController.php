@@ -25,6 +25,7 @@ class AuthApiController extends Controller
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:2',
             'email' => 'required|email|unique:users',
+            'phone' => 'required',
             'password' => 'required|min:4|confirmed',
         ]);
 
@@ -33,6 +34,7 @@ class AuthApiController extends Controller
             'first_name' => ucwords($request->first_name),
             'last_name' => ucwords($request->last_name),
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => bcrypt($request->password),
             'language' => $request->language ?? 'en'
         ]);
@@ -78,6 +80,7 @@ class AuthApiController extends Controller
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:2',
             'email' => 'required|email|unique:users,email,'.Auth::user()->id,
+            'phone' => 'required',
         ]);
 
         $res = User::where('id',Auth::user()->id)->update([
@@ -85,6 +88,7 @@ class AuthApiController extends Controller
             'first_name' => ucwords($request->first_name),
             'last_name' => ucwords($request->last_name),
             'email' => $request->email,
+            'phone' => $request->phone,
             'language' => $request->language ?? 'en'
         ]);
 

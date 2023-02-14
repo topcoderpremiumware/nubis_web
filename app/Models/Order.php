@@ -16,6 +16,7 @@ class Order extends Model
             'waiting', // in the waiting list
             'pending', // order created but not paid
             'confirmed', // order paid
+            'no_show', // customer no shown
             'arrived', // customer arrived to place
             'completed', // order is finished
         ];

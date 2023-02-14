@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Order;
+use App\Models\Place;
 use Illuminate\Support\Facades\Storage;
 
 class TemplateHelper
@@ -124,6 +125,44 @@ class TemplateHelper
             '', //#CANCEL_BOOKING_PAGE#
             '', //#ALTERNATIVE_RESTAURANTS_PAGE#
             '', //#UNSUBSCRIBE_LINK#
+        ];
+
+        $output = str_replace($vars, $values, $text);
+
+        return $output;
+    }
+
+    public static function setPlaceVariables(Place $place, string $text): string
+    {
+        $place_photo_file = $place->files()->where('purpose','online_booking_picture')->first();
+        $place_photo_url = '';
+        if($place_photo_file){
+            $place_photo_url = Storage::disk('public')->url($place_photo_file->filename);
+        }
+
+        $vars = [
+            "#RESTAURANT_ADDRESS#",
+            "#RESTAURANT_CITY#",
+            "#RESTAURANT_VAT#",
+            "#RESTAURANT_COUNTRY#",
+            "#RESTAURANT_EMAIL#",
+            "#RESTAURANT_HOMEPAGE#",
+            "#RESTAURANT_NAME#",
+            "#RESTAURANT_PHONE#",
+            "#RESTAURANT_PHOTO#",
+            "#RESTAURANT_ZIPCODE#"
+        ];
+        $values = [
+            $place->address, //#RESTAURANT_ADDRESS#
+            $place->city, //#RESTAURANT_CITY#
+            '', //#RESTAURANT_VAT#
+            $place->country->name, //#RESTAURANT_COUNTRY#
+            $place->email,
+            $place->home_page,
+            $place->name,
+            $place->phone,
+            $place_photo_url, //#RESTAURANT_PHOTO#
+            $place->zip_code
         ];
 
         $output = str_replace($vars, $values, $text);

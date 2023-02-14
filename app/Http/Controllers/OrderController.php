@@ -73,7 +73,7 @@ class OrderController extends Controller
                 ->first();
             $smsApiToken = $place->setting('sms-api-token');
             if($sms_confirmation_template && $smsApiToken){
-                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'), $smsApiToken);
+                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_SHORT_NAME'), $smsApiToken);
             }
             $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
                 ->where('purpose','email-confirmation')
@@ -147,7 +147,7 @@ class OrderController extends Controller
             $place = Place::find($request->place_id);
             $smsApiToken = $place->setting('sms-api-token');
             if($sms_change_template && $smsApiToken){
-                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_change_template->text), env('APP_NAME'), $smsApiToken);
+                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_change_template->text), env('APP_SHORT_NAME'), $smsApiToken);
             }
             $email_change_template = MessageTemplate::where('place_id',$request->place_id)
                 ->where('purpose','email-change')
@@ -251,7 +251,7 @@ class OrderController extends Controller
         $place = Place::find($request->place_id);
         $smsApiToken = $place->setting('sms-api-token');
         if($sms_delete_template && $smsApiToken){
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_NAME'), $smsApiToken);
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_SHORT_NAME'), $smsApiToken);
         }
         $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','email-delete')
@@ -385,7 +385,7 @@ class OrderController extends Controller
         if($status == 'completed' && $order->customer_id){
             $smsApiToken = $order->place->setting('sms-api-token');
             if($smsApiToken){
-                $result = SMS::send([$order->customer->phone], env('MIX_APP_URL').'/feedback/'.$order->id, env('APP_NAME'), $smsApiToken);
+                $result = SMS::send([$order->customer->phone], env('MIX_APP_URL').'/feedback/'.$order->id, env('APP_SHORT_NAME'), $smsApiToken);
             }
             \Illuminate\Support\Facades\Mail::html(env('MIX_APP_URL').'/feedback/'.$order->id, function($msg) use ($order) {
                 $msg->to($order->customer->email)->subject('Feedback');
@@ -841,7 +841,7 @@ class OrderController extends Controller
             ->first();
         $smsApiToken = $place->setting('sms-api-token');
         if($sms_confirmation_template && $smsApiToken){
-            $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_NAME'), $smsApiToken);
+            $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_SHORT_NAME'), $smsApiToken);
         }
         $email_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
             ->where('purpose','email-confirmation')
@@ -859,7 +859,7 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
         if($sms_notification_template && $smsApiToken){
-            $result = SMS::send([$place->setting('sms-notification-number')], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_NAME'), $smsApiToken);
+            $result = SMS::send([$place->setting('sms-notification-number')], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_SHORT_NAME'), $smsApiToken);
         }
     }
 

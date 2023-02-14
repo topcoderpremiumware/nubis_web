@@ -107,7 +107,7 @@ class MessageTemplateController extends Controller
         $place = Place::find($request->place_id);
         $smsApiToken = $place->setting('sms-api-token');
         if($smsApiToken){
-            $result = SMS::send([$request->phone], $request->text, env('APP_NAME'), $smsApiToken);
+            $result = SMS::send([$request->phone], $request->text, env('APP_SHORT_NAME'), $smsApiToken);
         }else{
             return response()->json([
                 'message' => 'SMS API Token is not set'

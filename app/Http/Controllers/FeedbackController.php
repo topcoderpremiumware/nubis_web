@@ -197,7 +197,7 @@ class FeedbackController extends Controller
 
         $customer = $feedback->customer;
         $smsApiToken = $feedback->place->setting('sms-api-token');
-        $result = SMS::send([$customer->phone], $request->reply, env('APP_NAME'), $smsApiToken);
+        $result = SMS::send([$customer->phone], $request->reply, env('APP_SHORT_NAME'), $smsApiToken);
 
         \Illuminate\Support\Facades\Mail::html($request->reply, function($msg) use ($customer) {
             $msg->to($customer->email)->subject('Reply to feedback');

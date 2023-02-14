@@ -5,11 +5,11 @@
         <img src='/images/footer-logo.png' width="130"/>
       </a>
       <nav class="footer-nav">
-        <a href="#" class="footer-nav-link">{{ __('Home') }}</a>
-        <a href="#" class="footer-nav-link">{{ __('Features') }}</a>
-        <a href="#" class="footer-nav-link">{{ __('Prices') }}</a>
-        <a href="#" class="footer-nav-link">{{ __('About us') }}</a>
-        <a href="#" class="footer-nav-link">{{ __('Contact') }}</a>
+        <a href="/" class="footer-nav-link">{{ __('Home') }}</a>
+        <a href="/features" class="footer-nav-link">{{ __('Features') }}</a>
+        <a href="/pricing" class="footer-nav-link">{{ __('Prices') }}</a>
+        <a href="/about" class="footer-nav-link">{{ __('About us') }}</a>
+        <a href="/contact" class="footer-nav-link">{{ __('Contact') }}</a>
       </nav>
       <ul class="footer-list">
         <li><a href="#">Fb</a></li>

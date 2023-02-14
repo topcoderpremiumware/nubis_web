@@ -28,7 +28,6 @@ mix.js('resources/js/feedback.js', 'public/js')
 mix.js('resources/js/feedbacks.js', 'public/js')
   .react();
 
-
 mix.js('resources/js/home.js', 'public/js')
   .react()
   .sass('resources/sass/home.scss', 'public/css');

@@ -506,6 +506,228 @@ body {
 }
 // end features page
 
+// pricing page
+.price {
+  padding: 65px 0 50px;
+
+  &-title {
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 46px;
+    color: #212529;
+    text-align: center;
+    margin: 0;
+  }
+
+  &-top-title {
+    margin-bottom: 14px;
+  }
+
+  &-text {
+    font-size: 16px;
+    line-height: 26px;
+    color: #495057;
+    text-align: center;
+    margin: 0;
+  }
+
+  &-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 68px auto 50px;
+    width: max-content;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 30px 4px rgba(234, 237, 240, 0.7);
+    border-radius: 16px;
+  }
+
+  &-card {
+    padding: 60px 50px 66px;
+    border-radius: 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    &:first-of-type {
+      .price-card-top {
+        border-bottom: 2px solid #4879F1;
+      }
+
+      .price-card-title {
+        color: #4879F1;
+      }
+
+      .price-card-btn {
+        border: 2px solid #4879F1;
+        color: #4879F1;
+
+        &:hover {
+          background: #4879F1;
+          color: #fff;
+        }
+      }
+    }
+
+    &:nth-of-type(2) {
+      border: 1px solid #F36823;
+      box-shadow: 0px 0px 22px 4px rgba(234, 237, 240, 0.6);
+
+      .price-card-badge {
+        background: rgba(243, 104, 35, 0.2);
+        color: #F36823;
+      }
+
+      .price-card-top {
+        border-bottom: 2px solid #F36823;
+      }
+
+      .price-card-title {
+        color: #F36823;
+      }
+
+      .price-card-btn {
+        border: 2px solid #F36823;
+        color: #F36823;
+
+        &:hover {
+          background: #F36823;
+          color: #fff;
+        }
+      }
+    }
+
+    &:last-of-type {
+      .price-card-badge {
+        background: rgba(105, 176, 12, 0.2);
+        color: #69B00C;
+      }
+
+      .price-card-top {
+        border-bottom: 2px solid #69B00C;
+      }
+
+      .price-card-title {
+        color: #69B00C;
+      }
+
+      .price-card-btn {
+        border: 2px solid #69B00C;
+        color: #69B00C;
+
+        &:hover {
+          background: #69B00C;
+          color: #fff;
+        }
+      }
+    }
+
+    &-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 6px 20px;
+      border-radius: 20px;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 18px;
+      letter-spacing: 0.833333px;
+      text-transform: uppercase;
+    }
+
+    &-top {
+      font-weight: 500;
+      font-size: 17px;
+      line-height: 26px;
+      color: #848199;
+      padding-bottom: 9px;
+
+      span {
+        font-weight: 600;
+        font-size: 36px;
+        line-height: 46px;
+        color: #212529;
+      }
+    }
+
+    &-title {
+      font-weight: 600;
+      font-size: 36px;
+      line-height: 46px;
+      margin: auto 0 20px;
+      text-transform: capitalize;
+    }
+
+    &-per-month {
+      font-weight: 500;
+      font-size: 17px;
+      line-height: 25px;
+      color: #C2C2C4;
+      margin-top: 7px;
+
+      span {
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 36px;
+      }
+    }
+
+    &-btn {
+      border-radius: 40px;
+      padding: 10px 50px;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      outline: none;
+      background: #fff;
+      transition: .3s;
+      cursor: pointer;
+    }
+
+    &-trial {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+      text-align: center;
+      color: #848199;
+      display: inline-block;
+      text-decoration: underline;
+      margin: 15px auto 0;
+      cursor: pointer;
+    }
+  }
+
+  &-benefits {
+    margin: 50px 0;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 30px 4px rgba(234, 237, 240, 0.7);
+    border-radius: 16px;
+    padding: 64px 80px 74px 120px;
+  }
+
+  &-list {
+    margin: 38px 0 0;
+    padding: 0;
+
+    &-item {
+      margin-bottom: 28px;
+      font-size: 24px;
+      line-height: 26px;
+      color: #212529;
+      list-style-image: url('/images/check.svg');
+      list-style-position: inside;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &-link {
+    color: #4879F1;
+  }
+}
+// end pricing page
+
 @media screen and (max-width: 1024px) {
   .features {
     &-grid {
@@ -661,6 +883,62 @@ body {
 
     &-wrapper {
       flex-direction: column-reverse;
+    }
+  }
+
+  .price {
+    padding: 30px 0 40px;
+
+    &-title {
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    &-wrapper {
+      margin: 40px auto;
+      flex-direction: column;
+    }
+
+    &-card {
+      padding: 48px 26px 26px;
+
+      &-top {
+        font-size: 16px;
+        line-height: 24px;
+        padding-bottom: 0;
+
+        span {
+          font-size: 28px;
+        }
+      }
+
+      &-per-month {
+        span {
+          font-size: 20px;
+          line-height: 30px;
+        }
+      }
+
+      &-title {
+        font-size: 28px;
+        line-height: 46px;
+        margin: auto 0 12px;
+      }
+    }
+
+    &-benefits {
+      margin: 40px 0;
+      padding: 40px 10px 66px 20px;
+    }
+
+    &-list {
+      margin: 20px 0 0;
+
+      &-item {
+        margin-bottom: 20px;
+        font-size: 16px;
+        line-height: 26px;
+      }
     }
   }
 }

@@ -15,9 +15,93 @@
     @include('partials/header')
     
     <main class="main">
-      
-pricing
-      @include('partials/banner')
+      <div class="price">
+        <div class="container">
+          <h2 class="price-title price-top-title">{{__('The right pricing plans for you')}}</h2>
+          <div class="price-wrapper">
+            <div class="price-card">
+              <div class="price-card-top">
+                <span>€30</span>/{{__('month')}}
+              </div>
+              <p class="price-card-title">{{__('Monthly')}}</p>
+              <button
+                type="button"
+                class="price-card-btn"
+              >{{__('Choose plan')}}</button>
+              <div
+                class="price-card-trial"
+                onClick={payTrial}
+              >{{__('Try one month free')}}</div>
+            </div>
+
+            <div class="price-card">
+              <div class="price-card-badge">{{__('Save')}} 15%</div>
+              <div class="price-card-top">
+                <span>€175</span>/{{__('semiannual')}}
+              </div>
+              <div class="price-card-per-month"><span>€25</span>/{{__('month')}}</div>
+              <p class="price-card-title">{{__('semiannual')}}</p>
+              <button
+                type="button"
+                class="price-card-btn"
+              >{{__('Choose plan')}}</button>
+              <div
+                class="price-card-trial"
+                onClick={payTrial}
+              >{{__('Try one month free')}}</div>
+            </div>
+
+            <div class="price-card">
+              <div class="price-card-badge">{{__('Save')}} 30%</div>
+              <div class="price-card-top">
+                <span>€240</span>/{{__('yearly')}}
+              </div>
+              <div class="price-card-per-month"><span>€20</span>/{{__('month')}}</div>
+              <p class="price-card-title">{{__('yearly')}}</p>
+              <button
+                type="button"
+                class="price-card-btn"
+              >{{__('Choose plan')}}</button>
+              <div
+                class="price-card-trial"
+                onClick={payTrial}
+              >{{__('Try one month free')}}</div>
+            </div>
+          </div>
+          <p class="price-text">{{__('Tied into another solution? If you have a notice period on your current booking system, you will receive Nubis reservation for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system fro free using our Nubis Academy videos ore let us set it up for you for')}} € 149</p>
+          <div class="price-benefits">
+            <h3 class="price-title">{{__('Benefits')}}</h3>
+            <ul class="price-list">
+              <li class="price-list-item">{{__('Fully integrated booking system')}}</li>
+              <li class="price-list-item">{{__('Takeaway module with its own payment')}}</li>
+              <li class="price-list-item">{{__('Giftcard module with direct payment to own account via stripe')}}</li>
+              <li class="price-list-item">{{__('Waiting list')}}</li>
+              <li class="price-list-item">{{__('Online payment via stripe for takeawey')}}</li>
+              <li class="price-list-item">{{__('Deposit for no-shows')}}</li>
+              <li class="price-list-item">{{__('Advance payment via own account via stripe')}}</li>
+              <li class="price-list-item">{{__('Pre-ordering a menu')}}</li>
+              <li class="price-list-item">{{__('Division of areas')}}</li>
+              <li class="price-list-item">{{__('Guest exclusivity')}}</li>
+              <li class="price-list-item">{{__('Reserve with Google partner')}}</li>
+              <li class="price-list-item">{{__('SMS reminder')}}</li>
+              <li class="price-list-item">{{__('Possibility of different setting times')}}</li>
+              <li class="price-list-item">{{__('Questionnaire after visit')}}</li>
+              <li class="price-list-item">{{__('Newsletter')}}</li>
+              <li class="price-list-item">{{__('Run on all platforms')}}</li>
+              <li class="price-list-item">{{__('Booking diagram')}}</li>
+              <li class="price-list-item">{{__('Print of today’s booking')}}</li>
+              <li class="price-list-item">{{__('Guest history')}}</li>
+              <li class="price-list-item">{{__('Possibility of combined tables when booking online')}}</li>
+              <li class="price-list-item">{{__('Concurrent users on the system')}}</li>
+              <li class="price-list-item"><a href="https://gatewayapi.com/pricing/#pricing" class="price-link" target="_blank">{{__('Price per SMS')}}</a></li>
+            </ul>
+          </div>
+          <p class="price-text">
+            {{__('Notice: License comes with a Free 30 day full version trial. Refer to our Terms Of Service here.')}} <br />
+            {{__('Support plan is available on paid licenses only and can be purchased separately or extended at a later time.')}}
+          </p>
+        </div>
+      </div>
     </main>
 
     @include('partials/footer')

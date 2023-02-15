@@ -559,15 +559,25 @@ class OrderController extends Controller
     public function getFreeTables($orders,$working_hours,$seats,$boolean = true)
     {
         $free_tables = [];
+        //Отримується список всіх столів, які фізично доступні для замовлення, тобто підходять за кількістю місць. Сюди ще додаються столи які можуть бути згруповані в групи, і при цьому підходять за кількістю місць.
         foreach ($working_hours as $working_hour){
+            /** @var Tableplan $tableplan */
             $tableplan = Tableplan::find($working_hour['tableplan_id']);
             $tables = $tableplan->getTables();
             foreach ($tables as $tab){
                 if($tab['seats'] < $seats) continue;
                 if(empty(array_filter($tab['time'],function($t) use ($seats) {
-                    return ($t['is_online'] && ($t['min_seats'] <= $seats /*&& $t['group'] == 0*/));
+                    return ($t['is_online'] && $t['min_seats'] <= $seats);
                 }))) continue;
                 if(!array_key_exists($tableplan->id,$free_tables) || !array_key_exists($tab['number'],$free_tables[$tableplan->id])){
+                    $free_tables[$tableplan->id][$tab['number']] = $tab;
+                }
+            }
+            $groups = $tableplan->getTableGroups();
+            foreach ($groups as $group) {
+                if($group['seats'] < $seats) continue;
+                if(!$group['is_online']) continue;
+                foreach ($group['tables'] as $tab) {
                     $free_tables[$tableplan->id][$tab['number']] = $tab;
                 }
             }
@@ -643,7 +653,7 @@ class OrderController extends Controller
 
         $tableplan_id = null;
         $table_ids = [];
-        $length = 0;
+        $length = 120;
         if($request->has('length') && intval($request->length) > 0){
             $length = intval($request->length);
         }
@@ -666,9 +676,8 @@ class OrderController extends Controller
             $indexFrom = intval($reservation_time->format('H'))*4 + floor(intval($reservation_time->format('i'))/15);
             foreach ($free_tables as $plan_id => $tables){
                 foreach ($tables as $table) {
+                    if($table['seats'] < $request->seats) continue;
                     if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
-                        if(!$length) $length = intval($table['time'][$indexFrom]['booking_length']);
-                        if(!$length) $length = 120;
                         $reserv_to = $reservation_time->copy()->addMinutes($length);
                         $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
                         for($i = $indexFrom;$i<=$indexTo;$i++){
@@ -677,6 +686,29 @@ class OrderController extends Controller
                             }
                         }
                         $table_ids = [$table['number']];
+                        $tableplan_id = $plan_id;
+                        break 2;
+                    }
+                }
+
+                $groups_table_ids = [];
+                $groups_table_seats = [];
+                foreach ($tables as $table) {
+                    if(!array_key_exists('grouped',$table)) continue;
+                    if(array_key_exists('ordered', $table['time'][$indexFrom])) continue;
+                    $reserv_to = $reservation_time->copy()->addMinutes($length);
+                    $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
+                    for($i = $indexFrom;$i<=$indexTo;$i++){
+                        if(array_key_exists('ordered', $table['time'][$i])){
+                            continue 2;
+                        }
+                    }
+                    $group_id = $table['time'][0]['group'];
+                    $groups_table_ids[$group_id][] = $table['number'];
+                    if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
+                    $groups_table_seats[$group_id] += $table['seats'];
+                    if($groups_table_seats[$group_id] >= $request->seats){
+                        $table_ids = $groups_table_ids[$group_id];
                         $tableplan_id = $plan_id;
                         break 2;
                     }

@@ -62,4 +62,27 @@ class Tableplan extends Model
             return array_key_exists('number',$el);
         });
     }
+
+    public function getTableGroups()
+    {
+        $tables = $this->getTables();
+        $groups = [];
+        foreach ($tables as $table) {
+            $table['grouped'] = 1;
+            $group_id = $table['time'][0]['group'];
+            if(array_key_exists($group_id,$groups)){
+                $groups[$group_id]['seats'] += $table['seats'];
+                $groups[$group_id]['tables'][] = $table;
+            }else{
+                $groups[$group_id] = [
+                    'is_internal' => $table['time'][0]['is_internal'],
+                    'is_online' => $table['time'][0]['is_online'],
+                    'group_priority' => $table['time'][0]['group_priority'],
+                    'seats' => $table['seats'],
+                    'tables' => [$table]
+                ];
+            }
+        }
+        return $groups;
+    }
 }

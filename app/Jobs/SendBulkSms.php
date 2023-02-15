@@ -38,6 +38,5 @@ class SendBulkSms implements ShouldQueue
     public function handle()
     {
         $result = SMS::send($this->phones, $this->text, env('APP_SHORT_NAME'), $this->token);
-        file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode(json_encode($result)));
     }
 }

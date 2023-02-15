@@ -125,14 +125,32 @@ class BillingController extends Controller
         if ($event->type == 'payment_intent.succeeded') {
             $stripe = new StripeClient(env('STRIPE_SECRET'));
             $object = $event->data->object;
+            $customer_id = $object->customer;
+            $place_id = false;
 
             $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
-            if(count($sessions->data) > 0){
+            if(count($sessions->data) > 0) {
                 $metadata = $sessions->data[0]->metadata;
                 $place_id = $metadata->place_id;
                 $duration = $metadata->duration;
                 $product_name = $metadata->name;
 
+                $stripe->customers->update($customer_id, [
+                    'metadata' => [
+                        'place_id' => $place_id,
+                        'duration' => $duration,
+                        'product_name' => $product_name
+                    ]
+                ]);
+            }else{
+                $customer = $stripe->customers->retrieve($customer_id);
+                if(property_exists($customer->metadata,'place_id')) {
+                    $place_id = $customer->metadata->place_id;
+                    $duration = $customer->metadata->duration;
+                    $product_name = $customer->metadata->name;
+                }
+            }
+            if($place_id){
                 PaidBill::create([
                     'place_id' => $place_id,
                     'amount' => $object->amount / 100,

@@ -68,8 +68,9 @@ class Tableplan extends Model
         $tables = $this->getTables();
         $groups = [];
         foreach ($tables as $table) {
-            $table['grouped'] = 1;
             $group_id = $table['time'][0]['group'];
+            if($group_id == 0) continue;
+            $table['grouped'] = 1;
             if(array_key_exists($group_id,$groups)){
                 $groups[$group_id]['seats'] += $table['seats'];
                 $groups[$group_id]['tables'][] = $table;

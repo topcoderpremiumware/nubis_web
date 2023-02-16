@@ -48,6 +48,7 @@ class OrderWebhookController extends Controller
 
                     $order = Order::find($order_id);
                     $marks = $order->marks;
+                    if(!$marks) $marks = [];
                     $marks['payment_intent_id'] = $object->id;
                     $order->marks = $marks;
                     $order->status = 'confirmed';

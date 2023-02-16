@@ -100,7 +100,7 @@ class TemplateHelper
             '', //#COMPANY#
             $customer->first_name.' '.$customer->last_name, //#CONTACT_PERSON#
             $customer->phone, //#CONTACT_PHONE#
-            $order->custom_booking_length->name, //#CUSTOM_BOOK_LENGTH_NAME#
+            $order->custom_booking_length ? $order->custom_booking_length->name : '', //#CUSTOM_BOOK_LENGTH_NAME#
             $customer->email, //#EMAIL#
             $customer->first_name,
             $customer->last_name,
@@ -112,7 +112,7 @@ class TemplateHelper
             $place->address, //#RESTAURANT_ADDRESS#
             $place->city, //#RESTAURANT_CITY#
             '', //#RESTAURANT_VAT#
-            $place->country->name, //#RESTAURANT_COUNTRY#
+            $place->country ? $place->country->name : '', //#RESTAURANT_COUNTRY#
             $place->email,
             $place->home_page,
             $place->name,

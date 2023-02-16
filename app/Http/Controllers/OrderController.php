@@ -58,7 +58,7 @@ class OrderController extends Controller
             'status' => $request->status,
             'is_take_away' => $request->is_take_away,
             'source' => $request->source,
-            'marks' => '',
+            'marks' => [],
             'custom_booking_length_id' => $request->custom_booking_length_id
         ]);
 
@@ -132,7 +132,7 @@ class OrderController extends Controller
             'status' => $request->status,
             'is_take_away' => $request->is_take_away,
             'source' => $request->source,
-            'marks' => $request->marks ?? '',
+            'marks' => $request->marks ?? [],
             'custom_booking_length_id' => $request->custom_booking_length_id
         ]);
 
@@ -500,7 +500,9 @@ class OrderController extends Controller
                         }
 
                         $booking_limits = $working_hour['booking_limits'][$indexFrom];
-                        if($booking_limits['max_seats'] <= $timeOrders_seats && $booking_limits['max_books'] <= count($timeOrders)) continue;
+                        $is_max_seats = $booking_limits['max_seats'] == 0 ? true : $booking_limits['max_seats'] > $timeOrders_seats;
+                        $is_max_books = $booking_limits['max_books'] == 0 ? true : $booking_limits['max_books'] > count($timeOrders);
+                        if(!$is_max_seats || !$is_max_books) continue;
                     }
 
                     foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
@@ -938,6 +940,7 @@ class OrderController extends Controller
             ->whereIn('name',['stripe-secret','stripe-key'])
             ->get();
         $output = [];
+        $keys = [];
         foreach ($settings as $setting) {
             $parts = explode('_',$setting->value);
             if(count($parts) === 3){

@@ -175,6 +175,7 @@ class TimetableController extends Controller
     public static function get_working_by_area_and_date($area_id, $date)
     {
         $area = Area::find($area_id);
+        if(!$area) return [];
         $default_tableplan = $area->place->timetables()->first();
         $date_arr = explode('-',$date);
         $without_year = $date_arr[1].'-'.$date_arr[2];

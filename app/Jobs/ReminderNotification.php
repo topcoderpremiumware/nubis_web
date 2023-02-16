@@ -56,6 +56,7 @@ class ReminderNotification implements ShouldQueue
                     $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$reminder_template->text), env('APP_SHORT_NAME'), $smsApiToken);
                 }
                 $marks = $order->marks;
+                if(!$marks) $marks = [];
                 $marks['sms_reminded'] = true;
                 $order->marks = $marks;
                 $order->save();
@@ -85,6 +86,7 @@ class ReminderNotification implements ShouldQueue
                     });
                 }
                 $marks = $order->marks;
+                if(!$marks) $marks = [];
                 $marks['email_reminded'] = true;
                 $order->marks = $marks;
                 $order->save();

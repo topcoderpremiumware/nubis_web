@@ -54,6 +54,7 @@ Route::get('places/{place_id}/lengths',[CustomBookingLengthController::class, 'g
 Route::get('places/{place_id}/is_bill_paid',[PlaceController::class, 'isBillPaid']);
 Route::get('places/{place_id}/alternative',[PlaceController::class, 'getAlternative']);
 Route::get('places/{place_id}/payment_method',[OrderController::class, 'getPlacePaymentMethod']);
+Route::get('places/{place_id}/max_available_seats',[PlaceController::class, 'getMaxAvailableSeats']);
 
 Route::get('files_purpose',[FileController::class, 'getByPurpose']);
 Route::get('countries',[CountryController::class, 'getAll']);
@@ -70,6 +71,8 @@ Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/password',[CustomerController::class, 'password']);
     Route::get('customers/orders',[OrderController::class, 'getAllByCustomer']);
     Route::get('customers/client_secret',[OrderController::class, 'getStripeClientSecret']);
+
+    Route::post('places/{place_id}/send_contact',[PlaceController::class, 'sendContact']);
 
     Route::post('make_order',[OrderController::class, 'makeOrder']);
     Route::delete('cancel_order/{id}',[OrderController::class, 'cancel']);
@@ -98,7 +101,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('places/{place_id}/menus',[MenuController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/timetables',[TimetableController::class, 'getAllByPlace']);
-    Route::get('places/{place_id}/custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByPlace']);
+    Route::get('places/{place_id}/custom_booking_lengths',[CustomBoopkingLengthController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/customers',[PlaceController::class, 'getCustomers']);
     Route::get('places/{place_id}/is_trial_paid',[PlaceController::class, 'isTrialBillPaid']);
     Route::post('places/{place_id}/pay_trial',[BillingController::class, 'payTrial']);

@@ -229,6 +229,22 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/payment_method \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json'
 ```
+#### Get max available seats
+> GET /api/places/{id}/max_available_seats
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/max_available_seats \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json'
+```
+#### Send message to place
+> POST /api/places/{id}/send_contact
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/send_contact \
+-H "X-Requested-With: XMLHttpRequest" \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
+-H 'Content-Type: application/json'
+-d '{"message":"Hello world"}'
+```
 ---
 <a id="settings"></a>
 ## Settings

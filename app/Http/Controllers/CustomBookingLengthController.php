@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomBookingLength;
 use App\Models\Log;
+use App\Models\Order;
 use App\Models\Timetable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -214,6 +215,28 @@ class CustomBookingLengthController extends Controller
             'seats' => 'required|integer'
         ]);
 
+        $request_date = Carbon::parse($request->reservation_date);
+        if($request_date->lt(Carbon::now()->setTime(0,0,0))) return response()->json([
+            'message' => 'Date must be today and later'
+        ], 400);
+
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"));
+        if(empty($working_hours)) return response()->json([
+            'message' => 'Non-working day'
+        ], 400);
+
+        $time_from = $request_date->copy();
+        $time_from->setTime(0, 0, 0);
+        $time_to = $request_date->copy();
+        $time_to->setTime(23, 59, 59);
+        $orders = Order::where('place_id',$request->place_id)
+            ->where('area_id',$request->area_id)
+            ->whereBetween('reservation_time',[$time_from,$time_to])
+            ->where('is_take_away',0)
+            ->get();
+
+        $free_tables = (new OrderController())->getFreeTables($orders, $working_hours, $request->seats, false);
+
         $custom_lengths = CustomBookingLength::where('place_id',$request->place_id)
             ->whereHas('areas', function ($q) use ($request){
                 $q->where('areas.id', $request->area_id);
@@ -250,8 +273,18 @@ class CustomBookingLengthController extends Controller
                 $time = Carbon::parse($request->reservation_date . ' ' . $time_interval['from']);
                 $end = Carbon::parse($request->reservation_date . ' ' . $time_interval['to']);
                 for ($time; $time->lt($end); $time->addMinutes(15)) {
+                    $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
                     if (!$time->lt(Carbon::now())) {
-                        array_push($times,$time->copy());
+
+                        foreach ($free_tables as $tables) {
+                            foreach ($tables as $table) {
+                                if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                                    array_push($times,$time->copy());
+                                    break 2;
+                                }
+                            }
+                        }
+
                     }
                 }
             }

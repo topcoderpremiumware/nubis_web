@@ -8,7 +8,9 @@ use App\Models\Log;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Role;
+use App\Models\Tableplan;
 use App\Models\User;
+use App\SMS\SMS;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -175,6 +177,22 @@ class PlaceController extends Controller
         }
     }
 
+    public function sendContact($place_id, Request $request)
+    {
+        $request->validate([
+            'message' => 'required'
+        ]);
+        $place = Place::find($place_id);
+        $smsApiToken = $place->setting('sms-api-token');
+        $customer_name = Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->id.')';
+        if($smsApiToken){
+            $result = SMS::send([$place->setting('sms-notification-number')], $customer_name.': '.$request->message, env('APP_SHORT_NAME'), $smsApiToken);
+        }
+        \Illuminate\Support\Facades\Mail::html($request->message.'<br><br>Phone: '.Auth::user()->phone.'<br>Email: '.Auth::user()->email, function($msg) use ($customer_name, $place, $request) {
+            $msg->to($place->email)->subject('Customer Message: '.$customer_name);
+        });
+    }
+
     public function getAlternative($place_id, Request $request)
     {
         $place = Place::find($place_id);
@@ -186,5 +204,23 @@ class PlaceController extends Controller
         })->where('id','!=',$place_id)->get();
 
         return response()->json($places);
+    }
+
+    public function getMaxAvailableSeats($place_id, Request $request)
+    {
+        $place = Place::find($place_id);
+        $tableplans = $place->tableplans;
+        $seats = [0];
+        foreach ($tableplans as $tableplan) {
+            $tables = $tableplan->getTables();
+            foreach ($tables as $table) {
+                $seats[] = $table['seats'];
+            }
+            $groups = $tableplan->getTableGroups();
+            foreach ($groups as $group) {
+                $seats[] = $group['seats'];
+            }
+        }
+        return response()->json(max($seats));
     }
 }

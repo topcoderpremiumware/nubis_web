@@ -2,6 +2,7 @@ import PhoneInput from "react-phone-number-input";
 import "./CancelingModal.css";
 import {Trans, useTranslation} from "react-i18next";
 import moment from "moment";
+import {normalizeNumber} from "../../../../helper";
 
 export default function CancelingModal(props) {
   const { t } = useTranslation();
@@ -15,6 +16,23 @@ export default function CancelingModal(props) {
     restaurantInfo,
     selectedTime,
   } = props;
+
+  const getPlaceId = () => {
+    let pathArray = window.location.pathname.split('/')
+    return pathArray.length === 3 ? pathArray[2] : 0
+  };
+
+  const submit = () => {
+    if(defaultModal === 'morePeople'){
+      axios.post(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/send_contact`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        setActive(false)
+      }).catch(error => { })
+    }
+  }
 
   const setCancelType = () => {
     if (defaultModal === "canceling" && localStorage.getItem("token")) {
@@ -162,7 +180,7 @@ export default function CancelingModal(props) {
               <button
                 type="button"
                 className="button-main"
-                onClick={() => setCancelType()}
+                onClick={() => submit()}
               >
                 {t('Continue')} →
               </button>

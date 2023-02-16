@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Image from "./img/Image.jsx";
 import "./MainBlock.css";
 import SelectLang from "./SelectLang/SelectLang.jsx";
@@ -11,10 +11,17 @@ import CancelingModal from "./CancelingModal/CancelingModal.jsx";
 import MainModal from "../MainModal/MainModal.jsx";
 import {useTranslation} from "react-i18next";
 import {utils} from "react-modern-calendar-datepicker";
+import axios from "axios";
+import eventBus from "../../../eventBus";
 
 function MainBlock(props) {
   const { t } = useTranslation();
   const isValid = props.guestValue;
+  const [maxSeats, setMaxSeats] = useState(0);
+
+  useEffect(() => {
+    getMaxSeats()
+  }, [])
 
   const mainProps = {
     title: `${t('Next')} →`,
@@ -45,6 +52,19 @@ function MainBlock(props) {
     props.setModalActive(true);
   };
 
+  const getPlaceId = () => {
+    let pathArray = window.location.pathname.split('/')
+    return pathArray.length === 3 ? pathArray[2] : 0
+  };
+
+  const getMaxSeats = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/max_available_seats`).then(response => {
+      setMaxSeats(response.data)
+    }).catch(error => {
+      console.log("Error: ", error);
+    })
+  }
+
   const getTitle = {
     canceling: t('Canceling'),
     confirmation: t('You are about to cancel the following reservation:'),
@@ -74,7 +94,7 @@ function MainBlock(props) {
           <div className="main-block__info">
             {t('Booking for')}{" "}
             <a href="#" onClick={(e) => showModalMore(e)}>
-              {t('more than 8')}
+              {t('more than')} {maxSeats}
             </a>{" "}
             {t('people?')}
             <br /> {t('Do you want to')}{" "}

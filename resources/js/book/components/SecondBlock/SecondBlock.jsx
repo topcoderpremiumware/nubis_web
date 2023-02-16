@@ -43,6 +43,14 @@ function SecondBlock(props) {
     }
   }, [props.blockType]);
 
+  useEffect(async () => {
+    if(extraTimeReq.length > 0){
+      setTimelineType(extraTimeReq[0])
+    }
+  }, [extraTimeReq]);
+
+
+
   // useEffect(() => {
   //   if ((!extraTimeReq?.length && !times?.length) && props.defaultModal !== "waiting") {
   //     props.setDefaultModal("noTime");
@@ -109,6 +117,7 @@ function SecondBlock(props) {
       .then((response) => {
         console.log('getExtraTime',response.data)
         setExtraTimeReq(response.data);
+
         if (response.data.length === 0) {
           getTime(date)
         }
@@ -236,7 +245,7 @@ function SecondBlock(props) {
               disabledDays={getDisabledDays()}
             />
           </div>
-          {props.blockType === "secondblock" && (
+          {/*{props.blockType === "secondblock" && (*/}
             <div>
               {extraTimeReq.length > 0 ? extraTimeReq.map((blockTime, key) => (
                 <div className="select-time" key={key}>
@@ -260,7 +269,7 @@ function SecondBlock(props) {
                 </div>
               }
             </div>
-          )}
+          {/*)}*/}
           <div
             className="button-main next-button"
             onClick={checkToken}

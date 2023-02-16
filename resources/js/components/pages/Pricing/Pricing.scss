@@ -4,7 +4,8 @@
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
   padding: 50px 100px;
-  background: #fff;
+  position: relative;
+  z-index: 2;
 
   &-title {
     font-weight: 600;

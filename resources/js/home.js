@@ -45,3 +45,19 @@ if(featuresSwiper) {
     }
   });
 }
+
+const acc = document.querySelectorAll(".about-accordion");
+
+if(acc?.length) {
+  acc.forEach(i => {
+    i.addEventListener("click", function() {
+      this.classList.toggle("about-accordion-active");
+      const panel = this.nextElementSibling;
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      } 
+    })
+  })
+}

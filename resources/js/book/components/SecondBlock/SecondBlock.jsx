@@ -238,6 +238,7 @@ function SecondBlock(props) {
           </div>
           {props.blockType === "secondblock" && (
             <div>
+              {console.log('extraTimeReq', extraTimeReq)}
               {extraTimeReq.length > 0 ? extraTimeReq.map((blockTime, key) => (
                 <div className="select-time" key={key}>
                   <div className="select-time-wrapper" onClick={() => setTimelineType(blockTime)}>

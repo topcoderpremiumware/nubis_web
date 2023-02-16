@@ -21,7 +21,7 @@
           <div>
             <h1 class="title">{{__('One booking system – One fixed low price including all features.')}}</h1>
             <p class="hero-text">{{__('Nubis reservation makes it easy to manage your restaurant`s table reservations. Stop wasting your time on daily tasks such as email replies, social media chats or phone calls. Allow guests to book a table online 24/7 and Nubis reservation will take care of the rest! The system is easy implemented to your website and there are no start up-fees ore extra costs.')}}</p>
-            <a href="#" class="link">{{__('Try one month free')}}</a>
+            <a href="/pricing" class="link">{{__('Try one month free')}}</a>
           </div>
           <iframe 
             width="606" 
@@ -43,12 +43,12 @@
               <div class="swiper-slide features-item">
                 <img src="/images/feature-1.svg" alt="Icon" class="features-item-img">
                 <h4 class="features-item-title">{{__('One booking system – one fixed low price')}}</h4>
-                <p>{{__('Optimizes your guest flow, and optimizes the guest experience right from the first order, with all modern booking features in one...')}} <a href="#" class="link">{{__('Reed more')}}</a></p>
+                <p>{{__('Optimizes your guest flow, and optimizes the guest experience right from the first order, with all modern booking features in one...')}} <a href="/features" class="link">{{__('Reed more')}}</a></p>
               </div>
               <div class="swiper-slide features-item">
                 <img src="/images/feature-2.svg" alt="Icon" class="features-item-img">
                 <h4 class="features-item-title">{{__('Pre-ordering and payments from your customers. Sell gift cards and take- a- way with payment directly to your own bank account.')}}</h4>
-                <p>{{__('Preordering of menus, events, sale of gift cards and...')}} <a href="#" class="link">{{__('Reed more')}}</a></p>
+                <p>{{__('Preordering of menus, events, sale of gift cards and...')}} <a href="/features" class="link">{{__('Reed more')}}</a></p>
               </div>
               <div class="swiper-slide features-item">
                 <img src="/images/feature-3.svg" alt="Icon" class="features-item-img">
@@ -85,7 +85,7 @@
               <p class="advantages-subtitle">{{__('Save more time')}}</p>
               <h3 class="title">{{__('Accept online reservations and save your time.')}}</h3>
               <p class="advantages-text">{{__('Stop wasting your valuable time on day-to-day email replies, social media chats or phone calls by choosing an automatic booking solution instead! Allow your guests to book a table online 24/7 and Nubis reservation will take care of the rest! Low fixed price, easy to set up and free try period.')}}</p>
-              <a href="#" class="link">{{__('Try one month free')}}</a>
+              <a href="/pricing" class="link">{{__('Try one month free')}}</a>
             </div>
             <img src="/images/advantages-1.png" alt="Picture">
           </div>
@@ -98,7 +98,7 @@
               <p class="advantages-subtitle">{{__('Decrease no-shows')}}</p>
               <h3 class="title">{{__('Full control over your guest flow.')}}</h3>
               <p class="advantages-text">{{__('Make your own intelligent table plans and customize them to each single weekday ore setting. Let the costumer preorder different menus directly when ordering a table. Set different table length for different menus and make different areas in the restaurant for instance “in the restaurant”, “in the bar”, “on the terrasse etc.')}}</p>
-              <a href="#" class="link">{{__('Try one month free')}}</a>
+              <a href="/pricing" class="link">{{__('Try one month free')}}</a>
             </div>
             <img src="/images/advantages-2.png" alt="Picture">
           </div>
@@ -111,7 +111,7 @@
               <p class="advantages-subtitle">{{__('Enjoy easier life')}}</p>
               <h3 class="title">{{__('Inform your guests of their reservation status and be able to take prepayment and deposits direct on ordering.')}}</h3>
               <p class="advantages-text">{{__('Decrease your restaurant no-shows and help shape your image by keeping all of your clients informed about their reservation status. All reservations will be followed-up with an instant confirmation email & SMS, as well as another kind reminder, days before your guests visit. Take prepayments and deposits and even sell gift cards direct from your own website directly into your own bank account.')}}</p>
-              <a href="#" class="link">{{__('Try one month free')}}</a>
+              <a href="/pricing" class="link">{{__('Try one month free')}}</a>
             </div>
             <img src="/images/advantages-3.png" alt="Picture">
           </div>

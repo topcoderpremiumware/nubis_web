@@ -27995,6 +27995,23 @@ if (featuresSwiper) {
     }
   });
 }
+
+var acc = document.querySelectorAll(".about-accordion");
+
+if (acc !== null && acc !== void 0 && acc.length) {
+  acc.forEach(function (i) {
+    i.addEventListener("click", function () {
+      this.classList.toggle("about-accordion-active");
+      var panel = this.nextElementSibling;
+
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  });
+}
 })();
 
 /******/ })()

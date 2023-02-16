@@ -486,7 +486,8 @@ class OrderController extends Controller
                 $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
                 if(array_key_exists($working_hour['tableplan_id'],$free_tables)) {
 
-                    if(array_key_exists('booking_limits', $working_hour) && array_key_exists($indexFrom, $working_hour['booking_limits'])){
+                    if(array_key_exists('booking_limits', $working_hour) && is_array($working_hour['booking_limits']) &&
+                        array_key_exists($indexFrom, $working_hour['booking_limits'])){
                         $timeOrders_seats = 0;
                         $timeOrders = Order::where('place_id',$request->place_id)
                             ->where('area_id',$request->area_id)

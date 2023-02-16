@@ -625,6 +625,62 @@ body {
   color: #4879F1;
 }
 
+.about {
+  padding: 65px 0 80px;
+  text-align: center;
+}
+.about-text {
+  margin: 14px auto 30px;
+  max-width: 900px;
+}
+.about-title {
+  text-align: left;
+  margin-top: 82px;
+}
+.about-accordion {
+  cursor: pointer;
+  font-size: 21px;
+  line-height: 32px;
+  color: #212529;
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.about-accordion-active .about-accordion-icon span:last-of-type {
+  opacity: 0;
+}
+.about-accordion-icon {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+}
+.about-accordion-icon span {
+  width: 14px;
+  height: 2px;
+  background: #212529;
+}
+.about-accordion-icon span:last-of-type {
+  position: absolute;
+  transform: rotate(90deg);
+  transition: 0.3s;
+}
+.about-panel {
+  border-bottom: 1px solid #D2D2D2;
+  margin-bottom: 6px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+.about-panel p {
+  font-size: 16px;
+  line-height: 26px;
+  color: #495057;
+  padding: 0 0 16px;
+  text-align: left;
+}
+
 @media screen and (max-width: 1024px) {
   .features-grid {
     height: 940px;
@@ -796,6 +852,27 @@ body {
     font-size: 16px;
     line-height: 26px;
   }
+
+  .about {
+    padding: 30px 0 48px;
+  }
+  .about iframe {
+    height: 410px;
+  }
+  .about-title {
+    margin-top: 37px;
+  }
+  .about-accordion {
+    padding: 12px 0;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  .about-panel p {
+    padding: 0 0 12px;
+    font-size: 14px;
+    line-height: 24px;
+  }
 }
 @media screen and (max-width: 768px) {
   .footer {
@@ -889,15 +966,27 @@ body {
     font-size: 16px;
     line-height: 26px;
   }
+
+  .about iframe {
+    height: 218px;
+  }
 }
 @media screen and (max-width: 390px) {
   .advantages-item:last-of-type .advantages-wrapper {
     margin-top: 30px;
     gap: 50px;
   }
+
+  .about iframe {
+    height: 197px;
+  }
 }
 @media screen and (max-width: 375px) {
   .advantages-item:last-of-type .advantages-wrapper {
     margin-top: 20px;
+  }
+
+  .about iframe {
+    height: 188px;
   }
 }

@@ -728,6 +728,75 @@ body {
 }
 // end pricing page
 
+// about page
+.about {
+  padding: 65px 0 80px;
+  text-align: center;
+
+  &-text {
+    margin: 14px auto 30px;
+    max-width: 900px;
+  }
+
+  &-title {
+    text-align: left;
+    margin-top: 82px;
+  }
+
+  &-accordion {
+    cursor: pointer;
+    font-size: 21px;
+    line-height: 32px;
+    color: #212529;
+    padding: 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-active {
+      .about-accordion-icon span:last-of-type {
+        opacity: 0;
+      }
+    }
+
+    &-icon {
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+
+      span {
+        width: 14px;
+        height: 2px;
+        background: #212529;
+        
+        &:last-of-type {
+          position: absolute;
+          transform: rotate(90deg);
+          transition: .3s;
+        }
+      }
+    }
+  }
+
+  &-panel {
+    border-bottom: 1px solid #D2D2D2;
+    margin-bottom: 6px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+
+    p {
+      font-size: 16px;
+      line-height: 26px;
+      color: #495057;
+      padding: 0 0 16px;
+      text-align: left;
+    }
+  }
+}
+// end about page
+
 @media screen and (max-width: 1024px) {
   .features {
     &-grid {
@@ -941,6 +1010,31 @@ body {
       }
     }
   }
+
+  .about {
+    padding: 30px 0 48px;
+
+    iframe {
+      height: 410px;
+    }
+
+    &-title {
+      margin-top: 37px;
+    }
+
+    &-accordion {
+      padding: 12px 0;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    &-panel p {
+      padding: 0 0 12px;
+      font-size: 14px;
+      line-height: 24px;
+    }
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -1065,6 +1159,12 @@ body {
       }
     }
   }
+
+  .about {
+    iframe {
+      height: 218px;
+    }
+  }
 }
 
 @media screen and (max-width: 390px) {
@@ -1079,6 +1179,11 @@ body {
       }
     }
   }
+  .about {
+    iframe {
+      height: 197px;
+    }
+  }
 }
 
 @media screen and (max-width: 375px) {
@@ -1090,6 +1195,11 @@ body {
           margin-top: 20px;
         }
       }
+    }
+  }
+  .about {
+    iframe {
+      height: 188px;
     }
   }
 }

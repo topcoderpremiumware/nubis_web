@@ -59,6 +59,9 @@ class BillingController extends Controller
                 'tax_id_collection' => [
                     'enabled' => true
                 ],
+                'subscription_data' => [
+                    'trial_period_days' => 30
+                ],
                 'after_completion' => [
                     'type' => 'redirect',
                     'redirect' => ['url' => env('APP_URL').'/admin/ThankYou'],

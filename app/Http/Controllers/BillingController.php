@@ -53,6 +53,12 @@ class BillingController extends Controller
                     'name' => $product->name,
                     'tax_number' => $place->tax_number
                 ],
+                'automatic_tax' => [
+                    'enabled' => true
+                ],
+                'tax_id_collection' => [
+                    'enabled' => true
+                ],
                 'after_completion' => [
                     'type' => 'redirect',
                     'redirect' => ['url' => env('APP_URL').'/admin/ThankYou'],
@@ -135,12 +141,14 @@ class BillingController extends Controller
                 $place_id = $metadata->place_id;
                 $duration = $metadata->duration;
                 $product_name = $metadata->name;
+                $tax_number = $metadata->tax_number;
 
                 $stripe->customers->update($customer_id, [
                     'metadata' => [
                         'place_id' => $place_id,
                         'duration' => $duration,
-                        'product_name' => $product_name
+                        'product_name' => $product_name,
+                        'tax_number' => $tax_number
                     ]
                 ]);
             }else{

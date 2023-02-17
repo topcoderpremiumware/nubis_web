@@ -122,15 +122,14 @@ class BillingController extends Controller
             ], 400);
             exit();
         }
-        file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode(json_encode($event->type)));
+
         if ($event->type == 'payment_intent.succeeded') {
             $stripe = new StripeClient(env('STRIPE_SECRET'));
             $object = $event->data->object;
             $customer_id = $object->customer;
             $place_id = false;
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode(json_encode($customer_id)));
+
             $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('session '.json_encode($sessions->data)));
             if(count($sessions->data) > 0) {
                 $metadata = $sessions->data[0]->metadata;
                 $place_id = $metadata->place_id;
@@ -146,16 +145,12 @@ class BillingController extends Controller
                 ]);
             }else{
                 $customer = $stripe->customers->retrieve($customer_id);
-                file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('customer meta '.json_encode($customer->metadata)));
-
-                file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('customer meta '.json_encode(array_key_exists('place_id',$customer->metadata->toArray()))));
                 if(array_key_exists('place_id',$customer->metadata->toArray())) {
                     $place_id = $customer->metadata->place_id;
                     $duration = $customer->metadata->duration;
                     $product_name = $customer->metadata->product_name;
                 }
             }
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('place_id '.json_encode($place_id)));
             if($place_id){
                 PaidBill::create([
                     'place_id' => $place_id,

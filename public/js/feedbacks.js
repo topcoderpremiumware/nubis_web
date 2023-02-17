@@ -13219,7 +13219,7 @@ function App() {
               _context.prev = 0;
               setIsLoading(true);
               _context.next = 4;
-              return axios__WEBPACK_IMPORTED_MODULE_5___default().get("".concat("", "/api/feedbacks"), {
+              return axios__WEBPACK_IMPORTED_MODULE_5___default().get("".concat("", "/api/feedbacks_public"), {
                 params: {
                   place_id: window.location.pathname.split('/')[2]
                 },

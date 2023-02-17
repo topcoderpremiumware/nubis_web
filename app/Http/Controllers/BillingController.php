@@ -147,6 +147,8 @@ class BillingController extends Controller
             }else{
                 $customer = $stripe->customers->retrieve($customer_id);
                 file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('customer meta '.json_encode($customer->metadata)));
+
+                file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('customer meta '.json_encode(property_exists($customer->metadata,'place_id'))));
                 if(property_exists($customer->metadata,'place_id')) {
                     $place_id = $customer->metadata->place_id;
                     $duration = $customer->metadata->duration;

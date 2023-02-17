@@ -44,30 +44,31 @@ class BillingController extends Controller
 
         $place = Place::find($request->place_id);
 
-        $link = $stripe->paymentLinks->create(
-            [
-                'line_items' => [['price' => $request->price_id, 'quantity' => 1]],
-                'metadata' => [
-                    'place_id' => $request->place_id,
-                    'duration' => $duration,
-                    'name' => $product->name,
-                    'tax_number' => $place->tax_number
-                ],
-                'automatic_tax' => [
-                    'enabled' => true
-                ],
-                'tax_id_collection' => [
-                    'enabled' => true
-                ],
-                'subscription_data' => [
-                    'trial_period_days' => 30
-                ],
-                'after_completion' => [
-                    'type' => 'redirect',
-                    'redirect' => ['url' => env('APP_URL').'/admin/ThankYou'],
-                ],
-            ]
-        );
+        $payment_link_data = [
+            'line_items' => [['price' => $request->price_id, 'quantity' => 1]],
+            'metadata' => [
+                'place_id' => $request->place_id,
+                'duration' => $duration,
+                'name' => $product->name,
+                'tax_number' => $place->tax_number
+            ],
+            'automatic_tax' => [
+                'enabled' => true
+            ],
+            'tax_id_collection' => [
+                'enabled' => true
+            ],
+            'after_completion' => [
+                'type' => 'redirect',
+                'redirect' => ['url' => env('APP_URL').'/admin/ThankYou'],
+            ],
+        ];
+
+        if(count($place->paid_bills) === 0){
+            $payment_link_data['subscription_data'] = ['trial_period_days' => 30];
+        }
+
+        $link = $stripe->paymentLinks->create($payment_link_data);
 
         return response()->json(['url'=> $link->url]);
     }

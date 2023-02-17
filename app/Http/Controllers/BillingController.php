@@ -133,7 +133,7 @@ class BillingController extends Controller
             exit();
         }
 
-        if ($event->type == 'payment_intent.succeeded') {
+        if ($event->type == 'invoice.payment_succeeded') {
             $stripe = new StripeClient(env('STRIPE_SECRET'));
             $object = $event->data->object;
             $customer_id = $object->customer;
@@ -166,14 +166,14 @@ class BillingController extends Controller
             if($place_id){
                 PaidBill::create([
                     'place_id' => $place_id,
-                    'amount' => $object->amount / 100,
+                    'amount' => $object->amount_paid / 100,
                     'currency' => strtoupper($object->currency),
                     'payment_date' => \Carbon\Carbon::now()->timestamp($object->created),
                     'product_name' => $product_name,
                     'duration' => $duration,
                     'expired_at' => \Carbon\Carbon::now()->addMonths($duration),
                     'payment_intent_id' => $object->id,
-                    'receipt_url' => $object->charges->data[0]->receipt_url
+                    'receipt_url' => $object->hosted_invoice_url
                 ]);
             }
         }

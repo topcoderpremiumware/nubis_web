@@ -60,7 +60,7 @@ export default function NewBookingPopUpContent(props) {
           </Tabs>
         </Box>
         <TabPanel className='NewBooking__BoxItem' value={value} index={0}>
-          <TabNewBooking order={props.order}/>
+          <TabNewBooking order={props.order} handleClose={props.handleClose} />
         </TabPanel>
         {/*<TabPanel className='NewBooking__BoxItem' value={value} index={1}>*/}
         {/*  2*/}

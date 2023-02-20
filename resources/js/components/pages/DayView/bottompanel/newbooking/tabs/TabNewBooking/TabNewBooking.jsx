@@ -29,12 +29,14 @@ import CkeckBoxEmail from './CkeckBoxEmail';
 
 import GuestTablesApi from './tables/GuestTablesApi';
 import {
+  Button,
   CircularProgress,
   FormControl,
   FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   Switch,
   TextField
 } from "@mui/material";
@@ -43,6 +45,7 @@ import Moment from "moment";
 import {useTranslation} from "react-i18next";
 import eventBus from "../../../../../../../eventBus";
 import axios from 'axios';
+import moment from 'moment';
 
 export default function TabNewBooking(props) {
   const {t} = useTranslation();
@@ -54,6 +57,7 @@ export default function TabNewBooking(props) {
   const [times, setTimes] = React.useState([])
   const [tables, setTables] = React.useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     (async () => {
@@ -241,9 +245,38 @@ export default function TabNewBooking(props) {
     }))
   }
 
+  const createOrder = async () => {
+    try {
+      if(order?.id) {
+        await axios.post(`${process.env.MIX_API_URL}/api/orders/${order.id}`, {
+            ...order,
+            reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
+          }, {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+      } else {
+        await axios.post(`${process.env.MIX_API_URL}/api/orders`, {
+            ...order,
+            reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
+          }, {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+      }
+      eventBus.dispatch('orderEdited')
+      props.handleClose()
+    } catch (err) {
+      setError(err.response.data.message)
+    }
+  }
+
   return (
-  <>
-    {loading ? <div><CircularProgress/></div> :
+    loading ? <div><CircularProgress/></div> :
       <div className="row pt-3 TabNewBooking__container">
         <div className="col-md-4">
           <FormControl size="small" fullWidth className="datePickerFullWidth" sx={{mb:2}}>
@@ -332,6 +365,10 @@ export default function TabNewBooking(props) {
                     onChange={onChange}>
               <MenuItem value="ordered">{t('Ordered')}</MenuItem>
               <MenuItem value="waiting">{t('Waiting')}</MenuItem>
+              <MenuItem value="pending">{t('Pending')}</MenuItem>
+              <MenuItem value="confirmed">{t('Confirmed')}</MenuItem>
+              <MenuItem value="arrived">{t('Arrived')}</MenuItem>
+              <MenuItem value="completed">{t('Completed')}</MenuItem>
             </Select>
           </FormControl>
           <FormControlLabel label={t('Take away')} labelPlacement="start" sx={{mb:2}}
@@ -418,6 +455,11 @@ export default function TabNewBooking(props) {
             </div>
           </div>
         </div>
+        {error && <p className='TabNewBooking__error'>{error}</p>}
+        <Stack spacing={2} direction="row">
+          <Button variant="contained" onClick={createOrder}>Save</Button>
+          <Button variant="outlined" onClick={() => props.handleClose()}>Cancel</Button>
+        </Stack>
       </div>
 
 // <div className='TabNewBooking__container'>
@@ -517,18 +559,18 @@ export default function TabNewBooking(props) {
 //
 //     </div>
 //   </div>
-//   <div className='NewBooking__BottomContainer'>
-//     <div className='NewBooking__Bottom-button'>
-//       <ButtonAddWaitingList />
-//     </div>
-//     <div className='NewBooking__Bottom-button'>
-//       <ButtonCancel />
-//     </div>
-//     <div className='NewBooking__Bottom-button'>
-//       <ButtonSave />
-//     </div>
-//   </div>
+  // <div className='NewBooking__BottomContainer'>
+  //   <div className='NewBooking__Bottom-button'>
+  //     <ButtonAddWaitingList />
+  //   </div>
+  //   <div className='NewBooking__Bottom-button'>
+  //     <ButtonCancel />
+  //   </div>
+  //   <div className='NewBooking__Bottom-button'>
+  //     <ButtonSave />
+  //   </div>
+  // </div>
 //
 // </div>
-  }</>)
+  )
 }

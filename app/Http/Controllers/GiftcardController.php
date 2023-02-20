@@ -54,14 +54,25 @@ class GiftcardController extends Controller
             });
         }
 
-        $online_payment_currency = $place->setting('online-payment-currecy');
+        $online_payment_currency = $place->setting('online-payment-currency');
         $stripe_secret = $place->setting('stripe-secret');
         $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
+
+        if(empty($online_payment_currency)){
+            return response()->json([
+                'message' => 'Payment currency settings is not set'
+            ], 400);
+        }
+        if(empty($stripe_secret) || $stripe_webhook_secret){
+            return response()->json([
+                'message' => 'Stripe settings is not set'
+            ], 400);
+        }
 
         if($stripe_secret && $stripe_webhook_secret && $online_payment_currency){
             $stripe = new StripeClient($stripe_secret);
             $price = $stripe->prices->create([
-                'unit_amount' => $request->initial_amount,
+                'unit_amount' => $request->initial_amount * 100,
                 'currency' => $online_payment_currency,
                 'product_data' => [
                     'name' => 'Giftcard'

@@ -748,6 +748,7 @@ class OrderController extends Controller
         ]);
 
         $place = Place::find($request->place_id);
+
         if(intval($place->setting('is-online-payment')) === 1) {
             if ($place->setting('online-payment-method') === 'deduct') {
                 $prepayment_url = $this->getPrepaymentUrl($request, $order);
@@ -781,6 +782,7 @@ class OrderController extends Controller
         }
 
         $order->prepayment_url = $prepayment_url;
+
         return response()->json($order);
     }
 
@@ -790,14 +792,30 @@ class OrderController extends Controller
         $place = Place::find($request->place_id);
 
         $online_payment_amount = $place->setting('online-payment-amount') * $order->seats;
-        $online_payment_currency = $place->setting('online-payment-currecy');
+        $online_payment_currency = $place->setting('online-payment-currency');
         $stripe_secret = $place->setting('stripe-secret');
         $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
+
+        if(empty($online_payment_amount) || $online_payment_amount <= 0){
+            return response()->json([
+                'message' => 'Payment amount settings is not set'
+            ], 400);
+        }
+        if(empty($online_payment_currency)){
+            return response()->json([
+                'message' => 'Payment currency settings is not set'
+            ], 400);
+        }
+        if(empty($stripe_secret) || $stripe_webhook_secret){
+            return response()->json([
+                'message' => 'Stripe settings is not set'
+            ], 400);
+        }
 
         if($stripe_secret && $stripe_webhook_secret && $online_payment_currency){
             $stripe = new StripeClient($stripe_secret);
             $price = $stripe->prices->create([
-                'unit_amount' => $online_payment_amount,
+                'unit_amount' => $online_payment_amount * 100,
                 'currency' => $online_payment_currency,
                 'product_data' => [
                     'name' => 'Prepayment'
@@ -816,6 +834,7 @@ class OrderController extends Controller
                     ],
                 ]
             );
+
             $url = $link->url;
         }
 

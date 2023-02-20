@@ -5,6 +5,7 @@ body{
     display: flex;
     overflow: hidden;
 }
+
 // НЕ МОЖНА ЛАМАТИ ФУНКЦІОНАЛ ПЛАГІНА. ЦЕ ЙОГО КЛАС.
 // ЯКЩО ХОЧЕШ ДЕСЬ ЗМІНИТИ ЙОГО ВЛАСТИВІСТЬ СТВОРИ СВІЙ КЛАС І НЕ ЛІЗЬ У ВЖЕ ЗАРЕЗЕРВОВАНІ
 //.container{
@@ -148,5 +149,23 @@ a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover{
         width: 20px;
         height: 13px;
         object-fit: cover;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .content {
+        overflow: visible;
+        transition: .3s;
+        transform: translateX(-252px);
+
+        &.active {
+            transform: none;
+        }
+    }
+
+    .scroll_wrapper {
+        min-width: 100vw;
+        max-width: 100vw;
+        width: 100vw;
     }
 }

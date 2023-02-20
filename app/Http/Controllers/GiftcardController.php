@@ -63,7 +63,7 @@ class GiftcardController extends Controller
                 'message' => 'Payment currency settings is not set'
             ], 400);
         }
-        if(empty($stripe_secret) || $stripe_webhook_secret){
+        if(empty($stripe_secret) || empty($stripe_webhook_secret)){
             return response()->json([
                 'message' => 'Stripe settings is not set'
             ], 400);

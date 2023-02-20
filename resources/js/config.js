@@ -3,5 +3,5 @@ process.env.APP_URL = ''
 
 window.langs = [
   {country: 'GB', lang: 'en', title: 'English'},
-  {country: 'DK', lang: 'nl', title: 'Dansk'},
+  {country: 'DK', lang: 'da', title: 'Dansk'},
 ];

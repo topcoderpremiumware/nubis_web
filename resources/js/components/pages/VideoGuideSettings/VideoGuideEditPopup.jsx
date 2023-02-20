@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
-import 'moment/locale/nl'
+import 'moment/locale/da'
 import {
   Button,
   Dialog,

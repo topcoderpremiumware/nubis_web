@@ -5414,7 +5414,7 @@ window.langs = [{
   title: 'English'
 }, {
   country: 'DK',
-  lang: 'nl',
+  lang: 'da',
   title: 'Dansk'
 }];
 

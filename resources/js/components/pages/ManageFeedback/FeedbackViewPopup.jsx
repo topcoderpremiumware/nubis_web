@@ -3,7 +3,7 @@ import  './ManageFeedback.scss';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import Moment from 'moment';
-import 'moment/locale/nl'
+import 'moment/locale/da'
 import {
   Button,
   Dialog,

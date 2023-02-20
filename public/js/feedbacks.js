@@ -13126,7 +13126,7 @@ window.langs = [{
   title: 'English'
 }, {
   country: 'DK',
-  lang: 'nl',
+  lang: 'da',
   title: 'Dansk'
 }];
 
@@ -13419,7 +13419,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var fallbackLng = 'en';
-var availableLanguages = ['en', 'nl'];
+var availableLanguages = ['en', 'da'];
 i18next__WEBPACK_IMPORTED_MODULE_0__["default"].use(i18next_http_backend__WEBPACK_IMPORTED_MODULE_1__["default"]) // load translations using http (default                                               public/assets/locals/en/translations)
 .use(i18next_browser_languagedetector__WEBPACK_IMPORTED_MODULE_2__["default"]) // detect user language
 .use(react_i18next__WEBPACK_IMPORTED_MODULE_3__.initReactI18next) // pass the i18n instance to react-i18next.

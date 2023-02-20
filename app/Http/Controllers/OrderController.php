@@ -242,13 +242,13 @@ class OrderController extends Controller
 
         Log::add($request,'delete-order','Deleted order #'.$order->id);
 
-        $customer = Customer::find($request->customer_id);
-        $sms_delete_template = MessageTemplate::where('place_id',$request->place_id)
+        $customer = $order->customer;
+        $sms_delete_template = MessageTemplate::where('place_id',$order->place_id)
             ->where('purpose','sms-delete')
             ->where('language',$customer->language)
             ->where('active',1)
             ->first();
-        $place = Place::find($request->place_id);
+        $place = $order->place;
         $smsApiToken = $place->setting('sms-api-token');
         if($sms_delete_template && $smsApiToken){
             $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_SHORT_NAME'), $smsApiToken);

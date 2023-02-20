@@ -764,9 +764,9 @@ class OrderController extends Controller
                 }
             } else {
                 $this->sendNewOrderNotification($order,$place);
-                if(!$request->has('number') || !$request->has('exp_month') || !$request->has('exp_year') || !$request->has('cvc')){
+                if(!$request->has('setup_intent_id')){
                     return response()->json([
-                        'message' => 'There are no some card data like number, exp_month, exp_year, cvc'
+                        'message' => 'There are no setup_intent_id'
                     ], 400);
                 }
                 $marks = $this->processPaymentAlgorithm($request, $order);

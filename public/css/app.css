@@ -11445,3 +11445,20 @@ a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover {
   -o-object-fit: cover;
      object-fit: cover;
 }
+
+@media screen and (max-width: 991px) {
+  .content {
+    overflow: visible;
+    transition: 0.3s;
+    transform: translateX(-252px);
+  }
+  .content.active {
+    transform: none;
+  }
+
+  .scroll_wrapper {
+    min-width: 100vw;
+    max-width: 100vw;
+    width: 100vw;
+  }
+}

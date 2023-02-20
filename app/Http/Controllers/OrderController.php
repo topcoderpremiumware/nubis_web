@@ -298,7 +298,12 @@ class OrderController extends Controller
     {
         $place = $order->place;
         $stripe_secret = $place->setting('stripe-secret');
-        $stripe = new StripeClient($stripe_secret);
+        if(!$stripe_secret) return;
+        try{
+            $stripe = new StripeClient($stripe_secret);
+        }catch (\Exception $e){
+            return;
+        }
 
         if(array_key_exists('method',$order->marks)){
             if($order->marks['method'] == 'deduct'){

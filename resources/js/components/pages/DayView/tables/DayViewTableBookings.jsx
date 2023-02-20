@@ -31,6 +31,9 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     eventBus.on("dateChanged",  () => {
       getOrders()
     });
+    eventBus.on("orderEdited",  () => {
+      getOrders()
+    });
   }, [])
 
   const columns = [

@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import Topbar from "./sections/topbar/topbar";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import './../i18nextConf';
 
 import Sidebar from "./sections/sidebar/Sidebar";
@@ -35,6 +35,7 @@ import VideoGuideSettings from './pages/VideoGuideSettings/VideoGuideSettings';
 import MonthView from './pages/MonthView/MonthView';
 import SendBulkSMS from "./pages/SendBulkSMS/SendBulkSMS";
 import VideoGuides from './pages/VideoGuides/VideoGuides';
+import Banner from './sections/banner/Banner';
 
 function App() {
   if(localStorage.getItem('token')){
@@ -46,6 +47,7 @@ function App() {
       }
     })
   }
+
   return (
     <BrowserRouter basename="/admin">
       <Suspense fallback={<LoadingPage/>}>
@@ -55,6 +57,7 @@ function App() {
             <>
               <Sidebar/>
               <div className='scroll_wrapper'>
+                <Banner />
                 <Routes>
                   {/* <Route path='/dailyuse' exact element={<DailyUse/>}/> */}
                   <Route path='/DayView' exact element={<DayView/>}/>

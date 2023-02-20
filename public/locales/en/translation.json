@@ -353,5 +353,8 @@
     "То add the Webhook Secret you need to go Developers -> Webhooks -> Add endpoint. Then add this link to the requested field ": "То add the Webhook Secret you need to go Developers -> Webhooks -> Add endpoint. Then add this link to the requested field ",
     "Then under Signing secret please press Reveal button to get your Webhook Secret": "Then under Signing secret please press Reveal button to get your Webhook Secret",
     "How to Use our System ?": "How to Use our System ?",
-    "Try it Now": "Try it Now"
+    "Try it Now": "Try it Now",
+    "One booking system. One fixed price.": "One booking system. One fixed price.",
+    "Easy to install. Use Nubis academy videos to install Nubis reservations for your restaurant.": "Easy to install. Use Nubis academy videos to install Nubis reservations for your restaurant.",
+    "Subscribe now": "Subscribe now"
 }

@@ -6,9 +6,12 @@ import {Box, CircularProgress, Menu, MenuItem, Slider} from "@mui/material";
 import Moment from "moment";
 import _ from "lodash";
 import { useCallback } from "react";
+import axios from "axios";
+import eventBus from "../../../../eventBus";
+import moment from "moment";
 // import TablePropertiesPopup from "./TablePropertiesPopup";
 
-export default function PlanCanvas(props) {
+export default function PlanCanvas({ setSelectedOrder }) {
   const { t } = useTranslation();
   const [canvas, setCanvas] = useState(null)
   const [plan, setPlan] = useState({})
@@ -174,6 +177,7 @@ export default function PlanCanvas(props) {
         if(item.type.includes('rect') || item.type.includes('circ')){
           orders.forEach((order) => {
             if(order.table_ids.includes(item.number)){
+              item.booking_id = order?.id
               let date = localStorage.getItem('date') || Moment().utc().format('YYYY-MM-DD')
               let now = Moment.utc(date+' '+debouncedSelectedTime)
               if(item.order === ''){
@@ -239,6 +243,60 @@ export default function PlanCanvas(props) {
     debouncedOnChange(timeMarks[val])
   }
 
+  const onEdit = () => {
+    setSelectedOrder(orders.find(i => i.id === selectedTable.data.booking_id))
+    menuClose()
+  }
+
+  const onDelete = () => {
+    if(confirm('Do you really want to delete this order?')) {
+      menuClose()
+      axios.delete(`${process.env.MIX_API_URL}/api/orders/${selectedTable.data.booking_id}`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(() => {
+        eventBus.dispatch('orderEdited')
+      })
+    }
+  }
+
+  const setStatus = (status) => {
+    menuClose()
+    const order = orders.find(i => i.id === selectedTable.data.booking_id)
+    axios.post(`${process.env.MIX_API_URL}/api/orders/${selectedTable.data.booking_id}`, {
+        ...order,
+        reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
+        status
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+    ).then(() => {
+      eventBus.dispatch('orderEdited')
+    })
+  } 
+
+  const handleNewBookingClick = () => {
+    setSelectedOrder({
+      area_id: localStorage.getItem('area_id'),
+      comment: "",
+      customer: {},
+      customer_id: null,
+      is_take_away: 0,
+      length: 120,
+      marks: "",
+      place_id: localStorage.getItem('place_id'),
+      reservation_time: Moment().utc().format('YYYY-MM-DD HH:mm'),
+      seats: 1,
+      source: "internal",
+      status: "ordered",
+      table_ids: [selectedTable.id],
+      tableplan_id: 0,
+    })
+  }
+
   return (<>
     <Box sx={{ p: 3, pb:0 }}>
       <Slider
@@ -268,9 +326,20 @@ export default function PlanCanvas(props) {
           ? {top: menuAnchorEl.mouseY, left: menuAnchorEl.mouseX}
           : undefined
         }
-        >
-        {/*<MenuItem onClick={openProperties}>{t('Properties')}</MenuItem>*/}
-        {/*<MenuItem onClick={deleteTable}>{t('Delete')}</MenuItem>*/}
+      >
+        {selectedTable?.data?.order ? 
+          <div>
+            <MenuItem onClick={onEdit}>{t('Edit booking')}</MenuItem>
+            <MenuItem onClick={onDelete}>{t('Delete booking')}</MenuItem>
+            <MenuItem onClick={() => setStatus('arrived')}>{t('Set arrived')}</MenuItem>
+            <MenuItem onClick={() => setStatus('completed')}>{t('Set left table')}</MenuItem>
+            <MenuItem onClick={() => setStatus('confirmed')}>{t('Set confirmed')}</MenuItem>
+          </div>
+        : 
+          <div>
+            <MenuItem onClick={handleNewBookingClick}>{t('New booking')}</MenuItem>
+          </div>
+        }
       </Menu>
     </>}
   </>);

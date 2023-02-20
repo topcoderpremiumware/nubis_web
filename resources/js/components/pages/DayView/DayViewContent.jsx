@@ -101,7 +101,7 @@ export default function DayViewContent() {
           <TimeLinePlan/>
         </div>}
         {tableSidebar === 'tablePlan' && <div className="tablePlanSidebar">
-          <PlanCanvas/>
+          <PlanCanvas setSelectedOrder={setSelectedOrder} />
         </div>}
       </div>
       <BottomPanel selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />

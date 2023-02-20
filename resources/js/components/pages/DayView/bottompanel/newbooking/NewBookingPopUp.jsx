@@ -79,7 +79,7 @@ export default function NewBookingPopUp({selectedOrder, setSelectedOrder}) {
       >
         <Box sx={style} className='NewBookingPopUp__container'>
           <div className='close-icon' onClick={handleClose}><CloseIcon/></div>
-          <NewBookingPopUpContent order={order}/>
+          <NewBookingPopUpContent order={order} handleClose={handleClose} />
         </Box>
       </Modal>
     </div>

@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+.page-banner {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  padding: 40px;
+  position: relative;
+  z-index: 2;
+  color: #FFFFFF;
+  background-image: url('/images/feedback-bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+
+  &-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    gap: 30px;
+    z-index: 4;
+  }
+
+  &-title {
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 46px;
+    margin-bottom: 5px;
+  }
+
+  &-text {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 26px;
+    margin: 0;
+  }
+
+  &-link {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 26px;
+    text-decoration: underline;
+    color: #FFFFFF;
+    white-space: nowrap;
+
+    &:hover {
+      color: #FFFFFF;
+    }
+  }
+
+  &-active {
+    background-image: url('/images/banner-bg.png');
+    color: #212529;
+
+    .page-banner-link {
+      color: #F36823;
+
+      &:hover {
+        color: #F36823;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .page-banner {
+    padding: 20px;
+
+    &-wrapper {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    &-title {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+}

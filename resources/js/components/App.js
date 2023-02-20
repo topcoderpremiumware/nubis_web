@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Topbar from "./sections/topbar/topbar";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import './../i18nextConf';
 
 import Sidebar from "./sections/sidebar/Sidebar";
@@ -35,8 +35,13 @@ import VideoGuideSettings from './pages/VideoGuideSettings/VideoGuideSettings';
 import MonthView from './pages/MonthView/MonthView';
 import SendBulkSMS from "./pages/SendBulkSMS/SendBulkSMS";
 import VideoGuides from './pages/VideoGuides/VideoGuides';
+import Banner from './sections/banner/Banner';
+import eventBus from '../eventBus';
+import { useState } from 'react';
 
 function App() {
+  const [sidebarIsVisible, setSidebarIsVisible] = useState(false)
+
   if(localStorage.getItem('token')){
     axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
     }).catch(error => {
@@ -46,15 +51,23 @@ function App() {
       }
     })
   }
+
+  useEffect(() => {
+    eventBus.on('toggleSidebar', () => {
+      setSidebarIsVisible(prev => !prev)
+    })
+  }, [])
+
   return (
     <BrowserRouter basename="/admin">
       <Suspense fallback={<LoadingPage/>}>
         <Topbar/>
-        <div className="content">
+        <div className={sidebarIsVisible ? "content active" : "content"}>
           {localStorage.getItem('token') ?
             <>
               <Sidebar/>
               <div className='scroll_wrapper'>
+                <Banner />
                 <Routes>
                   {/* <Route path='/dailyuse' exact element={<DailyUse/>}/> */}
                   <Route path='/DayView' exact element={<DayView/>}/>

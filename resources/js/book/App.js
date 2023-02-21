@@ -240,7 +240,7 @@ const App = () => {
 
   // Make order request
 
-  const makeOrder = async () => {
+  const makeOrder = async (setupIntentId) => {
     console.log('custom_booking_length_id',timelineId)
     await myAxios
       .post(
@@ -256,7 +256,8 @@ const App = () => {
           is_take_away: isTakeAway,
           status: defaultModal === "submit" ? "waiting" : "ordered",
           length: timeline,
-          custom_booking_length_id: timelineId
+          custom_booking_length_id: timelineId,
+          ...(setupIntentId && {setup_intent_id: setupIntentId})
         },
         {
           headers: {

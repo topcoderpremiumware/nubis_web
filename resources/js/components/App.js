@@ -62,59 +62,59 @@ function App() {
     <BrowserRouter basename="/admin">
       <Suspense fallback={<LoadingPage/>}>
         <Topbar/>
-        <div className={sidebarIsVisible ? "content active" : "content"}>
-          {localStorage.getItem('token') ?
-            <>
-              <Sidebar/>
-              <div className='scroll_wrapper'>
-                <Banner />
-                <Routes>
-                  {/* <Route path='/dailyuse' exact element={<DailyUse/>}/> */}
-                  <Route path='/DayView' exact element={<DayView/>}/>
-                  <Route path='/WeekView' exact element={<WeekView/>}/>
-                  <Route path='/MonthView' exact element={<MonthView/>}/>
-                  <Route path='/Activity' exact element={<Activity/>}/>
-                  <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
-                  <Route path='/Areas' exact element={<Areas/>}/>
-                  <Route path='/ManageFeedback' exact element={<ManageFeedback/>}/>
-                  <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
-                  <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
-                  <Route path='/OpeningTimes' exact element={<OpeningTimes/>}/>
-                  <Route path='/ManageGiftCards' exact element={<ManageGiftCards/>}/>
+        {localStorage.getItem('token') ?
+          <div className={sidebarIsVisible ? "content content-responsive active" : "content content-responsive"}>
+            <Sidebar/>
+            <div className='scroll_wrapper'>
+              <Banner />
+              <Routes>
+                {/* <Route path='/dailyuse' exact element={<DailyUse/>}/> */}
+                <Route path='/DayView' exact element={<DayView/>}/>
+                <Route path='/WeekView' exact element={<WeekView/>}/>
+                <Route path='/MonthView' exact element={<MonthView/>}/>
+                <Route path='/Activity' exact element={<Activity/>}/>
+                <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
+                <Route path='/Areas' exact element={<Areas/>}/>
+                <Route path='/ManageFeedback' exact element={<ManageFeedback/>}/>
+                <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
+                <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
+                <Route path='/OpeningTimes' exact element={<OpeningTimes/>}/>
+                <Route path='/ManageGiftCards' exact element={<ManageGiftCards/>}/>
 
-                  <Route path='/BasicInformation' exact element={<BasicInformation/>} />
-                  <Route path='/Pictures' exact element={<Pictures/>} />
-                  <Route path='/SmsKeys' exact element={<SmsApiKeys/>}/>
-                  <Route path='/PaymentGateway' exact element={<PaymentGateway/>}/>
-                  <Route path='/NotificationsSettings' exact element={<NotificationsSettings/>}/>
-                  <Route path='/PaymentSettings' exact element={<PaymentSettings/>}/>
-                  <Route path='/VideoGuideSettings' exact element={<VideoGuideSettings/>}/>
+                <Route path='/BasicInformation' exact element={<BasicInformation/>} />
+                <Route path='/Pictures' exact element={<Pictures/>} />
+                <Route path='/SmsKeys' exact element={<SmsApiKeys/>}/>
+                <Route path='/PaymentGateway' exact element={<PaymentGateway/>}/>
+                <Route path='/NotificationsSettings' exact element={<NotificationsSettings/>}/>
+                <Route path='/PaymentSettings' exact element={<PaymentSettings/>}/>
+                <Route path='/VideoGuideSettings' exact element={<VideoGuideSettings/>}/>
 
-                  <Route path='/VideoGuides' exact element={<VideoGuides/>}/>
+                <Route path='/VideoGuides' exact element={<VideoGuides/>}/>
 
-                  <Route path='/CustomBookingLength' exact element={<CustomBookingLength/>}/>
-                  <Route path='/BookingLinkGuide' exact element={<BookingLinkGuide/>}/>
+                <Route path='/CustomBookingLength' exact element={<CustomBookingLength/>}/>
+                <Route path='/BookingLinkGuide' exact element={<BookingLinkGuide/>}/>
 
-                  <Route path='/pricing' exact element={<Pricing/>}/>
+                <Route path='/pricing' exact element={<Pricing/>}/>
 
-                  <Route path='/RestaurantNew' exact element={<RestaurantNew/>}/>
+                <Route path='/RestaurantNew' exact element={<RestaurantNew/>}/>
 
-                  <Route path='/ThankYou' exact element={<ThankYou/>}/>
+                <Route path='/ThankYou' exact element={<ThankYou/>}/>
 
-                  <Route path='/Support' exact element={<Support/>}/>
-                  <Route path='/SendBulkSMS' exact element={<SendBulkSMS/>}/>
-                </Routes>
-              </div>
-            </>
-            :
+                <Route path='/Support' exact element={<Support/>}/>
+                <Route path='/SendBulkSMS' exact element={<SendBulkSMS/>}/>
+              </Routes>
+            </div>
+          </div>
+          :
+          <div className="content">
             <div className='scroll_wrapper'>
               <Routes>
                 <Route path='/login' exact element={<Login/>}/>
                 <Route path='/register' exact element={<Register/>}/>
               </Routes>
             </div>
-          }
-        </div>
+          </div>
+        }
       </Suspense>
     </BrowserRouter>
   );

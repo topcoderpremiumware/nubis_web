@@ -823,7 +823,7 @@ class OrderController extends Controller
                 'unit_amount' => $online_payment_amount * 100,
                 'currency' => $online_payment_currency,
                 'product_data' => [
-                    'name' => 'Prepayment'
+                    'name' => $place->name.', '.$order->seats.' seats prepayment'
                 ]
             ]);
 

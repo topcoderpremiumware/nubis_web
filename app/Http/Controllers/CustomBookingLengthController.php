@@ -295,7 +295,7 @@ class CustomBookingLengthController extends Controller
                     'id' => $custom_length->id,
                     'name' => $custom_length->labels[$request->language]['name'],
                     'description' => $custom_length->labels[$request->language]['description'],
-                    'image' => Storage::disk('public')->url($custom_length->image),
+                    'image' => $custom_length->image ? Storage::disk('public')->url($custom_length->image) : '',
                     'length' => intval($custom_length->length)+intval($custom_length->preparation_length),
                     'time' => $times
                 ]);

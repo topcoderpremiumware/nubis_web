@@ -6,7 +6,6 @@ import eventBus from "../../../eventBus";
 import {Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField} from "@mui/material";
 
 const options = [
-  "#ADDRESS#",
   "#AREA_NAME#",
   "#BOOK_DAY#",
   "#BOOK_DAY_NAME#",
@@ -20,8 +19,6 @@ const options = [
   "#BOOK_MONTH_NAME#",
   "#BOOK_YEAR#",
   "#CANCEL_LINK#",
-  "#CITY#",
-  "#COMPANY#",
   "#CONTACT_PERSON#",
   "#CONTACT_PHONE#",
   "#EMAIL#",

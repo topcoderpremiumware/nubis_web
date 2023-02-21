@@ -254,9 +254,12 @@ export default function Register() {
                              onChange={onChange}/>
                 </div>
                 <div className="mb-3">
-                  <TextField label={t('Phone')} size="small" fullWidth
-                             type="text" id="place_phone" name="place_phone"
-                             onChange={onChange}/>
+                  <PhoneInput
+                    country={'dk'}
+                    value={placePhone}
+                    onChange={phone => setPlacePhone(phone)}
+                    containerClass="phone-input"
+                  />
                 </div>
                 <div className="mb-3">
                   <TextField label={t('Email address')} size="small" fullWidth

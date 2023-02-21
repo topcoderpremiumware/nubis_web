@@ -40,7 +40,8 @@ const PaymentGateway = () => {
   }
 
   const getWebhookUrl = () => {
-    return `${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/webhook`
+    // return `${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/webhook`
+    return `https://nubisreservation.com/api/places/${localStorage.getItem('place_id')}/webhook`
   }
 
   useEffect(() => {

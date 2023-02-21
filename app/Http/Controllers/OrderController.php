@@ -305,7 +305,7 @@ class OrderController extends Controller
             return;
         }
 
-        if(array_key_exists('method',$order->marks)){
+        if($order->marks && array_key_exists('method',$order->marks)){
             if($order->marks['method'] == 'deduct'){
                 if(array_key_exists('payment_intent_id',$order->marks)){
                     if(Carbon::now()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']){

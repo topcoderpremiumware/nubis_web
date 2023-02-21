@@ -139,7 +139,8 @@ class BillingController extends Controller
             $customer_id = $object->customer;
             $place_id = false;
 
-            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
+//            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
+            $sessions = $stripe->checkout->sessions->all(['subscription' => $object->subscription]);
             if(count($sessions->data) > 0) {
                 $metadata = $sessions->data[0]->metadata;
                 $place_id = $metadata->place_id;

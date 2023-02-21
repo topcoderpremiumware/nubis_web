@@ -25,7 +25,7 @@ const PrepaymentModal = (props) => {
     clientSecret: stripeSecret
   };
 
-  const total = guestValue * paymentInfo['online-payment-amount']
+  const total = guestValue * paymentInfo['online-payment-amount']  //TODO: no-show total = 0
 
   return (
     <div

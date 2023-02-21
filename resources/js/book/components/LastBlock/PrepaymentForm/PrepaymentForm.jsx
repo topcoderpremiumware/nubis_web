@@ -64,6 +64,7 @@ const PrepaymentForm = ({ paymentInfo, makeOrder }) => {
         className="button-main prepayment-button"
         disabled={isLoading}
       >
+        {/* TODO: no-show =  */}
         {isLoading ? t('Processing...') : t('Pay now')}
       </button>
     </form>

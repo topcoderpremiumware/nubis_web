@@ -356,5 +356,8 @@
     "Try it Now": "Try it Now",
     "One booking system. One fixed price.": "One booking system. One fixed price.",
     "Easy to install. Use Nubis academy videos to install Nubis reservations for your restaurant.": "Easy to install. Use Nubis academy videos to install Nubis reservations for your restaurant.",
-    "Subscribe now": "Subscribe now"
+    "Subscribe now": "Subscribe now",
+    "Start Now": "Start Now",
+    "Saves credit card information and charges a fee in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a “No show/Not arrived”": "Saves credit card information and charges a fee in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a “No show/Not arrived”",
+    "Please, enter stripe settings in Payment gateway": "Please, enter stripe settings in Payment gateway"
 }

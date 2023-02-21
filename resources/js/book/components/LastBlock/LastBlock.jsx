@@ -33,6 +33,19 @@ function LastBlock(props) {
     setModalActive(true);
   };
 
+  const spendGift = async () => {
+    if (discount) {
+      await axios.post(process.env.MIX_API_URL + '/api/giftcards_spend', {
+        code: appliedGift.code,
+        amount: discount
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+    }
+  }
+
   const makeOrderDone = async () => {
     const isOnline = paymentMethod?.['is-online-payment'] === '1'
     const method = paymentMethod?.['online-payment-method']
@@ -43,10 +56,10 @@ function LastBlock(props) {
         setModalActive(true);
         props.setDefaultModal("done");
       } else if (method === 'deduct') {
-        // spend gift
+        spendGift()
         await props.makeOrder();
-        // window.location.href = orderResponse?.prepayment_url
-      } else if (method === 'reserve' || method === 'no-show') {
+        window.location.href = orderResponse?.prepayment_url
+      } else if (method === 'reserve' || method === 'no_show') {
         setModalActive(true);
         props.setDefaultModal("prepayment");
       }
@@ -399,8 +412,10 @@ function LastBlock(props) {
               stripeKey={stripeKey}
               stripeSecret={stripeSecret}
               paymentInfo={paymentMethod}
-              makeOrder={props.makeOrder()}
+              makeOrder={props.makeOrder}
               discount={discount}
+              spendGift={spendGift}
+              setDefaultModal={props.setDefaultModal}
             />
           }
         </div>

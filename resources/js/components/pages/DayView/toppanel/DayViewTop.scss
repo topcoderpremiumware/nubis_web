@@ -54,3 +54,20 @@
 .TablePlan-logo img{
   width: 21px;
 }
+
+
+@media screen and (max-width: 1024px) {
+  .DayViewTop__container {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+
+    & > div {
+      margin: 0 !important;
+      max-width: 100%;
+    }
+  }
+  .DayViewSelect {
+    margin: 0 !important;
+  }
+}

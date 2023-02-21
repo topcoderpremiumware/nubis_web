@@ -257,6 +257,7 @@ export default function PlanCanvas({ setSelectedOrder }) {
         }
       }).then(() => {
         eventBus.dispatch('orderEdited')
+        getOrders()
       })
     }
   }

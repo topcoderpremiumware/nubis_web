@@ -16,10 +16,8 @@ function LastBlock(props) {
   const [modalActive, setModalActive] = useState(false);
   const [comment, setComment] = useState('')
   const { selectedDay, selectedTime, restaurantInfo, orderResponse } = props;
-
   const [stripeKey, setStripeKey] = useState('')
   const [stripeSecret, setStripeSecret] = useState('')
-  const [paymentMethod, setPaymentMethod] = useState({})
   const [gifts, setGifts] = useState([])
   const [giftCode, setGiftCode] = useState('')
   const [error, setError] = useState('')
@@ -47,21 +45,20 @@ function LastBlock(props) {
   }
 
   const makeOrderDone = async () => {
-    const isOnline = paymentMethod?.['is-online-payment'] === '1'
-    const method = paymentMethod?.['online-payment-method']
+    const isOnline = props.paymentMethod?.['is-online-payment'] === '1'
+    const method = props.paymentMethod?.['online-payment-method']
 
     try {
       if (!isOnline) {
         await props.makeOrder()
-        setModalActive(true);
-        props.setDefaultModal("done");
+        setModalActive(true)
+        props.setDefaultModal("done")
       } else if (method === 'deduct') {
         spendGift()
-        await props.makeOrder();
-        window.location.href = orderResponse?.prepayment_url
+        await props.makeOrder()
       } else if (method === 'reserve' || method === 'no_show') {
-        setModalActive(true);
-        props.setDefaultModal("prepayment");
+        setModalActive(true)
+        props.setDefaultModal("prepayment")
       }
     } catch (err) {
       setError(err.message)
@@ -117,11 +114,6 @@ function LastBlock(props) {
     setStripeKey(stripe)
   }
 
-  const getPaymentMethod = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`)
-    setPaymentMethod(res.data)
-  }
-
   const getGiftCards = async () => {
     const res = await axios.get(`${process.env.MIX_API_URL}/api/giftcards`, {
       params: {
@@ -155,7 +147,7 @@ function LastBlock(props) {
 
       setAppliedGift(res.data)
 
-      const orderTotal = props.guestValue * paymentMethod['online-payment-amount']
+      const orderTotal = props.guestValue * props.paymentMethod['online-payment-amount']
       const currGiftAmount = res.data.initial_amount - res.data.spend_amount
 
       if (currGiftAmount) {
@@ -170,7 +162,6 @@ function LastBlock(props) {
 
   useEffect(() => {
     getStripeKeys()
-    getPaymentMethod()
     getGiftCards()
   }, [])
 
@@ -284,9 +275,9 @@ function LastBlock(props) {
               </div>
 
               {gifts.length > 0 &&
-                paymentMethod?.['is-online-payment'] === '1' &&
-                (paymentMethod?.['online-payment-method'] === 'deduct' ||
-                  paymentMethod?.['online-payment-method'] === 'reserve') && (
+                props.paymentMethod?.['is-online-payment'] === '1' &&
+                (props.paymentMethod?.['online-payment-method'] === 'deduct' ||
+                  props.paymentMethod?.['online-payment-method'] === 'reserve') && (
                   <div>
                     <div className="client-title__comment">{t('Apply discount')}</div>
                     <div className="discount-wrapper">
@@ -411,7 +402,7 @@ function LastBlock(props) {
               guestValue={props.guestValue}
               stripeKey={stripeKey}
               stripeSecret={stripeSecret}
-              paymentInfo={paymentMethod}
+              paymentInfo={props.paymentMethod}
               makeOrder={props.makeOrder}
               discount={discount}
               spendGift={spendGift}

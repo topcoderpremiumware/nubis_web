@@ -95,6 +95,13 @@ const VideoGuideSettings = () => {
     }
   }
 
+  const shortDescription = (text,length) => {
+    if(text && text.length > length){
+      text = text.substring(0, length)+'...'
+    }
+    return text
+  }
+
   return (
     <div className='pages__container'>
       <h2>{t('Video Guide Settings')}</h2>
@@ -131,7 +138,7 @@ const VideoGuideSettings = () => {
                 {guides.map((item, index) => {
                   return <StyledTableRow key={index}>
                     <TableCell size="small">{item.title}</TableCell>
-                    <TableCell size="small">{(item.description.length > 100 ? item.description.substring(0, 100)+'...' : item.description)}</TableCell>
+                    <TableCell size="small">{shortDescription(item.description,100)}</TableCell>
                     <TableCell size="small">{item.youtube_id}</TableCell>
                     <TableCell size="small">{item.page_url}</TableCell>
                     <TableCell size="small">

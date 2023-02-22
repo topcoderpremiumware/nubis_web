@@ -6,6 +6,7 @@ use App\Helpers\TemplateHelper;
 use App\Models\Customer;
 use App\Models\Log;
 use App\Models\Order;
+use App\Models\Organization;
 use App\Models\Place;
 use App\Models\Role;
 use App\Models\Tableplan;
@@ -28,6 +29,22 @@ class PlaceController extends Controller
             'country_id' => 'required|exists:countries,id'
         ]);
 
+        $organization_id = null;
+        if($request->has('organization_name') && $request->organization_name){
+            $organization = Organization::create(['name' => $request->organization_name]);
+            $organization_id = $organization->id;
+        }else{
+            $place = Place::whereHas('users',function (Builder $q) {
+                $q->whereIn('id',Auth::user()->id);
+            })->whereNotNull('organization_id')->first();
+            if(!$place){
+                return response()->json([
+                    'message' => 'Organization name is not set'
+                ], 400);
+            }
+            $organization_id = $place->organization_id;
+        }
+
         $place = Place::create([
             'name' => $request->name,
             'address' => $request->address ?? '',
@@ -37,7 +54,8 @@ class PlaceController extends Controller
             'email' => $request->email ?? '',
             'home_page' => $request->home_page ?? '',
             'country_id' => $request->country_id,
-            'tax_number' => $request->tax_number
+            'tax_number' => $request->tax_number,
+            'organization_id' => $organization_id
         ]);
 
         Auth::user()->places()->attach($place->id);
@@ -197,11 +215,9 @@ class PlaceController extends Controller
     {
         $place = Place::find($place_id);
 
-        $users = $place->admins()->pluck('id')->toArray();
-
-        $places = Place::whereHas('users',function (Builder $q) use ($users) {
-            $q->whereIn('id',$users);
-        })->where('id','!=',$place_id)->get();
+        $places = $place->organization->places()
+            ->where('id','!=',$place_id)
+            ->get();
 
         return response()->json($places);
     }

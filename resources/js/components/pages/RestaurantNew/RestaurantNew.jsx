@@ -17,6 +17,8 @@ const RestaurantNew = () => {
   const [countries, setCountries] = useState([])
   const [countryId, setCountryId] = useState('')
   const [taxNumber,setTaxNumber] = useState('')
+  const [organizationName, setOrganizationName] = useState('')
+  const [hasOrganization,setHasOrganization] = useState(false)
 
   useEffect(() => {
     axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
@@ -24,6 +26,15 @@ const RestaurantNew = () => {
     }).catch(error => {
     })
   }, [])
+
+  const getCurrentPlace = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}`).then(response => {
+      if(response.data.organization_id){
+        setHasOrganization(true)
+      }
+    }).catch(error => {
+    })
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -36,7 +47,8 @@ const RestaurantNew = () => {
       email: placeEmail,
       home_page: homePage,
       country_id: countryId,
-      tax_number: taxNumber
+      tax_number: taxNumber,
+      organization_name: organizationName
     }, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -76,6 +88,9 @@ const RestaurantNew = () => {
       case 'tax_number':
         setTaxNumber(e.target.value)
         break;
+      case 'organization_name':
+        setOrganizationName(e.target.value)
+        break;
     }
   }
 
@@ -84,6 +99,11 @@ const RestaurantNew = () => {
       <h2>{t('Create new restaurant')}</h2>
       <form onSubmit={onSubmit}>
         <Grid container spacing={2} sx={{pb: 2, mt: 3}}>
+          {hasOrganization && <Grid item xs={12} sm={6}>
+            <TextField label={t('Organization Name')} size="small" fullWidth
+                       type="text" id="organization_name" name="organization_name"
+                       onChange={onChange} />
+          </Grid>}
           <Grid item xs={12} sm={6}>
             <TextField label={t('Name')} size="small" fullWidth
               type="text" id="place_name" name="place_name"

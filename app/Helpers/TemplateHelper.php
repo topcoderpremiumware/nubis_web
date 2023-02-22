@@ -107,7 +107,7 @@ class TemplateHelper
             $customer->first_name.' '.$customer->last_name, //#FULL_NAME#
             '', //#MAP_LINK#
             $order->seats, //#NUMBER_OF_GUESTS#
-            $order->payment_link, //#PAY_BOOKING_LINK#
+            $order->payment_link ?? '', //#PAY_BOOKING_LINK#
             $customer->phone, //#PHONE#
             $place->address, //#RESTAURANT_ADDRESS#
             $place->city, //#RESTAURANT_CITY#

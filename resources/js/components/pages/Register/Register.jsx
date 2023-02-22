@@ -28,6 +28,7 @@ export default function Register() {
   const [countries,setCountries] = useState([])
   const [countryId,setCountryId] = useState('')
   const [taxNumber,setTaxNumber] = useState('')
+  const [organizationName, setOrganizationName] = useState('')
 
   useEffect(() => {
     axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
@@ -58,7 +59,8 @@ export default function Register() {
           email: placeEmail,
           home_page: homePage,
           country_id: countryId,
-          tax_number: taxNumber
+          tax_number: taxNumber,
+          organization_name: organizationName
         },{
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -142,6 +144,9 @@ export default function Register() {
       case 'tax_number':
         setTaxNumber(e.target.value)
         break;
+      case 'organization_name':
+        setOrganizationName(e.target.value)
+        break;
     }
   }
 
@@ -216,6 +221,12 @@ export default function Register() {
               </div>
               {place === '1' &&
               <>
+                <div className="mb-3">
+                  <TextField label={t('Organization Name')} size="small" fullWidth
+                             type="text" id="organization_name" name="organization_name"
+                             onChange={onChange}
+                             />
+                </div>
                 <div className="mb-3">
                   <TextField label={t('Name')} size="small" fullWidth
                              type="text" id="place_name" name="place_name"

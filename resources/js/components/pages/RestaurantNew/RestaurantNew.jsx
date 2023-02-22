@@ -4,6 +4,9 @@ import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/material.css'
+import '../Register/Register.scss'
 
 const RestaurantNew = () => {
   const { t } = useTranslation();
@@ -137,9 +140,12 @@ const RestaurantNew = () => {
               onChange={onChange} />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField label={t('Phone')} size="small" fullWidth
-              type="text" id="phone" name="phone"
-              onChange={onChange} />
+            <PhoneInput
+              country={'dk'}
+              value={phone}
+              onChange={phone => setPhone(phone)}
+              containerClass="phone-input"
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField label={t('Email address')} size="small" fullWidth

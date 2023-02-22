@@ -3,6 +3,9 @@ import './BasicInformation.scss';
 import {useTranslation} from "react-i18next";
 import {Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 import eventBus from "../../../../eventBus";
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/material.css'
+import '../../Register/Register.scss'
 
 export default function BasicInformation() {
   const { t } = useTranslation();
@@ -95,9 +98,11 @@ export default function BasicInformation() {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField label={t('Phone')} size="small" fullWidth
-                       type="text" id="phone" name="phone"
-                       onChange={onChange} value={place.phone || ''}
+            <PhoneInput
+              country={'dk'}
+              value={place.phone}
+              onChange={phone => setPlace(prev => ({ ...prev, phone }))}
+              containerClass="phone-input"
             />
           </Grid>
           <Grid item xs={12} sm={6}>

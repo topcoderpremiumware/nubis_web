@@ -1,18 +1,24 @@
-import { Button, FormControlLabel, FormGroup, MenuItem, Select, Switch, TextField } from '@mui/material'
+import { Alert, Button, Collapse, FormControlLabel, FormGroup, IconButton, MenuItem, Select, Switch, TextField } from '@mui/material'
 import React, {useEffect} from 'react'
 import { useState } from 'react'
 import eventBus from "../../../../eventBus";
 import {useTranslation} from "react-i18next";
 import './PaymentSettings.scss'
+import axios from 'axios';
+import CloseIcon from '@mui/icons-material/Close';
 
 const PaymentSettings = () => {
   const { t } = useTranslation();
 
+  const [open, setOpen] = React.useState(true);
   const [method, setMethod] = useState('deduct')
   const [prepayment, setPrepayment] = useState(false)
   const [amount, setAmount] = useState(0)
   const [currency, setCurrency] = useState('DDK')
   const [cancelDeadline, setCancelDeadline] = useState(30)
+  const [stripeKey, setStripeKey] = useState('')
+  const [stripeSecret, setStripeSecret] = useState('')
+  const [stripeWebhookSecret, setStripeWebhookSecret] = useState('')
 
   useEffect(() => {
     getPrepayment()
@@ -20,6 +26,9 @@ const PaymentSettings = () => {
     getCurrency()
     getMethod()
     getCancelDeadline()
+    getStripeKey()
+    getStripeSecret()
+    getStripeWebhookSecret()
     eventBus.on("placeChanged", () => {
       getPrepayment()
       getAmount()
@@ -120,6 +129,54 @@ const PaymentSettings = () => {
     })
   }
 
+  const getStripeKey = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`, {
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'stripe-key'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setStripeKey(response.data.value)
+    }).catch(error => {
+      setStripeKey('')
+    })
+  }
+
+  const getStripeSecret = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`, {
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'stripe-secret'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setStripeSecret(response.data.value)
+    }).catch(error => {
+      setStripeSecret('')
+    })
+  }
+
+  const getStripeWebhookSecret = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`, {
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'stripe-webhook-secret'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setStripeWebhookSecret(response.data.value)
+    }).catch(error => {
+      setStripeWebhookSecret('')
+    })
+  }
+
   const getCancelDeadline = () => {
     axios.get(`${process.env.MIX_API_URL}/api/settings`,{
       params: {
@@ -179,15 +236,43 @@ const PaymentSettings = () => {
     }).catch(error => {})
   }
 
+  const toogleSwitch = (ev, checked) => {
+    if (checked && !stripeKey && !stripeSecret && !stripeWebhookSecret) {
+      setOpen(true)
+    }
+    setPrepayment(checked)
+  }
+
   return (
     <div className='pages__container'>
+      <Collapse in={open}>
+        <Alert
+          variant="outlined" severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          {t('Please, enter stripe settings in Payment gateway')}
+        </Alert>
+      </Collapse>
+
       <h2>{t('Payment Settings')}</h2>
       <FormGroup>
         <FormControlLabel
           control={
             <Switch
               checked={prepayment == 1}
-              onChange={(ev, checked) => setPrepayment(checked)}
+              onChange={toogleSwitch}
             />
           }
           label={t('Online payment')}

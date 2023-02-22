@@ -357,5 +357,8 @@
     "Try it Now": "Prøv det nu",
     "One booking system. One fixed price.": "Et bookingsystem. Én fast pris.",
     "Easy to install. Use Nubis academy videos to install Nubis reservations for your restaurant.": "Nem at installere. Brug Nubis-akademiets videoer til at installere Nubis-reservationer til din restaurant.",
-    "Subscribe now": "Tilmeld nu"
+    "Subscribe now": "Tilmeld nu",
+    "Start Now": "Start nu",
+    "Saves credit card information and charges a fee in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a “No show/Not arrived”": "Gemmer kreditkortoplysninger og opkræver et gebyr i tilfælde af udeblivelse eller for sen aflysning. Gebyret vil kun blive trukket fra gæsten, hvis reservationen er markeret som “No show/Not arrived”",
+    "Please, enter stripe settings in Payment gateway": "Indtast venligst stripe-indstillinger i Payment gateway"
 }

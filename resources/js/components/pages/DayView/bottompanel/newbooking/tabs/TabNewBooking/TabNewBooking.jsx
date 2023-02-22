@@ -56,6 +56,7 @@ export default function TabNewBooking(props) {
   const [areas, setAreas] = React.useState([])
   const [times, setTimes] = React.useState([])
   const [tables, setTables] = React.useState([])
+  const [isWalkIn, setIsWalkIn] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -246,10 +247,12 @@ export default function TabNewBooking(props) {
   }
 
   const createOrder = async () => {
+    const { customer, customer_id, ...rest } = order
     try {
       if(order?.id) {
         await axios.post(`${process.env.MIX_API_URL}/api/orders/${order.id}`, {
-            ...order,
+            ...rest,
+            ...(!isWalkIn && {customer, customer_id}),
             reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
           }, {
             headers: {
@@ -259,7 +262,8 @@ export default function TabNewBooking(props) {
         )
       } else {
         await axios.post(`${process.env.MIX_API_URL}/api/orders`, {
-            ...order,
+            ...rest,
+            ...(!isWalkIn && {customer, customer_id}),
             reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
           }, {
             headers: {
@@ -273,6 +277,26 @@ export default function TabNewBooking(props) {
     } catch (err) {
       setError(err.response.data.message)
     }
+  }
+
+  const deleteOrder = async () => {
+    try {
+      axios.delete(`${process.env.MIX_API_URL}/api/orders/${order.id}`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(() => {
+        eventBus.dispatch('orderEdited')
+        props.handleClose()
+      })
+    } catch (err) {
+      setError(err.response.data.message)
+    }
+  }
+
+  const toogleWalkIn = () => {
+    setTableOrder({ first_name: isWalkIn ? '' : 'Walk In' })
+    setIsWalkIn(prev => !prev)
   }
 
   return (
@@ -363,7 +387,6 @@ export default function TabNewBooking(props) {
             <Select label={t('Language')} value={order.status}
                     labelId="label_status" id="status" name="status"
                     onChange={onChange}>
-              <MenuItem value="ordered">{t('Ordered')}</MenuItem>
               <MenuItem value="waiting">{t('Waiting')}</MenuItem>
               <MenuItem value="pending">{t('Pending')}</MenuItem>
               <MenuItem value="confirmed">{t('Confirmed')}</MenuItem>
@@ -377,6 +400,11 @@ export default function TabNewBooking(props) {
                                       name="is_take_away"
                                       checked={Boolean(order.is_take_away)} />
                             }/>
+          <FormControlLabel label={t('Walk In')} labelPlacement="start" sx={{mb:2}}
+                            control={
+                              <Switch onChange={toogleWalkIn}
+                                      checked={isWalkIn} />
+                            }/>
         </div>
         <div className="col-md-8">
           <div className="row">
@@ -384,35 +412,35 @@ export default function TabNewBooking(props) {
               <TextField label={t('Phone')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_phone" name="customer_phone"
                         InputLabelProps={{ shrink: !!order.customer.phone }}
-                        value={order.customer.phone}
+                        value={order.customer.phone} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('First name')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_first_name" name="customer_first_name"
                         InputLabelProps={{ shrink: !!order.customer.first_name }}
-                        value={order.customer.first_name}
+                        value={order.customer.first_name} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Last name')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_last_name" name="customer_last_name"
                         InputLabelProps={{ shrink: !!order.customer.last_name }}
-                        value={order.customer.last_name}
+                        value={order.customer.last_name} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Email address')} size="small" fullWidth sx={{mb:2}}
                         type="email" id="customer_email" name="customer_email"
                         InputLabelProps={{ shrink: !!order.customer.email }}
-                        value={order.customer.email}
+                        value={order.customer.email} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Zip code')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_zip_code" name="customer_zip_code"
                         InputLabelProps={{ shrink: !!order.customer.zip_code }}
-                        value={order.customer.zip_code}
+                        value={order.customer.zip_code} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
@@ -420,7 +448,7 @@ export default function TabNewBooking(props) {
                 <InputLabel id="label_language">{t('Language')}</InputLabel>
                 <Select label={t('Language')} value={order.customer.language || ''}
                         labelId="label_language" id="customer_language" name="customer_language"
-                        onChange={onChange}>
+                        disabled={isWalkIn} onChange={onChange}>
                   {window.langs.map((lang,key) => {
                     return <MenuItem key={key} value={lang.lang}>{lang.title}</MenuItem>
                   })}
@@ -430,7 +458,7 @@ export default function TabNewBooking(props) {
             <div className="col-md-6">
               <FormControlLabel label={t('Allow send emails')} labelPlacement="start" sx={{mb:2}}
                                 control={
-                                  <Switch onChange={onChange}
+                                  <Switch onChange={onChange} disabled={isWalkIn}
                                           name="customer_allow_send_emails"
                                           checked={Boolean(order.customer.allow_send_emails)} />
                                 }/>
@@ -438,7 +466,7 @@ export default function TabNewBooking(props) {
             <div className="col-md-6">
               <FormControlLabel label={t('Allow send news')} labelPlacement="start" sx={{mb:2}}
                                 control={
-                                  <Switch onChange={onChange}
+                                  <Switch onChange={onChange} disabled={isWalkIn}
                                           name="customer_allow_send_news"
                                           checked={Boolean(order.customer.allow_send_news)} />
                                 }/>
@@ -449,7 +477,7 @@ export default function TabNewBooking(props) {
               <div className='GuestInfoActiveTable'>
                 <GuestTablesApi
                   data={customers}
-                  onClick={setTableOrder}
+                  onClick={!isWalkIn ? setTableOrder : () => {}}
                 />
               </div>
             </div>
@@ -458,6 +486,7 @@ export default function TabNewBooking(props) {
         {error && <p className='TabNewBooking__error'>{error}</p>}
         <Stack spacing={2} direction="row">
           <Button variant="contained" onClick={createOrder}>Save</Button>
+          <Button variant="outlined" onClick={deleteOrder}>Delete</Button>
           <Button variant="outlined" onClick={() => props.handleClose()}>Cancel</Button>
         </Stack>
       </div>

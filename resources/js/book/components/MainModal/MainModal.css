@@ -30,6 +30,29 @@
   position: relative;
 }
 
+
+.phone-input {
+  border: 1px solid #000 !important;
+  height: 47px !important;
+  border-radius: 0 !important;
+  width: 100% !important;
+}
+
+.phone-input-btn {
+  background: transparent !important;
+  border-right: 1px solid #000 !important;
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-radius: 0 !important;
+}
+.phone-input-btn .selected-flag,
+.phone-input-btn .selected-flag:hover {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
 @media (max-width: 375px) {
   .modal__content {
     width: 60%;

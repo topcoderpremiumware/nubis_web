@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import  './Register.scss';
 import { useTranslation } from 'react-i18next';
 import {Select, TextField, MenuItem, InputLabel, FormControl, Button} from "@mui/material";
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/material.css'
 
 export default function Register() {
   const { t } = useTranslation();
@@ -185,13 +187,12 @@ export default function Register() {
                            }/>
               </div>
               <div className="mb-3">
-                <TextField label={t('Phone')} size="small" fullWidth
-                           type="text" id="phone" name="phone"
-                           onChange={onChange}
-                           error={phoneError.length > 0}
-                           helperText={
-                             <>{phoneError.map(el => {return t(el)})}</>
-                           }/>
+                <PhoneInput
+                  country={'dk'}
+                  value={phone}
+                  onChange={phone => setPhone(phone)}
+                  containerClass="phone-input"
+                />
               </div>
               <div className="mb-3">
                 <TextField label={t('Password')} size="small" fullWidth
@@ -264,9 +265,12 @@ export default function Register() {
                              onChange={onChange}/>
                 </div>
                 <div className="mb-3">
-                  <TextField label={t('Phone')} size="small" fullWidth
-                             type="text" id="place_phone" name="place_phone"
-                             onChange={onChange}/>
+                  <PhoneInput
+                    country={'dk'}
+                    value={placePhone}
+                    onChange={phone => setPlacePhone(phone)}
+                    containerClass="phone-input"
+                  />
                 </div>
                 <div className="mb-3">
                   <TextField label={t('Email address')} size="small" fullWidth

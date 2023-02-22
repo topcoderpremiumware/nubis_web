@@ -12,8 +12,8 @@ const ThankYou = () => {
       <h2 className='thank-title'>{t('Payment completed successfully')}</h2>
       <p className="thank-text">{t('Thank you for your order')}</p>
       <Button variant="contained">
-        <Link to="/DayView" className='thank-link'>
-          {t('Return back')}
+        <Link to="/VideoGuides" className='thank-link'>
+          {t('Start Now')}
         </Link>
       </Button>
     </div>

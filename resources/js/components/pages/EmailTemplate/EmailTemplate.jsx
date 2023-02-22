@@ -40,7 +40,6 @@ const options = [
   '#FIRST_NAME#',
   '#LAST_NAME#',
   '#FULL_NAME#',
-  '#MAP_LINK#',
   '#NUMBER_OF_GUESTS#',
   '#PAY_BOOKING_LINK#',
   '#PHONE#',
@@ -56,10 +55,7 @@ const options = [
   '#RESTAURANT_ZIPCODE#',
   '#ZIPCODE#',
   '#LANDING_PAGE#',
-  '#MAX_PAX_PAGE#',
   '#CANCEL_BOOKING_PAGE#',
-  '#ALTERNATIVE_RESTAURANTS_PAGE#',
-  '#UNSUBSCRIBE_LINK#',
 ]
 
 export default function EmailTemplate() {

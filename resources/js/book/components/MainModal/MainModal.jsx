@@ -1,6 +1,6 @@
 import React from "react";
-import "react-phone-number-input/style.css";
-import PhoneInput from "react-phone-number-input";
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 import "./MainModal.css";
 import {useTranslation} from "react-i18next";
 
@@ -51,7 +51,7 @@ export default function MainModal(props) {
           <form className="form form-modal">
             <div className="form-name">
               {(defaultModal === "register" || defaultModal === "edit") && (
-                <div>
+                <>
                   <input
                     type="text"
                     className="form-name__firstname"
@@ -70,7 +70,7 @@ export default function MainModal(props) {
                       setInput("last_name", event.target.value)
                     }
                   />
-                </div>
+                </>
               )}
             </div>
             <div className="form__wrapper">
@@ -95,26 +95,25 @@ export default function MainModal(props) {
             </div>
             <div className="form-mobile-zip">
               {(defaultModal === "register" || defaultModal === "edit") && (
-                <div className="form-mobile-number" style={{ display: "flex" }}>
+                <>
                   <PhoneInput
-                    defaultCountry="DK"
+                    country={'dk'}
                     value={userData.phone}
-                    onChange={(val) => setInput("phone", val)}
-                    className="form-name__mobile"
-                    placeholder={t('Mobile number')}
+                    onChange={phone => setInput("phone", phone)}
+                    inputClass="phone-input"
+                    buttonClass="phone-input-btn"
+                    dropdownStyle={{ textAlign: 'left' }}
                   />
-                  <div>
-                    <input
-                      type="text"
-                      className="form-name__zip"
-                      placeholder={t('Zip code')}
-                      value={userData.zip_code}
-                      onChange={(event) =>
-                        setInput("zip_code", event.target.value)
-                      }
-                    />
-                  </div>
-                </div>
+                  <input
+                    type="text"
+                    className="form-name__zip"
+                    placeholder={t('Zip code')}
+                    value={userData.zip_code}
+                    onChange={(event) =>
+                      setInput("zip_code", event.target.value)
+                    }
+                  />
+                </>
               )}
             </div>
             <div className="form-password">

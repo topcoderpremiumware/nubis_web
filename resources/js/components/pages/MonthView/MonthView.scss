@@ -8,3 +8,11 @@
   align-items: center;
   gap: 20%;
 }
+
+@media screen and (max-width: 1024px) {
+  .wrapper {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+}

@@ -78,10 +78,6 @@ export const SidebarData = [
         title: 'Send Bulk SMS',
         path: '/SendBulkSMS',
       },
-      {
-        title: 'Email Campaign',
-        path: '/EmailCampaign',
-      },
     ]
   },
   {
@@ -184,33 +180,13 @@ export const SidebarData = [
         path: '/EmailTemplates/delete'
       },
       {
-        title: 'Reconfirmation',
-        path: '/EmailTemplates/reconfirmation'
-      },
-      {
         title: 'Waiting List',
         path: '/EmailTemplates/waiting-list'
-      },
-      {
-        title: 'Offers',
-        path: '/EmailTemplates/offers'
-      },
-      {
-        title: 'Check Credit Card',
-        path: '/EmailTemplates/check-credit-card'
       },
       {
         title: 'Payment Request',
         path: '/EmailTemplates/payment-request'
       },
-      {
-        title: 'Booking Invites',
-        path: '/EmailTemplates/booking-invites'
-      },
-      {
-        title: 'Manual',
-        path: '/EmailTemplates/manual'
-      }
     ]
   },
   // {

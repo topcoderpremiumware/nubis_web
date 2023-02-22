@@ -10,7 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 const PaymentSettings = () => {
   const { t } = useTranslation();
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(false);
   const [method, setMethod] = useState('deduct')
   const [prepayment, setPrepayment] = useState(false)
   const [amount, setAmount] = useState(0)
@@ -239,6 +239,7 @@ const PaymentSettings = () => {
   const toogleSwitch = (ev, checked) => {
     if (checked && !stripeKey && !stripeSecret && !stripeWebhookSecret) {
       setOpen(true)
+      return
     }
     setPrepayment(checked)
   }

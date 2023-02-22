@@ -34,20 +34,13 @@ class BillingController extends Controller
         $product = $stripe->products->retrieve($price->product);
         $duration = $price->recurring->interval === 'month' ? $price->recurring->interval_count :
             ($price->recurring->interval === 'year' ? $price->recurring->interval_count * 12 : 1);
-//        if(!@$product->metadata->duration){
-//            return response()->json([
-//                'message' => 'There is no product metadata.duration parameter',
-//                'product' => $product,
-//                'price' => $price
-//            ], 400);
-//        }
 
         $place = Place::find($request->place_id);
 
         $payment_link_data = [
             'line_items' => [['price' => $request->price_id, 'quantity' => 1]],
             'metadata' => [
-                'place_id' => $request->place_id,
+                'organization_id' => $place->organization_id,
                 'duration' => $duration,
                 'name' => $product->name,
                 'tax_number' => $place->tax_number
@@ -64,7 +57,7 @@ class BillingController extends Controller
             ],
         ];
 
-        if(count($place->paid_bills) === 0){
+        if(count($place->organization->paid_bills) === 0){
             $payment_link_data['subscription_data'] = ['trial_period_days' => 30];
         }
 
@@ -86,7 +79,7 @@ class BillingController extends Controller
         }
 
         $place = Place::find($place_id);
-        $trial_bill = $place->paid_bills()->where('product_name','Trial')->first();
+        $trial_bill = $place->organization->paid_bills()->where('product_name','Trial')->first();
 
         if($trial_bill){
             return response()->json([
@@ -97,7 +90,7 @@ class BillingController extends Controller
         $months_duration = 1;
 
         PaidBill::create([
-            'place_id' => $place_id,
+            'organization_id' => $place->organization_id,
             'amount' => 0,
             'currency' => 'DKK',
             'payment_date' => \Carbon\Carbon::now(),
@@ -137,20 +130,25 @@ class BillingController extends Controller
             $stripe = new StripeClient(env('STRIPE_SECRET'));
             $object = $event->data->object;
             $customer_id = $object->customer;
-            $place_id = false;
+            $organization_id = false;
 
 //            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
             $sessions = $stripe->checkout->sessions->all(['subscription' => $object->subscription]);
             if(count($sessions->data) > 0) {
                 $metadata = $sessions->data[0]->metadata;
-                $place_id = $metadata->place_id;
+                if(array_key_exists('place_id',$metadata->toArray())) { //перехідна умова. Для прод можна видалити, залишивши тільки else
+                    $place = Place::find($metadata->place_id);
+                    $organization_id = $place->organization_id;
+                }else{
+                    $organization_id = $metadata->organization_id;
+                }
                 $duration = $metadata->duration;
                 $product_name = $metadata->name;
                 $tax_number = $metadata->tax_number;
 
                 $stripe->customers->update($customer_id, [
                     'metadata' => [
-                        'place_id' => $place_id,
+                        'organization_id' => $organization_id,
                         'duration' => $duration,
                         'product_name' => $product_name,
                         'tax_number' => $tax_number
@@ -158,15 +156,20 @@ class BillingController extends Controller
                 ]);
             }else{
                 $customer = $stripe->customers->retrieve($customer_id);
-                if(array_key_exists('place_id',$customer->metadata->toArray())) {
-                    $place_id = $customer->metadata->place_id;
+                if(array_key_exists('place_id',$customer->metadata->toArray())) {//перехідна умова. Для прод можна видалити, залишивши тільки else
+                    $place = Place::find($customer->metadata->place_id);
+                    $organization_id = $place->organization_id;
+                    $duration = $customer->metadata->duration;
+                    $product_name = $customer->metadata->product_name;
+                }elseif(array_key_exists('organization_id',$customer->metadata->toArray())) {
+                    $organization_id = $customer->metadata->organization_id;
                     $duration = $customer->metadata->duration;
                     $product_name = $customer->metadata->product_name;
                 }
             }
-            if($place_id){
+            if($organization_id){
                 PaidBill::create([
-                    'place_id' => $place_id,
+                    'organization_id' => $organization_id,
                     'amount' => $object->amount_paid / 100,
                     'currency' => strtoupper($object->currency),
                     'payment_date' => \Carbon\Carbon::now()->timestamp($object->created),

@@ -17,4 +17,9 @@ class Organization extends Model
         return $this->hasMany(Place::class);
     }
 
+    public function paid_bills()
+    {
+        return $this->hasMany(PaidBill::class);
+    }
+
 }

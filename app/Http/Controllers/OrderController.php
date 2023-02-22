@@ -331,7 +331,8 @@ class OrderController extends Controller
                             'currency' => $order->marks['currency'],
                             'confirm' => true,
                             'off_session' => true,
-                            'payment_method' => $order->marks['payment_method_id']
+                            'payment_method' => $order->marks['payment_method_id'],
+                            'customer' => $order->marks['customer_id'],
                         ]);
                     }
                 }
@@ -383,7 +384,8 @@ class OrderController extends Controller
                 'currency' => $order->marks['currency'],
                 'confirm' => true,
                 'off_session' => true,
-                'payment_method' => $order->marks['payment_method_id']
+                'payment_method' => $order->marks['payment_method_id'],
+                'customer' => $order->marks['customer_id']
             ]);
         }
 
@@ -875,17 +877,20 @@ class OrderController extends Controller
                     'confirm' => true,
                     'off_session' => true,
                     'payment_method' => $setup_intent->payment_method,
+                    'customer' => $setup_intent->customer,
                     'capture_method' => 'manual',
                     'metadata' => [
                         'order_id' => $order->id
                     ],
                 ]);
+                $marks['customer_id'] = $setup_intent->customer;
                 $marks['payment_method_id'] = $setup_intent->payment_method;
                 $marks['payment_intent_id'] = $payment_intent->id;
                 $marks['need_capture'] = true;
             }
         }elseif($method === 'no_show'){ // 3) для третього методу треба створити card_token і його ід записати в marks
             $setup_intent = $stripe->setupIntents->retrieve($request->setup_intent_id);
+            $marks['customer_id'] = $setup_intent->customer;
             $marks['payment_method_id'] = $setup_intent->payment_method;
         }
 
@@ -919,7 +924,8 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
         if($sms_notification_template && $smsApiToken){
-            $result = SMS::send([$place->setting('sms-notification-number')], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_SHORT_NAME'), $smsApiToken);
+            $sms_notification_number = $place->setting('sms-notification-number') ?? $place->phone;
+            $result = SMS::send([$sms_notification_number], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_SHORT_NAME'), $smsApiToken);
         }
     }
 

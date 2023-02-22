@@ -189,21 +189,21 @@ class MessageTemplateController extends Controller
             foreach ($orders as $order) {
                 $phones[] = $order->customer->phone;
             }
-        }elseif($type == 'subscribed_customers'){
-            $orders = $place->orders;
-            foreach ($orders as $order) {
-                $customer = $order->customer;
-                if($customer->allow_send_emails){
-                    $phones[] = $customer->phone;
-                }
-            }
-        }elseif($type == 'todays_future_customers'){
-            $orders = $place->orders()
-                ->whereBetween('reservation_time', [Carbon::now()->format('Y-m-d H:i:s'), Carbon::tomorrow()->format('Y-m-d 00:00:00')])
-                ->where('status','confirmed')->get();
-            foreach ($orders as $order) {
-                $phones[] = $order->customer->phone;
-            }
+//        }elseif($type == 'subscribed_customers'){
+//            $orders = $place->orders;
+//            foreach ($orders as $order) {
+//                $customer = $order->customer;
+//                if($customer->allow_send_emails){
+//                    $phones[] = $customer->phone;
+//                }
+//            }
+//        }elseif($type == 'todays_future_customers'){
+//            $orders = $place->orders()
+//                ->whereBetween('reservation_time', [Carbon::now()->format('Y-m-d H:i:s'), Carbon::tomorrow()->format('Y-m-d 00:00:00')])
+//                ->where('status','confirmed')->get();
+//            foreach ($orders as $order) {
+//                $phones[] = $order->customer->phone;
+//            }
         }elseif($type == 'todays_waitinglist_customers'){
             $orders = $place->orders()
                 ->whereBetween('reservation_time', [Carbon::now()->format('Y-m-d H:i:s'), Carbon::tomorrow()->format('Y-m-d 00:00:00')])
@@ -211,13 +211,13 @@ class MessageTemplateController extends Controller
             foreach ($orders as $order) {
                 $phones[] = $order->customer->phone;
             }
-        }elseif($type == 'yesterdays_no_show_customers'){
-            $orders = $place->orders()
-                ->whereBetween('reservation_time', [Carbon::yesterday()->format('Y-m-d 00:00:00'), Carbon::today()->format('Y-m-d 00:00:00')])
-                ->where('status','no_show')->get();
-            foreach ($orders as $order) {
-                $phones[] = $order->customer->phone;
-            }
+//        }elseif($type == 'yesterdays_no_show_customers'){
+//            $orders = $place->orders()
+//                ->whereBetween('reservation_time', [Carbon::yesterday()->format('Y-m-d 00:00:00'), Carbon::today()->format('Y-m-d 00:00:00')])
+//                ->where('status','no_show')->get();
+//            foreach ($orders as $order) {
+//                $phones[] = $order->customer->phone;
+//            }
         }
         return array_filter($phones);
     }

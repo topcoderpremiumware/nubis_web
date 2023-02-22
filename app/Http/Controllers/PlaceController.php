@@ -203,8 +203,9 @@ class PlaceController extends Controller
         $place = Place::find($place_id);
         $smsApiToken = $place->setting('sms-api-token');
         $customer_name = Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->id.')';
+        $sms_notification_number = $place->setting('sms-notification-number') ?? $place->phone;
         if($smsApiToken){
-            $result = SMS::send([$place->setting('sms-notification-number')], $customer_name.': '.$request->message, env('APP_SHORT_NAME'), $smsApiToken);
+            $result = SMS::send([$sms_notification_number], $customer_name.': '.$request->message, env('APP_SHORT_NAME'), $smsApiToken);
         }
         \Illuminate\Support\Facades\Mail::html($request->message.'<br><br>Phone: '.Auth::user()->phone.'<br>Email: '.Auth::user()->email, function($msg) use ($customer_name, $place, $request) {
             $msg->to($place->email)->subject('Customer Message: '.$customer_name);

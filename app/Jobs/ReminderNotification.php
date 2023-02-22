@@ -41,7 +41,7 @@ class ReminderNotification implements ShouldQueue
                 ->where('name','sms-remind-hours-before')
                 ->first();
 
-            $sms_hours_before = $sms_setting ? (int) $sms_setting->value : 1;
+            $sms_hours_before = $sms_setting ? (int) $sms_setting->value : 6;
             $customer = $order->customer;
 
             if($order->reservation_time->diffInHours(Carbon::now()) <= $sms_hours_before){
@@ -71,7 +71,7 @@ class ReminderNotification implements ShouldQueue
                 ->where('name','email-remind-hours-before')
                 ->first();
 
-            $email_hours_before = $email_setting ? (int) $email_setting->value : 1;
+            $email_hours_before = $email_setting ? (int) $email_setting->value : 6;
             $customer = $order->customer;
 
             if($order->reservation_time->diffInHours(Carbon::now()) <= $email_hours_before){

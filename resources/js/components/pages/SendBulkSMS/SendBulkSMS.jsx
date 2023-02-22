@@ -111,13 +111,10 @@ export default function SendBulkSMS() {
                           labelId="label_recipientType" id="recipientType" name="recipientType"
                           onChange={onChange}>
                     <MenuItem value="all_customers">{t('All customers')}</MenuItem>
-                    <MenuItem value="subscribed_customers">{t('Subscribed customers')}</MenuItem>
                     <MenuItem value="admins_waiters">{t('Admins and Waiters')}</MenuItem>
                     <MenuItem value="admins">{t('Admins')}</MenuItem>
                     <MenuItem value="waiters">{t('Waiters')}</MenuItem>
-                    <MenuItem value="todays_future_customers">{t('Todays future customers')}</MenuItem>
                     <MenuItem value="todays_waitinglist_customers">{t('Todays waitinglist customers')}</MenuItem>
-                    <MenuItem value="yesterdays_no_show_customers">{t('Yesterdays no show customers')}</MenuItem>
                     <MenuItem value="myself">{t('Myself')}</MenuItem>
                   </Select>
                 </FormControl>

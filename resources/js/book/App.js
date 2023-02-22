@@ -68,6 +68,7 @@ const App = () => {
   const [extraTime, setExtraTime] = useState({});
   const [areas, setAreas] = useState([]);
   const [showSelectAreas, setShowSelectAreas] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState({})
 
   const myAxios = axios.create({
     baseURL: process.env.MIX_API_URL,
@@ -178,6 +179,11 @@ const App = () => {
       });
   };
 
+  const getPaymentMethod = async () => {
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`)
+    setPaymentMethod(res.data)
+  }
+  
   // Login request
 
   const getUserInfoReq = () => {
@@ -241,8 +247,7 @@ const App = () => {
   // Make order request
 
   const makeOrder = async (setupIntentId) => {
-    console.log('custom_booking_length_id',timelineId)
-    await myAxios
+    myAxios
       .post(
         "/api/make_order",
         {
@@ -266,8 +271,12 @@ const App = () => {
         }
       )
       .then((response) => {
+        const isOnline = paymentMethod?.['is-online-payment'] === '1'
+        const method = paymentMethod?.['online-payment-method']
+        if(isOnline && method === 'deduct' && response.data?.prepayment_url) {
+          window.location.href = response.data.prepayment_url
+        }
         setOrderResponse(response.data);
-        console.log("Order Response: ", response);
         setUserData((prev) => ({ ...prev, bookingid: response.data.id }));
       })
       .catch((error) => {
@@ -307,6 +316,7 @@ const App = () => {
     await getAreas()
     getPlaceData()
     getDatesTimeInfo(utils().getToday());
+    getPaymentMethod()
   }, []);
 
   // Cancel order
@@ -472,6 +482,7 @@ const App = () => {
               blockType={blockType}
               setBlockType={setBlockType}
               orderResponse={orderResponse}
+              paymentMethod={paymentMethod}
             />
           </div>
         </Carousel>

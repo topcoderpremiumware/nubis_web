@@ -2,16 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Feedback;
 use App\Models\Log;
 use App\Models\PaidBill;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Stripe\StripeClient;
 use Stripe\Webhook;
 
 class BillingController extends Controller
 {
+    public function getAllByPlace($place_id,Request $request)
+    {
+        Validator::make([
+            'place_id' => $place_id
+        ],[
+            'place_id' => 'required|exists:places,id'
+        ])->validate();
+
+        if(!Auth::user()->places->contains($place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+        $place = Place::find($place_id);
+        $billings = PaidBill::where('organization_id',$place->organization_id)
+            ->orderBy('payment_date','desc')
+            ->get();
+
+        return response()->json($billings);
+    }
+
     public function getInvoiceByPrice(Request $request)
     {
         if(!Auth::user()->tokenCan('admin')) return response()->json([

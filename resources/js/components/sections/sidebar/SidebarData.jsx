@@ -213,6 +213,10 @@ export const SidebarData = [
       {
         title: 'Pricing',
         path: '/pricing'
+      },
+      {
+        title: 'Billing Report',
+        path: '/billingReport'
       }
     ]
   },

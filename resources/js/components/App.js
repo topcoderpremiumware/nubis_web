@@ -38,6 +38,7 @@ import VideoGuides from './pages/VideoGuides/VideoGuides';
 import Banner from './sections/banner/Banner';
 import eventBus from '../eventBus';
 import { useState } from 'react';
+import BillingReport from "./pages/BillingReport/BillingReport";
 
 function App() {
   const [sidebarIsVisible, setSidebarIsVisible] = useState(false)
@@ -95,6 +96,7 @@ function App() {
                 <Route path='/BookingLinkGuide' exact element={<BookingLinkGuide/>}/>
 
                 <Route path='/pricing' exact element={<Pricing/>}/>
+                <Route path='/billingReport' exact element={<BillingReport/>}/>
 
                 <Route path='/RestaurantNew' exact element={<RestaurantNew/>}/>
 

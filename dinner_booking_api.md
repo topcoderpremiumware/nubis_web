@@ -207,6 +207,13 @@ curl -X GET https://dinner-book.vasilkoff.info/api/places/1/is_bill_paid \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json'
 ```
+#### Get bill paid status (none/paid/expired)
+> GET /api/places/{id}/bill_paid_status
+```cmd
+curl -X GET https://dinner-book.vasilkoff.info/api/places/1/bill_paid_status \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json'
+```
 #### Pay trial
 > POST /api/places/{id}/pay_trial
 ```cmd

@@ -167,6 +167,23 @@ class PlaceController extends Controller
         return response()->json($place->is_bill_paid());
     }
 
+    public function getBillPaidStatus($place_id, Request $request)
+    {
+        $place = Place::find($request->place_id);
+        $bill = $place->organization->paid_bills()->orderByDesc('expired_at')->first();
+
+        if(!$bill){
+            $status = 'none';
+        }else{
+            if($bill->expired_at > \Carbon\Carbon::now()){
+                $status = 'paid';
+            }else{
+                $status = 'expired';
+            }
+        }
+        return response()->json(['status' => $status]);
+    }
+
     public function isTrialBillPaid($place_id, Request $request)
     {
         $place = Place::find($request->place_id);

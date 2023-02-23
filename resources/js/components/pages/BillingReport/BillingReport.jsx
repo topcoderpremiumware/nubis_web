@@ -31,7 +31,11 @@ export default function BillingReport() {
     { field: 'currency', headerName: t('Currency'), maxWidth: 100 },
     { field: 'payment_intent_id', headerName: t('Id'), minWidth: 250 },
     { field: 'receipt_url', headerName: t('Receipt'), maxWidth: 100, renderCell: (params) =>
-        <IconButton onClick={() => window.open(params.value, '_blank').focus()} size="small"><ReceiptIcon fontSize="small"/></IconButton>, },
+        <span>
+          {params.value && <IconButton onClick={() => window.open(params.value, '_blank').focus()} size="small">
+            <ReceiptIcon fontSize="small"/>
+          </IconButton>}
+        </span>, },
   ];
 
   const getBillings = () => {

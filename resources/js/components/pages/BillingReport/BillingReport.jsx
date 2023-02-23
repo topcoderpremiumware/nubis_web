@@ -24,13 +24,13 @@ export default function BillingReport() {
   }, [])
 
   const columns = [
-    { field: 'payment_date', headerName: t('Date'), minWidth: 200 },
-    { field: 'expired_at', headerName: t('Expired'), minWidth: 200 },
-    { field: 'product_name', headerName: t('Name'), flex: 1 },
-    { field: 'amount', headerName: t('Amount'), maxWidth: 100 },
-    { field: 'currency', headerName: t('Currency'), maxWidth: 100 },
-    { field: 'payment_intent_id', headerName: t('Id'), minWidth: 250 },
-    { field: 'receipt_url', headerName: t('Receipt'), maxWidth: 100, renderCell: (params) =>
+    { field: 'payment_date', headerName: t('Date'), minWidth: 200, flex: 1 },
+    { field: 'expired_at', headerName: t('Expired'), minWidth: 200, flex: 1 },
+    { field: 'product_name', headerName: t('Name'), minWidth: 100, flex: 1 },
+    { field: 'amount', headerName: t('Amount'), width: 100 },
+    { field: 'currency', headerName: t('Currency'), width: 100 },
+    { field: 'payment_intent_id', headerName: t('Id'), minWidth: 250, flex: 1 },
+    { field: 'receipt_url', headerName: t('Receipt'), width: 100, renderCell: (params) =>
         <span>
           {params.value && <IconButton onClick={() => window.open(params.value, '_blank').focus()} size="small">
             <ReceiptIcon fontSize="small"/>

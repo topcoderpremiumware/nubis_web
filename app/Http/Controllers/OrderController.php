@@ -1014,4 +1014,16 @@ class OrderController extends Controller
         }
         return response()->json($output);
     }
+
+    public function getPlaceOnlineBookingDescription($place_id, Request $request)
+    {
+        $settings = Setting::where('place_id',$place_id)
+            ->whereIn('name',['online-booking-description'])
+            ->get();
+        $output = [];
+        foreach ($settings as $setting) {
+            $output[$setting->name] = $setting->value;
+        }
+        return response()->json($output);
+    }
 }

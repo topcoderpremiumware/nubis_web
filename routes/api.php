@@ -56,6 +56,7 @@ Route::get('places/{place_id}/bill_paid_status',[PlaceController::class, 'getBil
 Route::get('places/{place_id}/alternative',[PlaceController::class, 'getAlternative']);
 Route::get('places/{place_id}/payment_method',[OrderController::class, 'getPlacePaymentMethod']);
 Route::get('places/{place_id}/max_available_seats',[PlaceController::class, 'getMaxAvailableSeats']);
+Route::get('places/{place_id}/online_booking_description',[OrderController::class, 'getPlaceOnlineBookingDescription']);
 
 Route::get('files_purpose',[FileController::class, 'getByPurpose']);
 Route::get('countries',[CountryController::class, 'getAll']);

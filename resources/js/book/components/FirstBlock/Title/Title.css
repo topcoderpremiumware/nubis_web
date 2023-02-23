@@ -8,6 +8,16 @@
   color: #989898;
   text-align: left;
 }
+.description{
+    margin: 12px 87px 0px 0px;
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 100;
+    font-size: 16px;
+    line-height: 150%;
+    color: #989898;
+    text-align: left;
+}
 
 @media (max-width: 1024px) {
   .overhead {

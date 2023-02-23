@@ -180,10 +180,10 @@ const App = () => {
   };
 
   const getPaymentMethod = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`)
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/payment_method`)
     setPaymentMethod(res.data)
   }
-  
+
   // Login request
 
   const getUserInfoReq = () => {

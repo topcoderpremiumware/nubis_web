@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\TemplateHelper;
 use App\Models\Customer;
 use App\Models\Log;
+use App\Models\MessageTemplate;
 use App\Models\Order;
 use App\Models\Organization;
 use App\Models\Place;
@@ -57,6 +58,8 @@ class PlaceController extends Controller
             'tax_number' => $request->tax_number,
             'organization_id' => $organization_id
         ]);
+
+        MessageTemplate::seedPlace($place->id);
 
         Auth::user()->places()->attach($place->id);
         $role = Role::firstOrCreate([

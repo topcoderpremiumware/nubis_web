@@ -1,4 +1,4 @@
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Grid } from '@mui/material'
+import {Button, FormControl, InputLabel, MenuItem, Select, TextField, Grid, Autocomplete} from '@mui/material'
 import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
@@ -25,7 +25,7 @@ const RestaurantNew = () => {
 
   useEffect(() => {
     axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
-      setCountries(response.data)
+      setCountries(response.data.map(i => ({label: i.name, id: i.id})))
     }).catch(error => {
     })
   }, [])
@@ -97,6 +97,15 @@ const RestaurantNew = () => {
     }
   }
 
+  const currentCountryLabel = () => {
+    let cl = countries.find((el) => el.id == countryId)
+    if(cl){
+      return cl.label
+    }else{
+      return null
+    }
+  }
+
   return (
     <div className="pages__container">
       <h2>{t('Create new restaurant')}</h2>
@@ -123,16 +132,27 @@ const RestaurantNew = () => {
               onChange={onChange} />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl size="small" fullWidth>
-              <InputLabel id="label_country_id">{t('Country')}</InputLabel>
-              <Select label={t('Country')} value={countryId}
-                labelId="label_country_id" id="country_id" name="country_id"
-                onChange={onChange}>
-                {countries.map((c, key) => {
-                  return <MenuItem key={key} value={c.id}>{c.name}</MenuItem>
-                })}
-              </Select>
-            </FormControl>
+            <Autocomplete
+              disablePortal
+              disableClearable
+              id="label_country_id"
+              options={countries}
+              renderOption={(props, option) => (
+                <li {...props}>{option.label}</li>
+              )}
+              size="small"
+              onChange={(event, newValue) => {
+                setCountryId(newValue.id)
+              }}
+              renderInput={(params) =>
+                <TextField
+                  {...params}
+                  label={t('Country')}
+                  placeholder={t('Country')}
+                />
+              }
+              value={currentCountryLabel()}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField label={t('Zip code')} size="small" fullWidth

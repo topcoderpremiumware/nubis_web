@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
 import  './Register.scss';
 import { useTranslation } from 'react-i18next';
-import {Select, TextField, MenuItem, InputLabel, FormControl, Button} from "@mui/material";
+import {Select, TextField, MenuItem, InputLabel, FormControl, Button, Autocomplete} from "@mui/material";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/material.css'
+import {Link} from "react-router-dom";
+import eventBus from "../../../eventBus";
 
 export default function Register() {
   const { t } = useTranslation();
@@ -34,7 +36,7 @@ export default function Register() {
 
   useEffect(() => {
     axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
-      setCountries(response.data)
+      setCountries(response.data.map(i => ({label: i.name, id: i.id})))
     }).catch(error => {
     })
   },[])
@@ -152,6 +154,15 @@ export default function Register() {
     }
   }
 
+  const currentCountryLabel = () => {
+    let cl = countries.find((el) => el.id == countryId)
+    if(cl){
+      return cl.label
+    }else{
+      return null
+    }
+  }
+
   return (
     <div className='pages__container'>
       <h1 className="mt-4 text-center">{t('Sign up')}</h1>
@@ -248,16 +259,27 @@ export default function Register() {
                              onChange={onChange}/>
                 </div>
                 <div className="mb-3">
-                  <FormControl size="small" fullWidth>
-                    <InputLabel id="label_country_id">{t('Country')}</InputLabel>
-                    <Select label={t('Country')} value={countryId}
-                            labelId="label_country_id" id="country_id" name="country_id"
-                            onChange={onChange}>
-                      {countries.map((c,key) => {
-                       return <MenuItem key={key} value={c.id}>{c.name}</MenuItem>
-                      })}
-                    </Select>
-                  </FormControl>
+                  <Autocomplete
+                    disablePortal
+                    disableClearable
+                    id="label_country_id"
+                    options={countries}
+                    renderOption={(props, option) => (
+                      <li {...props}>{option.label}</li>
+                    )}
+                    size="small"
+                    onChange={(event, newValue) => {
+                      setCountryId(newValue.id)
+                    }}
+                    renderInput={(params) =>
+                      <TextField
+                        {...params}
+                        label={t('Country')}
+                        placeholder={t('Country')}
+                      />
+                    }
+                    value={currentCountryLabel()}
+                  />
                 </div>
                 <div className="mb-3">
                   <TextField label={t('Zip code')} size="small" fullWidth

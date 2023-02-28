@@ -93,21 +93,25 @@ body {
   line-height: 26px;
   color: rgba(73, 80, 87, 0.5);
   position: relative;
+  margin-right: 10px;
 }
 .header-lang-active, .header-lang:hover {
   color: #F36823;
 }
-.header-lang:first-of-type {
-  margin-right: 10px;
-}
-.header-lang:first-of-type::after {
+.header-lang::after {
   content: "/";
   position: absolute;
   right: -6px;
   color: rgba(73, 80, 87, 0.5);
 }
-.header-lang:first-of-type:hover::after {
+.header-lang:hover::after {
   color: rgba(73, 80, 87, 0.5);
+}
+.header-lang:last-of-type {
+  margin-right: 0px;
+}
+.header-lang:last-of-type::after {
+  content: "";
 }
 
 .hamburger {

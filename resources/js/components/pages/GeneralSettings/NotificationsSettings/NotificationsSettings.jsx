@@ -1,11 +1,13 @@
-import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from '@mui/material'
+import {Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField} from '@mui/material'
 import React, {useEffect} from 'react'
 import { useState } from 'react'
 import eventBus from "../../../../eventBus";
 import {useTranslation} from "react-i18next";
+import { useNavigate } from 'react-router-dom';
 
 const NotificationsSettings = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [number, setNumber] = useState('')
   const [smsTime, setSmsTime] = useState(0)
@@ -107,7 +109,15 @@ const NotificationsSettings = () => {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Notification Settings')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Notification Settings')}</h2>
+        <Button 
+          variant="contained" 
+          size="sm"
+          type="button"
+          onClick={() => navigate('/VideoGuides')}
+        >{t('See Nubis Academy')}</Button>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           <div className="mt-3">

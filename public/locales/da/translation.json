@@ -360,5 +360,6 @@
     "Subscribe now": "Tilmeld nu",
     "Start Now": "Start nu",
     "Saves credit card information and charges a fee in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a “No show/Not arrived”": "Gemmer kreditkortoplysninger og opkræver et gebyr i tilfælde af udeblivelse eller for sen aflysning. Gebyret vil kun blive trukket fra gæsten, hvis reservationen er markeret som “No show/Not arrived”",
-    "Please, enter stripe settings in Payment gateway": "Indtast venligst stripe-indstillinger i Payment gateway"
+    "Please, enter stripe settings in Payment gateway": "Indtast venligst stripe-indstillinger i Payment gateway",
+    "See Nubis Academy": "Se Nubis Academy"
 }

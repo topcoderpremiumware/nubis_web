@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import  './SmsTemplate.scss';
 import { useTranslation } from 'react-i18next';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import eventBus from "../../../eventBus";
-import {Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField} from "@mui/material";
+import {Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack, Switch, TextField} from "@mui/material";
 
 const options = [
   "#AREA_NAME#",
@@ -38,6 +38,7 @@ const options = [
 ]
 export default function SmsTemplate() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   let { purpose } = useParams();
 
   var pageTitle = purpose.split('-').map(w => {
@@ -157,7 +158,15 @@ export default function SmsTemplate() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('SMS Templates')} - {t(pageTitle)}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('SMS Templates')} - {t(pageTitle)}</h2>
+        <Button 
+          variant="contained" 
+          size="sm"
+          type="button"
+          onClick={() => navigate('/VideoGuides')}
+        >{t('See Nubis Academy')}</Button>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           <div className="col-lg-6 mt-3">

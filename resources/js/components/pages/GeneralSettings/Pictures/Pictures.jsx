@@ -4,10 +4,12 @@ import {useTranslation} from "react-i18next";
 import ListSubheader from "@mui/material/ListSubheader";
 import './Pictures.scss'
 import eventBus from "../../../../eventBus";
-import {Button, TextField} from "@mui/material";
+import {Button, Stack, TextField} from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 
 export default function Pictures() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [pictures, setPictures] = useState({});
   const [onlineBookingDescription, setOnlineBookingDescription] = useState('');
@@ -101,7 +103,15 @@ export default function Pictures() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Pictures')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Pictures')}</h2>
+        <Button
+          variant="contained"
+          size="sm"
+          type="button"
+          onClick={() => navigate('/VideoGuides')}
+        >{t('See Nubis Academy')}</Button>
+      </Stack>
       <ListSubheader className="my-3" component="div">{t('Online booking picture')}</ListSubheader>
       <div className="row">
         <div className="col-md-6 mb-3">

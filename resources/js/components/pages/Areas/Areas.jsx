@@ -17,9 +17,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AreaEditPopup from "./AreaEditPopup"
 import Moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 export default function Areas() {
   const {t} = useTranslation();
+  const navigate = useNavigate();
 
   const [areas, setAreas] = useState([])
   const [editPopupOpened, setEditPopupOpened] = useState(false)
@@ -113,7 +115,15 @@ export default function Areas() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Areas')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Areas')}</h2>
+        <Button
+          variant="contained" 
+          size="sm"
+          type="button"
+          onClick={() => navigate('/VideoGuides')}
+        >{t('See Nubis Academy')}</Button>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           {loading ? <div><CircularProgress/></div> : <TableContainer>

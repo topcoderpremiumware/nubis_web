@@ -802,6 +802,118 @@ body {
 }
 // end about page
 
+// video guide page
+.guide {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  background: #fff;
+  min-height: 100vh;
+  position: relative;
+  padding: 94px 0 60px;
+  overflow: hidden;
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  iframe {
+    max-width: 100%;
+  }
+
+  img {
+    max-width: 100%;
+    object-fit: cover;
+  }
+
+  &-img-1 {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateX(50%);
+  }
+
+  &-img-2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &-img-3 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  &-container {
+    max-width: 1200px;
+    padding: 0 20px;
+    margin: 0 auto;
+  }
+
+  &-title {
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 46px;
+    color: #212529;
+    margin-bottom: 140px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  &-item {
+    display: flex;
+    gap: 110px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 50px;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+
+    &:nth-of-type(even) {
+      flex-direction: row-reverse;
+    }
+
+    iframe,
+    &-wrapper {
+      flex: 1 1 0;
+    }
+
+    &-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-title {
+      font-weight: 600;
+      font-size: 32px;
+      line-height: 46px;
+      color: #212529;
+    }
+
+    &-text {
+      font-size: 16px;
+      line-height: 26px;
+      color: #495057;
+      margin: 14px 0 16px;
+    }
+
+    &-link {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+      color: #F36823;
+      text-decoration: underline;
+      margin-left: auto;
+    }
+  }
+}
+// end video guide page
+
 @media screen and (max-width: 1024px) {
   .features {
     &-grid {
@@ -1040,6 +1152,40 @@ body {
       line-height: 24px;
     }
   }
+
+  .guide {
+    padding: 60px 20px;
+
+    &-title {
+      font-size: 30px;
+      line-height: 135%;
+      margin-bottom: 60px;
+    }
+
+    &-item {
+      flex-direction: column;
+      gap: 30px;
+      margin-bottom: 50px;
+
+      &:nth-of-type(even) {
+        flex-direction: column;
+      }
+
+      iframe,
+      &-wrapper {
+        flex: unset;
+      }
+
+      &-title {
+        font-size: 26px;
+        line-height: 135%;
+      }
+
+      &-link {
+        margin-left: 0;
+      }
+    }
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -1168,6 +1314,13 @@ body {
   .about {
     iframe {
       height: 218px;
+    }
+  }
+
+  .guide {
+    &-title {
+      font-size: 26px;
+      margin-bottom: 40px;
     }
   }
 }

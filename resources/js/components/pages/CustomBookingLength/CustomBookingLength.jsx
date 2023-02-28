@@ -18,9 +18,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CustomBookingLengthEditPopup from "./CustomBookingLengthEditPopup"
 import Moment from "moment";
 import {wait} from "@testing-library/user-event/dist/utils";
+import { useNavigate } from "react-router-dom";
 
 export default function CustomBookingLength() {
   const {t} = useTranslation();
+  const navigate = useNavigate();
 
   const [customBookingLength, setCustomBookingLength] = useState([])
   const [areas, setAreas] = useState([])
@@ -174,7 +176,15 @@ export default function CustomBookingLength() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Menus setup')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Menus setup')}</h2>
+        <Button 
+          variant="contained" 
+          size="sm"
+          type="button"
+          onClick={() => navigate('/VideoGuides')}
+        >{t('See Nubis Academy')}</Button>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           {loading ? <div><CircularProgress/></div> : <TableContainer>

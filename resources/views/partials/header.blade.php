@@ -20,6 +20,7 @@
         <a href="/pricing" class="nav-link">{{ __('Prices') }}</a>
         <a href="/about" class="nav-link">{{ __('About us') }}</a>
         <a href="/contact" class="nav-link">{{ __('Contact') }}</a>
+        <a href="/video-guide" class="nav-link">{{ __('Video guide') }}</a>
       </nav>
       <ul class="header-actions">
         @include('partials/language_switcher')

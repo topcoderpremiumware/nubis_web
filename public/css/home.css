@@ -465,6 +465,7 @@ body {
   display: flex;
   justify-content: center;
   margin: 68px auto 50px;
+  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   background: #FFFFFF;
@@ -680,6 +681,100 @@ body {
   text-align: left;
 }
 
+.guide {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  background: #fff;
+  min-height: 100vh;
+  position: relative;
+  padding: 94px 0 60px;
+  overflow: hidden;
+}
+.guide * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.guide iframe {
+  max-width: 100%;
+}
+.guide img {
+  max-width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.guide-img-1 {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateX(50%);
+}
+.guide-img-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.guide-img-3 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.guide-container {
+  max-width: 1200px;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+.guide-title {
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 46px;
+  color: #212529;
+  margin-bottom: 140px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+.guide-item {
+  display: flex;
+  gap: 110px;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 50px;
+}
+.guide-item:last-of-type {
+  margin-bottom: 0;
+}
+.guide-item:nth-of-type(even) {
+  flex-direction: row-reverse;
+}
+.guide-item iframe, .guide-item-wrapper {
+  flex: 1 1 0;
+}
+.guide-item-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.guide-item-title {
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 46px;
+  color: #212529;
+}
+.guide-item-text {
+  font-size: 16px;
+  line-height: 26px;
+  color: #495057;
+  margin: 14px 0 16px;
+}
+.guide-item-link {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 26px;
+  color: #F36823;
+  text-decoration: underline;
+  margin-left: auto;
+}
+
 @media screen and (max-width: 1024px) {
   .features-grid {
     height: 940px;
@@ -872,6 +967,33 @@ body {
     font-size: 14px;
     line-height: 24px;
   }
+
+  .guide {
+    padding: 60px 20px;
+  }
+  .guide-title {
+    font-size: 30px;
+    line-height: 135%;
+    margin-bottom: 60px;
+  }
+  .guide-item {
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 50px;
+  }
+  .guide-item:nth-of-type(even) {
+    flex-direction: column;
+  }
+  .guide-item iframe, .guide-item-wrapper {
+    flex: unset;
+  }
+  .guide-item-title {
+    font-size: 26px;
+    line-height: 135%;
+  }
+  .guide-item-link {
+    margin-left: 0;
+  }
 }
 @media screen and (max-width: 768px) {
   .footer {
@@ -968,6 +1090,11 @@ body {
 
   .about iframe {
     height: 218px;
+  }
+
+  .guide-title {
+    font-size: 26px;
+    margin-bottom: 40px;
   }
 }
 @media screen and (max-width: 390px) {

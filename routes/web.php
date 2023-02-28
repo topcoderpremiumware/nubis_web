@@ -39,4 +39,5 @@ Route::view('/', 'home')->name('home');
 Route::view('/pricing', 'pricing')->name('pricing');
 Route::view('/features', 'features')->name('features');
 Route::view('/about', 'about')->name('about');
+Route::view('/video-guide', 'videoGuide')->name('videoGuide');
 Route::view('/admin/{path?}/{path2?}', 'app')->name('admin');

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, MenuItem, Select, TextField } from '@mui/material';
+import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import eventBus from "../../../../eventBus";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentGateway = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [type, setType] = useState('Stripe')
   const [stripeKey, setStripeKey] = useState('')
@@ -105,7 +107,15 @@ const PaymentGateway = () => {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Payment Gateway')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Payment Gateway')}</h2>
+        <Button 
+          variant="contained" 
+          size="sm"
+          type="button"
+          onClick={() => navigate('/VideoGuides')}
+        >{t('See Nubis Academy')}</Button>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           <div className="mt-3">

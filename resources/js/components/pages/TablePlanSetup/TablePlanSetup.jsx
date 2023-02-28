@@ -5,9 +5,11 @@ import eventBus from "../../../eventBus";
 import PlanCanvas from "./PlanCanvas";
 import PlanTools from "./PlanTools";
 import {Button, Stack, styled, TextField} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function TablePlanSetup() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const PlanButton = styled(Button)({
     color: '#000000',
@@ -130,7 +132,15 @@ export default function TablePlanSetup() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Table Plan Setup')} - {selectedName}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Table Plan Setup')} - {selectedName}</h2>
+        <Button 
+          variant="contained" 
+          size="sm"
+          type="button"
+          onClick={() => navigate('/VideoGuides')}
+        >{t('See Nubis Academy')}</Button>
+      </Stack>
       <div className="container-fluid">
         <Stack spacing={2} sx={{mb:2}} direction="row">
           <Button variant="contained" type="button" onClick={createNew}>{t('New')}</Button>

@@ -13,6 +13,8 @@ import DayViewTableDeleted from "./tables/DayViewTableDeleted";
 import eventBus from "../../../eventBus";
 import PlanCanvas from "./TablePlan/PlanCanvas";
 import TimeLinePlan from "./TimeLinePlan/TimeLinePlan";
+import { Button, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 
 function TabPanel(props) {
@@ -48,6 +50,7 @@ function a11yProps(index) {
 
 export default function DayViewContent() {
   const {t} = useTranslation();
+  const navigate = useNavigate();
 
   const [value, setValue] = useState(0);
   const [tableSidebar, setTableSidebar] = useState('');
@@ -77,6 +80,14 @@ export default function DayViewContent() {
 
   return (
     <div className='pages__container DayView__container'>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <Button
+          variant="contained" 
+          size="sm"
+          type="button"
+          onClick={() => navigate('/VideoGuides')}
+        >{t('See Nubis Academy')}</Button>
+      </Stack>
       <DayViewTop />
       <div style={{display:'flex',height:'100%',overflow:'hidden'}}>
         <Box sx={{ width: '100%',flex:1,display:'flex',flexDirection:'column' }} >

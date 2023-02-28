@@ -99,7 +99,8 @@ return [
 
     'available_locales' => [
         'English' => 'en',
-        'Dansk' => 'da'
+        'Dansk' => 'da',
+        'Français' => 'fr'
     ],
 
     /*

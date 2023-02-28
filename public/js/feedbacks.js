@@ -13128,6 +13128,10 @@ window.langs = [{
   country: 'DK',
   lang: 'da',
   title: 'Dansk'
+}, {
+  country: 'FR',
+  lang: 'fr',
+  title: 'Français'
 }];
 
 /***/ }),

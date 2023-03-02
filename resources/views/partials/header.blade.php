@@ -4,10 +4,13 @@
       <a class="header-logo-mobile" href="/">
         <img src='/images/logo.png' width="156"/>
       </a>
-      <div class="hamburger">
-        <div class="hamburger-line hamburger-top"></div>
-        <div class="hamburger-line hamburger-mid"></div>
-        <div class="hamburger-line hamburger-bottom"></div>
+      <div class="header-wrapper-flex">
+        @include('partials/language_switcher')
+        <div class="hamburger">
+          <div class="hamburger-line hamburger-top"></div>
+          <div class="hamburger-line hamburger-mid"></div>
+          <div class="hamburger-line hamburger-bottom"></div>
+        </div>
       </div>
     </div>
     <div class="header-wrapper">
@@ -23,7 +26,9 @@
         <a href="/video-guide" class="nav-link">{{ __('Video guide') }}</a>
       </nav>
       <ul class="header-actions">
-        @include('partials/language_switcher')
+        <li class="lang-dropdown-desktop">
+          @include('partials/language_switcher')
+        </li>
         <li><a href="/admin/register" class="header-action-link">{{ __('Sign up') }}</a></li>
         <li><a href="/admin/login" class="header-action-link header-action-link-accent">{{ __('Login In') }}</a></li>
       </ul>

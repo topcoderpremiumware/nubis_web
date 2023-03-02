@@ -27968,6 +27968,27 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
  */
 
 
+var langDropdown = document.querySelectorAll('.lang-dropdown');
+var langDropdownMenu = document.querySelectorAll('.lang-dropdown-menu');
+langDropdown.forEach(function (i) {
+  return i.addEventListener('click', function (ev) {
+    ev.stopPropagation();
+    langDropdownMenu.forEach(function (j) {
+      return j.classList.toggle('active');
+    });
+  });
+});
+document.querySelector('.lang-dropdown-desktop').addEventListener('click', function (ev) {
+  ev.stopPropagation();
+  langDropdownMenu.forEach(function (j) {
+    return j.classList.toggle('active');
+  });
+});
+document.body.addEventListener('click', function () {
+  langDropdownMenu.forEach(function (i) {
+    return i.classList.remove('active');
+  });
+});
 var hamburger = document.querySelector('.hamburger');
 var headerWrapper = document.querySelector('.header-wrapper');
 hamburger.addEventListener('click', function () {

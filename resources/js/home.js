@@ -12,6 +12,23 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+const langDropdown = document.querySelectorAll('.lang-dropdown')
+const langDropdownMenu = document.querySelectorAll('.lang-dropdown-menu')
+
+langDropdown.forEach(i => i.addEventListener('click', (ev) => {
+  ev.stopPropagation()
+  langDropdownMenu.forEach(j => j.classList.toggle('active'))
+}))
+
+document.querySelector('.lang-dropdown-desktop').addEventListener('click', (ev) => {
+  ev.stopPropagation()
+  langDropdownMenu.forEach(j => j.classList.toggle('active'))
+})
+
+document.body.addEventListener('click', () => {
+  langDropdownMenu.forEach(i => i.classList.remove('active'))
+})
+
 const hamburger = document.querySelector('.hamburger')
 const headerWrapper = document.querySelector('.header-wrapper')
 

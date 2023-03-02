@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import '../PrepaymentModal/PrepaymentModal.scss'
 
-const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal, spendGift }) => {
+const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal }) => {
   const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false)
@@ -36,9 +36,9 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal, spendGift }) 
         .then((intent) => {
           switch (intent.setupIntent.status) {
             case 'succeeded':
-              if (method === 'reserve') {
-                spendGift()
-              }
+              // if (method === 'reserve') {
+              //   spendGift()
+              // }
               makeOrder(intent.setupIntent.id)
                 .then(res => {
                   setDefaultModal('done')

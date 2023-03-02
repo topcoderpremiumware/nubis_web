@@ -11,6 +11,7 @@ import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import GiftForm from './components/Form/Form';
 import axios from 'axios';
 import moment from 'moment';
+import { useEffect } from 'react';
 
 const maxCount = 100
 const minAmount = 100
@@ -56,6 +57,10 @@ function App() {
       await axios.post(process.env.MIX_API_URL+'/api/giftcards', data, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(res => {
+        if(res?.payment_url) {
+          window.location.href = res.payment_url
         }
       })
     } catch (err) {

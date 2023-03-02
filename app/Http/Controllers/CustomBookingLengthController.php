@@ -233,6 +233,7 @@ class CustomBookingLengthController extends Controller
             ->where('area_id',$request->area_id)
             ->whereBetween('reservation_time',[$time_from,$time_to])
             ->where('is_take_away',0)
+            ->whereIn('status',['confirmed','arrived'])
             ->get();
 
         $free_tables = (new OrderController())->getFreeTables($orders, $working_hours, $request->seats, false);

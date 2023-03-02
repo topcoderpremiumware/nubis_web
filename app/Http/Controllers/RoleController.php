@@ -30,10 +30,6 @@ class RoleController extends Controller
 
     public function getAll(Request $request)
     {
-        if(!Auth::user()->is_superadmin) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
-
         $roles = Role::all();
 
         return response()->json($roles);

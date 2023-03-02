@@ -44,6 +44,11 @@ export const SidebarData = [
         path: '/NotificationsSettings',
         cName: 'sub-nav'
       },
+      {
+        title: 'Roles',
+        path: '/Roles',
+        cName: 'sub-nav'
+      },
     ]
   },
   {

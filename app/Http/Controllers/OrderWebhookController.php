@@ -54,6 +54,19 @@ class OrderWebhookController extends Controller
                     $order->status = 'confirmed';
                     $order->save();
 
+                    if($order->marks['method'] === 'deduct' || $order->marks['method'] === 'reserve'){
+                        if(array_key_exists('giftcard_code',$order->marks) && $order->marks['giftcard_code']){
+                            $amount = $order->marks['amountWithoutDiscount'];
+                            $amount_after_discount = OrderController::getAmountAfterDiscount($amount,$order->marks['giftcard_code'],$order->marks['currency']);
+                            $discount = $amount - $amount_after_discount;
+                            $giftcard = Giftcard::where('code',$request->code)
+                                ->first();
+                            if($giftcard){
+                                $giftcard->spend($discount);
+                            }
+                        }
+                    }
+
                     if($order->marks['method'] === 'deduct'){
                         $this->sendNewOrderNotification($order,$place);
                     }

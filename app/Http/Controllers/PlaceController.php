@@ -164,6 +164,18 @@ class PlaceController extends Controller
         return response()->json($customers);
     }
 
+    public function getUsers($place_id, Request $request)
+    {
+        $place = Place::find($place_id);
+        $users = $place->users()
+            ->with(['roles' => function($q) use ($place_id) {
+                $q->where('place_id',$place_id);
+            }])
+            ->get();
+
+        return response()->json($users);
+    }
+
     public function isBillPaid($place_id, Request $request)
     {
         $place = Place::find($request->place_id);

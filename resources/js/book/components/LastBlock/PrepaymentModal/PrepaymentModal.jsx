@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import './PrepaymentModal.scss'
 import { Elements } from '@stripe/react-stripe-js';
 import PrepaymentForm from '../PrepaymentForm/PrepaymentForm'
+import moment from "moment/moment";
 
 const PrepaymentModal = (props) => {
   const { t } = useTranslation();
@@ -69,15 +70,16 @@ const PrepaymentModal = (props) => {
 
         <div className="title prepayment-modal-title">{t('Prepayment')}</div>
 
-        <p>{t('In order to complete from reservation at')} <b>{restaurantInfo.name}</b> {t('the')} <b>{`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`} {selectedTime}</b> {t('the following must be paid:')}</p>
-        
+        <p>{t('In order to complete from reservation at')} <b>{restaurantInfo.name}</b> {t('the')} <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`)
+          .local().format('DD-MM-YYYY HH:mm')}</b> {t('the following must be paid:')}</p>
+
         <div className="prepayment-form">
           {t('Amount for')} {guestValue} pers.
           {discount > 0 && <p>{t('Your discount is')} <b>{discount} DKK</b></p>}
           <div className='prepayment-total'>Total: {total > discount ? total - discount : 0} {paymentInfo['online-payment-currency']}</div>
 
           <Elements stripe={stripeKey} options={options}>
-            <PrepaymentForm 
+            <PrepaymentForm
               spendGift={spendGift}
               paymentInfo={paymentInfo}
               makeOrder={makeOrder}

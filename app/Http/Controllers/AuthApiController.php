@@ -185,10 +185,6 @@ class AuthApiController extends Controller
 
     public function getRoles($id, Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
-
         $request->validate([
             'place_id' => 'required|exists:places,id',
         ]);

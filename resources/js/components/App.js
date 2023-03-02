@@ -39,6 +39,7 @@ import Banner from './sections/banner/Banner';
 import eventBus from '../eventBus';
 import { useState } from 'react';
 import BillingReport from "./pages/BillingReport/BillingReport";
+import Roles from "./pages/Roles/Roles";
 
 function App() {
   const [sidebarIsVisible, setSidebarIsVisible] = useState(false)
@@ -104,6 +105,7 @@ function App() {
 
                 <Route path='/Support' exact element={<Support/>}/>
                 <Route path='/SendBulkSMS' exact element={<SendBulkSMS/>}/>
+                <Route path='/Roles' exact element={<Roles/>}/>
               </Routes>
             </div>
           </div>

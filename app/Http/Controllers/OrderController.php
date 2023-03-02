@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\TemplateHelper;
 use App\Models\Customer;
+use App\Models\Giftcard;
 use App\Models\Log;
 use App\Models\MessageTemplate;
 use App\Models\Order;
@@ -424,6 +425,7 @@ class OrderController extends Controller
                 ->where('area_id',$request->area_id)
                 ->whereBetween('reservation_time',[$time_from,$time_to])
                 ->where('is_take_away',0)
+                ->whereIn('status',['confirmed','arrived'])
                 ->get();
 
             if($this->getFreeTables($orders, $working_hours, $request->seats)){
@@ -482,6 +484,7 @@ class OrderController extends Controller
             ->where('area_id',$request->area_id)
             ->whereBetween('reservation_time',[$time_from,$time_to])
             ->where('is_take_away',0)
+            ->whereIn('status',['confirmed','arrived'])
             ->get();
 
         $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
@@ -501,6 +504,7 @@ class OrderController extends Controller
                             ->whereDate('reservation_time','<=',$time->format('Y-m-d H:i:s'))
                             ->whereRaw('date_add(reservation_time,interval length minute) >= \''.$time->format('Y-m-d H:i:s').'\'')
                             ->where('is_take_away',0)
+                            ->whereIn('status',['confirmed','arrived'])
                             ->get();
                         foreach ($timeOrders as $timeOrder) {
                             $timeOrders_seats += $timeOrder->seats;
@@ -680,6 +684,7 @@ class OrderController extends Controller
                 ->where('area_id',$request->area_id)
                 ->whereBetween('reservation_time',[$time_from,$time_to])
                 ->where('is_take_away',0)
+                ->whereIn('status',['confirmed','arrived'])
                 ->get();
 
             $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
@@ -758,13 +763,17 @@ class OrderController extends Controller
 
         if(intval($place->setting('is-online-payment')) === 1) {
             if ($place->setting('online-payment-method') === 'deduct') {
+                $currency = $place->setting('online-payment-currency');
+                $amount = $place->setting('online-payment-amount');
                 $prepayment_url = $this->getPrepaymentUrl($request, $order);
                 if ($prepayment_url) {
                     $order->status = 'pending';
                     $order->marks = [
                         'method' => 'deduct',
-                        'amount' => $place->setting('online-payment-amount') * $request->seats,
-                        'currency' => $place->setting('online-payment-currency'),
+                        'amount' => self::getAmountAfterDiscount($amount * $request->seats,$request->giftcard_code,$currency),
+                        'amountWithoutDiscount' => $amount * $request->seats,
+                        'giftcard_code' => $request->giftcard_code,
+                        'currency' => $currency,
                         'cancel_deadline' => $place->setting('online-payment-cancel-deadline')
                     ];
                     $order->timestamps = false;
@@ -822,7 +831,7 @@ class OrderController extends Controller
         if($stripe_secret && $stripe_webhook_secret && $online_payment_currency){
             $stripe = new StripeClient($stripe_secret);
             $price = $stripe->prices->create([
-                'unit_amount' => $online_payment_amount * 100,
+                'unit_amount' => self::getAmountAfterDiscount($online_payment_amount,$request->giftcard_code,$online_payment_currency) * 100,
                 'currency' => $online_payment_currency,
                 'product_data' => [
                     'name' => $place->name.', '.$order->seats.' seats prepayment'
@@ -857,7 +866,9 @@ class OrderController extends Controller
         $cancel_deadline = $place->setting('online-payment-cancel-deadline');
         $marks = [
             'method' => $method,
-            'amount' => $amount,
+            'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency),
+            'amountWithoutDiscount' => $amount,
+            'giftcard_code' => $request->giftcard_code,
             'currency' => $currency,
             'cancel_deadline' => $cancel_deadline
         ];
@@ -872,7 +883,7 @@ class OrderController extends Controller
                 // Якщо замовлення пізніже ніж 6 днів тоді створити payment_intent manual, а потім його capture через крон
                 $setup_intent = $stripe->setupIntents->retrieve($request->setup_intent_id);
                 $payment_intent = $stripe->paymentIntents->create([
-                    'amount' => $amount * 100,
+                    'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency) * 100,
                     'currency' => $currency,
                     'confirm' => true,
                     'off_session' => true,
@@ -953,6 +964,7 @@ class OrderController extends Controller
             ->where('area_id',$request->area_id)
             ->whereBetween('reservation_time',[$time_from,$time_to])
             ->where('is_take_away',0)
+            ->whereIn('status',['confirmed','arrived'])
             ->get();
 
         $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
@@ -1025,5 +1037,27 @@ class OrderController extends Controller
             $output[$setting->name] = $setting->value;
         }
         return response()->json($output);
+    }
+
+    public static function getAmountAfterDiscount($amount,$code,$currency)
+    {
+        switch (strtolower($currency)) {
+            case 'usd':
+            case 'eur':
+                $min = 0.5;
+                break;
+            case 'dkk':
+                $min = 2.5;
+                break;
+            default:
+                $min = 175;
+        }
+
+        $discount = Giftcard::getAmountByCode($code);
+        if($amount-$min <= $discount){
+            return min($amount, $min);
+        }else{
+            return $amount - $discount;
+        }
     }
 }

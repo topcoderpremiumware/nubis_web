@@ -27,4 +27,23 @@ class Giftcard extends Model
             return false;
         }
     }
+
+    public static function getAmountByCode($code)
+    {
+        $giftcard = Giftcard::where('code',$code)
+            ->first();
+        if($giftcard === null){
+            return 0;
+        }
+        if($giftcard->expired_at <= now()){
+            return 0;
+        }
+        if($giftcard->status != 'confirmed'){
+            return 0;
+        }
+        if($giftcard->spend_amount >= $giftcard->initial_amount){
+            return 0;
+        }
+        return $giftcard->initial_amount - $giftcard->spend_amount;
+    }
 }

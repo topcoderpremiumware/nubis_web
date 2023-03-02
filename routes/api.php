@@ -105,6 +105,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('places/{place_id}/timetables',[TimetableController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/customers',[PlaceController::class, 'getCustomers']);
+    Route::get('places/{place_id}/users',[PlaceController::class, 'getUsers']);
     Route::get('places/{place_id}/is_trial_paid',[PlaceController::class, 'isTrialBillPaid']);
     Route::post('places/{place_id}/pay_trial',[BillingController::class, 'payTrial']);
     Route::get('places/{place_id}/billings',[BillingController::class, 'getAllByPlace']);

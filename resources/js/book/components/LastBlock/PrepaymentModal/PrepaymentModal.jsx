@@ -20,8 +20,7 @@ const PrepaymentModal = (props) => {
     paymentInfo,
     makeOrder,
     discount,
-    setDefaultModal,
-    spendGift
+    setDefaultModal
   } = props
 
   const cancelTimes = [
@@ -80,7 +79,6 @@ const PrepaymentModal = (props) => {
 
           <Elements stripe={stripeKey} options={options}>
             <PrepaymentForm
-              spendGift={spendGift}
               paymentInfo={paymentInfo}
               makeOrder={makeOrder}
               setDefaultModal={setDefaultModal}

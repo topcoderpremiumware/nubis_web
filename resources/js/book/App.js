@@ -56,7 +56,6 @@ const App = () => {
     zip_code: "",
     country: "",
   });
-  const [isTakeAway, setIsTakeAway] = useState(0);
   const [selectedTime, setSelectedTime] = useState("");
   const [timeline, setTimeline] = useState("");
   const [timelineId, setTimelineId] = useState(null);
@@ -69,6 +68,7 @@ const App = () => {
   const [areas, setAreas] = useState([]);
   const [showSelectAreas, setShowSelectAreas] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState({})
+  const [giftCardCode, setGiftCardCode] = useState('')
 
   const myAxios = axios.create({
     baseURL: process.env.MIX_API_URL,
@@ -258,10 +258,12 @@ const App = () => {
             selectedDay.month
           )}-${normalizeNumber(selectedDay.day)} ${selectedTime}`,
           comment: "",
-          is_take_away: isTakeAway,
           status: defaultModal === "submit" ? "waiting" : "ordered",
           length: timeline,
+          is_take_away: false,
+          ...(giftCardCode && {giftcard_code: giftCardCode}),
           custom_booking_length_id: timelineId,
+
           ...(setupIntentId && {setup_intent_id: setupIntentId})
         },
         {
@@ -469,8 +471,6 @@ const App = () => {
               defaultModal={defaultModal}
               setDefaultModal={setDefaultModal}
               makeOrder={makeOrder}
-              isTakeAway={isTakeAway}
-              setIsTakeAway={setIsTakeAway}
               selectedDay={selectedDay}
               setSelectedDay={setSelectedDay}
               selectedTime={selectedTime}
@@ -483,6 +483,8 @@ const App = () => {
               setBlockType={setBlockType}
               orderResponse={orderResponse}
               paymentMethod={paymentMethod}
+              giftCardCode={giftCardCode}
+              setGiftCardCode={setGiftCardCode}
             />
           </div>
         </Carousel>

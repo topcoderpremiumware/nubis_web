@@ -40,6 +40,7 @@ Route::view('/', 'home')->name('home');
 Route::view('/pricing', 'pricing')->name('pricing');
 Route::view('/features', 'features')->name('features');
 Route::view('/about', 'about')->name('about');
+Route::view('/contact', 'contact')->name('contact');
 Route::get('/video-guide', function(){
     $guides = VideoGuide::where('language',app()->getLocale())->get();
     return view('videoGuide', ['guides' => $guides]);

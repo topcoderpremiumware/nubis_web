@@ -15,7 +15,7 @@
     @include('partials/header')
 
     <main class="main">
-      <div class="guide">
+      <section class="guide">
         <img src="/images/plate-1.png" alt="Picture" class="guide-img-1" />
         <img src="/images/plate-2.png" alt="Picture" class="guide-img-2" />
         <img src="/images/plate-3.png" alt="Picture" class="guide-img-3" />

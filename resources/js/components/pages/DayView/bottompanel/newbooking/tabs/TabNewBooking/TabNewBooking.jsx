@@ -92,8 +92,10 @@ export default function TabNewBooking(props) {
 
   useEffect(async () => {
     console.log('order',order)
-    getTimes()
-    getTables()
+    if(Object.keys(order).length) {
+      getTimes()
+      getTables()
+    }
   }, [order])
 
   const getTimes = () => {
@@ -116,7 +118,7 @@ export default function TabNewBooking(props) {
         place_id: localStorage.getItem('place_id'),
         area_id: order.area_id,
         seats: order.seats,
-        reservation_time: order.reservation_time
+        reservation_time: Moment.utc(order.reservation_time).utc().format('YYYY-MM-DD HH:mm:ss')
       }
     }).then(response => {
       let data = []
@@ -390,6 +392,7 @@ export default function TabNewBooking(props) {
               <MenuItem value="waiting">{t('Waiting')}</MenuItem>
               <MenuItem value="pending">{t('Pending')}</MenuItem>
               <MenuItem value="confirmed">{t('Confirmed')}</MenuItem>
+              <MenuItem value="no_show">{t('No show')}</MenuItem>
               <MenuItem value="arrived">{t('Arrived')}</MenuItem>
               <MenuItem value="completed">{t('Completed')}</MenuItem>
             </Select>

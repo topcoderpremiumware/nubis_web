@@ -31,18 +31,18 @@ function LastBlock(props) {
     setModalActive(true);
   };
 
-  const spendGift = async () => {
-    if (discount) {
-      await axios.post(process.env.MIX_API_URL + '/api/giftcards_spend', {
-        code: appliedGift.code,
-        amount: discount
-      }, {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      })
-    }
-  }
+  // const spendGift = async () => {
+  //   if (discount) {
+  //     await axios.post(process.env.MIX_API_URL + '/api/giftcards_spend', {
+  //       code: appliedGift.code,
+  //       amount: discount
+  //     }, {
+  //       headers: {
+  //         Authorization: 'Bearer ' + localStorage.getItem('token')
+  //       }
+  //     })
+  //   }
+  // }
 
   const makeOrderDone = async () => {
     const isOnline = props.paymentMethod?.['is-online-payment'] === '1'
@@ -54,7 +54,7 @@ function LastBlock(props) {
         setModalActive(true)
         props.setDefaultModal("done")
       } else if (method === 'deduct') {
-        spendGift()
+        // spendGift()
         await props.makeOrder()
       } else if (method === 'reserve' || method === 'no_show') {
         setModalActive(true)
@@ -146,6 +146,7 @@ function LastBlock(props) {
       })
 
       setAppliedGift(res.data)
+      props.setGiftCardCode(giftCode)
 
       const orderTotal = props.guestValue * props.paymentMethod['online-payment-amount']
       const currGiftAmount = res.data.initial_amount - res.data.spend_amount
@@ -242,37 +243,6 @@ function LastBlock(props) {
                   onChange={ev => setComment(ev.target.value)}
                 />
               </div>
-              <div
-                className="second-checkbox"
-                style={{
-                  display: "flex",
-                  paddingBottom: "10px",
-                }}
-              >
-                <input
-                  type="radio"
-                  id="takeawayChoice"
-                  name="takeaway"
-                  value="takeaway"
-                  onClick={() => props.setIsTakeAway(1)}
-                />
-                <label htmlFor="contactChoice1">{t('Take away')}</label>
-              </div>
-              <div
-                className="second-checkbox"
-                style={{
-                  display: "flex",
-                }}
-              >
-                <input
-                  type="radio"
-                  id="eathereChoice"
-                  name="takeaway"
-                  value="eathere"
-                  onClick={() => props.setIsTakeAway(0)}
-                />
-                <label htmlFor="eathereChoice">{t('Eat here')}</label>
-              </div>
 
               {gifts.length > 0 &&
                 props.paymentMethod?.['is-online-payment'] === '1' &&
@@ -309,7 +279,7 @@ function LastBlock(props) {
           </div>
 
           {error && <p className="error">{error}</p>}
-          {discount > 0 && <p className="discount">{t('Your discount is')} <b>{discount} DKK</b></p>}
+          {discount > 0 && <p className="discount">{t('Your discount is')} <b>{discount} {props.paymentMethod['online-payment-currency']}</b></p>}
 
           <button
             type="button"
@@ -405,7 +375,6 @@ function LastBlock(props) {
               paymentInfo={props.paymentMethod}
               makeOrder={props.makeOrder}
               discount={discount}
-              spendGift={spendGift}
               setDefaultModal={props.setDefaultModal}
             />
           }

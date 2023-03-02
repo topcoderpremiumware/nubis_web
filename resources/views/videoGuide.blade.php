@@ -15,30 +15,31 @@
     @include('partials/header')
 
     <main class="main">
-      <section class="guide">
+      <div class="guide">
         <img src="/images/plate-1.png" alt="Picture" class="guide-img-1" />
         <img src="/images/plate-2.png" alt="Picture" class="guide-img-2" />
         <img src="/images/plate-3.png" alt="Picture" class="guide-img-3" />
-        
+
         <div class="guide-container">
           <h1 class="guide-title">{{__('How to Use our System ?')}}</h1>
-
-          <div class="guide-item">
-            <div class="guide-item-wrapper">
-              <h3 class="guide-item-title">{i.title}</h3>
-              <p class="guide-item-text">{i.description}</p>
-              <a href="" target="_blank" class="guide-item-link">{{__('Try it Now')}}</a>
-            </div>
-            <iframe 
-              width="606" 
-              height="339" 
-              src="https://www.youtube.com/embed/${i.youtube_id}"
-              title="YouTube video player" 
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              allowFullScreen
-            ></iframe>
-          </div>
+            @foreach($guides as $guide)
+              <div class="guide-item">
+                <div class="guide-item-wrapper">
+                  <h3 class="guide-item-title">{{$guide->title}}</h3>
+                  <p class="guide-item-text">{{$guide->description}}</p>
+                  <a href="{{$guide->page_url}}" target="_blank" class="guide-item-link">{{__('Try it Now')}}</a>
+                </div>
+                <iframe
+                  width="606"
+                  height="339"
+                  src="https://www.youtube.com/embed/{{$guide->youtube_id}}"
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            @endforeach
         </div>
       </section>
 

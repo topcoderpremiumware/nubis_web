@@ -5,6 +5,7 @@ use App\Models\Area;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\User;
+use App\Models\VideoGuide;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 
@@ -39,5 +40,8 @@ Route::view('/', 'home')->name('home');
 Route::view('/pricing', 'pricing')->name('pricing');
 Route::view('/features', 'features')->name('features');
 Route::view('/about', 'about')->name('about');
-Route::view('/video-guide', 'videoGuide')->name('videoGuide');
+Route::get('/video-guide', function(){
+    $guides = VideoGuide::where('language',app()->getLocale())->get();
+    return view('videoGuide', ['guides' => $guides]);
+})->name('videoGuide');
 Route::view('/admin/{path?}/{path2?}', 'app')->name('admin');

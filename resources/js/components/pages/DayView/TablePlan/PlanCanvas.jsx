@@ -2,16 +2,17 @@ import React, {useEffect, useState} from "react";
 import {useTranslation} from 'react-i18next';
 import {fabric} from 'fabric';
 import {circTable, landscape, rectTable} from "../../TablePlanSetup/tableTypes";
-import {Box, CircularProgress, Menu, MenuItem, Slider} from "@mui/material";
+import {Box, Button, CircularProgress, Menu, MenuItem, Slider} from "@mui/material";
 import Moment from "moment";
 import _ from "lodash";
 import { useCallback } from "react";
 import axios from "axios";
 import eventBus from "../../../../eventBus";
 import moment from "moment";
+import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
 // import TablePropertiesPopup from "./TablePropertiesPopup";
 
-export default function PlanCanvas({ setSelectedOrder }) {
+export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth }) {
   const { t } = useTranslation();
   const [canvas, setCanvas] = useState(null)
   const [plan, setPlan] = useState({})
@@ -342,6 +343,13 @@ export default function PlanCanvas({ setSelectedOrder }) {
           </div>
         }
       </Menu>
+      <Button
+        variant="contained"
+        onClick={() => setFullWidth(prev => !prev)}
+        className="canvas-toggle-btn"
+      >
+        {isFullWidth ? <BsFullscreenExit /> : <BsFullscreen />}
+      </Button>
     </>}
   </>);
 };

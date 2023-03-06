@@ -55,6 +55,7 @@ export default function DayViewContent() {
   const [value, setValue] = useState(0);
   const [tableSidebar, setTableSidebar] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null)
+  const [isFullWidth, setIsFullWidth] = useState(false)
 
   useEffect(() => {
     eventBus.on("openTableSidebar",(data) => {
@@ -90,7 +91,7 @@ export default function DayViewContent() {
       </Stack>
       <DayViewTop />
       <div style={{display:'flex',height:'100%',overflow:'hidden'}}>
-        <Box sx={{ width: '100%',flex:1,display:'flex',flexDirection:'column' }} >
+        <Box sx={{ width: '100%', flex: 1, display: isFullWidth ? 'none' : 'flex',flexDirection:'column' }} >
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='DayView__Boxbuttons'>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
               <Tab label={t('Bookings')} {...a11yProps(0)} />
@@ -112,7 +113,11 @@ export default function DayViewContent() {
           <TimeLinePlan/>
         </div>}
         {tableSidebar === 'tablePlan' && <div className="tablePlanSidebar">
-          <PlanCanvas setSelectedOrder={setSelectedOrder} />
+          <PlanCanvas 
+            setSelectedOrder={setSelectedOrder}
+            isFullWidth={isFullWidth}
+            setFullWidth={setIsFullWidth}
+          />
         </div>}
       </div>
       <BottomPanel selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />

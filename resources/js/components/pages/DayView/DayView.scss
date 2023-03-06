@@ -34,3 +34,12 @@
 .tablePlanSidebar .react-calendar-timeline .rct-header-root{
     background: #f0f0f0;
 }
+.canvas-toggle-btn {
+    position: absolute !important;
+    bottom: 20px;
+    right: 50px;
+    transform: translateY(-250%);
+    z-index: 2;
+    padding: 8px !important;
+    min-width: 0 !important;
+}

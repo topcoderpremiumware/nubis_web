@@ -19203,7 +19203,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("/images/arrow.svg?c0e807e4ef4406eb4ef83b214694bbfd");
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("/images/arrow.svg?60521e258afd0bbfb9ecadec07397c35");
 
 /***/ }),
 

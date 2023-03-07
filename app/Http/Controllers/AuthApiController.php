@@ -193,6 +193,12 @@ class AuthApiController extends Controller
             ], 403);
         }
 
+        if($user->id == Auth::user()->id){
+            return response()->json([
+                'message' => 'Forbidden to change yourself'
+            ], 403);
+        }
+
         Log::add($request,'role-user','Changed user #'.$user->id.' role '.json_encode($request->role_id).' in place #'.$request->place_id);
 
         $user->places()->syncWithoutDetaching([$request->place_id]);

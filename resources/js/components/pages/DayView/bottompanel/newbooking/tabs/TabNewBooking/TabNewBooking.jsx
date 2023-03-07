@@ -397,12 +397,12 @@ export default function TabNewBooking(props) {
               <MenuItem value="completed">{t('Completed')}</MenuItem>
             </Select>
           </FormControl>
-          <FormControlLabel label={t('Take away')} labelPlacement="start" sx={{mb:2}}
+          {/* <FormControlLabel label={t('Take away')} labelPlacement="start" sx={{mb:2}}
                             control={
                               <Switch onChange={onChange}
                                       name="is_take_away"
                                       checked={Boolean(order.is_take_away)} />
-                            }/>
+                            }/> */}
           <FormControlLabel label={t('Walk In')} labelPlacement="start" sx={{mb:2}}
                             control={
                               <Switch onChange={toogleWalkIn}

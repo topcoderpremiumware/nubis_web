@@ -43,7 +43,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     { field: 'first_name', headerName: t('First name'), width: 130 },
     { field: 'last_name', headerName: t('Last name'), width: 130 },
     { field: 'seats', headerName: t('Seats'), width: 10 },
-    { field: 'take_away', headerName: t('Take away'), width: 100 },
+    // { field: 'take_away', headerName: t('Take away'), width: 100 },
     { field: 'tables', headerName: t('Tables'), width: 70 },
     { field: 'length', headerName: t('Booking Length'), width: 100 },
     { field: 'source', headerName: t('Source'), width: 70 },

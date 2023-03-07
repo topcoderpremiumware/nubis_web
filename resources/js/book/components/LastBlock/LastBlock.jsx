@@ -205,8 +205,7 @@ function LastBlock(props) {
                   <b>{props.guestValue}</b>
                   <br />
                   {t('Day/time')}: &nbsp;
-                  <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`)
-                    .local().format('DD-MM-YYYY HH:mm')}</b>
+                  <b>{moment(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`).format('DD-MM-YYYY HH:mm')}</b>
                 </div>
               </div>
               <div className="client-info">
@@ -227,7 +226,7 @@ function LastBlock(props) {
                     {t('Edit my information')}
                   </a>
                   &nbsp;
-                  <a href="/">{t('Not me')}</a>
+                  <a href={window.location.href}>{t('Not me')}</a>
                 </div>
               </div>
             </div>

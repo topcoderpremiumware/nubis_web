@@ -205,7 +205,7 @@ function LastBlock(props) {
                   <b>{props.guestValue}</b>
                   <br />
                   {t('Day/time')}: &nbsp;
-                  <b>{moment.utc(moment(`${selectedDay.year}-${selectedDay.month - 1}-${selectedDay.day} ${selectedTime}`)).local().format('DD-MM-YYYY HH:mm')}</b>
+                  <b>{moment(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`).format('DD-MM-YYYY HH:mm')}</b>
                 </div>
               </div>
               <div className="client-info">

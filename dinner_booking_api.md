@@ -84,23 +84,32 @@ curl -X POST https://dinner-book.vasilkoff.info/api/user/password \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
 -d '{"password":"Maxlibra85","password_confirmation":"Maxlibra85"}'
 ```
-#### Set user roles
-> POST /api/user/{id}/roles
+#### Set user role
+> POST /api/user/role
 ```cmd
-curl -X POST https://dinner-book.vasilkoff.info/api/user/1/roles \
+curl -X POST https://dinner-book.vasilkoff.info/api/user/role \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json' \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f" \
--d '{"place_id":1,"roles":[1]}'
+-d '{"place_id":1,"email":"2@ukr.net","role_id":1}'
 ```
-#### Get user roles
-> GET /api/user/{id}/roles
+#### Get user role
+> GET /api/user/role
 ```cmd
-curl -X POST https://dinner-book.vasilkoff.info/api/user/1/roles \
+curl -X GET https://dinner-book.vasilkoff.info/api/user/role \
 -H "X-Requested-With: XMLHttpRequest" \
 -H 'Content-Type: application/json' \
 -H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f"
 -d '{"place_id":1}'
+```
+#### Delete user role
+> DELETE /api/user/role
+```cmd
+curl -X DELETE https://dinner-book.vasilkoff.info/api/user/role \
+-H "X-Requested-With: XMLHttpRequest" \
+-H 'Content-Type: application/json' \
+-H "Authorization: Bearer 2|94t8eMykhvSrvKaNg1obqLNaexYF2ZZ71p1m0K8f"
+-d '{"place_id":1,"email":"2@ukr.net"}'
 ```
 ---
 <a id="places"></a>

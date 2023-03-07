@@ -57,61 +57,59 @@ export default function Roles() {
     })
   }
 
-  const updateArea = (area) => {
-    let url = `${process.env.MIX_API_URL}/api/areas`
-    if(area.hasOwnProperty('id')){
-      url = `${process.env.MIX_API_URL}/api/areas/${area.id}`
-    }
-
-    // axios.post(url, area,{
-    //   headers: {
-    //     Authorization: 'Bearer ' + localStorage.getItem('token')
-    //   }
-    // }).then(response => {
-    //   getUsers()
-    //   setEditPopupOpened(false)
-    //   eventBus.dispatch("notification", {type: 'success', message: 'Area saved successfully'});
-    // }).catch(error => {
-    //   if (error.response && error.response.data && error.response.data.errors) {
-    //     for (const [key, value] of Object.entries(error.response.data.errors)) {
-    //       eventBus.dispatch("notification", {type: 'error', message: value});
-    //     }
-    //   } else if (error.response.status === 401) {
-    //     eventBus.dispatch("notification", {type: 'error', message: 'Authorization error'});
-    //   } else {
-    //     eventBus.dispatch("notification", {type: 'error', message: error.message});
-    //     console.log('Error', error.message)
-    //   }
-    // })
+  const updateUser = (email,role) => {
+    axios.post(`${process.env.MIX_API_URL}/api/user/role`, {
+      email: email,
+      role_id: role,
+      place_id: localStorage.getItem('place_id')
+    },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      getUsers()
+      setEditPopupOpened(false)
+      eventBus.dispatch("notification", {type: 'success', message: 'Role saved successfully'});
+    }).catch(error => {
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          eventBus.dispatch("notification", {type: 'error', message: value});
+        }
+      } else if (error.response.status === 401) {
+        eventBus.dispatch("notification", {type: 'error', message: 'Authorization error'});
+      } else {
+        eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
+        console.error('Error', error.message,error.response.data.message)
+      }
+    })
   }
 
   const openEditPopup = (user) => {
-    if (!user) user = {
-      // place_id: localStorage.getItem('place_id'),
-      // name: '',
-      // length: 0,
-      // priority: 1,
-      // online_available: 1,
-      // labels: {}
-    }
-    setSelectedUser(user)
+    setSelectedUser({
+      email: user ? user.email : '',
+      role: user ? user.roles[0].id : ''
+    })
     setEditPopupOpened(true)
   }
 
   const deleteRole = (user) => {
-    if (user.hasOwnProperty('id')) {
+    if (user.hasOwnProperty('email')) {
       if (window.confirm(t('Are you sure you want to delete this role?'))) {
-        // axios.delete(process.env.MIX_API_URL + '/api/areas/' + user.id, {
-        //   headers: {
-        //     Authorization: 'Bearer ' + localStorage.getItem('token')
-        //   }
-        // }).then(response => {
-        //   getUsers()
-        //   eventBus.dispatch("notification", {type: 'success', message: 'Area deleted successfully'});
-        // }).catch(error => {
-        //   eventBus.dispatch("notification", {type: 'error', message: error.message});
-        //   console.log('Error', error)
-        // })
+        axios.delete(process.env.MIX_API_URL + '/api/user/role', {
+          params: {
+            email: user.email,
+            place_id: localStorage.getItem('place_id')
+          },
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        }).then(response => {
+          getUsers()
+          eventBus.dispatch("notification", {type: 'success', message: 'Role deleted successfully'});
+        }).catch(error => {
+          eventBus.dispatch("notification", {type: 'error', message: error.message});
+          console.log('Error', error)
+        })
       }
     }
   }
@@ -169,8 +167,8 @@ export default function Roles() {
       </Stack>
       <RoleEditPopup
         open={editPopupOpened}
-        area={selectedUser}
-        onChange={updateArea}
+        user={selectedUser}
+        onChange={updateUser}
         onClose={e => {
           setEditPopupOpened(false)
         }}

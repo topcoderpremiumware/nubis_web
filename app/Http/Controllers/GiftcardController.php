@@ -42,18 +42,6 @@ class GiftcardController extends Controller
 
         $place = Place::find($request->place_id);
 
-        $currency = $place->setting('online-payment-currency');
-
-        $text = 'The '.$request->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
-        \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($request) {
-            $msg->to($request->email)->subject('Giftcard');
-        });
-        if($request->has('receiver_email') && $request->receiver_email){
-            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($request) {
-                $msg->to($request->receiver_email)->subject('Giftcard');
-            });
-        }
-
         $online_payment_currency = $place->setting('online-payment-currency');
         $stripe_secret = $place->setting('stripe-secret');
         $stripe_webhook_secret = $place->setting('stripe-webhook-secret');

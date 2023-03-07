@@ -23,43 +23,43 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export default function RoleEditPopup(props) {
   const { t } = useTranslation();
-  const [area, setArea] = useState([])
-  const [selectedLang, setSelectedLang] = useState(localStorage.getItem('i18nextLng'))
+  const [email, setEmail] = useState('')
+  const [role, setRole] = useState({})
+  const [roles, setRoles] = useState({})
 
   useEffect(() => {
-    if(props.area.hasOwnProperty('name')){
-      setArea(props.area)
+    getRoles()
+    if(props.user.hasOwnProperty('email')){
+      setEmail(props.user.email)
+      setRole(props.user.role)
     }
   },[props])
 
+  const getRoles = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/roles`,{
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    }).then(response => {
+      setRoles(response.data)
+    }).catch(error => {
+    })
+  }
+
   const onChange = (e) => {
-    if(e.target.name === 'name') setArea(prev => ({...prev, name: e.target.value}))
-    if(e.target.name === 'online_available') setArea(prev => ({...prev, online_available: e.target.checked ? 1 : 0}))
-    if(e.target.name === 'priority') setArea(prev => ({...prev, priority: e.target.value}))
-    if(e.target.name === 'languages') setSelectedLang(e.target.value)
-    if(e.target.name === 'labels_name'){
-      let labels = area.labels || {}
-      if(!labels.hasOwnProperty(selectedLang)) labels[selectedLang] = {name: '', description: ''}
-      labels[selectedLang]['name'] = e.target.value
-      setArea(prev => ({...prev, labels: labels}))
-    }
-    if(e.target.name === 'labels_description'){
-      let labels = area.labels || {}
-      if(!labels.hasOwnProperty(selectedLang)) labels[selectedLang] = {name: '', description: ''}
-      labels[selectedLang]['description'] = e.target.value
-      setArea(prev => ({...prev, labels: labels}))
-    }
+    if(e.target.name === 'email') setEmail(e.target.value)
+    if(e.target.name === 'role') setRole(e.target.value)
   }
 
   const handleClose = () => {
     props.onClose()
   }
   const handleSave = () => {
-    props.onChange(area)
+    props.onChange(email,role)
   }
 
   return (<>
-    {area.hasOwnProperty('name') &&
+    {props.user.hasOwnProperty('email') &&
     <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="md"
             scroll="paper"
             PaperProps={{
@@ -79,58 +79,23 @@ export default function RoleEditPopup(props) {
       </DialogTitle>
       <DialogContent dividers>
         <Grid container spacing={2} sx={{pb: 2}}>
-          <Grid item xs={12} sm={4}>
-            <TextField label={t('Name')} size="small" fullWidth
-                       type="text" id="name" name="name" required
-                       onChange={onChange} value={area.name}
+          <Grid item xs={12} sm={6}>
+            <TextField label={t('Email')} size="small" fullWidth
+                       type="email" id="email" name="email" required
+                       onChange={onChange} value={email}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <FormControlLabel
-              control={<Checkbox name="online_available" checked={parseInt(area.online_available) === 1} onChange={onChange}/>}
-              label={t('Online available')}
-              labelPlacement="end"
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{pb: 2}}>
           <Grid item xs={12} sm={6}>
             <FormControl size="small" fullWidth>
-              <InputLabel id="label_languages">{t('Languages')}</InputLabel>
-              <Select label={t('Languages')} value={selectedLang}
-                      labelId="label_languages" id="languages" name="languages"
+              <InputLabel id="label_role">{t('Role')}</InputLabel>
+              <Select label={t('Role')} value={role}
+                      labelId="label_role" id="role" name="role"
                       onChange={onChange}>
-                {window.langs.map((el,key) => {
-                  return <MenuItem key={key} value={el.lang}>{el.title}</MenuItem>
+                {roles.map((el,key) => {
+                  return <MenuItem key={key} value={el.id}>{el.title}</MenuItem>
                 })}
               </Select>
             </FormControl>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{pb: 2}}>
-          <Grid item xs={12} sm={6}>
-            <TextField label={t('Name')} size="small" fullWidth
-                       type="text" id="labels_name" name="labels_name" required
-                       onChange={onChange}
-                       value={(area.labels && area.labels.hasOwnProperty(selectedLang)) ? area.labels[selectedLang]['name'] : ''}
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{pb: 2}}>
-          <Grid item xs={12} sm={6}>
-            <TextField label={t('Description')} size="small" fullWidth multiline rows="3"
-                       type="text" id="labels_description" name="labels_description" required
-                       onChange={onChange}
-                       value={(area.labels && area.labels.hasOwnProperty(selectedLang)) ? area.labels[selectedLang]['description'] : ''}
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{pb: 2}}>
-          <Grid item xs={12}  sm={4}>
-            <TextField label={t('Priority')} size="small" fullWidth
-                       type="number" id="priority" name="priority" required
-                       onChange={onChange} value={area.priority}
-            />
           </Grid>
         </Grid>
       </DialogContent>

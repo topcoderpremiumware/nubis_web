@@ -76,6 +76,19 @@ class OrderWebhookController extends Controller
                     $giftcard = Giftcard::find($giftcard_id);
                     $giftcard->status = 'confirmed';
                     $giftcard->save();
+
+                    $place = Place::find($giftcard->place_id);
+                    $currency = $place->setting('online-payment-currency');
+
+                    $text = 'The '.$giftcard->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
+                    \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($giftcard) {
+                        $msg->to($giftcard->email)->subject('Giftcard');
+                    });
+                    if($giftcard->receiver_email){
+                        \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($giftcard) {
+                            $msg->to($giftcard->receiver_email)->subject('Giftcard');
+                        });
+                    }
                 }
             }
         }

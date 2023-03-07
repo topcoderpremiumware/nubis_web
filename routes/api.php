@@ -90,8 +90,9 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('user',[AuthApiController::class, 'save']);
     Route::post('user/language',[AuthApiController::class, 'language']);
     Route::post('user/password',[AuthApiController::class, 'password']);
-    Route::post('user/{id}/roles',[AuthApiController::class, 'setRoles']);
-    Route::get('user/{id}/roles',[AuthApiController::class, 'getRoles']);
+    Route::post('user/role',[AuthApiController::class, 'setRole']);
+    Route::get('user/role',[AuthApiController::class, 'getRole']);
+    Route::delete('user/role',[AuthApiController::class, 'deleteRole']);
 
     Route::post('settings',[SettingController::class, 'save']);
     Route::get('settings',[SettingController::class, 'get']);

@@ -45,7 +45,7 @@ class OrderWebhookController extends Controller
                 $metadata = $sessions->data[0]->metadata;
                 file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController $metadata: '.json_encode($metadata)));
 
-                if(property_exists($metadata,'order_id')){
+                if(array_key_exists('order_id',$metadata->toArray())){
                     $order_id = $metadata->order_id;
                     file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController $order_id: '.json_encode($order_id)));
                     $order = Order::find($order_id);
@@ -73,9 +73,8 @@ class OrderWebhookController extends Controller
                         $this->sendNewOrderNotification($order,$place);
                     }
                 }
-                file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController property_exists: '.json_encode(get_class($metadata))));
-                file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController property_exists: '.json_encode(property_exists($metadata, 'giftcard_id'))));
-                if(property_exists($metadata, 'giftcard_id')){
+
+                if(array_key_exists('giftcard_id',$metadata->toArray())){
                     $giftcard_id = $metadata->giftcard_id;
                     file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController $giftcard_id: '.json_encode($giftcard_id)));
                     $giftcard = Giftcard::find($giftcard_id);

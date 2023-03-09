@@ -246,8 +246,8 @@ const App = () => {
 
   // Make order request
 
-  const makeOrder = async (setupIntentId) => {
-    myAxios
+  const makeOrder = (setupIntentId) => {
+    return myAxios
       .post(
         "/api/make_order",
         {
@@ -272,19 +272,6 @@ const App = () => {
           },
         }
       )
-      .then((response) => {
-        const isOnline = paymentMethod?.['is-online-payment'] === '1'
-        const method = paymentMethod?.['online-payment-method']
-        if(isOnline && method === 'deduct' && response.data?.prepayment_url) {
-          window.location.href = response.data.prepayment_url
-        }
-        setOrderResponse(response.data);
-        setUserData((prev) => ({ ...prev, bookingid: response.data.id }));
-      })
-      .catch((error) => {
-        console.log("Error: ", error);
-        throw new Error(error.response.data.message)
-      });
   };
 
   const getAreas = async () => {
@@ -482,6 +469,7 @@ const App = () => {
               blockType={blockType}
               setBlockType={setBlockType}
               orderResponse={orderResponse}
+              setOrderResponse={setOrderResponse}
               paymentMethod={paymentMethod}
               giftCardCode={giftCardCode}
               setGiftCardCode={setGiftCardCode}

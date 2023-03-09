@@ -85,10 +85,19 @@ export default function TabNewBooking(props) {
     })()
   }, [])
 
-  useEffect(async () => {
-    setOrder(props.order)
-    setSelectedTables(getSelectedTables())
+  useEffect(() => {
+    if (Object.keys(props.order).length){
+      setOrder(props.order)
+      if(!props.order.customer_id) {
+        setIsWalkIn(true)
+      }
+    }
   }, [props])
+
+  useEffect(() => {
+    if(!order || !tables.length) return
+    setSelectedTables(getSelectedTables())
+  }, [tables])
 
   useEffect(async () => {
     console.log('order',order)
@@ -213,8 +222,8 @@ export default function TabNewBooking(props) {
     setSelectedTables(data)
     console.log('tables',tables)
     data.forEach(index => {
-      result.push(tables[index].number)
-      tableplan_id = tables[index].tableplan_id
+      result.push(tables?.[index]?.number)
+      tableplan_id = tables?.[index]?.tableplan_id
     })
     console.log('table result',result)
     setOrder(prev => ({...prev, tableplan_id: tableplan_id}))
@@ -223,9 +232,9 @@ export default function TabNewBooking(props) {
 
   const getSelectedTables = () => {
     let result = []
-    props.order.table_ids.forEach(id => {
+    order.table_ids.forEach(id => {
       let index = tables.findIndex(el => {
-        return (el.tableplan_id === oprops.orderrder.tableplan_id && el.number === id)
+        return (el.tableplan_id == order.tableplan_id && el.number == id)
       })
       result.push(index)
     })
@@ -235,6 +244,7 @@ export default function TabNewBooking(props) {
   const setTableOrder = (data) => {
     setOrder(prev => ({
       ...prev,
+      customer_id: data?.id || null,
       customer: {
         first_name: data.first_name || '',
         last_name: data.last_name || '',
@@ -414,42 +424,42 @@ export default function TabNewBooking(props) {
             <div className="col-md-6">
               <TextField label={t('Phone')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_phone" name="customer_phone"
-                        InputLabelProps={{ shrink: !!order.customer.phone }}
-                        value={order.customer.phone} disabled={isWalkIn}
+                        InputLabelProps={{ shrink: !!order?.customer?.phone }}
+                        value={order?.customer?.phone} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('First name')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_first_name" name="customer_first_name"
-                        InputLabelProps={{ shrink: !!order.customer.first_name }}
-                        value={order.customer.first_name} disabled={isWalkIn}
+                        InputLabelProps={{ shrink: !!order?.customer?.first_name || isWalkIn }}
+                        value={isWalkIn ? 'Walk in' : order?.customer?.first_name} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Last name')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_last_name" name="customer_last_name"
-                        InputLabelProps={{ shrink: !!order.customer.last_name }}
-                        value={order.customer.last_name} disabled={isWalkIn}
+                        InputLabelProps={{ shrink: !!order?.customer?.last_name }}
+                        value={order?.customer?.last_name} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Email address')} size="small" fullWidth sx={{mb:2}}
                         type="email" id="customer_email" name="customer_email"
-                        InputLabelProps={{ shrink: !!order.customer.email }}
-                        value={order.customer.email} disabled={isWalkIn}
+                        InputLabelProps={{ shrink: !!order?.customer?.email }}
+                        value={order?.customer?.email} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Zip code')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_zip_code" name="customer_zip_code"
-                        InputLabelProps={{ shrink: !!order.customer.zip_code }}
-                        value={order.customer.zip_code} disabled={isWalkIn}
+                        InputLabelProps={{ shrink: !!order?.customer?.zip_code }}
+                        value={order?.customer?.zip_code} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <FormControl size="small" fullWidth sx={{mb:2}}>
                 <InputLabel id="label_language">{t('Language')}</InputLabel>
-                <Select label={t('Language')} value={order.customer.language || ''}
+                <Select label={t('Language')} value={order?.customer?.language || ''}
                         labelId="label_language" id="customer_language" name="customer_language"
                         disabled={isWalkIn} onChange={onChange}>
                   {window.langs.map((lang,key) => {
@@ -463,7 +473,7 @@ export default function TabNewBooking(props) {
                                 control={
                                   <Switch onChange={onChange} disabled={isWalkIn}
                                           name="customer_allow_send_emails"
-                                          checked={Boolean(order.customer.allow_send_emails)} />
+                                          checked={Boolean(order?.customer?.allow_send_emails)} />
                                 }/>
             </div>
             <div className="col-md-6">
@@ -471,7 +481,7 @@ export default function TabNewBooking(props) {
                                 control={
                                   <Switch onChange={onChange} disabled={isWalkIn}
                                           name="customer_allow_send_news"
-                                          checked={Boolean(order.customer.allow_send_news)} />
+                                          checked={Boolean(order?.customer?.allow_send_news)} />
                                 }/>
             </div>
           </div>

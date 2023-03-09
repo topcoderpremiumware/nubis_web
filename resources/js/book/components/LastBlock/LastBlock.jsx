@@ -18,7 +18,6 @@ function LastBlock(props) {
   const { selectedDay, selectedTime, restaurantInfo, orderResponse } = props;
   const [stripeKey, setStripeKey] = useState('')
   const [stripeSecret, setStripeSecret] = useState('')
-  const [gifts, setGifts] = useState([])
   const [giftCode, setGiftCode] = useState('')
   const [error, setError] = useState('')
   const [checkingGiftCard, setCheckingGiftCard] = useState(false)
@@ -55,18 +54,24 @@ function LastBlock(props) {
 
     try {
       if (!isOnline) {
-        await props.makeOrder()
+        const response = await props.makeOrder()
+        props.setOrderResponse(response.data)
+        props.setUserData((prev) => ({ ...prev, bookingid: response.data.id }))
         setModalActive(true)
         props.setDefaultModal("done")
       } else if (method === 'deduct') {
         // spendGift()
-        await props.makeOrder()
+        const response = await props.makeOrder()
+        if (response.data?.prepayment_url) {
+          window.location.href = response.data.prepayment_url
+        }
       } else if (method === 'reserve' || method === 'no_show') {
         setModalActive(true)
         props.setDefaultModal("prepayment")
       }
     } catch (err) {
-      setError(err.message)
+      console.log('err', err)
+      setError(err?.response?.data?.message)
     }
   };
 
@@ -119,18 +124,6 @@ function LastBlock(props) {
     setStripeKey(stripe)
   }
 
-  const getGiftCards = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/giftcards`, {
-      params: {
-        place_id: getPlaceId()
-      },
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    })
-    setGifts(res.data)
-  }
-
   const checkGiftCard = async () => {
     if (!giftCode) {
       setError('Enter a code')
@@ -168,7 +161,6 @@ function LastBlock(props) {
 
   useEffect(() => {
     getStripeKeys()
-    getGiftCards()
   }, [])
 
   return (
@@ -231,7 +223,7 @@ function LastBlock(props) {
                     {t('Edit my information')}
                   </a>
                   &nbsp;
-                  <a href={window.location.href}>{t('Not me')}</a>
+                  <span onClick={(e) => logout(e)}>{t('Not me')}</span>
                 </div>
               </div>
             </div>
@@ -248,8 +240,7 @@ function LastBlock(props) {
                 />
               </div>
 
-              {gifts.length > 0 &&
-                props.paymentMethod?.['is-online-payment'] === '1' &&
+              {props.paymentMethod?.['is-online-payment'] === '1' &&
                 (props.paymentMethod?.['online-payment-method'] === 'deduct' ||
                   props.paymentMethod?.['online-payment-method'] === 'reserve') && (
                   <div>
@@ -380,6 +371,8 @@ function LastBlock(props) {
               makeOrder={props.makeOrder}
               discount={discount}
               setDefaultModal={props.setDefaultModal}
+              setOrderResponse={props.setOrderResponse}
+              setUserData={props.setUserData}
             />
           }
         </div>

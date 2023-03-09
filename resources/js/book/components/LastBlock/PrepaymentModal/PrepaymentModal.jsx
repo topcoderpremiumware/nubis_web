@@ -82,6 +82,8 @@ const PrepaymentModal = (props) => {
               paymentInfo={paymentInfo}
               makeOrder={makeOrder}
               setDefaultModal={setDefaultModal}
+              setOrderResponse={props.setOrderResponse}
+              setUserData={props.setUserData}
             />
           </Elements>
         </div>

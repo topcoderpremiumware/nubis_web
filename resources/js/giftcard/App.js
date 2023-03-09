@@ -59,8 +59,8 @@ function App() {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
       }).then(res => {
-        if(res?.payment_url) {
-          window.location.href = res.payment_url
+        if(res.data?.payment_url) {
+          window.location.href = res.data.payment_url
         }
       })
     } catch (err) {

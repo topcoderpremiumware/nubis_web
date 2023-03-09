@@ -70,10 +70,14 @@ export default function WaitingModal(props) {
     setModalActive(true);
   };
 
-  const makeOrderDone = () => {
-    props.makeOrder();
-    props.setModalActive(true);
-    setDefaultModal("ordered");
+  const makeOrderDone = async () => {
+    try {
+      await props.makeOrder();
+      props.setModalActive(true);
+      setDefaultModal("ordered");
+    } catch(err) {
+      console.log('err', err)
+    }
   };
 
   console.log("Default: ", defaultModal);

@@ -87,8 +87,8 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
           if(item.status === 'waiting') return false
           item.from = Moment.utc(item.reservation_time).local().format('HH:mm')
           item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').local().format('HH:mm')
-          item.first_name = item.customer.first_name
-          item.last_name = item.customer.last_name
+          item.first_name = !item?.customer_id ? 'Walk in' : item.customer.first_name
+          item.last_name = item.customer?.last_name || ''
           item.tables = item.is_take_away ? '' : item.table_ids.join(', ')
           item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm')
           item.take_away = item.is_take_away ? t('yes') : t('no')

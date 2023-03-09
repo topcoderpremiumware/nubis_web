@@ -57,6 +57,11 @@
   color: #333333;
 }
 
+.guests-date span {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .client-info {
   margin: 9px 21px 0px 0px;
 }

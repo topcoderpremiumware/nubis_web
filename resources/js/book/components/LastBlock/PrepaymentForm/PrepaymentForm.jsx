@@ -41,10 +41,13 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal }) => {
               // }
               makeOrder(intent.setupIntent.id)
                 .then(res => {
+                  props.setOrderResponse(res.data)
+                  props.setUserData((prev) => ({ ...prev, bookingid: res.data.id }))
                   setDefaultModal('done')
                 })
                 .catch(err => {
-                  setError(err.message)
+                  console.log('err', err)
+                  setError(err?.response?.data?.message)
                 })
               setIsLoading(false)
               break;

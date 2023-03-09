@@ -22,6 +22,10 @@ const BookingLinkGuide = () => {
     return `${process.env.MIX_APP_URL}/giftcard/${localStorage.getItem('place_id')}`
   }
 
+  const getFeedbacksUrl = () => {
+    return `${process.env.MIX_APP_URL}/feedbacks/${localStorage.getItem('place_id')}`
+  }
+
   const getBookUrl = () => {
     return `${process.env.MIX_APP_URL}/book/${localStorage.getItem('place_id')}`
   }
@@ -66,6 +70,17 @@ const BookingLinkGuide = () => {
             variant="outlined"
             size="small"
             onClick={() => window.navigator.clipboard.writeText(getBookUrl())}
+          >{t('Copy to clipboard')}</Button>
+        </Box>
+      </div>
+      <div className='mt-3'>
+        <h4>{t('Feedbacks page')}:</h4>
+        <Box sx={{display: 'flex', gap: '40px'}}>
+          <a href={getFeedbacksUrl()} target="_blank">{getFeedbacksUrl()}</a>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => window.navigator.clipboard.writeText(getFeedbacksUrl())}
           >{t('Copy to clipboard')}</Button>
         </Box>
       </div>

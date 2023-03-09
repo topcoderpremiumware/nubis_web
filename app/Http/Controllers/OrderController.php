@@ -788,6 +788,14 @@ class OrderController extends Controller
                 }
                 $marks = $this->processPaymentAlgorithm($request, $order);
                 if ($marks) {
+                    if(array_key_exists('error',$marks)){
+                        $error = $marks['error'];
+                        unset($marks['error']);
+                        $order->marks = $marks;
+                        $order->timestamps = false;
+                        $order->save();
+                        return response()->json(array_merge($error,['order' => $order]), 402);
+                    }
                     $order->marks = $marks;
                     $order->timestamps = false;
                     $order->save();
@@ -876,24 +884,36 @@ class OrderController extends Controller
         $stripe = new StripeClient($stripe_secret);
 
         if($method === 'reserve'){ // 2) Перший метод вже є для другого треба блокувати гроші
+            $order->status = 'pending';
+            $order->timestamps = false;
+            $order->save();
             if(Carbon::now()->diff($request->reservation_time)->days > 6){
                 // Якщо замовлення раніше ніж 6 днів тоді запланувати відсилання через крон посилання на оплату як в першому методі
                 $marks['need_send_payment_link'] = true;
             }else{
                 // Якщо замовлення пізніже ніж 6 днів тоді створити payment_intent manual, а потім його capture через крон
                 $setup_intent = $stripe->setupIntents->retrieve($request->setup_intent_id);
-                $payment_intent = $stripe->paymentIntents->create([
-                    'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency) * 100,
-                    'currency' => $currency,
-                    'confirm' => true,
-                    'off_session' => true,
-                    'payment_method' => $setup_intent->payment_method,
-                    'customer' => $setup_intent->customer,
-                    'capture_method' => 'manual',
-                    'metadata' => [
-                        'order_id' => $order->id
-                    ],
-                ]);
+                try {
+                    $payment_intent = $stripe->paymentIntents->create([
+                        'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency) * 100,
+                        'currency' => $currency,
+                        'confirm' => true,
+                        'off_session' => true,
+                        'payment_method' => $setup_intent->payment_method,
+                        'customer' => $setup_intent->customer,
+                        'capture_method' => 'manual',
+                        'metadata' => [
+                            'order_id' => $order->id
+                        ],
+                    ]);
+                } catch (\Stripe\Exception\CardException $e) {
+                    $payment_intent_id = $e->getError()->payment_intent->id;
+                    $payment_intent = \Stripe\PaymentIntent::retrieve($payment_intent_id);
+                    $marks['error'] = [
+                        'message' => $e->getError()->code,
+                        'payment_intent' => $payment_intent
+                    ];
+                }
                 $marks['customer_id'] = $setup_intent->customer;
                 $marks['payment_method_id'] = $setup_intent->payment_method;
                 $marks['payment_intent_id'] = $payment_intent->id;

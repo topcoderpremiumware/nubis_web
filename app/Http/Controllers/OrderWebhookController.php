@@ -16,33 +16,26 @@ class OrderWebhookController extends Controller
         $place = Place::find($place_id);
         $stripe_secret = $place->setting('stripe-secret');
         $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
-        file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController: '.json_encode([
-            '$stripe_secret' => $stripe_secret,
-                    '$stripe_webhook_secret' => $stripe_webhook_secret
-                ])));
+
         try {
             $event = Webhook::constructEvent(
                 @file_get_contents('php://input'),
                 $_SERVER['HTTP_STRIPE_SIGNATURE'],
                 $stripe_webhook_secret
             );
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController $event: '.json_encode($event)));
         } catch(\UnexpectedValueException $e) {
             // Invalid payload
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController Error: '.json_encode($e->getMessage())));
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
             exit();
         } catch(\Stripe\Exception\SignatureVerificationException $e) {
             // Invalid signature
-            file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController Error: '.json_encode($e->getMessage())));
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
             exit();
         }
-        file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController type: '.json_encode($event->type)));
         if ($event->type == 'payment_intent.succeeded') {
             $stripe = new StripeClient($stripe_secret);
             $object = $event->data->object;
@@ -80,12 +73,15 @@ class OrderWebhookController extends Controller
                         $this->sendNewOrderNotification($order,$place);
                     }
                 }
+                file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController property_exists: '.json_encode(get_class($metadata))));
+                file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController property_exists: '.json_encode(property_exists($metadata, 'giftcard_id'))));
                 if(property_exists($metadata, 'giftcard_id')){
                     $giftcard_id = $metadata->giftcard_id;
+                    file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController $giftcard_id: '.json_encode($giftcard_id)));
                     $giftcard = Giftcard::find($giftcard_id);
                     $giftcard->status = 'confirmed';
                     $giftcard->save();
-                    file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('OrderWebhookController $giftcard_id: '.json_encode($giftcard_id)));
+
                     $place = Place::find($giftcard->place_id);
                     $currency = $place->setting('online-payment-currency');
                     try{

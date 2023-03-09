@@ -93,7 +93,7 @@ class TemplateHelper
             $order->reservation_time->format("Y"), //#BOOK_YEAR#
             $order->comment, //#BOOK_COMMENT#
             '', //#CALENDAR_LINK#
-            '', //#CANCEL_LINK#
+            env('MIX_APP_URL').'/book/'.$place->id, //#CANCEL_LINK#
             '', //#RECONFIRM_LINK#
             '', //#CHECK_CREDIT_CARD_LINK#
             '', //#CITY#
@@ -122,7 +122,7 @@ class TemplateHelper
             $customer->zip_code,
             '', //#LANDING_PAGE#
             '', //#MAX_PAX_PAGE#
-            '', //#CANCEL_BOOKING_PAGE#
+            env('MIX_APP_URL').'/book/'.$place->id, //#CANCEL_BOOKING_PAGE#
             '', //#ALTERNATIVE_RESTAURANTS_PAGE#
             '', //#UNSUBSCRIBE_LINK#
         ];

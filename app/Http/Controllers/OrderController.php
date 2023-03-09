@@ -908,7 +908,7 @@ class OrderController extends Controller
                     ]);
                 } catch (\Stripe\Exception\CardException $e) {
                     $payment_intent_id = $e->getError()->payment_intent->id;
-                    $payment_intent = \Stripe\PaymentIntent::retrieve($payment_intent_id);
+                    $payment_intent = $stripe->paymentIntents->retrieve($payment_intent_id);
                     $marks['error'] = [
                         'message' => $e->getError()->code,
                         'payment_intent' => $payment_intent

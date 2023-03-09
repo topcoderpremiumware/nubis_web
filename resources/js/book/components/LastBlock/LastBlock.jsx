@@ -31,6 +31,11 @@ function LastBlock(props) {
     setModalActive(true);
   };
 
+  const getPlaceId = () => {
+    let pathArray = window.location.pathname.split('/')
+    return pathArray.length === 3 ? pathArray[2] : 0
+  };
+
   // const spendGift = async () => {
   //   if (discount) {
   //     await axios.post(process.env.MIX_API_URL + '/api/giftcards_spend', {
@@ -96,7 +101,7 @@ function LastBlock(props) {
   const getStripeKeys = async () => {
     const res = await axios.get(`${process.env.MIX_API_URL}/api/customers/client_secret`, {
       params: {
-        place_id: localStorage.getItem('place_id')
+        place_id: getPlaceId()
       },
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -117,7 +122,7 @@ function LastBlock(props) {
   const getGiftCards = async () => {
     const res = await axios.get(`${process.env.MIX_API_URL}/api/giftcards`, {
       params: {
-        place_id: localStorage.getItem('place_id')
+        place_id: getPlaceId()
       },
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')

@@ -44,12 +44,29 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal }) => {
                   props.setOrderResponse(res.data)
                   props.setUserData((prev) => ({ ...prev, bookingid: res.data.id }))
                   setDefaultModal('done')
+                  setIsLoading(false)
                 })
                 .catch(err => {
-                  console.log('err', err)
-                  setError(err?.response?.data?.message)
+                  if (err?.response?.data?.message === 'authentication_required') {
+                    stripe.confirmCardPayment(err?.response?.data?.payment_intent?.client_secret, {
+                      payment_method: err?.response?.data?.payment_intent?.last_payment_error?.payment_method?.id
+                    }).then((result) => {
+                      if (result.error) {
+                        setError(result.error.message);
+                      } else {
+                        if (result.paymentIntent.status === 'succeeded') {
+                          props.setOrderResponse(err?.response?.data?.order)
+                          props.setUserData((prev) => ({ ...prev, bookingid: err?.response?.data?.order?.id }))
+                          setDefaultModal('done')
+                        }
+                      }
+                    });
+                  } else {
+                    setError(err?.response?.data?.message)
+                  }
+
+                  setIsLoading(false)
                 })
-              setIsLoading(false)
               break;
             case 'requires_payment_method':
               setError('Failed to process payment details. Please try another payment method.');

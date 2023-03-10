@@ -26,7 +26,9 @@ const SubMenu = ({ item }) => {
         </div>
       </ItemTagName>
       {subnav &&
-        item.subNav.map((item, index) => {
+        item.subNav.filter(item => {
+          return item.hasOwnProperty('show') ? item.show : true
+        }).map((item, index) => {
           return (
             <NavLink className='DropdownLink' to={item.path} key={index}>
               {item.icon}

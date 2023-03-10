@@ -7,13 +7,14 @@ import { IoIosStats} from 'react-icons/io';
 import { BsCreditCard } from 'react-icons/bs';
 import { MdOutlineContactSupport } from "react-icons/md";
 
-export const SidebarData = [
+export const SidebarData = (data) => { return [
   {
     title: 'Restaurant Setup',
     path: '#',
     icon: <SettingsOutlined />,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
+    show: ['admin','manager'].includes(data.role),
     subNav: [
       {
         title: 'Basic Information',
@@ -74,14 +75,17 @@ export const SidebarData = [
       {
         title: 'Manage Feedback',
         path: '/ManageFeedback',
+        show: ['admin','manager'].includes(data.role),
       },
       {
         title: 'Manage Gift Cards',
         path: '/ManageGiftCards',
+        show: ['admin','manager'].includes(data.role),
       },
       {
         title: 'Send Bulk SMS',
         path: '/SendBulkSMS',
+        show: ['admin','manager'].includes(data.role),
       },
     ]
   },
@@ -91,17 +95,19 @@ export const SidebarData = [
     icon: <BsCreditCard />,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
-
+    show: ['admin','manager'].includes(data.role),
     subNav: [
       {
         title: 'Payment Gateaway',
         path: '/PaymentGateway',
-        cName: 'sub-nav'
+        cName: 'sub-nav',
+        show: ['admin'].includes(data.role),
       },
       {
         title: 'Payment Settings',
         path: '/PaymentSettings',
-        cName: 'sub-nav'
+        cName: 'sub-nav',
+        show: ['admin','manager'].includes(data.role),
       },
     ]
   },
@@ -111,6 +117,7 @@ export const SidebarData = [
     icon: <CalendarMonthOutlined />,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
+    show: ['admin','manager'].includes(data.role),
     subNav: [
       {
         title: 'Booking Link Guide',
@@ -138,6 +145,7 @@ export const SidebarData = [
     icon: <TiMessages/>,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
+    show: ['admin','manager'].includes(data.role),
     subNav: [
       {
         title: 'Confirmation',
@@ -167,6 +175,7 @@ export const SidebarData = [
     icon: <EmailOutlined/>,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
+    show: ['admin','manager'].includes(data.role),
     subNav: [
       {
         title: 'Confirmation',
@@ -214,6 +223,7 @@ export const SidebarData = [
     icon: <BsCreditCard/>,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
+    show: ['admin','manager'].includes(data.role),
     subNav: [
       {
         title: 'Pricing',
@@ -231,6 +241,7 @@ export const SidebarData = [
     icon: <MdOutlineContactSupport />,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
+    show: ['admin','manager'].includes(data.role),
     subNav: [
       {
         title: 'Support',
@@ -248,6 +259,7 @@ export const SidebarData = [
     icon: <SettingsOutlined />,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
+    show: data.is_superadmin,
     subNav: [
       {
         title: 'SMS Keys',
@@ -260,3 +272,4 @@ export const SidebarData = [
     ]
   }
 ];
+}

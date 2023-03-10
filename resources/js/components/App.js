@@ -46,6 +46,8 @@ function App() {
 
   if(localStorage.getItem('token')){
     axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
+      window.is_superadmin = response.data.is_superadmin
+      console.log('is_superadmin',window.is_superadmin)
     }).catch(error => {
       if (error.response.status === 401){
         localStorage.clear()
@@ -58,7 +60,29 @@ function App() {
     eventBus.on('toggleSidebar', () => {
       setSidebarIsVisible(prev => !prev)
     })
+    getRole()
+    eventBus.on("placeChanged",  () => {
+      getRole()
+    })
   }, [])
+
+  const getRole = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/user/role`,{
+      params: {
+        place_id: localStorage.getItem('place_id')
+      }
+    }).then(response => {
+      if(response.data.length > 0){
+        window.role = response.data[0].title
+      }else{
+        window.role = ''
+      }
+      eventBus.dispatch('roleChanged')
+      console.log('role',window.role)
+    }).catch(error => {
+      console.log('role error',error.response)
+    })
+  }
 
   return (
     <BrowserRouter basename="/admin">

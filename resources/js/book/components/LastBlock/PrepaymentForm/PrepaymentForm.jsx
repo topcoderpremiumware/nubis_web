@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import '../PrepaymentModal/PrepaymentModal.scss'
 
-const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal }) => {
+const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal, setOrderResponse, setUserData }) => {
   const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false)
@@ -41,8 +41,8 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal }) => {
               // }
               makeOrder(intent.setupIntent.id)
                 .then(res => {
-                  props.setOrderResponse(res.data)
-                  props.setUserData((prev) => ({ ...prev, bookingid: res.data.id }))
+                  setOrderResponse(res.data)
+                  setUserData((prev) => ({ ...prev, bookingid: res.data.id }))
                   setDefaultModal('done')
                   setIsLoading(false)
                 })
@@ -54,9 +54,9 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal }) => {
                       if (result.error) {
                         setError(result.error.message);
                       } else {
-                        if (result.paymentIntent.status === 'succeeded') {
-                          props.setOrderResponse(err?.response?.data?.order)
-                          props.setUserData((prev) => ({ ...prev, bookingid: err?.response?.data?.order?.id }))
+                        if (['succeeded', 'requires_capture'].includes(result.paymentIntent.status)) {
+                          setOrderResponse(err?.response?.data?.order)
+                          setUserData((prev) => ({ ...prev, bookingid: err?.response?.data?.order?.id }))
                           setDefaultModal('done')
                         }
                       }

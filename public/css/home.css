@@ -937,6 +937,22 @@ body {
   margin-left: 22px;
 }
 
+.thankyou {
+  margin: 0;
+  min-height: 100vh;
+  padding-top: 100px;
+}
+.thankyou-item {
+  max-width: 600px;
+  margin: auto;
+}
+.thankyou-title {
+  font-size: 30px;
+  line-height: 135%;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
 @media screen and (max-width: 1024px) {
   .header {
     position: fixed;

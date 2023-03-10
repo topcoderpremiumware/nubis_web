@@ -138,20 +138,18 @@ export default function Roles() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.map((item, key) => {
+                {users.filter(item => {return !item.is_superadmin}).map((item, key) => {
                   return <StyledTableRow key={key}>
                     <TableCell size="small">{item.roles[0].title}</TableCell>
                     <TableCell size="small">{item.name}</TableCell>
                     <TableCell size="small">{item.email}</TableCell>
                     <TableCell size="small">
-                      {!item.is_superadmin && <>
-                        <IconButton onClick={e => {openEditPopup(item)}} size="small">
-                          <EditIcon fontSize="small"/>
-                        </IconButton>
-                        <IconButton onClick={e => {deleteRole(item)}} size="small">
-                          <DeleteIcon fontSize="small"/>
-                        </IconButton>
-                      </>}
+                      <IconButton onClick={e => {openEditPopup(item)}} size="small">
+                        <EditIcon fontSize="small"/>
+                      </IconButton>
+                      <IconButton onClick={e => {deleteRole(item)}} size="small">
+                        <DeleteIcon fontSize="small"/>
+                      </IconButton>
                     </TableCell>
                   </StyledTableRow>
                 })}

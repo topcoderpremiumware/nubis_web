@@ -262,6 +262,12 @@ class AuthApiController extends Controller
             ], 403);
         }
 
+        if($user->id == Auth::user()->id){
+            return response()->json([
+                'message' => 'Forbidden to change yourself'
+            ], 403);
+        }
+
         Log::add($request,'delete-role-user','Deleted user #'.$user->id.' role '.json_encode($user->roles[0]->id).' in place #'.$request->place_id);
 
         $user->places()->detach($request->place_id);

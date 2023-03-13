@@ -68,7 +68,8 @@ class ReserveAmountPayment implements ShouldQueue
                         ],
                     ]
                 );
-                $order->payment_link = $link->url;
+                $order_data = $order;
+                $order_data->payment_link = $link->url;
 
                 if($smsApiToken){
                     $result = SMS::send([$order->customer->phone], $link->url, env('APP_SHORT_NAME'), $smsApiToken);
@@ -79,15 +80,12 @@ class ReserveAmountPayment implements ShouldQueue
                     ->where('active',1)
                     ->first();
                 if($email_template) {
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text), function ($msg) use ($email_template, $order) {
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order_data,$email_template->text), function ($msg) use ($email_template, $order) {
                         $msg->to($order->customer->email)->subject($email_template->subject);
                     });
 
                     $marks = $order->marks;
-                    file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('need_send_payment_link before: '.json_encode($marks)));
-
                     unset($marks['need_send_payment_link']);
-                    file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('need_send_payment_link after: '.json_encode($marks)));
                     $order->marks = $marks;
                     $order->save();
                 }

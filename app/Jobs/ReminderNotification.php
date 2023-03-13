@@ -16,6 +16,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 
 
 class ReminderNotification implements ShouldQueue
@@ -81,9 +82,13 @@ class ReminderNotification implements ShouldQueue
                     ->where('active',1)
                     ->first();
                 if($reminder_template){
-                    \Illuminate\Support\Facades\Mail::html($reminder_template->text, function($msg) use ($reminder_template, $customer) {
-                        $msg->to($customer->email)->subject($reminder_template->subject);
-                    });
+                    try{
+                        \Illuminate\Support\Facades\Mail::html($reminder_template->text, function($msg) use ($reminder_template, $customer) {
+                            $msg->to($customer->email)->subject($reminder_template->subject);
+                        });
+                    }catch (\Exception $e){
+                        Log::error($e->getMessage());
+                    }
                 }
                 $marks = $order->marks;
                 if(!$marks) $marks = [];

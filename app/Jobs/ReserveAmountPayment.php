@@ -16,6 +16,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
 
@@ -78,9 +79,13 @@ class ReserveAmountPayment implements ShouldQueue
                     ->where('active',1)
                     ->first();
                 if($email_template) {
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text), function ($msg) use ($email_template, $order) {
-                        $msg->to($order->customer->email)->subject($email_template->subject);
-                    });
+                    try{
+                        \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text), function ($msg) use ($email_template, $order) {
+                            $msg->to($order->customer->email)->subject($email_template->subject);
+                        });
+                    }catch (\Exception $e){
+                        Log::error($e->getMessage());
+                    }
                 }
                 $marks = $order->marks;
                 unset($marks['need_send_payment_link']);

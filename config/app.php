@@ -100,7 +100,11 @@ return [
     'available_locales' => [
         'English' => 'en',
         'Dansk' => 'da',
-        'Français' => 'fr'
+        'Français' => 'fr',
+        'Italiano' => 'it',
+        'Español' => 'es',
+        'Deutsch' => 'de',
+        'Nederlands' => 'nl'
     ],
 
     /*

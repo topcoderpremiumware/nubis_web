@@ -69,6 +69,7 @@ class ReminderNotification implements ShouldQueue
     {
         $orders = Order::where('marks','not like','%email_reminded%')->get();
         foreach ($orders as $order){
+            if(!$order->customer_id || !$order->customer) continue;
             $email_setting = Setting::where('place_id',$order->place_id)
                 ->where('name','email-remind-hours-before')
                 ->first();

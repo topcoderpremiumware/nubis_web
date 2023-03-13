@@ -13132,6 +13132,22 @@ window.langs = [{
   country: 'FR',
   lang: 'fr',
   title: 'Français'
+}, {
+  country: 'IT',
+  lang: 'it',
+  title: 'Italiano'
+}, {
+  country: 'ES',
+  lang: 'es',
+  title: 'Español'
+}, {
+  country: 'DE',
+  lang: 'de',
+  title: 'Deutsch'
+}, {
+  country: 'NL',
+  lang: 'nl',
+  title: 'Nederlands'
 }];
 
 /***/ }),

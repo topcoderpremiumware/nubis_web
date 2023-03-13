@@ -36,9 +36,11 @@ class ReminderNotification implements ShouldQueue
 
     protected function smsRemind()
     {
-        $orders = Order::where('marks','not like','%sms_reminded%')->get();
+        $orders = Order::where('marks','not like','%sms_reminded%')
+            ->whereNotNull('customer_id')
+            ->get();
         foreach ($orders as $order){
-            if(!$order->customer_id || !$order->customer) continue;
+            if(!$order->customer) continue;
             $sms_setting = Setting::where('place_id',$order->place_id)
                 ->where('name','sms-remind-hours-before')
                 ->first();
@@ -67,9 +69,11 @@ class ReminderNotification implements ShouldQueue
     }
     protected function emailRemind()
     {
-        $orders = Order::where('marks','not like','%email_reminded%')->get();
+        $orders = Order::where('marks','not like','%email_reminded%')
+            ->whereNotNull('customer_id')
+            ->get();
         foreach ($orders as $order){
-            if(!$order->customer_id || !$order->customer) continue;
+            if(!$order->customer) continue;
             $email_setting = Setting::where('place_id',$order->place_id)
                 ->where('name','email-remind-hours-before')
                 ->first();

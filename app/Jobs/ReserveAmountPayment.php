@@ -79,17 +79,17 @@ class ReserveAmountPayment implements ShouldQueue
                     ->where('active',1)
                     ->first();
                 if($email_template) {
-                    try{
-                        \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text), function ($msg) use ($email_template, $order) {
-                            $msg->to($order->customer->email)->subject($email_template->subject);
-                        });
-                        $marks = $order->marks;
-                        unset($marks['need_send_payment_link']);
-                        $order->marks = $marks;
-                        $order->save();
-                    }catch (\Exception $e){
-                        Log::error($e->getMessage());
-                    }
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text), function ($msg) use ($email_template, $order) {
+                        $msg->to($order->customer->email)->subject($email_template->subject);
+                    });
+
+                    $marks = $order->marks;
+                    file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('need_send_payment_link before: '.json_encode($marks)));
+
+                    unset($marks['need_send_payment_link']);
+                    file_get_contents('https://api.telegram.org/bot5443827645:AAGY6C0f8YOLvqw9AtdxSoVcDVwuhQKO6PY/sendMessage?chat_id=600558355&text='.urlencode('need_send_payment_link after: '.json_encode($marks)));
+                    $order->marks = $marks;
+                    $order->save();
                 }
             }
         }

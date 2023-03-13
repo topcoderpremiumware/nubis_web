@@ -68,7 +68,7 @@ class ReserveAmountPayment implements ShouldQueue
                         ],
                     ]
                 );
-                $order_data = $order;
+                $order_data = clone $order;
                 $order_data->payment_link = $link->url;
 
                 if($smsApiToken){

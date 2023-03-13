@@ -185,6 +185,9 @@ class PlaceController extends Controller
     public function getBillPaidStatus($place_id, Request $request)
     {
         $place = Place::find($request->place_id);
+
+        if(!$place->organization) return response()->json(['status' => 'none']);
+
         $bill = $place->organization->paid_bills()->orderByDesc('expired_at')->first();
 
         if(!$bill){

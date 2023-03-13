@@ -24,6 +24,7 @@ const RestaurantNew = () => {
   const [hasOrganization,setHasOrganization] = useState(false)
 
   useEffect(() => {
+    getCurrentPlace()
     axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
       setCountries(response.data.map(i => ({label: i.name, id: i.id})))
     }).catch(error => {

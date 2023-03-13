@@ -83,14 +83,14 @@ class ReserveAmountPayment implements ShouldQueue
                         \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text), function ($msg) use ($email_template, $order) {
                             $msg->to($order->customer->email)->subject($email_template->subject);
                         });
+                        $marks = $order->marks;
+                        unset($marks['need_send_payment_link']);
+                        $order->marks = $marks;
+                        $order->save();
                     }catch (\Exception $e){
                         Log::error($e->getMessage());
                     }
                 }
-                $marks = $order->marks;
-                unset($marks['need_send_payment_link']);
-                $order->marks = $marks;
-                $order->save();
             }
         }
     }

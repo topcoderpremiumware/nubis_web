@@ -112,7 +112,7 @@ const RestaurantNew = () => {
       <h2>{t('Create new restaurant')}</h2>
       <form onSubmit={onSubmit}>
         <Grid container spacing={2} sx={{pb: 2, mt: 3}}>
-          {hasOrganization && <Grid item xs={12} sm={6}>
+          {!hasOrganization && <Grid item xs={12} sm={6}>
             <TextField label={t('Organization Name')} size="small" fullWidth
                        type="text" id="organization_name" name="organization_name"
                        onChange={onChange} />

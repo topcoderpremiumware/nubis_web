@@ -46,4 +46,13 @@ class Giftcard extends Model
         }
         return $giftcard->initial_amount - $giftcard->spend_amount;
     }
+
+    public static function generateUniqueCode()
+    {
+        $code = '';
+        do {
+            $code = str()->random(6);
+        } while (Giftcard::where('code', $code)->exists());
+        return $code;
+    }
 }

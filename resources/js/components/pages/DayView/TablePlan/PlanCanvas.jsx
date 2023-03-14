@@ -278,7 +278,7 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
     ).then(() => {
       eventBus.dispatch('orderEdited')
     })
-  } 
+  }
 
   const handleNewBookingClick = () => {
     setSelectedOrder({
@@ -293,7 +293,7 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
       reservation_time: Moment().utc().format('YYYY-MM-DD HH:mm'),
       seats: 1,
       source: "internal",
-      status: "ordered",
+      status: "confirmed",
       table_ids: [selectedTable.id],
       tableplan_id: 0,
     })
@@ -329,7 +329,7 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
           : undefined
         }
       >
-        {selectedTable?.data?.order ? 
+        {selectedTable?.data?.order ?
           <div>
             <MenuItem onClick={onEdit}>{t('Edit booking')}</MenuItem>
             <MenuItem onClick={onDelete}>{t('Delete booking')}</MenuItem>
@@ -337,7 +337,7 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
             <MenuItem onClick={() => setStatus('completed')}>{t('Set left table')}</MenuItem>
             <MenuItem onClick={() => setStatus('confirmed')}>{t('Set confirmed')}</MenuItem>
           </div>
-        : 
+        :
           <div>
             <MenuItem onClick={handleNewBookingClick}>{t('New booking')}</MenuItem>
           </div>

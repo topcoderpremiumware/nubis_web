@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\TimetableController;
 use App\Models\Area;
+use App\Models\Giftcard;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\User;
@@ -41,7 +42,14 @@ Route::view('/pricing', 'pricing')->name('pricing');
 Route::view('/features', 'features')->name('features');
 Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
-Route::view('/thank-you', 'thankyou')->name('thankyou');
+Route::get('/thank-you/giftcard/{code}', function($code){
+    $giftcard = Giftcard::where('code',$code)->firstOrFail();
+    return view('thankyou-giftcard', ['giftcard' => $giftcard]);
+});
+Route::get('/thank-you/order/{order_id}', function($order_id){
+    $order = Order::findOrFail($order_id);
+    return view('thankyou-order', ['order' => $order]);
+});
 Route::get('/video-guide', function(){
     $guides = VideoGuide::where('language',app()->getLocale())->get();
     return view('videoGuide', ['guides' => $guides]);

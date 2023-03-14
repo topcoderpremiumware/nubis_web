@@ -61,7 +61,7 @@ export default function NewBookingPopUp({selectedOrder, setSelectedOrder}) {
           reservation_time: Moment().utc().format('YYYY-MM-DD HH:mm'),
           seats: 1,
           source: "internal",
-          status: "ordered",
+          status: "confirmed",
           table_ids: [],
           tableplan_id: 0,
         })

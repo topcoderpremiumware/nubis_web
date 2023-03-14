@@ -854,7 +854,7 @@ class OrderController extends Controller
                     ],
                     'after_completion' => [
                         'type' => 'redirect',
-                        'redirect' => ['url' => env('APP_URL')],
+                        'redirect' => ['url' => env('APP_URL').'/thank-you/order/'.$order->id],
                     ],
                 ]
             );

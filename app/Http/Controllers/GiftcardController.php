@@ -27,7 +27,7 @@ class GiftcardController extends Controller
             'expired_at' => $request->expired_at,
             'initial_amount' => $request->initial_amount,
             'spend_amount' => $request->spend_amount ?? 0,
-            'code' => str()->random(6),
+            'code' => Giftcard::generateUniqueCode(),
             'email' => $request->email,
             'receiver_name' => $request->receiver_name ?? '',
             'receiver_email' => $request->receiver_email ?? '',
@@ -75,7 +75,7 @@ class GiftcardController extends Controller
                     ],
                     'after_completion' => [
                         'type' => 'redirect',
-                        'redirect' => ['url' => env('APP_URL')],
+                        'redirect' => ['url' => env('APP_URL').'/thank-you/giftcard/'.$giftcard->code],
                     ],
                 ]
             );
@@ -107,7 +107,7 @@ class GiftcardController extends Controller
             'expired_at' => $request->expired_at,
             'initial_amount' => $request->initial_amount,
             'spend_amount' => $request->spend_amount ?? 0,
-            'code' => str()->random(6),
+            'code' => Giftcard::generateUniqueCode(),
             'email' => $request->email,
             'receiver_name' => $request->receiver_name ?? '',
             'receiver_email' => $request->receiver_email ?? '',

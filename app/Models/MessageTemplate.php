@@ -104,6 +104,22 @@ class MessageTemplate extends Model
             ],
             [
                 'place_id' => $place_id,
+                'purpose' => 'sms-payment-request',
+                'subject' => 'Nubis Reservation',
+                'text' => "Dear #FIRST_NAME# #LAST_NAME# you have booked a table for #NUMBER_OF_GUESTS# persons at #RESTAURANT_NAME# the #BOOK_MONTH_NAME# #BOOK_DAY_NAME# #BOOK_DAY# at #BOOK_HOUR#:#BOOK_MIN#.\nYOU HAVE TO MAKE A PREPAYMENT HERE #PAY_BOOKING_LINK#\nOr your booking will be automatically canceled.",
+                'language' => 'en',
+                'active' => 1
+            ],
+            [
+                'place_id' => $place_id,
+                'purpose' => 'sms-payment-request',
+                'subject' => 'Nubis Reservation',
+                'text' => "Beste #FIRST_NAME# #LAST_NAME#, je hebt een tafel gereserveerd voor #NUMBER_OF_GUESTS# personen bij #RESTAURANT_NAME# de #BOOK_MONTH_NAME# #BOOK_DAY_NAME# #BOOK_DAY# om #BOOK_HOUR#:#BOOK_MIN#.\nU MOET HIER EEN VOORUITBETALING DOEN #PAY_BOOKING_LINK#\nOf je boeking wordt automatisch geannuleerd.",
+                'language' => 'da',
+                'active' => 1
+            ],
+            [
+                'place_id' => $place_id,
                 'purpose' => 'email-waiting-list',
                 'subject' => 'You on our waiting list',
                 'text' => '<p>Dear #FIRST_NAME# #LAST_NAME# <i><strong>you are on our waiting list </strong></i>for a table for:</p><p>&nbsp;#NUMBER_OF_GUESTS# persons at #RESTAURANT_NAME# the #BOOK_MONTH_NAME# #BOOK_DAY_NAME# #BOOK_DAY# at #BOOK_HOUR#:#BOOK_MIN#. We are looking forward to seeing you. Best regards #RESTAURANT_NAME#&nbsp;</p><p><strong>We will contact you if we get a free table and are hoping to see you in the near future</strong></p><p>You can not replay to this e-mail but you can contack us here:</p><p>#RESTAURANT_NAME#</p><p>#RESTAURANT_ZIPCODE# #RESTAURANT_CITY#</p><p>#RESTAURANT_EMAIL#</p><p>#RESTAURANT_PHONE#</p><p>&nbsp;</p>',
@@ -136,22 +152,6 @@ class MessageTemplate extends Model
             ],
             [
                 'place_id' => $place_id,
-                'purpose' => 'email-reconfirmation',
-                'subject' => 'Reminder of your reservation',
-                'text' => '<p>Dear #FIRST_NAME# #LAST_NAME# you have booked a table for #NUMBER_OF_GUESTS# persons at #RESTAURANT_NAME# the #BOOK_MONTH_NAME# #BOOK_DAY_NAME# #BOOK_DAY# at #BOOK_HOUR#:#BOOK_MIN#. We are looking forward to seeing you. Best regards #RESTAURANT_NAME# Your booking id is #BOOK_ID# and you have the booking for #BOOK_LENGTH# minutes</p><p>You can not replay to this e-mail but you can contact us here:</p><p>#RESTAURANT_NAME#</p><p>#RESTAURANT_ZIPCODE# #RESTAURANT_CITY#</p><p>#RESTAURANT_EMAIL#</p><p>#RESTAURANT_PHONE#</p><p>or you can cancel your booking here:</p><p>#CANCEL_BOOKING_PAGE#</p>',
-                'language' => 'en',
-                'active' => 1
-            ],
-            [
-                'place_id' => $place_id,
-                'purpose' => 'email-reconfirmation',
-                'subject' => 'Vi minder dig lige om din booking',
-                'text' => '<p>Kære #FIRST_NAME# #LAST_NAME# Du har booket et bord til #NUMBER_OF_GUESTS# personer til #RESTAURANT_NAME# the #BOOK_MONTH_NAME# #BOOK_DAY_NAME# #BOOK_DAY# at #BOOK_HOUR#:#BOOK_MIN#. Vi ser frem til at se dig #RESTAURANT_NAME# Dit booking id er #BOOK_ID# og du har bordet i #BOOK_LENGTH# minuten</p><p>Du kan ikke svare på denne mail men har du spørgsmål eller ændringer kan du kontakte os her:</p><p>#RESTAURANT_NAME#</p><p>#RESTAURANT_ZIPCODE# #RESTAURANT_CITY#</p><p>#RESTAURANT_EMAIL#</p><p>#RESTAURANT_PHONE#</p><p>Eller du kan afbestille din booking her</p><p>#CANCEL_BOOKING_PAGE#</p>',
-                'language' => 'da',
-                'active' => 1
-            ],
-            [
-                'place_id' => $place_id,
                 'purpose' => 'email-payment-request',
                 'subject' => 'You have a reservation',
                 'text' => '<p>Dear #FIRST_NAME# #LAST_NAME# you have booked a table for #NUMBER_OF_GUESTS# persons at #RESTAURANT_NAME# the #BOOK_MONTH_NAME# #BOOK_DAY_NAME# #BOOK_DAY# at #BOOK_HOUR#:#BOOK_MIN#. We are looking forward to seeing you. Best regards #RESTAURANT_NAME# Your booking id is #BOOK_ID# and you have the booking for #BOOK_LENGTH# minutes</p><p>YOU HAVE TO MAKE A PREPAYMENT HERE #PAY_BOOKING_LINK#</p><p>You can not replay to this e-mail but you can contact us here:</p><p>#RESTAURANT_NAME#</p><p>#RESTAURANT_ZIPCODE# #RESTAURANT_CITY#</p><p>#RESTAURANT_EMAIL#</p><p>#RESTAURANT_PHONE#</p><p>You can pay for your booking via the link:</p><p>#PAY_BOOKING_LINK#</p><p>or you can cancel your booking here:</p><p>#CANCEL_BOOKING_PAGE#</p>',
@@ -163,22 +163,6 @@ class MessageTemplate extends Model
                 'purpose' => 'email-payment-request',
                 'subject' => 'Betalingsanmodning for din reservation',
                 'text' => '<p>Kære #FIRST_NAME# #LAST_NAME#</p><p>Du har lavet en booking til #NUMBER_OF_GUESTS# people at #RESTAURANT_NAME# the #BOOK_DAY_NAME# #BOOK_TIME#. Der er knyttet en forudbetaling til din bestilling som du kan betale her #PAY_BOOKING_LINK#</p><p>Vi glæder os til at se dig</p><p>#RESTAURANT_NAME#</p>',
-                'language' => 'da',
-                'active' => 1
-            ],
-            [
-                'place_id' => $place_id,
-                'purpose' => 'email-offers',
-                'subject' => 'Hi we have a offer for you',
-                'text' => '<p>Dear #FIRST_NAME#</p><p>&nbsp;</p><p>Best regards&nbsp;</p><p>#RESTAURANT_NAME#</p><p>#RESTAURANT_ADDRESS#</p>',
-                'language' => 'en',
-                'active' => 1
-            ],
-            [
-                'place_id' => $place_id,
-                'purpose' => 'email-offers',
-                'subject' => 'Hej vi har et godt tilbud til dig',
-                'text' => '<p>Kære #FIRST_NAME#</p><p>&nbsp;</p><p>Med venlig hilsen</p><p>#RESTAURANT_NAME#</p><p>#RESTAURANT_ADDRESS#</p>',
                 'language' => 'da',
                 'active' => 1
             ],
@@ -216,22 +200,6 @@ class MessageTemplate extends Model
             ],
             [
                 'place_id' => $place_id,
-                'purpose' => 'email-check-credit-card',
-                'subject' => 'Check of your credit card',
-                'text' => '<p>Dear #FIRST_NAME# #LAST_NAME#</p><p>We have cheked your credit card #CHECK_CREDIT_CARD_LINK#</p><p>Best regards</p><p>#RESTAURANT_NAME#</p>',
-                'language' => 'en',
-                'active' => 1
-            ],
-            [
-                'place_id' => $place_id,
-                'purpose' => 'email-check-credit-card',
-                'subject' => 'Vi har chekket dit kort',
-                'text' => '<p>Kære #FIRST_NAME# #LAST_NAME#</p><p>Vi har chekket dit kort her &nbsp;#CHECK_CREDIT_CARD_LINK#</p><p>Med venlig hilsen</p><p>#RESTAURANT_NAME#</p>',
-                'language' => 'da',
-                'active' => 1
-            ],
-            [
-                'place_id' => $place_id,
                 'purpose' => 'email-change',
                 'subject' => 'You have changed your reservaton',
                 'text' => '<p>Dear #FIRST_NAME#<br>You have changed your reservation to #NUMBER_OF_GUESTS# persons at #BOOK_DAY# #BOOK_HOUR#:#BOOK_MIN# we are looking forward to seeing you<br>Best regards</p><p>We are looking forward to seeing you at #RESTAURANT_NAME#</p>',
@@ -248,20 +216,20 @@ class MessageTemplate extends Model
             ],
             [
                 'place_id' => $place_id,
-                'purpose' => 'email-booking-invites',
-                'subject' => 'Do you need to make a booking',
-                'text' => '<p>Dear #FULL_NAME#</p><p>If you would like to make a booking at #RESTAURANT_NAME# you can do it here #RESTAURANT_HOMEPAGE#</p><p>Best regards</p><p>#RESTAURANT_NAME#</p>',
+                'purpose' => 'email-feedback-request',
+                'subject' => 'Feedback',
+                'text' => '<p>Dear #FIRST_NAME#</p><p></p><p>How was your visit to #RESTAURANT_NAME# on #BOOK_DAY_NAME# #BOOK_DAY# #BOOK_MONTH_NAME# #BOOK_YEAR# at #BOOK_HOUR#:#BOOK_MIN#?</p><p>We would greatly appreciate it if you would take two minutes of your time to give us feedback on your experience.</p><p>#FEEDBACK_LINK#</p><p>Thank you for your feedback</p>',
                 'language' => 'en',
                 'active' => 1
             ],
             [
                 'place_id' => $place_id,
-                'purpose' => 'email-booking-invites',
-                'subject' => 'Har du brug for at lave en booking',
-                'text' => '<p>Kære #FULL_NAME#</p><p>Hvis du har lyst til at lave en booking til #RESTAURANT_NAME# kan du gøre det her &nbsp;#RESTAURANT_HOMEPAGE#</p><p>Med venlig hilsen</p><p>#RESTAURANT_NAME#</p>',
+                'purpose' => 'email-feedback-request',
+                'subject' => 'Feedback',
+                'text' => '<p>Kære #FIRST_NAME#</p><p></p><p>Hvordan var dit besøg på #RESTAURANT_NAME# #BOOK_DAY_NAME# #BOOK_DAY# #BOOK_MONTH_NAME# #BOOK_YEAR# at #BOOK_HOUR#:#BOOK_MIN#?</p><p>Vi sætter stor pris på, hvis du vil bruge to minutter af din tid på at give os feedback på din oplevelse.</p><p>#FEEDBACK_LINK#</p><p>Tak for din feedback</p>',
                 'language' => 'da',
                 'active' => 1
-            ]
+            ],
         ];
         MessageTemplate::insert($data);
     }

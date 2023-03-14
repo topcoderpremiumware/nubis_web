@@ -72,7 +72,14 @@ class ReserveAmountPayment implements ShouldQueue
                 $order_data->payment_link = $link->url;
 
                 if($smsApiToken){
-                    $result = SMS::send([$order->customer->phone], $link->url, env('APP_SHORT_NAME'), $smsApiToken);
+                    $sms_template = MessageTemplate::where('place_id',$order->place_id)
+                        ->where('purpose','sms-payment-request')
+                        ->where('language',$order->customer->language)
+                        ->where('active',1)
+                        ->first();
+                    if($sms_template) {
+                        $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order_data,$sms_template->text), env('APP_SHORT_NAME'), $smsApiToken);
+                    }
                 }
                 $email_template = MessageTemplate::where('place_id',$order->place_id)
                     ->where('purpose','email-payment-request')

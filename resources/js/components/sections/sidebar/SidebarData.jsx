@@ -166,7 +166,11 @@ export const SidebarData = (data) => { return [
       {
         title: 'Notification',
         path: '/SmsTemplates/notification'
-      }
+      },
+      {
+        title: 'Payment Request',
+        path: '/SmsTemplates/payment-request'
+      },
     ]
   },
   {
@@ -200,6 +204,10 @@ export const SidebarData = (data) => { return [
       {
         title: 'Payment Request',
         path: '/EmailTemplates/payment-request'
+      },
+      {
+        title: 'Feedback Request',
+        path: '/EmailTemplates/feedback-request'
       },
     ]
   },

@@ -395,9 +395,16 @@ class OrderController extends Controller
             if($smsApiToken){
                 $result = SMS::send([$order->customer->phone], env('MIX_APP_URL').'/feedback/'.$order->id, env('APP_SHORT_NAME'), $smsApiToken);
             }
-            \Illuminate\Support\Facades\Mail::html(env('MIX_APP_URL').'/feedback/'.$order->id, function($msg) use ($order) {
-                $msg->to($order->customer->email)->subject('Feedback');
-            });
+            $email_template = MessageTemplate::where('place_id',$order->place_id)
+                ->where('purpose','email-feedback-request')
+                ->where('language',$order->customer->language)
+                ->where('active',1)
+                ->first();
+            if($email_template) {
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text), function ($msg) use ($email_template, $order) {
+                    $msg->to($order->customer->email)->subject($email_template->subject);
+                });
+            }
         }
     }
 

@@ -28,7 +28,7 @@ const Banner = () => {
           <h2 className="page-banner-title">{t('One booking system. One fixed price.')}</h2>
           <p className="page-banner-text">{t('Easy to install. Use Nubis academy videos to install Nubis reservations for your restaurant.')}</p>
         </div>
-        <a href="#" className="page-banner-link">
+        <a href="/admin/pricing" className="page-banner-link">
           {status === 'expired' ? t('Subscribe now ') : t('Try one month free')}
         </a>
       </div>

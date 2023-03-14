@@ -25,14 +25,14 @@ const Pricing = () => {
   }
 
   const payTrial = () => {
-    axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    }).then(response => {
-      console.log('pay trial', response.data)
-      setTrialDisabled(true)
-    }).catch(error => { })
+    // axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`, {
+    //   headers: {
+    //     Authorization: 'Bearer ' + localStorage.getItem('token')
+    //   }
+    // }).then(response => {
+    //   console.log('pay trial', response.data)
+    //   setTrialDisabled(true)
+    // }).catch(error => { })
   }
 
   const getPaymentLink = (price_id) => {

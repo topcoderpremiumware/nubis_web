@@ -31,7 +31,6 @@
     "Manage Gift Cards": "Administrer Gavekort",
     "Send Bulk SMS": "Send Masse SMS",
     "Email Campaign": "E-mail-Kampagne",
-
     "General Settings": "Generelle Indstillinger",
     "Online Booking": "Online Booking",
     "Online Booking Templates": "Online booking skabeloner",
@@ -189,7 +188,6 @@
     "See our privacy policy": "Se vores privatlivspolitik",
     "Complete booking": "Fuldfør booking",
     "Go back to the restaurant profile page": "Gå tilbage til restaurantens profilside",
-    "New booking": "Ny booking",
     "Enter your contact details": "Indtast dine kontaktoplysninger",
     "Enter your <br /> Contact Details": "Indtast dine <br /> kontaktoplysninger",
     "By creating a DinnerBooking profile I accept the": "Ved at oprette en DinnerBooking-profil accepterer jeg",
@@ -361,5 +359,6 @@
     "Start Now": "Start nu",
     "Saves credit card information and charges a fee in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a “No show/Not arrived”": "Gemmer kreditkortoplysninger og opkræver et gebyr i tilfælde af udeblivelse eller for sen aflysning. Gebyret vil kun blive trukket fra gæsten, hvis reservationen er markeret som “No show/Not arrived”",
     "Please, enter stripe settings in Payment gateway": "Indtast venligst stripe-indstillinger i Payment gateway",
-    "See Nubis Academy": "Se Nubis Academy"
+    "See Nubis Academy": "Se Nubis Academy",
+    "Don't forget to add events to the Webhook by pressing \"Select events\" and add Payment Intent/payment_intent.succeeded event": "Don't forget to add events to the Webhook by pressing \"Select events\" and add Payment Intent/payment_intent.succeeded event"
 }

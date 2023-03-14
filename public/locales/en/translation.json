@@ -188,7 +188,6 @@
     "See our privacy policy": "See our privacy policy",
     "Complete booking": "Complete booking",
     "Go back to the restaurant profile page": "Go back to the restaurant profile page",
-    "New booking": "New booking",
     "Enter your contact details": "Enter your contact details",
     "Enter your <br /> Contact Details": "Enter your <br /> Contact Details",
     "By creating a DinnerBooking profile I accept the": "By creating a DinnerBooking profile I accept the",
@@ -360,5 +359,6 @@
     "Start Now": "Start Now",
     "Saves credit card information and charges a fee in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a “No show/Not arrived”": "Saves credit card information and charges a fee in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a “No show/Not arrived”",
     "Please, enter stripe settings in Payment gateway": "Please, enter stripe settings in Payment gateway",
-    "See Nubis Academy": "See Nubis Academy"
+    "See Nubis Academy": "See Nubis Academy",
+    "Don't forget to add events to the Webhook by pressing \"Select events\" and add Payment Intent/payment_intent.succeeded event": "Don't forget to add events to the Webhook by pressing \"Select events\" and add Payment Intent/payment_intent.succeeded event"
 }

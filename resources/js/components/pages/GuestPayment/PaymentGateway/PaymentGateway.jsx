@@ -109,8 +109,8 @@ const PaymentGateway = () => {
     <div className='pages__container'>
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
         <h2>{t('Payment Gateway')}</h2>
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           size="sm"
           type="button"
           onClick={() => navigate('/VideoGuides')}
@@ -143,6 +143,7 @@ const PaymentGateway = () => {
                     {t('То add the Webhook Secret you need to go Developers -> Webhooks -> Add endpoint. Then add this link to the requested field ')}
                     <strong>{getWebhookUrl()}</strong>
                   </p>
+                  <p>{t('Don\'t forget to add events to the Webhook by pressing "Select events" and add Payment Intent/payment_intent.succeeded event')}</p>
                   <p>
                     {t('Then under Signing secret please press Reveal button to get your Webhook Secret')}
                   </p>

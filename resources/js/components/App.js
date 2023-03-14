@@ -51,7 +51,7 @@ function App() {
     }).catch(error => {
       if (error.response.status === 401){
         localStorage.clear()
-        window.location.href="/"
+        window.location.href="/admin/login"
       }
     })
   }

@@ -65,7 +65,16 @@ class AuthApiController extends Controller
     {
         Log::add($request,'logout','Logged out');
 
-        Auth::user()->tokens()->delete();
+        if(Auth::guard('customer')->user()){
+            Auth::guard('customer')->user()->tokens()->delete();
+            Auth::guard('customer')->logout();
+        }
+        if(Auth::guard('user')->user()){
+            Auth::guard('user')->user()->tokens()->delete();
+            Auth::guard('user')->logout();
+        }
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return response()->json([
            'message' => 'You have successfully logged out and token was successfully deleted.'
         ]);

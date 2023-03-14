@@ -75,6 +75,14 @@ const App = () => {
     responseType: "json",
   });
 
+  useEffect(async () => {
+    testCustomer()
+    await getAreas()
+    getPlaceData()
+    getDatesTimeInfo(utils().getToday());
+    getPaymentMethod()
+  }, []);
+
   const handleChangeItem = () => {
     if(blockType === 'mainblock' && !showSelectAreas) {
       ref.current?.moveTo(2)
@@ -185,6 +193,17 @@ const App = () => {
   }
 
   // Login request
+
+  const testCustomer = () => {
+    myAxios.get("/api/customers").then((response) => {
+      if(response.data.hasOwnProperty('is_superadmin')){
+        logout()
+      }
+      console.log('testCustomer',response.data)
+    }).catch((error) => {
+      console.error('testCustomer',error)
+    });
+  }
 
   const getUserInfoReq = () => {
     myAxios
@@ -301,12 +320,7 @@ const App = () => {
     })
   }
 
-  useEffect(async () => {
-    await getAreas()
-    getPlaceData()
-    getDatesTimeInfo(utils().getToday());
-    getPaymentMethod()
-  }, []);
+
 
   // Cancel order
 

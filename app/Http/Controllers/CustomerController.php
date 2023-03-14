@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use mysql_xdevapi\Exception;
 
 class CustomerController extends Controller
 {
@@ -60,7 +61,16 @@ class CustomerController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::user()->tokens()->delete();
+        if(Auth::guard('customer')->user()){
+            Auth::guard('customer')->user()->tokens()->delete();
+            Auth::guard('customer')->logout();
+        }
+        if(Auth::guard('user')->user()){
+            Auth::guard('user')->user()->tokens()->delete();
+            Auth::guard('user')->logout();
+        }
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return response()->json([
             'message' => 'You have successfully logged out and token was successfully deleted.'
         ]);

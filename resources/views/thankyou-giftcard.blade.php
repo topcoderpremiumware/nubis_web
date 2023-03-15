@@ -28,7 +28,7 @@
             <p><b>{{__('Your contact information')}}: </b></p>
             <p>{{$giftcard->name}}</p>
             <p>{{$giftcard->email}}</p>
-            <p><a href="{{env('APP_URL')}}/giftcard/{{$place->id}}">{{__('New booking')}}</a></p>
+            <p><a href="{{env('APP_URL')}}/giftcard/{{$place->id}}"><u>{{__('New giftcard')}}</u></a></p>
         </div>
       </section>
     </main>

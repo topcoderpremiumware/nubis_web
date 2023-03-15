@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Giftcard;
 use App\Models\Order;
 use App\Models\Place;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 use Stripe\StripeClient;
 use Stripe\Webhook;
@@ -82,12 +84,24 @@ class OrderWebhookController extends Controller
                     $currency = $place->setting('online-payment-currency');
                     try{
                         $text = 'The '.$giftcard->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
-                        \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($giftcard) {
+
+                        $html = view('pdfs.giftcard', compact('giftcard'))->render();
+                        $options = new Options();
+                        $options->set('enable_remote', TRUE);
+                        $options->set('enable_html5_parser', FALSE);
+                        $dompdf = new Dompdf($options);
+                        $dompdf->loadHtml($html);
+                        $dompdf->setPaper('A4');
+                        $dompdf->render();
+
+                        \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($dompdf, $giftcard) {
                             $msg->to($giftcard->email)->subject('Giftcard');
+                            $msg->attachData($dompdf->output(), 'giftcard.pdf');
                         });
                         if($giftcard->receiver_email){
-                            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($giftcard) {
+                            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($dompdf, $giftcard) {
                                 $msg->to($giftcard->receiver_email)->subject('Giftcard');
+                                $msg->attachData($dompdf->output(), 'giftcard.pdf');
                             });
                         }
                     }catch (\Exception $e){

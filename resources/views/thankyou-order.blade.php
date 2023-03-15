@@ -34,8 +34,8 @@
             <p>{{$customer->zip_code}}</p>
             <p><b>{{__('Comment')}}: </b> {{$order->comment}}</p>
             <p><b>{{__('Type')}}: </b> {{$order->is_take_away ? __('Take away') : __('Eat here')}}</p>
-            <p><a href="{{env('APP_URL')}}/book/{{$place->id}}">{{__('Cancel a booking')}}</a></p>
-            <p><a href="{{env('APP_URL')}}/book/{{$place->id}}">{{__('New booking')}}</a></p>
+            <p><a href="{{env('APP_URL')}}/book/{{$place->id}}"><u>{{__('Cancel a booking')}}</u></a></p>
+            <p><a href="{{env('APP_URL')}}/book/{{$place->id}}"><u>{{__('New booking')}}</u></a></p>
         </div>
       </section>
     </main>

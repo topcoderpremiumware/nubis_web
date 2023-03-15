@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Giftcard;
 use App\Models\Log;
 use App\Models\Place;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Stripe\StripeClient;
@@ -124,12 +126,24 @@ class GiftcardController extends Controller
         $currency = $place->setting('online-payment-currency');
 
         $text = 'The '.$request->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
-        \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($request) {
+
+        $html = view('pdfs.giftcard', compact('giftcard'))->render();
+        $options = new Options();
+        $options->set('enable_remote', TRUE);
+        $options->set('enable_html5_parser', FALSE);
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4');
+        $dompdf->render();
+
+        \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($dompdf, $request) {
             $msg->to($request->email)->subject('Giftcard');
+            $msg->attachData($dompdf->output(), 'giftcard.pdf');
         });
         if($request->has('receiver_email') && $request->receiver_email){
-            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($request) {
+            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($dompdf, $request) {
                 $msg->to($request->receiver_email)->subject('Giftcard');
+                $msg->attachData($dompdf->output(), 'giftcard.pdf');
             });
         }
 

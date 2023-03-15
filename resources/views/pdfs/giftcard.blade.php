@@ -68,7 +68,7 @@
     <div class="value">{{__('Value')}}</div>
     <div class="amount">{{$giftcard->initial_amount}} {{$place->setting('online-payment-currency')}}</div>
     <p><b>{{__('Code')}}:</b> {{$giftcard->code}}</p>
-    <p><b>{{__('Valid until')}}:</b> {{$giftcard->expired_at->format('d.m.Y')}}</p>
+    <p><b>{{__('Valid until')}}:</b> {{\Carbon\Carbon::parse($giftcard->expired_at)->format('d.m.Y')}}</p>
     <div class="contact">{{$place->name}} | {{$place->address}} - {{$place->zip_code}} {{$place->city}}, {{$place->country->name}} | +{{$place->phone}} | {{$place->home_page}}</div>
     <img class="bottom_img" src="{{asset('storage/'.$img)}}">
 </body>

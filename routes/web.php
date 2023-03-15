@@ -7,8 +7,10 @@ use App\Models\Order;
 use App\Models\Place;
 use App\Models\User;
 use App\Models\VideoGuide;
+use Dompdf\Options;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
+use Dompdf\Dompdf;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +27,21 @@ use Illuminate\Support\Facades\Route;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-
+    $options = new Options();
+    $options->set('enable_remote', TRUE);
+    $options->set('enable_css_float', TRUE);
+    $options->set('enable_html5_parser', FALSE);
+    $dompdf = new Dompdf($options);
+    $canvas = $dompdf->getCanvas();
+    $w = $canvas->get_width();
+    $h = $canvas->get_height();
+    $dompdf->loadHtml('<body style="margin:0;background: url(https://dinner-book.vasilkoff.info/images/features-bg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;min-height: '.$h.'px;width:100%;position: relative;padding: 51px 10px 58px;"><h2 style="text-align: center;">McDonalds</h2><h3 style="text-align: center;">GIFTCARD</h3><p>100 DKK</p><p>Code: jJHkgk4</p></body>');
+//    $dompdf->loadHtmlFile('https://dinner-book.vasilkoff.info/thank-you/order/299');
+    $dompdf->setPaper('A4', /*'landscape'*/);
+    $dompdf->render();
+    $dompdf->stream('example.pdf');
 });
 
 Route::get('/change_lang/{locale}', function ($locale = null) {

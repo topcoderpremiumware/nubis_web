@@ -5,34 +5,24 @@ import eventBus from "../../../eventBus";
 
 const Pricing = () => {
   const { t } = useTranslation();
-  const [trialDisabled, setTrialDisabled] = useState(false)
+  const [billDisabled, setBillDisabled] = useState(true)
 
   useEffect(() => {
-    getIsTrialPaid()
+    getIsBillPaid()
     eventBus.on("placeChanged", () => {
-      getIsTrialPaid()
+      getIsBillPaid()
     })
   }, [])
 
-  const getIsTrialPaid = () => {
-    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/is_trial_paid`, {
+  const getIsBillPaid = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/is_bill_paid`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setTrialDisabled(response.data)
+      console.log('getIsBillPaid',response.data)
+      setBillDisabled(response.data)
     }).catch(error => { })
-  }
-
-  const payTrial = () => {
-    // axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`, {
-    //   headers: {
-    //     Authorization: 'Bearer ' + localStorage.getItem('token')
-    //   }
-    // }).then(response => {
-    //   console.log('pay trial', response.data)
-    //   setTrialDisabled(true)
-    // }).catch(error => { })
   }
 
   const getPaymentLink = (price_id) => {
@@ -53,7 +43,7 @@ const Pricing = () => {
     <div className='price'>
       <h2 className="price-title price-top-title">{t('The right pricing plans for you')}</h2>
       <div className="price-wrapper">
-        <div className="price-card">
+        <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
           <div className="price-card-top">
             <span>€30</span>/{t('month')}
           </div>
@@ -63,15 +53,9 @@ const Pricing = () => {
             className="price-card-btn"
             onClick={() => getPaymentLink('price_1Maz5vCVi0riU70Pp3gtayD7')} //test price_1MZzEwCVi0riU70Po6j0nClk //live price_1MZylgCVi0riU70PLpxaYmTW
           >{t('Choose plan')}</button>
-          {!trialDisabled &&
-            <div
-              className="price-card-trial"
-              onClick={payTrial}
-            >{t('Try one month free')}</div>
-          }
         </div>
 
-        <div className="price-card">
+        <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
           <div className="price-card-badge">{t('Save')} 15%</div>
           <div className="price-card-top">
             <span>€175</span>/{t('semiannual')}
@@ -83,15 +67,9 @@ const Pricing = () => {
             className="price-card-btn"
             onClick={() => getPaymentLink('price_1MZzG0CVi0riU70PGE1jT8I7')} //live price_1MZynBCVi0riU70PAo5AnE8A
           >{t('Choose plan')}</button>
-          {!trialDisabled &&
-            <div
-              className="price-card-trial"
-              onClick={payTrial}
-            >{t('Try one month free')}</div>
-          }
         </div>
 
-        <div className="price-card">
+        <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
           <div className="price-card-badge">{t('Save')} 30%</div>
           <div className="price-card-top">
             <span>€240</span>/{t('yearly')}
@@ -103,12 +81,6 @@ const Pricing = () => {
             className="price-card-btn"
             onClick={() => getPaymentLink('price_1MZzI0CVi0riU70PTTyLxgik')} //live price_1MZyovCVi0riU70PlUHycyvz
           >{t('Choose plan')}</button>
-          {!trialDisabled &&
-            <div
-              className="price-card-trial"
-              onClick={payTrial}
-            >{t('Try one month free')}</div>
-          }
         </div>
       </div>
       <p className="price-text">{t('Tied into another solution? If you have a notice period on your current booking system, you will receive Nubis reservation for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system fro free using our Nubis Academy videos ore let us set it up for you for')} € 149</p>

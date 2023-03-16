@@ -237,6 +237,7 @@ class GiftcardController extends Controller
         }
 
         $giftcards = Giftcard::where('place_id',$request->place_id)
+            ->orderBy('created_at','DESC')
             ->get();
 
         return response()->json($giftcards);

@@ -27,72 +27,9 @@ use Dompdf\Dompdf;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-    $options = new Options();
-    $options->set('enable_remote', TRUE);
-    $options->set('enable_css_float', TRUE);
-    $options->set('enable_html5_parser', FALSE);
-    $dompdf = new Dompdf($options);
-    $dompdf->loadHtml('
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-        <style>
-        /*@page{
-            margin: 0px;
-        }*/
-        body{
-            font-family: "Poppins", sans-serif;
-            margin:0;
-            background-image: url(https://dinner-book.vasilkoff.info/images/features-bg.jpg);
-            background-repeat: no-repeat;
-            background-size: cover;
-            position: relative;
-            padding: 51px 50px 58px;
-        }
-        h2{
-            text-align: center;
-            font-size: 50px;
-            color: #F36823;
-            margin: 0 0 20px;
-        }
-        h3{
-            text-align: center;
-            font-size: 30px;
-            margin: 0 0 20px;
-        }
-        .hr_c{
-            border-top: 3px solid #F36823;
-            margin: 0 auto 100px;
-            width: 300px;
-        }
-        .value{
-            text-align: center;
-            font-size: 30px;
-            margin: 0 0 0px;
-        }
-        .amount{
-            text-align: center;
-            font-size: 50px;
-            margin: 0 0 20px;
-        }
-        .contact{
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            padding: 10px;
-        }
-        .bottom_img{
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            opacity: 30%;
-        }
-        </style>
-        <body><h2>McDonalds</h2><h3>GIFTCARD</h3><div class="hr_c"></div><div class="value">Value</div><div class="amount">100 DKK</div><p><b>Code:</b> jJHkgk4</p><p><b>Valid until:</b> 03.12.2025</p><div class="contact">McDonalds | Borgergade 20 - 9000 Aalborg | +45 52509752 | www.rositas.dk</div><img class="bottom_img" src="https://dinner-book.vasilkoff.info/storage/19/02%20WEEK%20P%C3%A6re.jpg"></body>');
-    $dompdf->setPaper('A4', /*'landscape'*/);
-    $dompdf->render();
-    $dompdf->stream('example.pdf'/*, array("Attachment" => false)*/);
+    echo '<pre>';
+    var_dump(url('/').'/images/features-bg.jpg');
+    echo '</pre>';
 });
 
 Route::get('/change_lang/{locale}', function ($locale = null) {

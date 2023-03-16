@@ -19,16 +19,14 @@
                 /* @var $giftcard */
                 $place = $giftcard->place;
             @endphp
-            <p><b>{{$place->name}}</b></p>
             <p><b>id: </b> {{$giftcard->id}}</p>
-            <p><b>{{$place->address}}</b></p>
-            <p><b>{{$place->zip_code}} {{$place->city}}</b></p>
-            <p><b>{{$place->country->name}}</b></p>
-            <p><b>{{__('Amount')}}: </b> {{$giftcard->initial_amount}} {{$place->setting('online-payment-currency')}}</p>
-            <p><b>{{__('Your contact information')}}: </b></p>
-            <p>{{$giftcard->name}}</p>
-            <p>{{$giftcard->email}}</p>
+            <p><b>{{__('Code')}}:</b> {{$giftcard->code}}</p>
+            <p><b>{{__('Amount')}}:</b> {{$giftcard->initial_amount}} {{$place->setting('online-payment-currency')}}</p>
+            <p><b>{{__('Valid until')}}:</b> {{\Carbon\Carbon::parse($giftcard->expired_at)->format('d.m.Y')}}</p>
+            <br>
             <p><a href="{{env('APP_URL')}}/giftcard/{{$place->id}}"><u>{{__('New giftcard')}}</u></a></p>
+            <br>
+            <p>{{$place->name}} | {{$place->zip_code}}, {{$place->address}}, {{$place->city}}, {{$place->country->name}}</p>
         </div>
       </section>
     </main>

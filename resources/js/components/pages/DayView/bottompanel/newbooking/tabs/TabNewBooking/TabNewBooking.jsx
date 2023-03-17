@@ -260,14 +260,30 @@ export default function TabNewBooking(props) {
 
   const createOrder = async () => {
     const { customer, customer_id, ...rest } = order
+    let newCustomerId = ''
     if(!customer_id && !isWalkIn) {
-      console.log('customer', customer)
+      try {
+        const response = await axios.post(`${process.env.MIX_API_URL}/api/register`, {
+            ...customer,
+            password: '12345678',
+            password_confirmation: '12345678',
+          }, {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+          }
+        )
+        newCustomerId = response.data.user.id
+      } catch(err) {
+        setError(err.response.data.message)
+        return
+      }
     }
     try {
       if(order?.id) {
         await axios.post(`${process.env.MIX_API_URL}/api/orders/${order.id}`, {
             ...rest,
-            ...(!isWalkIn && {customer, customer_id}),
+            ...(!isWalkIn && {customer, customer_id: customer_id || newCustomerId}),
             reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
           }, {
             headers: {
@@ -278,7 +294,7 @@ export default function TabNewBooking(props) {
       } else {
         await axios.post(`${process.env.MIX_API_URL}/api/orders`, {
             ...rest,
-            ...(!isWalkIn && {customer, customer_id}),
+            ...(!isWalkIn && {customer, customer_id: customer_id || newCustomerId}),
             reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
           }, {
             headers: {

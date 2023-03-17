@@ -47,7 +47,7 @@ function App() {
         count,
         name,
         email,
-        initial_amount: amount,
+        initial_amount: amount * count,
         // expired_at: moment('01/01/2050').format('YYYY-MM-DD HH:mm:ss'),
         expired_at: '2037-12-31 22:00:00',
         ...(emailType === 'receivers' && {receiver_name, receiver_email}),
@@ -65,7 +65,6 @@ function App() {
       })
     } catch (err) {
       setIsError(true)
-    } finally {
       onNext()
     }
   }

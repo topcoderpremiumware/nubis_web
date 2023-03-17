@@ -274,7 +274,6 @@ function SecondBlock(props) {
           <div
             className="button-main next-button"
             onClick={checkToken}
-            style={{ marginTop: "40px" }}
           >
             {t('Next')} →
           </div>

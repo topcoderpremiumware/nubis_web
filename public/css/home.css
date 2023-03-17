@@ -478,6 +478,7 @@ body {
   display: flex;
   justify-content: center;
   margin: 68px auto 50px;
+  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
   background: #FFFFFF;

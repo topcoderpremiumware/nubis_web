@@ -80,7 +80,7 @@ export default function TimeLinePlan(props) {
           it.push({
             id: item.id,
             group: t,
-            title_name: item.seats+' '+item.customer.first_name+' '+item.customer.last_name,
+            title_name: item.customer_id ? (item.seats + ' ' +item.customer.first_name+' '+item.customer.last_name) : 'Walk in',
             tip: tableTip(item),
             canMove: false,
             canResize: false,
@@ -96,7 +96,7 @@ export default function TimeLinePlan(props) {
 
   const tableTip = (order) => {
     return (<div>
-      {order.customer.first_name+' '+order.customer.last_name}
+      {order.customer_id ? (order.customer.first_name+' '+order.customer.last_name) : 'Walk in'}
       <br/>
       {order.from.local().format('HH:mm')+' - '+order.to.local().format('HH:mm')}
       <br/>

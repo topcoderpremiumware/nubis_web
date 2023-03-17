@@ -260,6 +260,9 @@ export default function TabNewBooking(props) {
 
   const createOrder = async () => {
     const { customer, customer_id, ...rest } = order
+    if(!customer_id && !isWalkIn) {
+      console.log('customer', customer)
+    }
     try {
       if(order?.id) {
         await axios.post(`${process.env.MIX_API_URL}/api/orders/${order.id}`, {

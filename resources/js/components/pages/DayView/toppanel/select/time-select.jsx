@@ -27,6 +27,11 @@ export default function TimeSelect() {
       setTime('0')
       localStorage.removeItem('time')
     });
+    eventBus.on("dateChanged", async () => {
+      await getTime()
+      setTime('0')
+      localStorage.removeItem('time')
+    });
   }, [])
 
   const getTime = async () => {

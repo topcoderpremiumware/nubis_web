@@ -16,8 +16,8 @@ export default function PlanCanvas(props) {
     mouseY: null
   })
   const [propertiesOpen, setPropertiesOpen] = useState(false)
-  const width = 840
-  const height = 840
+  const width = 840*2
+  const height = 840*2
   const grid = 20
   const backgroundColor = '#ffffff'
   const lineStroke = '#ebebeb'

@@ -16,6 +16,7 @@ use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Stripe\StripeClient;
 use Stripe\Webhook;
 
@@ -1086,5 +1087,76 @@ class OrderController extends Controller
         }else{
             return $amount - $discount;
         }
+    }
+
+    public function switchTables(Request $request)
+    {
+        $request->validate([
+            'first_order_id' => 'required|exists:orders,id',
+            'second_id' => 'required',
+            'type' => ['required',Rule::in(['order', 'table'])]
+        ]);
+        $first_order = Order::find($request->first_order_id);
+
+        if(count($first_order->table_ids) > 1){
+            return response()->json([
+                'message' => 'First order has more then one table'
+            ], 400);
+        }
+
+        $tableplan_data = $first_order->tableplan->data;
+        $first_table = array_values(array_filter($tableplan_data,function($item) use ($first_order) {
+            return $item['number'] == $first_order->table_ids[0];
+        }))[0];
+
+        if($request->type == 'order'){
+            $second_order = Order::find($request->second_id);
+
+            if(count($second_order->table_ids) > 1){
+                return response()->json([
+                    'message' => 'Second order has more then one table'
+                ], 400);
+            }
+
+            $second_table = array_values(array_filter($tableplan_data,function($item) use ($second_order) {
+                return $item['number'] == $second_order->table_ids[0];
+            }))[0];
+
+            if($first_order->seats > $second_table['seats'] || $second_order->seats > $first_table['seats']){
+                return response()->json([
+                    'message' => 'There are more visitors than seats'
+                ], 400);
+            }
+
+            $first_reservation_time = $first_order->reservation_time;
+            $first_length = $first_order->length;
+            $second_reservation_time = $second_order->reservation_time;
+            $second_length = $second_order->length;
+
+            $first_order->table_ids = [$second_table['number']];
+            $first_order->reservation_time = $second_reservation_time;
+            $first_order->length = $second_length;
+            $first_order->save();
+
+            $second_order->table_ids = [$first_table['number']];
+            $second_order->reservation_time = $first_reservation_time;
+            $second_order->length = $first_length;
+            $second_order->save();
+        }else{
+            $second_table = array_values(array_filter($tableplan_data,function($item) use ($request) {
+                return $item['number'] == $request->second_id;
+            }))[0];
+
+            if($first_order->seats > $second_table['seats']){
+                return response()->json([
+                    'message' => 'There are more visitors than seats'
+                ], 400);
+            }
+
+            $first_order->table_ids = [$request->second_id];
+            $first_order->save();
+        }
+
+        return response()->json(['message' => 'Order switched successfully']);
     }
 }

@@ -22,7 +22,6 @@ export default function PlanCanvas(props) {
   const backgroundColor = '#ffffff'
   const lineStroke = '#ebebeb'
   var upperCanvas
-  var mouseEvent = 'up'
 
   useEffect(() => {
     setCanvas(new fabric.Canvas('plan-canvas'))

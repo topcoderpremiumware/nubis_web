@@ -136,6 +136,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('orders',[OrderController::class, 'getAllByParams']);
     Route::delete('orders/{id}',[OrderController::class, 'delete']);
     Route::post('orders/{id}/status',[OrderController::class, 'setStatus']);
+    Route::post('orders_switch_tables',[OrderController::class, 'switchTables']);
 
     Route::post('dishes',[DishController::class, 'create']);
     Route::get('dishes/{id}',[DishController::class, 'getId']);

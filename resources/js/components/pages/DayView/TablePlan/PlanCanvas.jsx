@@ -26,14 +26,13 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
     mouseX: null,
     mouseY: null
   })
-  const [propertiesOpen, setPropertiesOpen] = useState(false)
+
   const width = 840*2
   const height = 840*2
   const grid = 20
   const backgroundColor = '#ffffff'
   const lineStroke = '#ebebeb'
   var upperCanvas
-  var mouseEvent = 'up'
 
   useEffect(() => {
     getPlan()
@@ -162,12 +161,61 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
       if (item.type.includes('rect')) table = rectTable(key, item)
       if (item.type.includes('circ')) table = circTable(key, item)
       if (item.type.includes('land')) table = await landscape(key, item)
-      // table.on('mouseup', onMoveObject)
-      table.lockMovementX = true
-      table.lockMovementY = true
+      if((item.type.includes('rect') || item.type.includes('circ')) && item.hasOwnProperty('booking_id')){
+        table.on('mouseup', onMoveObject)
+      }else{
+        table.lockMovementX = true
+        table.lockMovementY = true
+      }
       canvas.add(table)
       key++
     }
+  }
+
+  const onMoveObject = (e) => {
+    let table = e.target
+    console.log('moved',table.data.booking_id)
+    let isHit = false
+    canvas.forEachObject(function(otherObj) {
+      if (otherObj !== table && table.intersectsWithObject(otherObj)) {
+        if(otherObj.hasOwnProperty('data') && (otherObj.data.type.includes('rect') || otherObj.data.type.includes('circ'))){
+          if(otherObj.data.hasOwnProperty('booking_id') && otherObj.data.booking_id){
+            switchOrder({first_order_id: table.data.booking_id, second_id: otherObj.data.booking_id, type: 'order'})
+          }else{
+            switchOrder({first_order_id: table.data.booking_id, second_id: otherObj.data.number, type: 'table'})
+          }
+          isHit = true
+        }
+      }
+    })
+    if(!isHit) {
+      getPlan()
+      getOrders()
+    }
+  }
+
+  const switchOrder = (data) => {
+    axios.post(`${process.env.MIX_API_URL}/api/orders_switch_tables`, data, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+    ).then(response => {
+      getPlan()
+      getOrders()
+      eventBus.dispatch('orderEdited')
+      eventBus.dispatch("notification", {type: 'success', message: response.data.message});
+    }).catch(error => {
+      getPlan()
+      getOrders()
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          eventBus.dispatch("notification", {type: 'error', message: value});
+        }
+      } else {
+        eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
+      }
+    })
   }
 
   const markOrderedTables = () => {
@@ -178,7 +226,6 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
         if(item.type.includes('rect') || item.type.includes('circ')){
           orders.forEach((order) => {
             if(order.table_ids.includes(item.number)){
-              item.booking_id = order?.id
               let date = localStorage.getItem('date') || Moment().utc().format('YYYY-MM-DD')
               let now = Moment.utc(date+' '+debouncedSelectedTime)
               if(item.order === ''){
@@ -188,12 +235,15 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
                   let minutes = parseInt(duration.asMinutes()) % 60
                   item.order = (0+''+hours).slice(-2)+':'+(0+''+minutes).slice(-2)
                   item.markColor = '#f59827'
+                  item.booking_id = order?.id
                 }else if(now.isBefore(order.from)){
                   item.order = order.from.local().format('HH:mm')
                   item.markColor = '#ffd744'
+                  item.booking_id = order?.id
                 }else{
                   item.order = ''
                   item.markColor = ''
+                  delete item.booking_id
                 }
               }
             }

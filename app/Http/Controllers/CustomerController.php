@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use mysql_xdevapi\Exception;
@@ -159,5 +160,12 @@ class CustomerController extends Controller
         ]);
 
         return response()->json(['message' => 'Customer is exists']);
+    }
+
+    public function allCustomers(Request $request)
+    {
+        $customers = Customer::all();
+
+        return response()->json($customers);
     }
 }

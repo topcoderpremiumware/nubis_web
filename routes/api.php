@@ -73,6 +73,7 @@ Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/password',[CustomerController::class, 'password']);
     Route::get('customers/orders',[OrderController::class, 'getAllByCustomer']);
     Route::get('customers/client_secret',[OrderController::class, 'getStripeClientSecret']);
+    Route::get('customers/all',[CustomerController::class, 'allCustomers']);
 
     Route::post('places/{place_id}/send_contact',[PlaceController::class, 'sendContact']);
 

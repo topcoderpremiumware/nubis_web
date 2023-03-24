@@ -17,6 +17,8 @@ import { CgCalendarToday } from "react-icons/cg";
    useEffect(async () => {
      if(localStorage.getItem('date')){
        setStartDate(new Date(localStorage.getItem('date')))
+     }else{
+       localStorage.setItem('date', Moment().utc().format('YYYY-MM-DD'))
      }
    }, [])
 

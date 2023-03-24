@@ -1,32 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import './TabNewBooking.scss'
 
-import SelectDate from './SelectDate';
-import SelectArea from './SelectArea';
-import SelectPax from './SelectPax';
-import SelectStartTime from './SelectStartTime';
-import SelectTableNote from './SelectTableNote';
-import SelectRestarauntNote from './SelectRestarauntNote';
-import SelectGuestNote from './SelectGuestNote';
-
-import SelectCountry from './SelectCountry';
-import SelectPhone from './SelectPhone';
-import SelectFirstName from './SelectFirstName';
-import SelectLastName from './SelectLastName';
-import SelectCompany from './SelectCompany';
-import SelectEmail from './SelectEmail';
-import SelectAddress from './SelectAddress';
-import SelectCity from './SelectCity';
-
-import ButtonWalkIn from './ButtonWalkIn';
-import ButtonReset from './ButtonReset';
-import ButtonAddWaitingList from './ButtonAddWaitingList';
-import ButtonCancel from './ButtonCancel';
-import ButtonSave from './ButtonSave';
-
-import CkeckBoxSms from './CkeckBoxSms';
-import CkeckBoxEmail from './CkeckBoxEmail';
-
 import GuestTablesApi from './tables/GuestTablesApi';
 import {
   Button,
@@ -71,7 +45,7 @@ export default function TabNewBooking(props) {
           setAreas(response.data)
         })
         // get customers
-        await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/customers`, {
+        await axios.get(`${process.env.MIX_API_URL}/api/customers/all`, {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
           }
@@ -106,7 +80,7 @@ export default function TabNewBooking(props) {
       getTimes()
       getTables()
     }
-  }, [order])
+  }, [order.area_id, order.seats, order.reservation_time])
 
   const getTimes = () => {
     axios.get(`${process.env.MIX_API_URL}/api/work_time`,{
@@ -265,13 +239,9 @@ export default function TabNewBooking(props) {
             ...customer,
             password: '12345678',
             password_confirmation: '12345678',
-          }, {
-            headers: {
-              Authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-        newCustomerId = response.data.user.id
+        })
+        console.log('newCustomerId',response)
+        newCustomerId = response.data.customer.id
       } catch(err) {
         setError(err.response.data.message)
         return
@@ -445,8 +415,8 @@ export default function TabNewBooking(props) {
                 disabled={isWalkIn}
                 onChange={phone => setOrder(prev => ({
                   ...prev, customer: {
-                    ...prev.customer, 
-                    phone: phone
+                    ...prev.customer,
+                    phone: '+'+phone
                   }
                 }))}
                 containerClass="phone-input"
@@ -527,116 +497,5 @@ export default function TabNewBooking(props) {
           <Button variant="outlined" onClick={() => props.handleClose()}>Cancel</Button>
         </Stack>
       </div>
-
-// <div className='TabNewBooking__container'>
-//   <div className='TabNewBooking__TopContainer'>
-//     <div className='TabNewBooking__left'>
-//       <div className='TabNewBooking__BookingInfoTop'>
-//         <div className='NewBookingDate__container container TabNewBookingItemcontainer'>
-//           <span className='NewBooking__ItemName'>Date:</span>
-//           <SelectDate />
-//         </div>
-//         <div className='NewBookingArea__container container TabNewBookingItemcontainer'>
-//           <span className='NewBooking__ItemName'>Area:</span>
-//           <SelectArea />
-//         </div>
-//         <div className='TabNewBookingDuraion__container container TabNewBookingItemcontainer'>
-//           <span className='NewBooking__ItemName'>Pax / Duration :</span>
-//           <div className='NewBooking__InputPax'>
-//             <SelectPax />
-//           </div>
-//           <div className='NewBooking__InputStartTime'>
-//             <SelectStartTime />
-//           </div>
-//           <div className='time-spent'></div>
-//         </div>
-//         <div className='TabNewBookingTableNote__container container TabNewBookingItemcontainer'>
-//           <span className='NewBooking__ItemName'>Table note:</span>
-//           <SelectTableNote />
-//         </div>
-//
-//       </div>
-//       <div className='TabNewBooking__BookingInfoBottom'>
-//         <div className='TabNewBookingRestaurantNote__container container TabNewBookingItemcontainer'>
-//           <span className='NewBooking__ItemName'>Restaurant Note:</span>
-//           <SelectRestarauntNote />
-//         </div>
-//         <div className='TabNewBookingGuesttNote__container container TabNewBookingItemcontainer'>
-//           <span className='NewBooking__ItemName'>Guest Note:</span>
-//           <SelectGuestNote />
-//         </div>
-//       </div>
-//     </div>
-//     <div className='TabNewBooking__right'>
-//       <div className='GuestInfoTop__container'>
-//         <div className='GuestInfo'>
-//           <div className='GuestInfo-phone container TabNewBookingItemcontainer'>
-//             <span className='NewBooking__ItemName'>Phone:</span>
-//             <div className='TabNewBooking__Phone-container'>
-//               <SelectCountry />
-//               <SelectPhone />
-//             </div>
-//           </div>
-//           <div className='GuestInfo-first-name container TabNewBookingItemcontainer'>
-//             <span className='NewBooking__ItemName'>FirstName:</span>
-//             <SelectFirstName />
-//           </div>
-//           <div className='GuestInfo-last-name container TabNewBookingItemcontainer'>
-//             <span className='NewBooking__ItemName'>LastName:</span>
-//             <SelectLastName />
-//           </div>
-//           <div className='GuestInfo-company container TabNewBookingItemcontainer'>
-//             <span className='NewBooking__ItemName'>Company:</span>
-//             <SelectCompany />
-//           </div>
-//           <div className='GuestInfo-company container TabNewBookingItemcontainer'>
-//             <span className='NewBooking__ItemName'>Email:</span>
-//             <SelectEmail />
-//           </div>
-//           <div className='GuestInfo-company container TabNewBookingItemcontainer'>
-//             <span className='NewBooking__ItemName'>Address:</span>
-//             <SelectAddress />
-//           </div>
-//           <div className='GuestInfo-company container TabNewBookingItemcontainer'>
-//             <span className='NewBooking__ItemName'>Zip code/city:</span>
-//             <SelectCity />
-//           </div>
-//         </div>
-//         <div className='GuestInfoActive'>
-//           <div className='GuestInfoActive__ButtonContainer'>
-//             <ButtonWalkIn />
-//             <ButtonReset />
-//           </div>
-//           <div className='GuestInfoActive__checkBox__container'>
-//             <div className='GuestInfoActive__Sms_Service_Subscription'>
-//               <CkeckBoxSms/>
-//             </div>
-//             <div className='GuestInfoActive__Email_Service_Subscription'>
-//               <CkeckBoxEmail/>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//       <div className='GuestInfoBottom__container'>
-//         <div className='GuestInfoActiveTable'>
-//             <GuestTables />
-//           </div>
-//       </div>
-//
-//     </div>
-//   </div>
-  // <div className='NewBooking__BottomContainer'>
-  //   <div className='NewBooking__Bottom-button'>
-  //     <ButtonAddWaitingList />
-  //   </div>
-  //   <div className='NewBooking__Bottom-button'>
-  //     <ButtonCancel />
-  //   </div>
-  //   <div className='NewBooking__Bottom-button'>
-  //     <ButtonSave />
-  //   </div>
-  // </div>
-//
-// </div>
   )
 }

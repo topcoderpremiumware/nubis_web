@@ -1128,19 +1128,19 @@ class OrderController extends Controller
                 ], 400);
             }
 
-            $first_reservation_time = $first_order->reservation_time;
-            $first_length = $first_order->length;
-            $second_reservation_time = $second_order->reservation_time;
-            $second_length = $second_order->length;
+//            $first_reservation_time = $first_order->reservation_time;
+//            $first_length = $first_order->length;
+//            $second_reservation_time = $second_order->reservation_time;
+//            $second_length = $second_order->length;
 
             $first_order->table_ids = [$second_table['number']];
-            $first_order->reservation_time = $second_reservation_time;
-            $first_order->length = $second_length;
+//            $first_order->reservation_time = $second_reservation_time;
+//            $first_order->length = $second_length;
             $first_order->save();
 
             $second_order->table_ids = [$first_table['number']];
-            $second_order->reservation_time = $first_reservation_time;
-            $second_order->length = $first_length;
+//            $second_order->reservation_time = $first_reservation_time;
+//            $second_order->length = $first_length;
             $second_order->save();
         }else{
             $second_table = array_values(array_filter($tableplan_data,function($item) use ($request) {

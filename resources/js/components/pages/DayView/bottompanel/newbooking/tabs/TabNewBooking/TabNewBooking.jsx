@@ -263,7 +263,7 @@ export default function TabNewBooking(props) {
     let newCustomerId = ''
     if(!customer_id && !isWalkIn) {
       try {
-        const response = await axios.post(`${process.env.MIX_API_URL}/api/register`, {
+        const response = await axios.post(`${process.env.MIX_API_URL}/api/customers/register`, {
             ...customer,
             password: '12345678',
             password_confirmation: '12345678',

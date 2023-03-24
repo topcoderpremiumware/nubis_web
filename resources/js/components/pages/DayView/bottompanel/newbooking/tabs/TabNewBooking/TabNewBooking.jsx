@@ -46,6 +46,7 @@ import {useTranslation} from "react-i18next";
 import eventBus from "../../../../../../../eventBus";
 import axios from 'axios';
 import moment from 'moment';
+import PhoneInput from 'react-phone-input-2';
 
 export default function TabNewBooking(props) {
   const {t} = useTranslation();
@@ -162,9 +163,6 @@ export default function TabNewBooking(props) {
     if(e.target.name === 'comment') setOrder(prev => ({...prev, comment: e.target.value}))
     if(e.target.name === 'status') setOrder(prev => ({...prev, status: e.target.value}))
     if(e.target.name === 'is_take_away') setOrder(prev => ({...prev, is_take_away: e.target.checked}))
-    if(e.target.name === 'customer_phone') setOrder(prev => ({...prev, customer: {
-      ...prev.customer, phone: e.target.value
-    }}))
     if(e.target.name === 'customer_first_name') setOrder(prev => ({...prev, customer: {
       ...prev.customer, first_name: e.target.value
     }}))
@@ -441,11 +439,18 @@ export default function TabNewBooking(props) {
         <div className="col-md-8">
           <div className="row">
             <div className="col-md-6">
-              <TextField label={t('Phone')} size="small" fullWidth sx={{mb:2}}
-                        type="text" id="customer_phone" name="customer_phone"
-                        InputLabelProps={{ shrink: !!order?.customer?.phone }}
-                        value={order?.customer?.phone} disabled={isWalkIn}
-                        onChange={onChange}/>
+              <PhoneInput
+                country={'dk'}
+                value={order?.customer?.phone}
+                disabled={isWalkIn}
+                onChange={phone => setOrder(prev => ({
+                  ...prev, customer: {
+                    ...prev.customer, 
+                    phone: phone
+                  }
+                }))}
+                containerClass="phone-input"
+              />
             </div>
             <div className="col-md-6">
               <TextField label={t('First name')} size="small" fullWidth sx={{mb:2}}

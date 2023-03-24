@@ -4,6 +4,7 @@ import { useState } from 'react'
 import eventBus from "../../../../eventBus";
 import {useTranslation} from "react-i18next";
 import { useNavigate } from 'react-router-dom';
+import PhoneInput from 'react-phone-input-2';
 
 const NotificationsSettings = () => {
   const { t } = useTranslation();
@@ -157,9 +158,13 @@ const NotificationsSettings = () => {
                 </FormControl>
               </div>
               <div className="mb-3">
-                <TextField label={t('Admin SMS number')} size="small" fullWidth
-                           type="text" id="number" name="number" value={number}
-                           onChange={ev => setNumber(ev.target.value)} />
+                <PhoneInput
+                  specialLabel={t('Admin SMS number')}
+                  country={'dk'}
+                  value={number}
+                  onChange={phone => setNumber(phone)}
+                  containerClass="phone-input"
+                />
               </div>
               <Button variant="contained" type="submit">{t('Save')}</Button>
             </form>

@@ -227,6 +227,7 @@
   border: none;
   width: 120px;
   cursor: pointer;
+  margin: 0;
 }
 
 .discount-btn:disabled {

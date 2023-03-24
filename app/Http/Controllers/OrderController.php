@@ -788,7 +788,7 @@ class OrderController extends Controller
                     $order->save();
                 }
             } else {
-                $this->sendNewOrderNotification($order,$place);
+                self::sendNewOrderNotification($order,$place);
                 if(!$request->has('setup_intent_id')){
                     return response()->json([
                         'message' => 'There are no setup_intent_id'
@@ -810,7 +810,7 @@ class OrderController extends Controller
                 }
             }
         }else{
-            $this->sendNewOrderNotification($order,$place);
+            self::sendNewOrderNotification($order,$place);
         }
 
         $order->prepayment_url = $prepayment_url;
@@ -936,7 +936,7 @@ class OrderController extends Controller
         return $marks;
     }
 
-    private function sendNewOrderNotification($order,$place)
+    public static function sendNewOrderNotification($order,$place)
     {
         $sms_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
             ->where('purpose','sms-confirmation')

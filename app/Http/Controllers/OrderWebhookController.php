@@ -70,7 +70,7 @@ class OrderWebhookController extends Controller
                     }
 
                     if($order->marks['method'] === 'deduct'){
-                        $this->sendNewOrderNotification($order,$place);
+                        OrderController::sendNewOrderNotification($order,$place);
                     }
                 }
 

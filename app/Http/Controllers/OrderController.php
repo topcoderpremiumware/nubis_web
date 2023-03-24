@@ -1098,16 +1098,21 @@ class OrderController extends Controller
         ]);
         $first_order = Order::find($request->first_order_id);
 
-        if(count($first_order->table_ids) > 1){
-            return response()->json([
-                'message' => 'First order has more then one table'
-            ], 400);
-        }
+//        if(count($first_order->table_ids) > 1){
+//            return response()->json([
+//                'message' => 'First order has more then one table'
+//            ], 400);
+//        }
 
         $tableplan_data = $first_order->tableplan->data;
-        $first_table = array_values(array_filter($tableplan_data,function($item) use ($first_order) {
-            return $item['number'] == $first_order->table_ids[0];
-        }))[0];
+        $first_tables = array_values(array_filter($tableplan_data,function($item) use ($first_order) {
+            return in_array($item['number'],$first_order->table_ids);
+        }));
+
+        $first_tables_seats = 0;
+        foreach ($first_tables as $first_table) {
+            $first_tables_seats += $first_table['seats'];
+        }
 
         if($request->type == 'order'){
             $second_order = Order::find($request->second_id);
@@ -1122,7 +1127,7 @@ class OrderController extends Controller
                 return $item['number'] == $second_order->table_ids[0];
             }))[0];
 
-            if($first_order->seats > $second_table['seats'] || $second_order->seats > $first_table['seats']){
+            if($first_order->seats > $second_table['seats'] || $second_order->seats > $first_tables_seats){
                 return response()->json([
                     'message' => 'There are more visitors than seats'
                 ], 400);
@@ -1132,13 +1137,15 @@ class OrderController extends Controller
 //            $first_length = $first_order->length;
 //            $second_reservation_time = $second_order->reservation_time;
 //            $second_length = $second_order->length;
+            $first_table_ids = $first_order->table_ids;
+            $second_table_ids = $second_order->table_ids;
 
-            $first_order->table_ids = [$second_table['number']];
+            $first_order->table_ids = $second_table_ids;
 //            $first_order->reservation_time = $second_reservation_time;
 //            $first_order->length = $second_length;
             $first_order->save();
 
-            $second_order->table_ids = [$first_table['number']];
+            $second_order->table_ids = $first_table_ids;
 //            $second_order->reservation_time = $first_reservation_time;
 //            $second_order->length = $first_length;
             $second_order->save();

@@ -112,6 +112,8 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('places/{place_id}/pay_trial',[BillingController::class, 'payTrial']);
     Route::get('places/{place_id}/billings',[BillingController::class, 'getAllByPlace']);
 
+    Route::get('check_customer',[CustomerController::class, 'getByEmail']);
+
     Route::post('roles',[RoleController::class, 'create']);
     Route::get('roles',[RoleController::class, 'getAll']);
 

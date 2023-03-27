@@ -112,8 +112,8 @@ const NotificationsSettings = () => {
     <div className='pages__container'>
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
         <h2>{t('Notification Settings')}</h2>
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           size="sm"
           type="button"
           onClick={() => navigate('/VideoGuides')}
@@ -162,7 +162,7 @@ const NotificationsSettings = () => {
                   specialLabel={t('Admin SMS number')}
                   country={'dk'}
                   value={number}
-                  onChange={phone => setNumber(phone)}
+                  onChange={phone => setNumber('+'+phone)}
                   containerClass="phone-input"
                 />
               </div>

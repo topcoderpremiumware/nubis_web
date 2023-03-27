@@ -201,7 +201,7 @@ export default function Register() {
                 <PhoneInput
                   country={'dk'}
                   value={phone}
-                  onChange={phone => setPhone(phone)}
+                  onChange={phone => setPhone('+'+phone)}
                   containerClass="phone-input"
                 />
               </div>
@@ -290,7 +290,7 @@ export default function Register() {
                   <PhoneInput
                     country={'dk'}
                     value={placePhone}
-                    onChange={phone => setPlacePhone(phone)}
+                    onChange={phone => setPlacePhone('+'+phone)}
                     containerClass="phone-input"
                   />
                 </div>

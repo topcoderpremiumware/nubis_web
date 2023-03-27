@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import './TabNewBooking.scss'
 
-import GuestTablesApi from './tables/GuestTablesApi';
 import {
   Button,
   CircularProgress,
@@ -21,6 +20,7 @@ import eventBus from "../../../../../../../eventBus";
 import axios from 'axios';
 import moment from 'moment';
 import PhoneInput from 'react-phone-input-2';
+import GuestTables from "./tables/GuestTables";
 
 export default function TabNewBooking(props) {
   const {t} = useTranslation();
@@ -91,7 +91,9 @@ export default function TabNewBooking(props) {
         date: Moment.utc(order.reservation_time).utc().format('YYYY-MM-DD')
       }
     }).then(response => {
-      setTimes(response.data)
+      let data = response.data
+      data.push(order.reservation_time)
+      setTimes(data)
     }).catch(error => {
     })
   }
@@ -102,7 +104,8 @@ export default function TabNewBooking(props) {
         place_id: localStorage.getItem('place_id'),
         area_id: order.area_id,
         seats: order.seats,
-        reservation_time: Moment.utc(order.reservation_time).utc().format('YYYY-MM-DD HH:mm:ss')
+        reservation_time: Moment.utc(order.reservation_time).utc().format('YYYY-MM-DD HH:mm:ss'),
+        length: order.length
       }
     }).then(response => {
       let data = []
@@ -110,6 +113,11 @@ export default function TabNewBooking(props) {
         for (const index in response.data[tableplan]) {
           data.push({...response.data[tableplan][index], tableplan_id:tableplan})
         }
+      }
+      if(order.hasOwnProperty('table_ids') && order.table_ids.length > 0){
+        order.table_ids.forEach(t => {
+          data.push({number: t, seats: 0, tableplan_id: order.tableplan_id})
+        })
       }
       console.log('tables',data)
       setTables(data)
@@ -123,7 +131,7 @@ export default function TabNewBooking(props) {
         ...prev,
         reservation_time: e.target.value + ' ' + Moment.utc(prev.reservation_time).format('HH:mm:00')
       }
-      ))
+    ))
     if(e.target.name === 'time') setOrder(prev => (
       {
         ...prev,
@@ -235,42 +243,39 @@ export default function TabNewBooking(props) {
     let newCustomerId = ''
     if(!customer_id && !isWalkIn) {
       try {
-        const response = await axios.post(`${process.env.MIX_API_URL}/api/customers/register`, {
+        const customer_response = await axios.get(`${process.env.MIX_API_URL}/api/check_customer?email=${customer.email}`, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        })
+        if(customer_response.data.hasOwnProperty('id')){
+          newCustomerId = customer_response.data.id
+        }else{
+          const response = await axios.post(`${process.env.MIX_API_URL}/api/customers/register`, {
             ...customer,
             password: '12345678',
             password_confirmation: '12345678',
-        })
-        console.log('newCustomerId',response)
-        newCustomerId = response.data.customer.id
+          })
+          newCustomerId = response.data.customer.id
+        }
       } catch(err) {
         setError(err.response.data.message)
         return
       }
     }
     try {
-      if(order?.id) {
-        await axios.post(`${process.env.MIX_API_URL}/api/orders/${order.id}`, {
-            ...rest,
-            ...(!isWalkIn && {customer, customer_id: customer_id || newCustomerId}),
-            reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
-          }, {
-            headers: {
-              Authorization: 'Bearer ' + localStorage.getItem('token')
-            }
+      let order_request = order?.id ? `${process.env.MIX_API_URL}/api/orders/${order.id}` : `${process.env.MIX_API_URL}/api/orders`
+      await axios.post(order_request, {
+          ...rest,
+          ...(!isWalkIn && {customer, customer_id: customer_id || newCustomerId}),
+          reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
+        }, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
           }
-        )
-      } else {
-        await axios.post(`${process.env.MIX_API_URL}/api/orders`, {
-            ...rest,
-            ...(!isWalkIn && {customer, customer_id: customer_id || newCustomerId}),
-            reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
-          }, {
-            headers: {
-              Authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-          }
-        )
-      }
+        }
+      )
+
       eventBus.dispatch('orderEdited')
       props.handleClose()
     } catch (err) {
@@ -306,12 +311,12 @@ export default function TabNewBooking(props) {
             <InputLabel htmlFor="date" shrink>{t('Date')}</InputLabel>
             <DatePicker
               dateFormat='LLLL dd yyyy'
-              selected={new Date(order.reservation_time || new Date())} id="date"
+              selected={ new Date(order.reservation_time || new Date()) } id="date"
               onSelect={e => {
-                onChange({target: {name: 'date', value: Moment(e).utc().format('YYYY-MM-DD')}})
+                onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
               }}
               onChange={e => {
-                onChange({target: {name: 'date', value: Moment(e).utc().format('YYYY-MM-DD')}})
+                onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
               }}
             />
           </FormControl>
@@ -482,9 +487,9 @@ export default function TabNewBooking(props) {
           <div className="row">
             <div className='GuestInfoBottom__container'>
               <div className='GuestInfoActiveTable'>
-                <GuestTablesApi
+                <GuestTables
                   data={customers}
-                  onClick={!isWalkIn ? setTableOrder : () => {}}
+                  onSelectCustomer={!isWalkIn ? setTableOrder : () => {}}
                 />
               </div>
             </div>

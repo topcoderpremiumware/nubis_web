@@ -101,7 +101,7 @@ export default function BasicInformation() {
             <PhoneInput
               country={'dk'}
               value={place.phone}
-              onChange={phone => setPlace(prev => ({ ...prev, phone }))}
+              onChange={phone => setPlace(prev => ({ ...prev, phone: '+'+phone }))}
               containerClass="phone-input"
             />
           </Grid>

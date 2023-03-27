@@ -974,7 +974,8 @@ class OrderController extends Controller
             'place_id' => 'required|exists:places,id',
             'area_id' => 'required|exists:areas,id',
             'seats' => 'required|integer',
-            'reservation_time' => 'required|date_format:Y-m-d H:i:s'
+            'reservation_time' => 'required|date_format:Y-m-d H:i:s',
+            'length' => 'required|integer'
         ]);
 
         $reservation_time = Carbon::parse($request->reservation_time);
@@ -997,7 +998,49 @@ class OrderController extends Controller
 
         $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
 
-        return response()->json($free_tables);
+        $result = [];
+
+        $indexFrom = intval($reservation_time->format('H'))*4 + floor(intval($reservation_time->format('i'))/15);
+        foreach ($free_tables as $plan_id => $tables){
+            foreach ($tables as $table) {
+                if($table['seats'] < $request->seats) continue;
+                if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                    $reserv_to = $reservation_time->copy()->addMinutes($request->length);
+                    $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
+                    for($i = $indexFrom;$i<=$indexTo;$i++){
+                        if(array_key_exists('ordered', $table['time'][$i])){
+                            continue 2;
+                        }
+                    }
+                    $result[$plan_id][] = $table;
+                }
+            }
+
+            $groups_tables = [];
+            $groups_table_seats = [];
+            foreach ($tables as $table) {
+                if(!array_key_exists('grouped',$table)) continue;
+                if(array_key_exists('ordered', $table['time'][$indexFrom])) continue;
+                $reserv_to = $reservation_time->copy()->addMinutes($request->length);
+                $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
+                for($i = $indexFrom;$i<=$indexTo;$i++){
+                    if(array_key_exists('ordered', $table['time'][$i])){
+                        continue 2;
+                    }
+                }
+                $group_id = $table['time'][0]['group'];
+                $groups_tables[$group_id][] = $table;
+                if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
+                $groups_table_seats[$group_id] += $table['seats'];
+                if($groups_table_seats[$group_id] >= $request->seats){
+                    $result[$plan_id] = array_merge($result[$plan_id],$groups_tables[$group_id]);
+                    break;
+                }
+            }
+            $result[$plan_id] = array_map("unserialize", array_unique(array_map("serialize", $result[$plan_id])));
+        }
+
+        return response()->json($result);
     }
 
     public function getStripeClientSecret(Request $request)

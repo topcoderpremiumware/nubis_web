@@ -26,16 +26,6 @@ export default function ManageFeedback() {
   const [selectedFeedback, setSelectedFeedback] = useState({})
   const [loading, setLoading] = useState(true)
 
-  const StyledTableRow = styled(TableRow)(({theme}) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
-
   useEffect( () => {
     getFeedbacks()
     eventBus.on("placeChanged", () => {

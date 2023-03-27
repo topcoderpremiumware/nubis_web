@@ -99,7 +99,7 @@ export default function MainModal(props) {
                   <PhoneInput
                     country={'dk'}
                     value={userData.phone}
-                    onChange={phone => setInput("phone", phone)}
+                    onChange={phone => setInput("phone", '+'+phone)}
                     inputClass="phone-input"
                     buttonClass="phone-input-btn"
                     dropdownStyle={{ textAlign: 'left' }}

@@ -164,7 +164,7 @@ const RestaurantNew = () => {
             <PhoneInput
               country={'dk'}
               value={phone}
-              onChange={phone => setPhone(phone)}
+              onChange={phone => setPhone('+'+phone)}
               containerClass="phone-input"
             />
           </Grid>

@@ -1,72 +1,37 @@
+import React, {useEffect} from "react";
+import  './GuestTables.scss';
+import { useTranslation } from 'react-i18next';
+import {DataGrid} from "@mui/x-data-grid";
 
-import React, { Component } from "react";
-// import './../DataTables.css';
-// import './../CustomTables.scss';
-import GuestTablesApi from "./GuestTablesApi";
+export default function GuestTables(props) {
+  const {t} = useTranslation();
 
-class GuestTable extends Component {
-  render() {
-    return (
-      <div className="Tables">
-        <GuestTablesApi data={this.dataSet}>
+  useEffect( () => {
 
-        </GuestTablesApi>
-      </div>
-    );
-  }
-  dataSet = [
-    [
-      "Tiger",
-      "Nixon",
-      "Apple",
-      "San Francisco",
-      "80568457897",
-      "apple@gmail.com",
-      "",
-      "",
-    ],
-    [
-      "Tiger",
-      "Nixon",
-      "Apple",
-      "San Francisco",
-      "80568457897",
-      "apple@gmail.com",
-      "",
-      "",
-    ],
-    [
-      "Tiger",
-      "Nixon",
-      "Apple",
-      "San Francisco",
-      "80568457897",
-      "apple@gmail.com",
-      "",
-      "",
-    ],
-    [
-      "Tiger",
-      "Nixon",
-      "Apple",
-      "San Francisco",
-      "80568457897",
-      "apple@gmail.com",
-      "",
-      "",
-    ],
-    [
-      "Tiger",
-      "Nixon",
-      "Apple",
-      "San Francisco",
-      "80568457897",
-      "apple@gmail.com",
-      "",
-      "",
-    ],
-    
+  }, [])
+
+  const columns = [
+    { field: 'first_name', headerName: t('First name'), flex: 1 },
+    { field: 'last_name', headerName: t('Last name'), flex: 1 },
+    { field: 'email', headerName: t('Email'), flex: 1 },
+    { field: 'phone', headerName: t('Phone'), flex: 1 },
+    { field: 'zip_code', headerName: t('Zip code'), flex: 1 },
   ];
-}
 
-export default GuestTable;
+  const handleRowClick = (params) => {
+    props.onSelectCustomer(params.row)
+  };
+
+  return (
+    <div style={{ height: 320, width: '100%' }}>
+      <DataGrid
+        rowHeight={40}
+        onRowClick={handleRowClick}
+        rows={props.data}
+        columns={columns}
+        pageSize={5}
+        rowsPerPageOptions={[5]}
+      />
+    </div>
+  );
+};

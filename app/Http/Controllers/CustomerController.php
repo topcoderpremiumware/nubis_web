@@ -168,4 +168,15 @@ class CustomerController extends Controller
 
         return response()->json($customers);
     }
+
+    public function getByEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $customer = Customer::whereEmail($request->email)->first();
+
+        return response()->json($customer);
+    }
 }

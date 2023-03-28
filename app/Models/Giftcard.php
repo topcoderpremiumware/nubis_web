@@ -28,9 +28,10 @@ class Giftcard extends Model
         }
     }
 
-    public static function getAmountByCode($code)
+    public static function getAmountByCode($code,$place_id)
     {
         $giftcard = Giftcard::where('code',$code)
+            ->where('place_id',$place_id)
             ->first();
         if($giftcard === null){
             return 0;

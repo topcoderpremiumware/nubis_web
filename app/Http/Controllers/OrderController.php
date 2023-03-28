@@ -778,7 +778,7 @@ class OrderController extends Controller
                     $order->status = 'pending';
                     $order->marks = [
                         'method' => 'deduct',
-                        'amount' => self::getAmountAfterDiscount($amount * $request->seats,$request->giftcard_code,$currency),
+                        'amount' => self::getAmountAfterDiscount($amount * $request->seats,$request->giftcard_code,$currency,$request->place_id),
                         'amountWithoutDiscount' => $amount * $request->seats,
                         'giftcard_code' => $request->giftcard_code,
                         'currency' => $currency,
@@ -847,7 +847,7 @@ class OrderController extends Controller
         if($stripe_secret && $stripe_webhook_secret && $online_payment_currency){
             $stripe = new StripeClient($stripe_secret);
             $price = $stripe->prices->create([
-                'unit_amount' => self::getAmountAfterDiscount($online_payment_amount,$request->giftcard_code,$online_payment_currency) * 100,
+                'unit_amount' => self::getAmountAfterDiscount($online_payment_amount,$request->giftcard_code,$online_payment_currency,$request->place_id) * 100,
                 'currency' => $online_payment_currency,
                 'product_data' => [
                     'name' => $place->name.', '.$order->seats.' seats prepayment'
@@ -882,7 +882,7 @@ class OrderController extends Controller
         $cancel_deadline = $place->setting('online-payment-cancel-deadline');
         $marks = [
             'method' => $method,
-            'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency),
+            'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency,$request->place_id),
             'amountWithoutDiscount' => $amount,
             'giftcard_code' => $request->giftcard_code,
             'currency' => $currency,
@@ -903,7 +903,7 @@ class OrderController extends Controller
                 $setup_intent = $stripe->setupIntents->retrieve($request->setup_intent_id);
                 try {
                     $payment_intent = $stripe->paymentIntents->create([
-                        'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency) * 100,
+                        'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency,$request->place_id) * 100,
                         'currency' => $currency,
                         'confirm' => true,
                         'off_session' => true,
@@ -1110,7 +1110,7 @@ class OrderController extends Controller
         return response()->json($output);
     }
 
-    public static function getAmountAfterDiscount($amount,$code,$currency)
+    public static function getAmountAfterDiscount($amount,$code,$currency,$place_id)
     {
         switch (strtolower($currency)) {
             case 'usd':
@@ -1124,7 +1124,7 @@ class OrderController extends Controller
                 $min = 175;
         }
 
-        $discount = Giftcard::getAmountByCode($code);
+        $discount = Giftcard::getAmountByCode($code,$place_id);
         if($amount-$min <= $discount){
             return min($amount, $min);
         }else{

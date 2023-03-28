@@ -42,7 +42,7 @@ class MessageTemplate extends Model
                 'place_id' => $place_id,
                 'purpose' => 'sms-notification',
                 'subject' => 'Nubis Reservation',
-                'text' => "Dear #FIRST_NAME#\nYou have a table for #NUMBER_OF_GUESTS# persons at #RESTAURANT_NAME# the #BOOK_DAY# at\nWe are looking forward to seeing you\nBest regards #RESTAURANT_NAME# #BOOK_HOUR#:#BOOK_MIN#\n\nIf you have changes to your booking you can call us at #RESTAURANT_PHONE#",
+                'text' => "Dear #FIRST_NAME#\nYou have a table for #NUMBER_OF_GUESTS# persons at #RESTAURANT_NAME# the #BOOK_DAY# of #BOOK_MONTH_NAME# at #BOOK_HOUR#:#BOOK_MIN#.\nWe are looking forward to seeing you\nBest regards #RESTAURANT_NAME#\n\nIf you have changes to your booking you can call us at #RESTAURANT_PHONE#",
                 'language' => 'en',
                 'active' => 1
             ],

@@ -136,7 +136,8 @@ function LastBlock(props) {
 
       const res = await axios.get(`${process.env.MIX_API_URL}/api/giftcards_check`, {
         params: {
-          code: giftCode
+          code: giftCode,
+          place_id: getPlaceId()
         },
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')

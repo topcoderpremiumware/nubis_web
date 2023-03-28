@@ -247,6 +247,7 @@ class GiftcardController extends Controller
     {
         $request->validate([
             'code' => 'required',
+            'place_id' => 'required|exists:places,id',
         ]);
 
         $giftcard = Giftcard::where('code',$request->code)

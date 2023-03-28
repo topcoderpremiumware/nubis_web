@@ -42,7 +42,7 @@ import BillingReport from "./pages/BillingReport/BillingReport";
 import Roles from "./pages/Roles/Roles";
 
 function App() {
-  const [sidebarIsVisible, setSidebarIsVisible] = useState(false)
+  const [sidebarIsVisible, setSidebarIsVisible] = useState(true)
 
   if(localStorage.getItem('token')){
     axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
@@ -89,8 +89,8 @@ function App() {
       <Suspense fallback={<LoadingPage/>}>
         <Topbar/>
         {localStorage.getItem('token') ?
-          <div className={sidebarIsVisible ? "content content-responsive active" : "content content-responsive"}>
-            <Sidebar/>
+          <div className={`content content-responsive ${sidebarIsVisible ? 'active' : ''}`}>
+            <Sidebar sidebarIsVisible={sidebarIsVisible}/>
             <div className='scroll_wrapper'>
               <Banner />
               <Routes>

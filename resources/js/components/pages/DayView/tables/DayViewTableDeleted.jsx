@@ -77,8 +77,8 @@ export default function DayViewTableWaiting() {
         let orders = response.data.map(item => {
           item.from = Moment.utc(item.reservation_time).local().format('HH:mm')
           item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').local().format('HH:mm')
-          item.first_name = item.customer.first_name
-          item.last_name = item.customer.last_name
+          item.first_name = !item?.customer_id ? 'Walk in' : item.customer.first_name
+          item.last_name = item.customer?.last_name || ''
           item.phone = item.customer.phone
           item.email = item.customer.email
           item.deleted_at = Moment.utc(item.deleted_at).local().format('YYYY-MM-DD HH:mm')
@@ -87,38 +87,26 @@ export default function DayViewTableWaiting() {
         })
 
         setOrders(orders)
+        eventBus.dispatch("dayViewOrdersLoaded",{orders: orders, columns: columns, pdfTitle: t('Deleted bookings')});
         setLoading(false)
       }).catch(error => {
       })
     }else{
       setOrders([])
+      eventBus.dispatch("dayViewOrdersLoaded",{orders: [], columns: columns, pdfTitle: t('Deleted bookings')});
       setLoading(false)
     }
   }
 
   return (<>{loading ? <div><CircularProgress/></div> :
-    <div style={{ height: 'calc(100% - 55px)', width: '100%' }}>
+    <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
         rows={orders}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        pageSize={10}
+        rowsPerPageOptions={[10]}
         // checkboxSelection
       />
-      {orders.length > 0 && (
-        <PDFDownloadLink
-          document={
-            <DayViewPdf
-              title={t('Deleted bookings')}
-              columns={columns.map(i => i.headerName)}
-              data={orders}
-            />
-          }
-          fileName={t('Deleted_bookings') + new Date().getTime() + ".pdf"}
-        >
-          <Button variant="contained" style={{ marginTop: '10px' }}>{t('Export to PDF')}</Button>
-        </PDFDownloadLink>
-      )}
     </div>
   }</>);
 };

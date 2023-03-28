@@ -77,46 +77,34 @@ export default function DayViewTableWaiting() {
           if(item.status !== 'waiting') return false
           item.from = Moment.utc(item.reservation_time).local().format('HH:mm')
           item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').local().format('HH:mm')
-          item.first_name = item.customer.first_name
-          item.last_name = item.customer.last_name
+          item.first_name = !item?.customer_id ? 'Walk in' : item.customer.first_name
+          item.last_name = item.customer?.last_name || ''
           item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm')
           item.area = areas.find(i => i.id === item.area_id).name
           return item
         }).filter(x => x)
 
         setOrders(orders)
+        eventBus.dispatch("dayViewOrdersLoaded",{orders: orders, columns: columns, pdfTitle: t('Waiting List')});
         setLoading(false)
       }).catch(error => {
       })
     }else{
       setOrders([])
+      eventBus.dispatch("dayViewOrdersLoaded",{orders: [], columns: columns, pdfTitle: t('Waiting List')});
       setLoading(false)
     }
   }
 
   return (<>{loading ? <div><CircularProgress/></div> :
-    <div style={{ height: 'calc(100% - 55px)', width: '100%' }}>
+    <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
         rows={orders}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        pageSize={10}
+        rowsPerPageOptions={[10]}
         // checkboxSelection
       />
-      {orders.length > 0 && (
-        <PDFDownloadLink
-          document={
-            <DayViewPdf
-              title={t('Waiting List')}
-              columns={columns.map(i => i.headerName)}
-              data={orders}
-            />
-          }
-          fileName={t('Waiting_List') + new Date().getTime() + ".pdf"}
-        >
-          <Button variant="contained" style={{ marginTop: '10px' }}>{t('Export to PDF')}</Button>
-        </PDFDownloadLink>
-      )}
     </div>
   }</>);
 };

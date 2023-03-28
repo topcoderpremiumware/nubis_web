@@ -6,9 +6,10 @@ import SubMenu from './SubMenu';
 import SidebarSelect from './SidebarSelect';
 import Navbar from '../navbar/Navbar';
 import eventBus from "../../../eventBus";
+import {BsChevronCompactLeft, BsChevronCompactRight, BsFullscreen, BsFullscreenExit} from "react-icons/bs";
 
 
-const Sidebar = () => {
+const Sidebar = (props) => {
   const [sidebarData, setSidebarData] = useState(false)
 
   useEffect(() => {
@@ -31,6 +32,11 @@ const Sidebar = () => {
         <div className="sidebar-nav">
           <Navbar />
         </div>
+      </div>
+      <div
+        className="wrapButton"
+        onClick={() => eventBus.dispatch('toggleSidebar')}>
+        {props.sidebarIsVisible ? <BsChevronCompactLeft /> : <BsChevronCompactRight />}
       </div>
     </div>
   );

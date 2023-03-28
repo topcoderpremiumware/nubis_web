@@ -98,11 +98,13 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
         }).filter(x => x)
 
         setOrders(orders)
+        eventBus.dispatch("dayViewOrdersLoaded",{orders: orders, columns: columns, pdfTitle: t('Bookings')});
         setLoading(false)
       }).catch(error => {
       })
     }else{
       setOrders([])
+      eventBus.dispatch("dayViewOrdersLoaded",{orders: [], columns: columns, pdfTitle: t('Bookings')});
       setLoading(false)
     }
   }
@@ -112,29 +114,15 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
   }
 
   return (<>{loading ? <div><CircularProgress/></div> :
-    <div style={{ height: 'calc(100% - 55px)', width: '100%' }}>
+    <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
         rows={orders}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        pageSize={10}
+        rowsPerPageOptions={[10]}
         onRowDoubleClick={doubleClickHandler}
         // checkboxSelection
       />
-      {orders.length > 0 && (
-        <PDFDownloadLink
-          document={
-            <DayViewPdf
-              title={t('Bookings')}
-              columns={columns.map(i => i.headerName)}
-              data={orders}
-            />
-          }
-          fileName={t('Bookings') + new Date().getTime() + ".pdf"}
-        >
-          <Button variant="contained" style={{marginTop: '10px'}}>{t('Export to PDF')}</Button>
-        </PDFDownloadLink>
-      )}
     </div>
   }</>);
 };

@@ -59,6 +59,7 @@ export default function DayViewContent() {
 
   useEffect(() => {
     eventBus.on("openTableSidebar",(data) => {
+      if(!data.type) setIsFullWidth(false)
       setTableSidebar(data.type)
     })
     eventBus.on("placeChanged",(data) => {
@@ -81,14 +82,6 @@ export default function DayViewContent() {
 
   return (
     <div className='pages__container DayView__container'>
-      <Stack spacing={10} mb={2} direction="row" alignItems="center">
-        <Button
-          variant="contained" 
-          size="sm"
-          type="button"
-          onClick={() => navigate('/VideoGuides')}
-        >{t('See Nubis Academy')}</Button>
-      </Stack>
       <DayViewTop />
       <div style={{display:'flex',height:'100%',overflow:'hidden'}}>
         <Box sx={{ width: '100%', flex: 1, display: isFullWidth ? 'none' : 'flex',flexDirection:'column' }} >
@@ -110,10 +103,13 @@ export default function DayViewContent() {
           </TabPanel>
         </Box>
         {tableSidebar === 'timePlan' && <div className="tablePlanSidebar">
-          <TimeLinePlan/>
+          <TimeLinePlan
+            isFullWidth={isFullWidth}
+            setFullWidth={setIsFullWidth}
+          />
         </div>}
         {tableSidebar === 'tablePlan' && <div className="tablePlanSidebar">
-          <PlanCanvas 
+          <PlanCanvas
             setSelectedOrder={setSelectedOrder}
             isFullWidth={isFullWidth}
             setFullWidth={setIsFullWidth}

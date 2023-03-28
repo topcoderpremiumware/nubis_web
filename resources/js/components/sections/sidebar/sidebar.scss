@@ -9,14 +9,42 @@
   position: relative;
   top: 0;
   display: block;
-  overflow: hidden;
+  //overflow: hidden;
+    z-index: 1;
+    .wrapButton{
+        position: absolute;
+        top: calc(50% - 25px);
+        right: 0px;
+        background: #343C48;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 25px;
+        border-radius: 50%;
+        z-index: -1;
+        transition: all .5s ease-in-out;
+        svg{
+            margin-left: 15px;
+        }
+    }
+    &:hover{
+        .wrapButton{
+            right: -25px;
+        }
+    }
 }
+
+
 
 .SadebarWrap {
   width: 100%;
   height: calc(100vh - 56px);
   overflow-y: scroll;
   padding-bottom: 50px;
+    background: #343C48;
 }
 
 .SadebarWrap::-webkit-scrollbar {

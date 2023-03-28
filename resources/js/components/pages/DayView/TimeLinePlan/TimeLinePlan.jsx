@@ -3,10 +3,11 @@ import {useTranslation} from 'react-i18next';
 import Timeline from 'react-calendar-timeline'
 import 'react-calendar-timeline/lib/Timeline.css'
 import moment from 'moment'
-import {Tooltip} from "@mui/material";
+import {Button, Tooltip} from "@mui/material";
 import TimelineHeaders from "react-calendar-timeline/lib/lib/headers/TimelineHeaders";
 import DateHeader from "react-calendar-timeline/lib/lib/headers/DateHeader";
 import Moment from "moment";
+import {BsFullscreen, BsFullscreenExit} from "react-icons/bs";
 // https://www.npmjs.com/package/react-calendar-timeline
 
 export default function TimeLinePlan(props) {
@@ -123,5 +124,12 @@ export default function TimeLinePlan(props) {
         <DateHeader labelFormat="HH:mm"/>
       </TimelineHeaders>
     </Timeline>}
+    <Button
+      variant="contained"
+      onClick={() => props.setFullWidth(prev => !prev)}
+      className="canvas-toggle-btn"
+    >
+      {props.isFullWidth ? <BsFullscreenExit /> : <BsFullscreen />}
+    </Button>
   </div>);
 }

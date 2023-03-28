@@ -121,6 +121,10 @@ class OrderController extends Controller
             ], 400);
         }
 
+        if($order->status != 'no_show' && $request->status == 'no_show'){
+            $this->paymentAfterOrderCancel($order);
+        }
+
         $res = $order->update([
             'customer_id' => $request->customer_id,
             'place_id' => $request->place_id,
@@ -244,26 +248,28 @@ class OrderController extends Controller
 
         Log::add($request,'delete-order','Deleted order #'.$order->id);
 
-        $customer = $order->customer;
-        $sms_delete_template = MessageTemplate::where('place_id',$order->place_id)
-            ->where('purpose','sms-delete')
-            ->where('language',$customer->language)
-            ->where('active',1)
-            ->first();
-        $place = $order->place;
-        $smsApiToken = $place->setting('sms-api-token');
-        if($sms_delete_template && $smsApiToken){
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_SHORT_NAME'), $smsApiToken);
-        }
-        $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
-            ->where('purpose','email-delete')
-            ->where('language',$customer->language)
-            ->where('active',1)
-            ->first();
-        if($email_delete_template){
-            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text), function($msg) use ($email_delete_template, $customer) {
-                $msg->to($customer->email)->subject($email_delete_template->subject);
-            });
+        if($order->customer_id){
+            $customer = $order->customer;
+            $sms_delete_template = MessageTemplate::where('place_id',$order->place_id)
+                ->where('purpose','sms-delete')
+                ->where('language',$customer->language)
+                ->where('active',1)
+                ->first();
+            $place = $order->place;
+            $smsApiToken = $place->setting('sms-api-token');
+            if($sms_delete_template && $smsApiToken){
+                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_SHORT_NAME'), $smsApiToken);
+            }
+            $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
+                ->where('purpose','email-delete')
+                ->where('language',$customer->language)
+                ->where('active',1)
+                ->first();
+            if($email_delete_template){
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text), function($msg) use ($email_delete_template, $customer) {
+                    $msg->to($customer->email)->subject($email_delete_template->subject);
+                });
+            }
         }
 
         $this->paymentAfterOrderCancel($order);

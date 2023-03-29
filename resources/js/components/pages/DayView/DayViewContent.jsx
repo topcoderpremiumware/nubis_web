@@ -63,15 +63,19 @@ export default function DayViewContent() {
       setTableSidebar(data.type)
     })
     eventBus.on("placeChanged",(data) => {
+      setIsFullWidth(false)
       setTableSidebar('')
     })
     eventBus.on("areaChanged",(data) => {
+      setIsFullWidth(false)
       setTableSidebar('')
     })
     eventBus.on("timeChanged",(data) => {
+      setIsFullWidth(false)
       setTableSidebar('')
     })
     eventBus.on("dateChanged",(data) => {
+      setIsFullWidth(false)
       setTableSidebar('')
     })
   },[])

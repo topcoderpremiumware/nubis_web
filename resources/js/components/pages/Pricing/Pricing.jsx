@@ -108,7 +108,7 @@ const Pricing = () => {
           <li className="price-list-item">{t('Guest history')}</li>
           <li className="price-list-item">{t('Possibility of combined tables when booking online')}</li>
           <li className="price-list-item">{t('Concurrent users on the system')}</li>
-          <li className="price-list-item"><a href="https://gatewayapi.com/pricing/#pricing" className="price-link" target="_blank">{t('Price per SMS')}</a></li>
+          <li className="price-list-item">{t('Price per SMS')}</li>
         </ul>
       </div>
       <p className="price-text">

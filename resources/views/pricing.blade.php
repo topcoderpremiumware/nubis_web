@@ -93,7 +93,7 @@
               <li class="price-list-item">{{__('Guest history')}}</li>
               <li class="price-list-item">{{__('Possibility of combined tables when booking online')}}</li>
               <li class="price-list-item">{{__('Concurrent users on the system')}}</li>
-              <li class="price-list-item"><a href="https://gatewayapi.com/pricing/#pricing" class="price-link" target="_blank">{{__('Price per SMS')}}</a></li>
+              <li class="price-list-item">{{__('Price per SMS')}}</li>
             </ul>
           </div>
           <p class="price-text">

@@ -661,6 +661,7 @@ class OrderController extends Controller
 
     public function makeOrder(Request $request)
     {
+        $log = [];
         $prepayment_url = null;
         $request->validate([
             'place_id' => 'required|exists:places,id',
@@ -687,6 +688,8 @@ class OrderController extends Controller
             $length = intval($request->length);
         }
 
+        $log['length'] = $length;
+
         $status = ($request->has('status') && $request->status === 'waiting') ? 'waiting' : 'confirmed';
 
         if(!$request->is_take_away && $status === 'confirmed'){
@@ -703,6 +706,10 @@ class OrderController extends Controller
 
             $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
 
+            $log['all_free_tables'] = $free_tables;
+            $log['ordered_tables'] = [];
+            $log['ordered_groups'] = [];
+
             $indexFrom = intval($reservation_time->format('H'))*4 + floor(intval($reservation_time->format('i'))/15);
             foreach ($free_tables as $plan_id => $tables){
                 foreach ($tables as $table) {
@@ -712,9 +719,11 @@ class OrderController extends Controller
                         $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
                         for($i = $indexFrom;$i<=$indexTo;$i++){
                             if(array_key_exists('ordered', $table['time'][$i])){
+                                $log['ordered_tables'][] = $table['number'];
                                 continue 2;
                             }
                         }
+                        $log['table_selected_for_order'] = $table['number'];
                         $table_ids = [$table['number']];
                         $tableplan_id = $plan_id;
                         break 2;
@@ -730,6 +739,7 @@ class OrderController extends Controller
                     $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
                     for($i = $indexFrom;$i<=$indexTo;$i++){
                         if(array_key_exists('ordered', $table['time'][$i])){
+                            $log['ordered_groups'][] = $table['number'];
                             continue 2;
                         }
                     }
@@ -738,6 +748,7 @@ class OrderController extends Controller
                     if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
                     $groups_table_seats[$group_id] += $table['seats'];
                     if($groups_table_seats[$group_id] >= $request->seats){
+                        $log['group_selected_for_order'] = $groups_table_ids[$group_id];
                         $table_ids = $groups_table_ids[$group_id];
                         $tableplan_id = $plan_id;
                         break 2;
@@ -752,7 +763,8 @@ class OrderController extends Controller
 
         if(empty($table_ids)){
             return response()->json([
-                'message' => 'There are no free tables for the required time'
+                'message' => 'There are no free tables for the required time',
+                'log' => $log
             ], 400);
         }
 

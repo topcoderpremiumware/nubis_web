@@ -162,6 +162,10 @@ function LastBlock(props) {
 
   useEffect(() => {
     getStripeKeys()
+    console.log('selectedTime',selectedTime)
+    console.log('selectedTime to local',moment(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`).local().format('DD-MM-YYYY HH:mm'))
+    console.log('selectedTime to utc',moment(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`).utc().format('DD-MM-YYYY HH:mm'))
+    console.log('selectedTime simple',moment(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`).format('DD-MM-YYYY HH:mm'))
   }, [])
 
   return (
@@ -202,7 +206,7 @@ function LastBlock(props) {
                   {t('Guests')}: &nbsp;
                   <b>{props.guestValue}</b>
                   <br />
-                  {t('Day/time')}: &nbsp;
+                  {t('Day/time1')}: &nbsp;
                   <b>{moment(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`).local().format('DD-MM-YYYY HH:mm')}</b>
                 </div>
               </div>
@@ -325,7 +329,7 @@ function LastBlock(props) {
                     {t('Guests')}: &nbsp;
                     <b>{props.guestValue}</b>
                     <br />
-                    {t('Day/time')}: &nbsp;
+                    {t('Day/time2')}: &nbsp;
                     <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`)
                         .local().format('DD-MM-YYYY HH:mm')}</b>
                   </div>

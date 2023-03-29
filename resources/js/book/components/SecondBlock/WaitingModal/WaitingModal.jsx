@@ -150,7 +150,7 @@ export default function WaitingModal(props) {
                   {t('Guests')}: &nbsp;
                   <b>{props.guestValue}</b>
                   <br />
-                  {t('Day/time')}: &nbsp;
+                  {t('Day/time4')}: &nbsp;
                   <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`)
                     .local().format('DD-MM-YYYY HH:mm')}</b>
                 </div>

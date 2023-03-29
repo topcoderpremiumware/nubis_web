@@ -17,7 +17,7 @@ export default function DayViewTableWaiting() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(async () => {
+  useEffect( () => {
     getOrders()
     eventBus.on("placeChanged", () => {
       getOrders()
@@ -43,26 +43,18 @@ export default function DayViewTableWaiting() {
     { field: 'comment', headerName: t('Note'), width: 200},
     { field: 'order_date', headerName: t('Order date'), width: 140 },
     { field: 'status', headerName: t('Status'), width: 100 },
-    { field: 'area', headerName: t('Area'), width: 160 },
+    { field: 'area_name', headerName: t('Area'), width: 160 },
   ];
 
 
-  const getOrders = async () => {
+  const getOrders = () => {
     setLoading(true)
     if(localStorage.getItem('place_id') &&
       localStorage.getItem('area_id') /*&&
       localStorage.getItem('time')*/){
-      let areas = []
-      await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }).then(response => {
-        areas = response.data
-      })
       let date = localStorage.getItem('date') || Moment.utc().format('YYYY-MM-DD')
       let time = JSON.parse(localStorage.getItem('time')) || {from: '00:00:00',to: '23:59:59'}
-      await axios.get(`${process.env.MIX_API_URL}/api/orders`, {
+      axios.get(`${process.env.MIX_API_URL}/api/orders`, {
         params: {
           place_id: localStorage.getItem('place_id'),
           area_id: localStorage.getItem('area_id'),
@@ -80,7 +72,7 @@ export default function DayViewTableWaiting() {
           item.first_name = !item?.customer_id ? 'Walk in' : item.customer.first_name
           item.last_name = item.customer?.last_name || ''
           item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm')
-          item.area = areas.find(i => i.id === item.area_id).name
+          item.area_name = item.area.name
           return item
         }).filter(x => x)
 

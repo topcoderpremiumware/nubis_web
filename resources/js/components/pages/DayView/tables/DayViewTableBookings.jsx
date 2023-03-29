@@ -17,7 +17,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(async () => {
+  useEffect(() => {
     getOrders()
     eventBus.on("placeChanged", () => {
       getOrders()
@@ -51,27 +51,17 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     { field: 'menu', headerName: t('Menu'), width: 100},
     { field: 'order_date', headerName: t('Order date'), width: 140 },
     { field: 'status', headerName: t('Status'), width: 100 },
-    { field: 'area', headerName: t('Area'), width: 160 },
+    { field: 'area_name', headerName: t('Area'), width: 160 },
   ];
 
-
-  const getOrders = async () => {
+  const getOrders = () => {
     setLoading(true)
     if(localStorage.getItem('place_id') &&
       localStorage.getItem('area_id') /*&&
       localStorage.getItem('time')*/){
-      let areas = []
-      await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`, {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }).then(response => {
-        areas = response.data
-      })
-
       let date = localStorage.getItem('date') || Moment.utc().format('YYYY-MM-DD')
       let time = JSON.parse(localStorage.getItem('time')) || {from: '00:00:00',to: '23:59:59'}
-      await axios.get(`${process.env.MIX_API_URL}/api/orders`, {
+      axios.get(`${process.env.MIX_API_URL}/api/orders`, {
         params: {
           place_id: localStorage.getItem('place_id'),
           area_id: localStorage.getItem('area_id'),
@@ -92,7 +82,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
           item.tables = item.is_take_away ? '' : item.table_ids.join(', ')
           item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm')
           item.take_away = item.is_take_away ? t('yes') : t('no')
-          item.area = areas.find(i => i.id === item.area_id).name
+          item.area_name = item.area.name
           item.menu = item.custom_booking_length_id ? item.custom_booking_length.name : ''
           return item
         }).filter(x => x)

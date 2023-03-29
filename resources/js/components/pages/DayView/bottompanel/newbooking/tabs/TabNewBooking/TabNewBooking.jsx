@@ -95,6 +95,9 @@ export default function TabNewBooking(props) {
       data.push(order.reservation_time)
       setTimes(data)
     }).catch(error => {
+      let data = []
+      data.push(order.reservation_time)
+      setTimes(data)
     })
   }
 

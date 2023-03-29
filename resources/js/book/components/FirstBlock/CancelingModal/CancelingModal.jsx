@@ -32,11 +32,14 @@ export default function CancelingModal(props) {
         setActive(false)
       }).catch(error => { })
     }
+    if(defaultModal === 'canceling'){
+      setCancelType()
+    }
   }
 
-  const setCancelType = () => {
+  const setCancelType = async () => {
     if (defaultModal === "canceling" && localStorage.getItem("token")) {
-      props.getOrders();
+      await props.getOrders();
     } else if (defaultModal === "canceling") {
       props.setDefaultModal("confirmation");
     }
@@ -126,10 +129,10 @@ export default function CancelingModal(props) {
                 </div>
                 <div className="guests-date">
                   {t('Guests')}: &nbsp;
-                  <b>{props.filteredOrder[0].seats}</b>
+                  <b>{props.filteredOrder ? props.filteredOrder[0].seats : ''}</b>
                   <br />
                   {t('Day/time')}: &nbsp;
-                  <b>{moment.utc(props.filteredOrder[0].reservation_time).local().format('YYYY-MM-DD HH:mm')}</b>
+                  <b>{props.filteredOrder ? moment.utc(props.filteredOrder[0].reservation_time).local().format('YYYY-MM-DD HH:mm') : ''}</b>
                 </div>
               </div>
             </div>
@@ -174,8 +177,8 @@ export default function CancelingModal(props) {
             </div>
           </div>
         )}
-        {defaultModal === "canceling" ||
-          (defaultModal === "morePeople" && (
+        {(defaultModal === "canceling" ||
+          defaultModal === "morePeople") && (
             <div className="modal-button">
               <button
                 type="button"
@@ -185,7 +188,7 @@ export default function CancelingModal(props) {
                 {t('Continue')} →
               </button>
             </div>
-          ))}
+          )}
         {defaultModal === "confirmation" && (
           <div className="modal-button">
             <button
@@ -204,7 +207,7 @@ export default function CancelingModal(props) {
               className="button-main"
               style={{ width: "250px" }}
             >
-              <a href="/" style={{ textDecoration: "none", color: "white" }}>
+              <a href={`/book/${getPlaceId()}`} style={{ textDecoration: "none", color: "white" }}>
                 {t('Make new booking')} →
               </a>
             </button>
@@ -212,7 +215,7 @@ export default function CancelingModal(props) {
         )}
         {(defaultModal === "confirmation" || defaultModal === "canceling") && (
           <div className="canceling-footer">
-            <a href="/#">{t('Return without canceling')}</a>
+            <a href={`/book/${getPlaceId()}`}>{t('Return without canceling')}</a>
           </div>
         )}
         {!props.ordersError && (

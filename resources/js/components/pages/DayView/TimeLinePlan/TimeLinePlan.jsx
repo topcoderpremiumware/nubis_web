@@ -79,9 +79,9 @@ export default function TimeLinePlan(props) {
       orders.forEach(item => {
         item.table_ids.forEach(t => {
           it.push({
-            id: item.id,
+            id: item.id+'_'+t,
             group: t,
-            title_name: item.customer_id ? (item.seats + ' ' +item.customer.first_name+' '+item.customer.last_name) : 'Walk in',
+            title_name:  '#'+item.id+', ('+item.seats + ') ' +(item.customer_id ? item.customer.first_name+' '+item.customer.last_name : 'Walk in'),
             tip: tableTip(item),
             canMove: false,
             canResize: false,

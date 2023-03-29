@@ -207,7 +207,7 @@ class OrderController extends Controller
         if($request->area_id != 'all') {
             $orders = $orders->where('area_id', $request->area_id);
         }
-        $orders = $orders->with(['customer', 'custom_booking_length'])
+        $orders = $orders->with(['customer', 'custom_booking_length', 'area'])
             ->whereBetween('reservation_time', [$request->reservation_from, $request->reservation_to]);
         if($request->has('deleted')){
             $orders = $orders->onlyTrashed();
@@ -1055,7 +1055,9 @@ class OrderController extends Controller
                     break;
                 }
             }
-            $result[$plan_id] = array_map("unserialize", array_unique(array_map("serialize", $result[$plan_id])));
+            if(array_key_exists($plan_id,$result)){
+                $result[$plan_id] = array_map("unserialize", array_unique(array_map("serialize", $result[$plan_id])));
+            }
         }
 
         return response()->json($result);

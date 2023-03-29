@@ -172,7 +172,7 @@ const DayViewPdf = ({ title, columns, data }) => {
             <Text style={styles.td12}>{i.menu}</Text>
             <Text style={styles.td13}>{i.order_date}</Text>
             <Text style={styles.td14}>{i.status}</Text>
-            <Text style={styles.td15}>{i.area}</Text>
+            <Text style={styles.td15}>{i.area_name}</Text>
           </View>
         ))}
       </Page>

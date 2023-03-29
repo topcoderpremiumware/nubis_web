@@ -439,7 +439,7 @@ class OrderController extends Controller
                 ->where('area_id',$request->area_id)
                 ->whereBetween('reservation_time',[$time_from,$time_to])
                 ->where('is_take_away',0)
-                ->whereIn('status',['confirmed','arrived'])
+                ->whereIn('status',['confirmed','arrived','pending'])
                 ->get();
 
             if($this->getFreeTables($orders, $working_hours, $request->seats)){
@@ -498,7 +498,7 @@ class OrderController extends Controller
             ->where('area_id',$request->area_id)
             ->whereBetween('reservation_time',[$time_from,$time_to])
             ->where('is_take_away',0)
-            ->whereIn('status',['confirmed','arrived'])
+            ->whereIn('status',['confirmed','arrived','pending'])
             ->get();
 
         $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
@@ -518,7 +518,7 @@ class OrderController extends Controller
                             ->whereDate('reservation_time','<=',$time->format('Y-m-d H:i:s'))
                             ->whereRaw('date_add(reservation_time,interval length minute) >= \''.$time->format('Y-m-d H:i:s').'\'')
                             ->where('is_take_away',0)
-                            ->whereIn('status',['confirmed','arrived'])
+                            ->whereIn('status',['confirmed','arrived','pending'])
                             ->get();
                         foreach ($timeOrders as $timeOrder) {
                             $timeOrders_seats += $timeOrder->seats;
@@ -701,7 +701,7 @@ class OrderController extends Controller
                 ->where('area_id',$request->area_id)
                 ->whereBetween('reservation_time',[$time_from,$time_to])
                 ->where('is_take_away',0)
-                ->whereIn('status',['confirmed','arrived'])
+                ->whereIn('status',['confirmed','arrived','pending'])
                 ->get();
 
             $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
@@ -1011,7 +1011,7 @@ class OrderController extends Controller
             ->where('area_id',$request->area_id)
             ->whereBetween('reservation_time',[$time_from,$time_to])
             ->where('is_take_away',0)
-            ->whereIn('status',['confirmed','arrived'])
+            ->whereIn('status',['confirmed','arrived','pending'])
             ->get();
 
         $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);

@@ -233,7 +233,7 @@ class CustomBookingLengthController extends Controller
             ->where('area_id',$request->area_id)
             ->whereBetween('reservation_time',[$time_from,$time_to])
             ->where('is_take_away',0)
-            ->whereIn('status',['confirmed','arrived'])
+            ->whereIn('status',['confirmed','arrived','pending'])
             ->get();
 
         $free_tables = (new OrderController())->getFreeTables($orders, $working_hours, $request->seats, false);
@@ -279,9 +279,24 @@ class CustomBookingLengthController extends Controller
 
                         foreach ($free_tables as $tables) {
                             foreach ($tables as $table) {
+                                if($table['seats'] < $request->seats) continue;
                                 if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                                     array_push($times,$time->copy());
                                     break 2;
+                                }
+                            }
+                            $groups_table_seats = [];
+                            foreach ($tables as $table) {
+                                if(!array_key_exists('grouped',$table)) continue;
+                                if(array_key_exists('ordered', $table['time'][$indexFrom])) continue;
+                                if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                                    $group_id = $table['time'][0]['group'];
+                                    if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
+                                    $groups_table_seats[$group_id] += $table['seats'];
+                                    if($groups_table_seats[$group_id] >= $request->seats){
+                                        array_push($times,$time->copy());
+                                        break 2;
+                                    }
                                 }
                             }
                         }

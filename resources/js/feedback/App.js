@@ -50,14 +50,15 @@ function App() {
     }
   }
 
-  const checkFeedback = async () => {
-    const res = await axios.post(`${process.env.MIX_API_URL}/api/feedbacks/is_exist`, {
+  const checkFeedback = () => {
+    axios.post(`${process.env.MIX_API_URL}/api/feedbacks/is_exist`, {
       order_id: window.location.pathname.split('/')[2],
+    }).then(res => {
+      setFeedback(res.data.message)
     })
-    setFeedback(res.data.message)
   }
 
-  useLayoutEffect(async () => {
+  useLayoutEffect( () => {
     if(!localStorage.getItem('token')){
       window.location.href="/"
       // axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {

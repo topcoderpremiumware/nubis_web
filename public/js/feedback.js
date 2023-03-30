@@ -16478,60 +16478,28 @@ function App() {
     };
   }();
 
-  var checkFeedback = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      var res;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.next = 2;
-              return axios__WEBPACK_IMPORTED_MODULE_5___default().post("".concat("", "/api/feedbacks/is_exist"), {
-                order_id: window.location.pathname.split('/')[2]
-              });
+  var checkFeedback = function checkFeedback() {
+    axios__WEBPACK_IMPORTED_MODULE_5___default().post("".concat("", "/api/feedbacks/is_exist"), {
+      order_id: window.location.pathname.split('/')[2]
+    }).then(function (res) {
+      setFeedback(res.data.message);
+    });
+  };
 
-            case 2:
-              res = _context2.sent;
-              setFeedback(res.data.message);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect)(function () {
+    if (!localStorage.getItem('token')) {
+      window.location.href = "/"; // axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
+      //   setUserId(response.data?.id)
+      // }).catch(error => {
+      //   if (error.response.status === 401){
+      //     localStorage.clear()
+      //     window.location.href="/"
+      //   }
+      // })
+    }
 
-            case 4:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }));
-
-    return function checkFeedback() {
-      return _ref2.apply(this, arguments);
-    };
-  }();
-
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect)( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            if (!localStorage.getItem('token')) {
-              window.location.href = "/"; // axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
-              //   setUserId(response.data?.id)
-              // }).catch(error => {
-              //   if (error.response.status === 401){
-              //     localStorage.clear()
-              //     window.location.href="/"
-              //   }
-              // })
-            }
-
-            checkFeedback();
-
-          case 2:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3);
-  })), []);
+    checkFeedback();
+  }, []);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react__WEBPACK_IMPORTED_MODULE_0__.Suspense, {
     fallback: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_LoadingPage__WEBPACK_IMPORTED_MODULE_4__["default"], {}),
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {

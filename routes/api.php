@@ -63,6 +63,9 @@ Route::get('countries',[CountryController::class, 'getAll']);
 
 Route::get('custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByParams']);
 
+Route::post('feedbacks',[FeedbackController::class, 'create']);
+Route::post('feedbacks/is_exist',[FeedbackController::class, 'isFeedbackExist']);
+
 Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/logout',[CustomerController::class, 'logout']);
     Route::get('customers',function(Request $request){
@@ -79,9 +82,6 @@ Route::middleware('auth:customer_api')->group(function(){
 
     Route::post('make_order',[OrderController::class, 'makeOrder']);
     Route::delete('cancel_order/{id}',[OrderController::class, 'cancel']);
-
-    Route::post('feedbacks',[FeedbackController::class, 'create']);
-    Route::post('feedbacks/is_exist',[FeedbackController::class, 'isFeedbackExist']);
 });
 Route::middleware('auth:user_api')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);

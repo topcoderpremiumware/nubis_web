@@ -86,7 +86,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
           item.take_away = item.is_take_away ? t('yes') : t('no')
           item.area_name = item.area.name
           item.menu = item.custom_booking_length_id ? item.custom_booking_length.name : ''
-          item.amount = item.marks.hasOwnProperty('amount') ? item.marksitem.marks['amount'] : ''
+          item.amount = item.marks.hasOwnProperty('amount') ? item.marks['amount'] : ''
           item.code = item.marks.hasOwnProperty('giftcard_code') ? item.marks['giftcard_code'] : ''
           return item
         }).filter(x => x)

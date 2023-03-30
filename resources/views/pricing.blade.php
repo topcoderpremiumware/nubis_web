@@ -24,10 +24,10 @@
                 <span>€30</span>/{{__('month')}}
               </div>
               <p class="price-card-title">{{__('Monthly')}}</p>
-              <button
-                type="button"
+              <a
+                href="/admin/register"
                 class="price-card-btn"
-              >{{__('Choose plan')}}</button>
+              >{{__('Choose plan')}}</a>
               <div
                 class="price-card-trial"
                 onClick={payTrial}
@@ -41,10 +41,10 @@
               </div>
               <div class="price-card-per-month"><span>€25</span>/{{__('month')}}</div>
               <p class="price-card-title">{{__('semiannual')}}</p>
-              <button
-                type="button"
+              <a
+                href="/admin/register"
                 class="price-card-btn"
-              >{{__('Choose plan')}}</button>
+              >{{__('Choose plan')}}</a>
               <div
                 class="price-card-trial"
                 onClick={payTrial}
@@ -58,10 +58,10 @@
               </div>
               <div class="price-card-per-month"><span>€20</span>/{{__('month')}}</div>
               <p class="price-card-title">{{__('yearly')}}</p>
-              <button
-                type="button"
+              <a
+                href="/admin/register"
                 class="price-card-btn"
-              >{{__('Choose plan')}}</button>
+              >{{__('Choose plan')}}</a>
               <div
                 class="price-card-trial"
                 onClick={payTrial}

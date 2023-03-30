@@ -38,6 +38,9 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
     getPlan()
     getOrders()
     getTimesList()
+    eventBus.on("orderEdited",  () => {
+      getOrders()
+    });
   },[])
 
   useEffect(() => {
@@ -202,7 +205,6 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
       }
     ).then(response => {
       getPlan()
-      getOrders()
       eventBus.dispatch('orderEdited')
       eventBus.dispatch("notification", {type: 'success', message: response.data.message});
     }).catch(error => {
@@ -308,7 +310,6 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
         }
       }).then(() => {
         eventBus.dispatch('orderEdited')
-        getOrders()
       })
     }
   }

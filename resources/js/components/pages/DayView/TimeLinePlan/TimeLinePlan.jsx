@@ -8,6 +8,7 @@ import TimelineHeaders from "react-calendar-timeline/lib/lib/headers/TimelineHea
 import DateHeader from "react-calendar-timeline/lib/lib/headers/DateHeader";
 import Moment from "moment";
 import {BsFullscreen, BsFullscreenExit} from "react-icons/bs";
+import eventBus from "../../../../eventBus";
 // https://www.npmjs.com/package/react-calendar-timeline
 
 export default function TimeLinePlan(props) {
@@ -38,6 +39,9 @@ export default function TimeLinePlan(props) {
   useEffect(() => {
     getPlan()
     getOrders()
+    eventBus.on("orderEdited",  () => {
+      getOrders()
+    });
   },[])
 
   const getPlan = () => {

@@ -244,12 +244,12 @@ function LastBlock(props) {
                 (props.paymentMethod?.['online-payment-method'] === 'deduct' ||
                   props.paymentMethod?.['online-payment-method'] === 'reserve') && (
                   <div>
-                    <div className="client-title__comment">{t('Apply discount')}</div>
+                    <div className="client-title__comment">{t('Use giftcard')}</div>
                     <div className="discount-wrapper">
                       <input
                         type="text"
                         className="form-name__comment"
-                        placeholder={t('Enter a discount code')}
+                        placeholder={t('Enter giftcard code')}
                         value={giftCode}
                         onChange={ev => setGiftCode(ev.target.value)}
                         readOnly={checkingGiftCard || appliedGift}

@@ -52,7 +52,8 @@ export default function CheckGiftCardPopup({ open, handleClose }) {
 
       const response = await axios.get(process.env.MIX_API_URL + '/api/giftcards_check', {
         params: {
-          code
+          code: code,
+          place_id: localStorage.getItem('place_id')
         },
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')

@@ -48,6 +48,8 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     { field: 'length', headerName: t('Booking Length'), width: 100 },
     { field: 'source', headerName: t('Source'), width: 70 },
     { field: 'comment', headerName: t('Note'), width: 200},
+    { field: 'amount', headerName: t('Amount'), width: 100},
+    { field: 'code', headerName: t('Code'), width: 100},
     { field: 'menu', headerName: t('Menu'), width: 100},
     { field: 'order_date', headerName: t('Order date'), width: 140 },
     { field: 'status', headerName: t('Status'), width: 100 },
@@ -84,6 +86,8 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
           item.take_away = item.is_take_away ? t('yes') : t('no')
           item.area_name = item.area.name
           item.menu = item.custom_booking_length_id ? item.custom_booking_length.name : ''
+          item.amount = item.marks.hasOwnProperty('amount') ? item.marksitem.marks['amount'] : ''
+          item.code = item.marks.hasOwnProperty('giftcard_code') ? item.marks['giftcard_code'] : ''
           return item
         }).filter(x => x)
 

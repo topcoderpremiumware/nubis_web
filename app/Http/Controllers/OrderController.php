@@ -806,7 +806,6 @@ class OrderController extends Controller
                     $order->save();
                 }
             } else {
-                self::sendNewOrderNotification($order,$place);
                 if(!$request->has('setup_intent_id')){
                     return response()->json([
                         'message' => 'There are no setup_intent_id'
@@ -826,6 +825,7 @@ class OrderController extends Controller
                     $order->timestamps = false;
                     $order->save();
                 }
+                self::sendNewOrderNotification($order,$place);
             }
         }else{
             self::sendNewOrderNotification($order,$place);

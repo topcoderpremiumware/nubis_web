@@ -14,8 +14,7 @@ import moment from "moment";
 function LastBlock(props) {
   const { t } = useTranslation();
   const [modalActive, setModalActive] = useState(false);
-  const [comment, setComment] = useState('')
-  const { selectedDay, selectedTime, restaurantInfo, orderResponse } = props;
+  const { selectedDay, selectedTime, restaurantInfo, orderResponse, comment, setComment } = props;
   const [stripeKey, setStripeKey] = useState('')
   const [stripeSecret, setStripeSecret] = useState('')
   const [giftCode, setGiftCode] = useState('')
@@ -347,7 +346,7 @@ function LastBlock(props) {
                   </div>
                 </div>
                 <div className="thanks-actions">
-                  <div>
+                  <div onClick={() => window.location.reload()}>
                     {t('Cancel a booking')}
                   </div>
                   <div onClick={() => window.location.reload()}>

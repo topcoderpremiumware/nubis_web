@@ -69,6 +69,7 @@ const App = () => {
   const [showSelectAreas, setShowSelectAreas] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState({})
   const [giftCardCode, setGiftCardCode] = useState('')
+  const [comment, setComment] = useState('')
 
   const myAxios = axios.create({
     baseURL: process.env.MIX_API_URL,
@@ -276,7 +277,7 @@ const App = () => {
           reservation_time: `${selectedDay.year}-${normalizeNumber(
             selectedDay.month
           )}-${normalizeNumber(selectedDay.day)} ${selectedTime}`,
-          comment: "",
+          comment: comment,
           status: defaultModal === "submit" ? "waiting" : "ordered",
           length: timeline,
           is_take_away: false,
@@ -487,6 +488,8 @@ const App = () => {
               paymentMethod={paymentMethod}
               giftCardCode={giftCardCode}
               setGiftCardCode={setGiftCardCode}
+              comment={comment}
+              setComment={setComment}
             />
           </div>
         </Carousel>

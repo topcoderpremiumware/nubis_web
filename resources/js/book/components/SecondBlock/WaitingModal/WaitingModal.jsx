@@ -231,12 +231,12 @@ export default function WaitingModal(props) {
               </a>
             </div>
             <div>
-              <a href="/#" className="waiting-footer">
+              <a href={`/book/${props.getPlaceId()}`} className="waiting-footer">
                 {t('Cancel a booking')}
               </a>
             </div>
             <div>
-              <a href="/" className="waiting-footer">
+              <a href={`/book/${props.getPlaceId()}`} className="waiting-footer">
                 {t('New booking')}
               </a>
             </div>

@@ -251,6 +251,7 @@ class GiftcardController extends Controller
         ]);
 
         $giftcard = Giftcard::where('code',$request->code)
+            ->where('place_id',$request->place_id)
             ->first();
 
         if($giftcard === null){

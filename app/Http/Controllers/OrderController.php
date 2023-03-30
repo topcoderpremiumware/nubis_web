@@ -334,14 +334,8 @@ class OrderController extends Controller
             }elseif($order->marks['method'] == 'no_show'){
                 if(array_key_exists('payment_method_id',$order->marks)){
                     if(Carbon::now()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
-                        $payment_intent = $stripe->paymentIntents->create([
-                            'amount' => $order->marks['amount'] * 100,
-                            'currency' => $order->marks['currency'],
-                            'confirm' => true,
-                            'off_session' => true,
-                            'payment_method' => $order->marks['payment_method_id'],
-                            'customer' => $order->marks['customer_id'],
-                        ]);
+                        $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
+                        $payment_intent->capture();
                     }
                 }
             }
@@ -387,14 +381,8 @@ class OrderController extends Controller
         if($status == 'no_show' && $order->marks['method'] == 'no_show' && array_key_exists('payment_method_id',$order->marks)){
             $stripe_secret = $order->place->setting('stripe-secret');
             $stripe = new StripeClient($stripe_secret);
-            $payment_intent = $stripe->paymentIntents->create([
-                'amount' => $order->marks['amount'] * 100,
-                'currency' => $order->marks['currency'],
-                'confirm' => true,
-                'off_session' => true,
-                'payment_method' => $order->marks['payment_method_id'],
-                'customer' => $order->marks['customer_id']
-            ]);
+            $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
+            $payment_intent->capture();
         }
 
         if($status == 'completed' && $order->customer_id){
@@ -947,8 +935,27 @@ class OrderController extends Controller
             }
         }elseif($method === 'no_show'){ // 3) для третього методу треба створити card_token і його ід записати в marks
             $setup_intent = $stripe->setupIntents->retrieve($request->setup_intent_id);
+            try {
+                $payment_intent = $stripe->paymentIntents->create([
+                    'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency,$request->place_id) * 100,
+                    'currency' => $currency,
+                    'confirm' => true,
+                    'off_session' => true,
+                    'payment_method' => $setup_intent->payment_method,
+                    'customer' => $setup_intent->customer,
+                    'capture_method' => 'manual'
+                ]);
+            } catch (\Stripe\Exception\CardException $e) {
+                $payment_intent_id = $e->getError()->payment_intent->id;
+                $payment_intent = $stripe->paymentIntents->retrieve($payment_intent_id);
+                $marks['error'] = [
+                    'message' => $e->getError()->code,
+                    'payment_intent' => $payment_intent
+                ];
+            }
             $marks['customer_id'] = $setup_intent->customer;
             $marks['payment_method_id'] = $setup_intent->payment_method;
+            $marks['payment_intent_id'] = $payment_intent->id;
         }
 
         return $marks;

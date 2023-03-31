@@ -184,30 +184,31 @@ export default function TablePropertiesPopup(props) {
           <Table>
           <TableHead>
             <TableRow>
-              <TableCell size="small"></TableCell>
-              <TableCell size="small">{t('Time')}</TableCell>
+              {/*<TableCell size="small"></TableCell>*/}
+              {/*<TableCell size="small">{t('Time')}</TableCell>*/}
               <TableCell size="small">{t('Internal')}</TableCell>
               <TableCell size="small">{t('Online')}</TableCell>
               <TableCell size="small">{t('Priority')}</TableCell>
               <TableCell size="small">{t('Available')}</TableCell>
               <TableCell size="small">{t('Group')}</TableCell>
-              <TableCell size="small" style={{width:'140px'}}>{t('Booking length')}</TableCell>
+              {/*<TableCell size="small" style={{width:'140px'}}>{t('Booking length')}</TableCell>*/}
               <TableCell size="small">{t('Group priority')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {table.data.time.map((time,key) => {
+              if(key > 0) return null
               return <StyledTableRow key={key}>
-                <TableCell size="small">
-                  {key === editRow ?
-                    <></>
-                    :
-                    <IconButton onClick={e => {setEditRow(key)}} size="small">
-                      <EditIcon fontSize="small"/>
-                    </IconButton>
-                  }
-                </TableCell>
-                <TableCell size="small">{tableTime(key)}</TableCell>
+                {/*<TableCell size="small">*/}
+                {/*  {key === editRow ?*/}
+                {/*    <></>*/}
+                {/*    :*/}
+                {/*    <IconButton onClick={e => {setEditRow(key)}} size="small">*/}
+                {/*      <EditIcon fontSize="small"/>*/}
+                {/*    </IconButton>*/}
+                {/*  }*/}
+                {/*</TableCell>*/}
+                {/*<TableCell size="small">{tableTime(key)}</TableCell>*/}
                 <TableCell size="small">
                   {key === editRow ?
                     <Checkbox id={`is_internal_${key}`} sx={{py: 0}} size="small" name="is_internal"
@@ -251,19 +252,19 @@ export default function TablePropertiesPopup(props) {
                     <>{time.group}</>
                   }
                 </TableCell>
-                <TableCell size="small">
-                  {key === editRow ?
-                  <Select value={intWrapper(time.booking_length)} size="small" variant="standard" fullWidth
-                          id={`booking_length_${key}`} name="booking_length"
-                          onChange={e => {onTimeChange(e,key)}}>
-                    {bookingOptions().map((el,key) => {
-                      return <MenuItem key={key} value={el}>{el}</MenuItem>
-                    })}
-                  </Select>
-                    :
-                    <>{time.booking_length}</>
-                  }
-                </TableCell>
+                {/*<TableCell size="small">*/}
+                {/*  {key === editRow ?*/}
+                {/*  <Select value={intWrapper(time.booking_length)} size="small" variant="standard" fullWidth*/}
+                {/*          id={`booking_length_${key}`} name="booking_length"*/}
+                {/*          onChange={e => {onTimeChange(e,key)}}>*/}
+                {/*    {bookingOptions().map((el,key) => {*/}
+                {/*      return <MenuItem key={key} value={el}>{el}</MenuItem>*/}
+                {/*    })}*/}
+                {/*  </Select>*/}
+                {/*    :*/}
+                {/*    <>{time.booking_length}</>*/}
+                {/*  }*/}
+                {/*</TableCell>*/}
                 <TableCell size="small">
                   {key === editRow ?
                   <TextField id={`group_priority_${key}`} type="text" name="group_priority" size="small" fullWidth
@@ -279,11 +280,11 @@ export default function TablePropertiesPopup(props) {
         </Table>}
       </DialogContent>
       <DialogActions sx={{p:2}}>
-        {!table.data.type.startsWith('land') && <FormControlLabel sx={{mr:'auto'}}
-          control={<Checkbox name="copy" checked={copy} onChange={onChange}/>}
-          label={t('Copy values down')}
-          labelPlacement="end"
-        />}
+        {/*{!table.data.type.startsWith('land') && <FormControlLabel sx={{mr:'auto'}}*/}
+        {/*  control={<Checkbox name="copy" checked={copy} onChange={onChange}/>}*/}
+        {/*  label={t('Copy values down')}*/}
+        {/*  labelPlacement="end"*/}
+        {/*/>}*/}
         <Button variant="outlined" onClick={handleClose}>{t('Cancel')}</Button>
         <Button variant="contained" onClick={handleSave}>{t('Save')}</Button>
       </DialogActions>

@@ -58,9 +58,16 @@ class Tableplan extends Model
 
     public function getTables()
     {
-        return array_filter($this->data,function($el){
+        $tables = array_filter($this->data,function($el){
             return array_key_exists('number',$el);
         });
+
+        usort($tables,function($a, $b){
+            if ($a['time'][0]['priority'] == $b['time'][0]['priority']) return 0;
+            return ($a['time'][0]['priority'] < $b['time'][0]['priority']) ? -1 : 1;
+        });
+
+        return $tables;
     }
 
     public function getTableGroups()
@@ -84,6 +91,12 @@ class Tableplan extends Model
                 ];
             }
         }
+
+        usort($groups,function($a, $b){
+            if ($a['time'][0]['group_priority'] == $b['time'][0]['group_priority']) return 0;
+            return ($a['time'][0]['group_priority'] < $b['time'][0]['group_priority']) ? -1 : 1;
+        });
+
         return $groups;
     }
 }

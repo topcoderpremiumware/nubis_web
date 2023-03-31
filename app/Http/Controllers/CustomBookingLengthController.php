@@ -281,6 +281,13 @@ class CustomBookingLengthController extends Controller
                             foreach ($tables as $table) {
                                 if($table['seats'] < $request->seats) continue;
                                 if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                                    $reserv_to = $time->copy()->addMinutes($custom_length->length);
+                                    $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
+                                    for($i = $indexFrom;$i<=$indexTo;$i++){
+                                        if(array_key_exists('ordered', $table['time'][$i])){
+                                            continue 2;
+                                        }
+                                    }
                                     array_push($times,$time->copy());
                                     break 2;
                                 }
@@ -294,6 +301,13 @@ class CustomBookingLengthController extends Controller
                                     if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
                                     $groups_table_seats[$group_id] += $table['seats'];
                                     if($groups_table_seats[$group_id] >= $request->seats){
+                                        $reserv_to = $time->copy()->addMinutes($custom_length->length);
+                                        $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
+                                        for($i = $indexFrom;$i<=$indexTo;$i++){
+                                            if(array_key_exists('ordered', $table['time'][$i])){
+                                                continue 2;
+                                            }
+                                        }
                                         array_push($times,$time->copy());
                                         break 2;
                                     }

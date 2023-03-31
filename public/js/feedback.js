@@ -16487,17 +16487,17 @@ function App() {
   };
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect)(function () {
-    if (!localStorage.getItem('token')) {
-      window.location.href = "/"; // axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
-      //   setUserId(response.data?.id)
-      // }).catch(error => {
-      //   if (error.response.status === 401){
-      //     localStorage.clear()
-      //     window.location.href="/"
-      //   }
-      // })
-    }
-
+    // if(!localStorage.getItem('token')){
+    //   window.location.href="/"
+    //   // axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
+    //   //   setUserId(response.data?.id)
+    //   // }).catch(error => {
+    //   //   if (error.response.status === 401){
+    //   //     localStorage.clear()
+    //   //     window.location.href="/"
+    //   //   }
+    //   // })
+    // }
     checkFeedback();
   }, []);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react__WEBPACK_IMPORTED_MODULE_0__.Suspense, {

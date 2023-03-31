@@ -59,17 +59,17 @@ function App() {
   }
 
   useLayoutEffect( () => {
-    if(!localStorage.getItem('token')){
-      window.location.href="/"
-      // axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
-      //   setUserId(response.data?.id)
-      // }).catch(error => {
-      //   if (error.response.status === 401){
-      //     localStorage.clear()
-      //     window.location.href="/"
-      //   }
-      // })
-    }
+    // if(!localStorage.getItem('token')){
+    //   window.location.href="/"
+    //   // axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
+    //   //   setUserId(response.data?.id)
+    //   // }).catch(error => {
+    //   //   if (error.response.status === 401){
+    //   //     localStorage.clear()
+    //   //     window.location.href="/"
+    //   //   }
+    //   // })
+    // }
     checkFeedback()
   }, [])
 

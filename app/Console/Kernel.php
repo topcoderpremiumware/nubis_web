@@ -22,7 +22,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('model:prune')->daily();
         $schedule->job(new ReminderNotification)->everyTenMinutes();
         $schedule->job(new ReserveAmountPayment)->everyTenMinutes();
-        $schedule->job(new ForceOrderCompleted)->hourly();
+        $schedule->job(new ForceOrderCompleted)->hourly()->when(function () {
+            return date('H') >= 9 && date('H') <= 20;
+        });;
     }
 
     /**

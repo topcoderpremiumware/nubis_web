@@ -76,7 +76,6 @@ function App() {
   return (
     <Suspense fallback={<LoadingPage/>}>
       <div className="feedback-content">
-        {localStorage.getItem('token') ?
           <>
             <h1 className="feedback-title">Feedback</h1>
             {feedback === "Feedback hasn't been created yet" ? (
@@ -162,9 +161,6 @@ function App() {
               <p className="feedback-text">{feedback}</p>
             )}
           </>
-          :
-          null
-        }
       </div>
     </Suspense>
   );

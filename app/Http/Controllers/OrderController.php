@@ -523,7 +523,14 @@ class OrderController extends Controller
                         $booking_limits = $working_hour['booking_limits'][$indexFrom];
                         $is_max_seats = $booking_limits['max_seats'] == 0 ? true : $booking_limits['max_seats'] > $timeOrders_seats;
                         $is_max_books = $booking_limits['max_books'] == 0 ? true : $booking_limits['max_books'] > count($timeOrders);
-                        $logs['limits'][] = ['is_max_seats' => $is_max_seats,'is_max_books' => $is_max_books];
+                        $logs['limits'][] = [
+                            'is_max_seats' => $is_max_seats,
+                            'is_max_books' => $is_max_books,
+                            'max_seats' => $booking_limits['max_seats'],
+                            'max_books' => $booking_limits['max_books'],
+                            'timeOrders_seats' => $timeOrders_seats,
+                            'orders_count' => count($timeOrders)
+                        ];
                         if(!$is_max_seats || !$is_max_books) continue;
                     }
 

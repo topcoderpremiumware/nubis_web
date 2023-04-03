@@ -130,7 +130,7 @@ export default function TimetableEditPopup(props) {
   const tableTime = (key) => {
     var tt = new Date(0);
     tt = new Date(tt.getTime() + key*15*60000)
-    return (tt.getUTCHours()<10?'0':'')+tt.getUTCHours()+':'+(tt.getMinutes()<10?'0':'')+tt.getMinutes()
+    return (tt.getHours()<10?'0':'')+tt.getHours()+':'+(tt.getMinutes()<10?'0':'')+tt.getMinutes()
   }
 
   return (<>

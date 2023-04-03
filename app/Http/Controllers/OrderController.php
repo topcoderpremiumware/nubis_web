@@ -496,6 +496,7 @@ class OrderController extends Controller
         $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
 
         $logs['free_tables'] = $free_tables;
+        $logs['working_hours'] = $working_hours;
 
         $free_time = [];
         foreach($working_hours as $working_hour){
@@ -531,7 +532,11 @@ class OrderController extends Controller
                             if (!$time->lt(Carbon::now())) {
                                 array_push($free_time, $time->copy());
                                 break;
+                            }else{
+                                $logs['not'][$time->toString()][$table['number']] = 'рано';
                             }
+                        }else{
+                            $logs['not'][$time->toString()][$table['number']] = 'ordered';
                         }
                     }
                 }

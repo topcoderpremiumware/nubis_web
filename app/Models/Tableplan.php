@@ -93,8 +93,8 @@ class Tableplan extends Model
         }
 
         usort($groups,function($a, $b){
-            if ($a['time'][0]['group_priority'] == $b['time'][0]['group_priority']) return 0;
-            return ($a['time'][0]['group_priority'] < $b['time'][0]['group_priority']) ? -1 : 1;
+            if ($a['group_priority'] == $b['group_priority']) return 0;
+            return ($a['group_priority'] < $b['group_priority']) ? -1 : 1;
         });
 
         return $groups;

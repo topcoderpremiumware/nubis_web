@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
@@ -27,33 +29,43 @@ class Order extends Model
         'reservation_time' => 'datetime'
     ];
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function place()
+    public function place(): BelongsTo
     {
         return $this->belongsTo(Place::class);
     }
 
-    public function tableplan()
+    public function tableplan(): BelongsTo
     {
         return $this->belongsTo(Tableplan::class);
     }
 
-    public function area()
+    public function area(): BelongsTo
     {
         return $this->belongsTo(Area::class);
     }
 
-    public function feedbacks()
+    public function feedbacks(): HasMany
     {
         return $this->hasMany(Feedback::class);
     }
 
-    public function custom_booking_length()
+    public function custom_booking_length(): BelongsTo
     {
         return $this->belongsTo(CustomBookingLength::class);
+    }
+
+    public function refundGiftcard()
+    {
+        $discount = floatval($this->marks['amountWithoutDiscount']) - floatval($this->marks['amount']);
+        $giftcard = Giftcard::where('code',$this->marks['giftcard_code'])
+            ->first();
+        if($giftcard){
+            $giftcard->refund($discount);
+        }
     }
 }

@@ -318,6 +318,7 @@ class OrderController extends Controller
                 if(array_key_exists('payment_intent_id',$order->marks)){
                     if(Carbon::now()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']){
                         $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
+                        $order->refundGiftcard();
                     }
                 }
             }elseif($order->marks['method'] == 'reserve'){
@@ -326,6 +327,7 @@ class OrderController extends Controller
                         $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
                         if($payment_intent->status == 'succeeded'){
                             $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
+                            $order->refundGiftcard();
                         }else{
                             $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'requested_by_customer']);
                         }

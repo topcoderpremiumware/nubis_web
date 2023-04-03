@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Giftcard extends Model
 {
@@ -11,12 +12,12 @@ class Giftcard extends Model
 
     protected $guarded = [];
 
-    public function place()
+    public function place(): BelongsTo
     {
         return $this->belongsTo(Place::class);
     }
 
-    public function spend($amount)
+    public function spend($amount): bool
     {
         $amount = floatval($amount);
         if($this->spend_amount + $amount <= $this->initial_amount){
@@ -55,5 +56,17 @@ class Giftcard extends Model
             $code = str()->random(6);
         } while (Giftcard::where('code', $code)->exists());
         return $code;
+    }
+
+    public function refund($amount): bool
+    {
+        $amount = floatval($amount);
+        if($this->spend_amount - $amount >= 0){
+            $this->spend_amount -= $amount;
+            $this->save();
+            return true;
+        }else{
+            return false;
+        }
     }
 }

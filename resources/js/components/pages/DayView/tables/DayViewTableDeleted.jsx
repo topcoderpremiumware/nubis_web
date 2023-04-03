@@ -95,8 +95,8 @@ export default function DayViewTableWaiting() {
       <DataGrid
         rows={orders}
         columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[10]}
+        pageSize={50}
+        rowsPerPageOptions={[50]}
         // checkboxSelection
       />
     </div>

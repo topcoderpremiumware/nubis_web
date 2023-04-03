@@ -480,6 +480,8 @@ class OrderController extends Controller
             'message' => 'Non-working day'
         ], 400);
 
+        $logs = [];
+
         $time_from = $request_date->copy();
         $time_from->setTime(0, 0, 0);
         $time_to = $request_date->copy();
@@ -492,6 +494,9 @@ class OrderController extends Controller
             ->get();
 
         $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
+
+        $logs['free_tables'] = $free_tables;
+
         $free_time = [];
         foreach($working_hours as $working_hour){
             $time = Carbon::parse($request->date.' '.$working_hour['from']);
@@ -517,6 +522,7 @@ class OrderController extends Controller
                         $booking_limits = $working_hour['booking_limits'][$indexFrom];
                         $is_max_seats = $booking_limits['max_seats'] == 0 ? true : $booking_limits['max_seats'] > $timeOrders_seats;
                         $is_max_books = $booking_limits['max_books'] == 0 ? true : $booking_limits['max_books'] > count($timeOrders);
+                        $logs['limits'][] = ['is_max_seats' => $is_max_seats,'is_max_books' => $is_max_books];
                         if(!$is_max_seats || !$is_max_books) continue;
                     }
 
@@ -531,7 +537,7 @@ class OrderController extends Controller
                 }
             }
         }
-        return response()->json($free_time);
+        return response()->json(['free_time' => $free_time,'logs' => $logs]);
     }
 
     public function workTime(Request $request)

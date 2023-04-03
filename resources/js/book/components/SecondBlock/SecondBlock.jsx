@@ -137,8 +137,8 @@ function SecondBlock(props) {
       },
     })
       .then((response) => {
-        if(response.data.length) {
-          const timesArray = response.data?.map((time) => ({
+        if(response.data.free_time.length) {
+          const timesArray = response.data?.free_time?.map((time) => ({
             time: moment.utc(time).format('HH:mm:ss'),
             shortTime: moment.utc(time).local().format('HH:mm'),
           }));

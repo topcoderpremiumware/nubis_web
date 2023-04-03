@@ -7,9 +7,7 @@ import {
 import Moment from "moment";
 import {DataGrid} from "@mui/x-data-grid";
 import eventBus from "../../../../eventBus";
-import Button from "@mui/material/Button";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import DayViewPdf from "../DayViewPdf/DayViewPdf";
+import axios from "axios";
 
 export default function DayViewTableBookings({ setSelectedOrder }) {
   const {t} = useTranslation();
@@ -103,18 +101,48 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     }
   }
 
+  const switchOrder = (data) => {
+    setLoading(true);
+    axios.post(`${process.env.MIX_API_URL}/api/orders_switch_tables`, data, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+    ).then(response => {
+      setLoading(false);
+      getOrders()
+      eventBus.dispatch("notification", {type: 'success', message: response.data.message});
+    }).catch(error => {
+      setLoading(false);
+      getOrders()
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          eventBus.dispatch("notification", {type: 'error', message: value});
+        }
+      } else {
+        eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
+      }
+    })
+  }
+
   const doubleClickHandler = (params, event, details) => {
     setSelectedOrder(params.row)
   }
+
+  const handleRowOrderChange = async (params) => {
+    switchOrder({first_order_id: orders[params.oldIndex].id, second_id: orders[params.targetIndex].id, type: 'order'})
+  };
 
   return (<>{loading ? <div><CircularProgress/></div> :
     <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
         rows={orders}
         columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[10]}
+        pageSize={50}
+        rowsPerPageOptions={[50]}
         onRowDoubleClick={doubleClickHandler}
+        rowReordering
+        onRowOrderChange={handleRowOrderChange}
         // checkboxSelection
       />
     </div>

@@ -36,7 +36,7 @@ class PlaceController extends Controller
             $organization_id = $organization->id;
         }else{
             $place = Place::whereHas('users',function (Builder $q) {
-                $q->whereIn('id',Auth::user()->id);
+                $q->where('id',Auth::user()->id);
             })->whereNotNull('organization_id')->first();
             if(!$place){
                 return response()->json([

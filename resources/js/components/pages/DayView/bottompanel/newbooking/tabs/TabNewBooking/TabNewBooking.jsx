@@ -92,11 +92,15 @@ export default function TabNewBooking(props) {
       }
     }).then(response => {
       let data = response.data
-      data.push(order.reservation_time)
+      if(order.hasOwnProperty('reservation_time') && order.reservation_time){
+        data.push(order.reservation_time)
+      }
       setTimes(data)
     }).catch(error => {
       let data = []
-      data.push(order.reservation_time)
+      if(order.hasOwnProperty('reservation_time') && order.reservation_time){
+        data.push(order.reservation_time)
+      }
       setTimes(data)
     })
   }

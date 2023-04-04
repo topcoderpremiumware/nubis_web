@@ -275,7 +275,7 @@ export default function TabNewBooking(props) {
       await axios.post(order_request, {
           ...rest,
           ...(!isWalkIn && {customer, customer_id: customer_id || newCustomerId}),
-          reservation_time: moment(order.reservation_time).format('YYYY-MM-DD HH:mm:ss'),
+          reservation_time: moment.utc(order.reservation_time).utc().format('YYYY-MM-DD HH:mm:ss'),
         }, {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')

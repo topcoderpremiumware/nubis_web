@@ -534,19 +534,43 @@ class OrderController extends Controller
                         if(!$is_max_seats || !$is_max_books) continue;
                     }
 
+//                    foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
+//                        if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+//                            if (!$time->lt(Carbon::now())) {
+//                                $reserv_to = $time->copy()->addMinutes($working_hour['length']);
+//                                $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
+//                                for($i = $indexFrom;$i<=$indexTo;$i++) {
+//                                    if(array_key_exists('ordered', $table['time'][$i])){
+//                                        continue 2;
+//                                    }
+//                                }
+//                                $logs['selected_table'][$time->toString()][] = $table;
+//                                array_push($free_time, $time->copy());
+//                                break;
+//                            }else{
+//                                $logs['not'][$time->toString()][$table['number']] = 'рано';
+//                            }
+//                        }else{
+//                            $logs['not'][$time->toString()][$table['number']] = 'ordered';
+//                        }
+//                    }
                     foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
+                        $is_table_free = true;
                         if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                             if (!$time->lt(Carbon::now())) {
                                 $reserv_to = $time->copy()->addMinutes($working_hour['length']);
                                 $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
                                 for($i = $indexFrom;$i<=$indexTo;$i++) {
                                     if(array_key_exists('ordered', $table['time'][$i])){
-                                        continue 2;
+                                        $is_table_free = false;
+                                        break;
                                     }
                                 }
-                                $logs['selected_table'][$time->toString()][] = $table;
-                                array_push($free_time, $time->copy());
-                                break;
+                                if($is_table_free) {
+                                    $logs['selected_table'][$time->toString()][] = $table;
+                                    array_push($free_time, $time->copy());
+                                    break;
+                                }
                             }else{
                                 $logs['not'][$time->toString()][$table['number']] = 'рано';
                             }

@@ -543,6 +543,7 @@ class OrderController extends Controller
                                 for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
                                     $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
                                     if(array_key_exists('ordered', $table['time'][$i])){
+                                        $logs['not'][$reserv_from->toString()][$table['number']] = 'ordered';
                                         continue 2;
                                     }
                                 }

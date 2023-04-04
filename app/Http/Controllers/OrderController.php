@@ -544,6 +544,7 @@ class OrderController extends Controller
                                         continue 2;
                                     }
                                 }
+                                $logs['selected_table'][$time->toString()][] = $table;
                                 array_push($free_time, $time->copy());
                                 break;
                             }else{

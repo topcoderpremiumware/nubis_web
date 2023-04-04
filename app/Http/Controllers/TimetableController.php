@@ -217,7 +217,8 @@ class TimetableController extends Controller
                     'from' => $item->start_time,
                     'to' => $item->end_time,
                     'tableplan_id' => $item->tableplan_id ?? $default_tableplan->id,
-                    'booking_limits' => $item->booking_limits
+                    'booking_limits' => $item->booking_limits,
+                    'length' => $item->length
                 ]);
             }
         }

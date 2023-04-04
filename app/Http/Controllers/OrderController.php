@@ -511,7 +511,7 @@ class OrderController extends Controller
                         $timeOrders_seats = 0;
                         $timeOrders = Order::where('place_id',$request->place_id)
                             ->where('area_id',$request->area_id)
-                            ->whereDate('reservation_time','<=',$time->format('Y-m-d H:i:s'))
+                            ->where('reservation_time','<=',$time->format('Y-m-d H:i:s'))
                             ->whereRaw('date_add(reservation_time,interval length minute) >= \''.$time->format('Y-m-d H:i:s').'\'')
                             ->where('is_take_away',0)
                             ->whereIn('status',['confirmed','arrived','pending'])
@@ -537,6 +537,13 @@ class OrderController extends Controller
                     foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
                         if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                             if (!$time->lt(Carbon::now())) {
+                                $reserv_to = $time->copy()->addMinutes($working_hour['length']);
+                                $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
+                                for($i = $indexFrom;$i<=$indexTo;$i++) {
+                                    if(array_key_exists('ordered', $table['time'][$i])){
+                                        continue 2;
+                                    }
+                                }
                                 array_push($free_time, $time->copy());
                                 break;
                             }else{

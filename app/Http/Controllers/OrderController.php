@@ -521,8 +521,8 @@ class OrderController extends Controller
                         }
 
                         $booking_limits = $working_hour['booking_limits'][$indexFrom];
-                        $is_max_seats = $booking_limits['max_seats'] == 0 ? true : $booking_limits['max_seats'] > $timeOrders_seats;
-                        $is_max_books = $booking_limits['max_books'] == 0 ? true : $booking_limits['max_books'] > count($timeOrders);
+                        $is_max_seats = $booking_limits['max_seats'] == 0 || $booking_limits['max_seats'] > $timeOrders_seats;
+                        $is_max_books = $booking_limits['max_books'] == 0 || $booking_limits['max_books'] > count($timeOrders);
                         $logs['limits'][] = [
                             'is_max_seats' => $is_max_seats,
                             'is_max_books' => $is_max_books,
@@ -538,14 +538,10 @@ class OrderController extends Controller
                         if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                             if (!$time->lt(Carbon::now())) {
                                 $reserv_to = $time->copy()->addMinutes($working_hour['length']);
-                                $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
-                                $logs['analis_length'][] = [
-                                    'from' => $time->format('Y-m-d H:i'),
-                                    'to' => $reserv_to->format('Y-m-d H:i'),
-                                    'index_from' => $indexFrom,
-                                    'index_to' => $indexTo
-                                    ];
-                                for($i = $indexFrom;$i<=$indexTo;$i++) {
+                                $reserv_from = $time->copy();
+
+                                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                    $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
                                     if(array_key_exists('ordered', $table['time'][$i])){
                                         continue 2;
                                     }
@@ -736,8 +732,10 @@ class OrderController extends Controller
                     if($table['seats'] < $request->seats) continue;
                     if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                         $reserv_to = $reservation_time->copy()->addMinutes($length);
-                        $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
-                        for($i = $indexFrom;$i<=$indexTo;$i++){
+                        $reserv_from = $reservation_time->copy();
+
+                        for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                            $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
                             if(array_key_exists('ordered', $table['time'][$i])){
                                 $log['ordered_tables'][] = $table['number'];
                                 continue 2;
@@ -756,8 +754,10 @@ class OrderController extends Controller
                     if(!array_key_exists('grouped',$table)) continue;
                     if(array_key_exists('ordered', $table['time'][$indexFrom])) continue;
                     $reserv_to = $reservation_time->copy()->addMinutes($length);
-                    $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
-                    for($i = $indexFrom;$i<=$indexTo;$i++){
+                    $reserv_from = $reservation_time->copy();
+
+                    for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                        $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
                         if(array_key_exists('ordered', $table['time'][$i])){
                             $log['ordered_groups'][] = $table['number'];
                             continue 2;
@@ -1063,8 +1063,10 @@ class OrderController extends Controller
                 if($table['seats'] < $request->seats) continue;
                 if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                     $reserv_to = $reservation_time->copy()->addMinutes($request->length);
-                    $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
-                    for($i = $indexFrom;$i<=$indexTo;$i++){
+                    $reserv_from = $reservation_time->copy();
+
+                    for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                        $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
                         if(array_key_exists('ordered', $table['time'][$i])){
                             continue 2;
                         }
@@ -1079,8 +1081,10 @@ class OrderController extends Controller
                 if(!array_key_exists('grouped',$table)) continue;
                 if(array_key_exists('ordered', $table['time'][$indexFrom])) continue;
                 $reserv_to = $reservation_time->copy()->addMinutes($request->length);
-                $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
-                for($i = $indexFrom;$i<=$indexTo;$i++){
+                $reserv_from = $reservation_time->copy();
+
+                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                    $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
                     if(array_key_exists('ordered', $table['time'][$i])){
                         continue 2;
                     }

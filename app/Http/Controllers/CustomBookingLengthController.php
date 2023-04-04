@@ -282,8 +282,10 @@ class CustomBookingLengthController extends Controller
                                 if($table['seats'] < $request->seats) continue;
                                 if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                                     $reserv_to = $time->copy()->addMinutes($custom_length->length);
-                                    $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
-                                    for($i = $indexFrom;$i<=$indexTo;$i++){
+                                    $reserv_from = $time->copy();
+
+                                    for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                        $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
                                         if(array_key_exists('ordered', $table['time'][$i])){
                                             continue 2;
                                         }
@@ -302,8 +304,10 @@ class CustomBookingLengthController extends Controller
                                     $groups_table_seats[$group_id] += $table['seats'];
                                     if($groups_table_seats[$group_id] >= $request->seats){
                                         $reserv_to = $time->copy()->addMinutes($custom_length->length);
-                                        $indexTo = intval($reserv_to->format('H'))*4 + floor(intval($reserv_to->format('i'))/15);
-                                        for($i = $indexFrom;$i<=$indexTo;$i++){
+                                        $reserv_from = $time->copy();
+
+                                        for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                            $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
                                             if(array_key_exists('ordered', $table['time'][$i])){
                                                 continue 2;
                                             }

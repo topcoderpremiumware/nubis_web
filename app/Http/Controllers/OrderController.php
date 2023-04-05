@@ -501,6 +501,7 @@ class OrderController extends Controller
         $free_time = [];
         foreach($working_hours as $working_hour){
             $time = Carbon::parse($request->date.' '.$working_hour['from']);
+            if($time->lt(Carbon::now())) continue;
             $end = Carbon::parse($request->date.' '.$working_hour['to']);
             for($time;$time->lt($end);$time->addMinutes(15)){
                 $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
@@ -536,25 +537,55 @@ class OrderController extends Controller
                     }
 
                     foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
+                        if($table['seats'] < $request->seats) continue;
                         if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
-                            if (!$time->lt(Carbon::now())) {
+                            $reserv_to = $time->copy()->addMinutes($working_hour['length']);
+                            $reserv_from = $time->copy();
+
+                            for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
+                                if(array_key_exists('ordered', $table['time'][$i])){
+                                    $logs['tables'][$table['number']][$time->toString()] = 'ordered on length '.$reserv_from->toString();
+                                    $logs['not'][$reserv_from->toString()][$table['number']] = 'ordered';
+                                    continue 2;
+                                }
+                            }
+                            $logs['selected_table'][$time->toString()][] = $table;
+                            array_push($free_time, $time->copy());
+                            break;
+                        }else{
+                            $logs['not'][$time->toString()][$table['number']] = 'ordered';
+                            $logs['tables'][$table['number']][$time->toString()] = 'ordered on time';
+                        }
+                    }
+
+                    $groups_table_seats = [];
+                    $groups_tables = [];
+                    foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
+                        if(!array_key_exists('grouped',$table)) continue;
+                        if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                            $group_id = $table['time'][0]['group'];
+                            if(!array_key_exists($group_id, $groups_table_seats)){
+                                $groups_tables[$group_id] = [];
+                                $groups_table_seats[$group_id] = 0;
+                            }
+                            $groups_tables[$group_id][] = $table;
+                            $groups_table_seats[$group_id] += $table['seats'];
+                            if($groups_table_seats[$group_id] >= $request->seats) {
                                 $reserv_to = $time->copy()->addMinutes($working_hour['length']);
                                 $reserv_from = $time->copy();
 
                                 for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
-                                    $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
-                                    if(array_key_exists('ordered', $table['time'][$i])){
-                                        $logs['tables'][$table['number']][$time->toString()] = 'ordered on length '.$reserv_from->toString();
+                                    $i = intval($reserv_from->format('H')) * 4 + floor(intval($reserv_from->format('i')) / 15);
+                                    if (array_key_exists('ordered', $table['time'][$i])) {
+                                        $logs['tables'][$table['number']][$time->toString()] = 'ordered on length ' . $reserv_from->toString();
                                         $logs['not'][$reserv_from->toString()][$table['number']] = 'ordered';
                                         continue 2;
                                     }
                                 }
-                                $logs['selected_table'][$time->toString()][] = $table;
+                                $logs['selected_group'][$time->toString()][] = $groups_tables[$group_id];
                                 array_push($free_time, $time->copy());
                                 break;
-                            }else{
-                                $logs['not'][$time->toString()][$table['number']] = 'рано';
-                                $logs['tables'][$table['number']][$time->toString()] = 'рано';
                             }
                         }else{
                             $logs['not'][$time->toString()][$table['number']] = 'ordered';
@@ -564,6 +595,7 @@ class OrderController extends Controller
                 }
             }
         }
+        $free_time = array_values(array_unique($free_time));
         return response()->json(['free_time' => $free_time,'logs' => $logs]);
     }
 

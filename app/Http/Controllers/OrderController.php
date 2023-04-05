@@ -511,8 +511,9 @@ class OrderController extends Controller
                         $timeOrders_seats = 0;
                         $timeOrders = Order::where('place_id',$request->place_id)
                             ->where('area_id',$request->area_id)
-                            ->where('reservation_time','<=',$time->format('Y-m-d H:i:s'))
-                            ->whereRaw('date_add(reservation_time,interval length minute) >= \''.$time->format('Y-m-d H:i:s').'\'')
+                            ->where('reservation_time',$time->format('Y-m-d H:i:s'))
+//                            ->where('reservation_time','<=',$time->format('Y-m-d H:i:s'))
+//                            ->whereRaw('date_add(reservation_time,interval length minute) >= \''.$time->format('Y-m-d H:i:s').'\'')
                             ->where('is_take_away',0)
                             ->whereIn('status',['confirmed','arrived','pending'])
                             ->get();

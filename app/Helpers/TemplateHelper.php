@@ -13,7 +13,9 @@ class TemplateHelper
         $area = $order->area;
         $place = $order->place;
         $customer = $order->customer;
-        $end_reservation = $order->reservation_time->copy()->addMinutes($order->length);
+        $timezone_offset = array_key_exists('timezone_offset',$order->marks) ? $order->marks['timezone_offset'] : 0;
+        $reservation_time = $order->reservation_time->copy()->addMinutes($timezone_offset);
+        $end_reservation = $reservation_time->copy()->addMinutes($order->length);
         $place_photo_file = $place->files()->where('purpose','online_booking_picture')->first();
         $place_photo_url = '';
         if($place_photo_file){
@@ -77,21 +79,21 @@ class TemplateHelper
         $values = [
             '', //#ADDRESS#
             $area->name,
-            $order->reservation_time->format("d"),
-            $order->reservation_time->format("l"),
-            $order->reservation_time->format("H:i"),
-            $order->reservation_time->format("A"), //#BOOK_TIME_AMPM#
-            $order->reservation_time->format("H"),
+            $reservation_time->format("d"),
+            $reservation_time->format("l"),
+            $reservation_time->format("H:i"),
+            $reservation_time->format("A"), //#BOOK_TIME_AMPM#
+            $reservation_time->format("H"),
             $end_reservation->format("H"),
             $order->id,
             $order->length,
-            $order->reservation_time->format("i"), //#BOOK_MIN#
+            $reservation_time->format("i"), //#BOOK_MIN#
             $end_reservation->format("H:i"),
             $end_reservation->format("A"), //#BOOK_ENDTIME_AMPM#
             $end_reservation->format("i"), //#BOOK_MIN_END#
-            $order->reservation_time->format("m"), //#BOOK_MONTH#
-            $order->reservation_time->format("F"), //#BOOK_MONTH_NAME#
-            $order->reservation_time->format("Y"), //#BOOK_YEAR#
+            $reservation_time->format("m"), //#BOOK_MONTH#
+            $reservation_time->format("F"), //#BOOK_MONTH_NAME#
+            $reservation_time->format("Y"), //#BOOK_YEAR#
             $order->comment, //#BOOK_COMMENT#
             '', //#CALENDAR_LINK#
             env('MIX_APP_URL').'/book/'.$place->id, //#CANCEL_LINK#
@@ -99,17 +101,17 @@ class TemplateHelper
             '', //#CHECK_CREDIT_CARD_LINK#
             '', //#CITY#
             '', //#COMPANY#
-            $customer->first_name.' '.$customer->last_name, //#CONTACT_PERSON#
-            $customer->phone, //#CONTACT_PHONE#
+            $customer ? $customer->first_name.' '.$customer->last_name : '', //#CONTACT_PERSON#
+            $customer ? $customer->phone : '', //#CONTACT_PHONE#
             $order->custom_booking_length ? $order->custom_booking_length->name : '', //#CUSTOM_BOOK_LENGTH_NAME#
-            $customer->email, //#EMAIL#
-            $customer->first_name,
-            $customer->last_name,
-            $customer->first_name.' '.$customer->last_name, //#FULL_NAME#
+            $customer ? $customer->email : '', //#EMAIL#
+            $customer ? $customer->first_name : '',
+            $customer ? $customer->last_name : '',
+            $customer ? $customer->first_name.' '.$customer->last_name : '', //#FULL_NAME#
             '', //#MAP_LINK#
             $order->seats, //#NUMBER_OF_GUESTS#
             $order->payment_link ?? '', //#PAY_BOOKING_LINK#
-            $customer->phone, //#PHONE#
+            $customer ? $customer->phone : '', //#PHONE#
             $place->address, //#RESTAURANT_ADDRESS#
             $place->city, //#RESTAURANT_CITY#
             '', //#RESTAURANT_VAT#
@@ -120,7 +122,7 @@ class TemplateHelper
             $place->phone,
             $place_photo_url, //#RESTAURANT_PHOTO#
             $place->zip_code,
-            $customer->zip_code,
+            $customer ? $customer->zip_code : '',
             '', //#LANDING_PAGE#
             '', //#MAX_PAX_PAGE#
             env('MIX_APP_URL').'/book/'.$place->id, //#CANCEL_BOOKING_PAGE#

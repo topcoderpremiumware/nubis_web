@@ -27,9 +27,7 @@ use Dompdf\Dompdf;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-    echo '<pre>';
-    var_dump(url('/').'/images/features-bg.jpg');
-    echo '</pre>';
+
 });
 
 Route::get('/change_lang/{locale}', function ($locale = null) {

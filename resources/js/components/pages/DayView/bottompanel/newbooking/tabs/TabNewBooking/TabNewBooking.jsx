@@ -75,7 +75,6 @@ export default function TabNewBooking(props) {
   }, [tables])
 
   useEffect(async () => {
-    console.log('order',order)
     if(Object.keys(order).length) {
       getTimes()
       getTables()
@@ -92,13 +91,13 @@ export default function TabNewBooking(props) {
       }
     }).then(response => {
       let data = response.data
-      if(order.hasOwnProperty('reservation_time') && order.reservation_time){
+      if(order.hasOwnProperty('created_at')){
         data.push(order.reservation_time)
       }
       setTimes(data)
     }).catch(error => {
       let data = []
-      if(order.hasOwnProperty('reservation_time') && order.reservation_time){
+      if(order.hasOwnProperty('created_at')){
         data.push(order.reservation_time)
       }
       setTimes(data)
@@ -276,6 +275,7 @@ export default function TabNewBooking(props) {
           ...rest,
           ...(!isWalkIn && {customer, customer_id: customer_id || newCustomerId}),
           reservation_time: moment.utc(order.reservation_time).utc().format('YYYY-MM-DD HH:mm:ss'),
+          timezone_offset: new Date().getTimezoneOffset()*-1
         }, {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')

@@ -60,7 +60,7 @@ class OrderController extends Controller
             'status' => $request->status,
             'is_take_away' => $request->is_take_away,
             'source' => $request->source,
-            'marks' => [],
+            'marks' => ['timezone_offset' => $request->timezone_offset],
             'custom_booking_length_id' => $request->custom_booking_length_id
         ]);
 
@@ -805,7 +805,7 @@ class OrderController extends Controller
             'status' => $status,
             'is_take_away' => $request->is_take_away,
             'source' => 'online',
-            'marks' => '',
+            'marks' => ['timezone_offset' => $request->timezone_offset],
             'custom_booking_length_id' => $request->custom_booking_length_id
         ]);
 
@@ -818,14 +818,14 @@ class OrderController extends Controller
                 $prepayment_url = $this->getPrepaymentUrl($request, $order);
                 if ($prepayment_url) {
                     $order->status = 'pending';
-                    $order->marks = [
+                    $order->marks = array_merge($order->marks,[
                         'method' => 'deduct',
                         'amount' => self::getAmountAfterDiscount($amount * $request->seats,$request->giftcard_code,$currency,$request->place_id),
                         'amountWithoutDiscount' => $amount * $request->seats,
                         'giftcard_code' => $request->giftcard_code,
                         'currency' => $currency,
                         'cancel_deadline' => $place->setting('online-payment-cancel-deadline')
-                    ];
+                    ]);
                     $order->timestamps = false;
                     $order->save();
                 }
@@ -840,12 +840,12 @@ class OrderController extends Controller
                     if(array_key_exists('error',$marks)){
                         $error = $marks['error'];
                         unset($marks['error']);
-                        $order->marks = $marks;
+                        $order->marks = array_merge($order->marks,$marks);
                         $order->timestamps = false;
                         $order->save();
                         return response()->json(array_merge($error,['order' => $order]), 402);
                     }
-                    $order->marks = $marks;
+                    $order->marks = array_merge($order->marks,$marks);
                     $order->timestamps = false;
                     $order->save();
                 }

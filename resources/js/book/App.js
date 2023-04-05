@@ -278,6 +278,7 @@ const App = () => {
             selectedDay.month
           )}-${normalizeNumber(selectedDay.day)} ${selectedTime}`,
           comment: comment,
+          timezone_offset: new Date().getTimezoneOffset()*-1,
           status: defaultModal === "submit" ? "waiting" : "ordered",
           length: timeline,
           is_take_away: false,

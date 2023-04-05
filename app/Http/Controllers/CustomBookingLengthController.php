@@ -274,13 +274,62 @@ class CustomBookingLengthController extends Controller
                 $time = Carbon::parse($request->reservation_date . ' ' . $time_interval['from']);
                 $end = Carbon::parse($request->reservation_date . ' ' . $time_interval['to']);
                 for ($time; $time->lt($end); $time->addMinutes(15)) {
+                    if($time->lt(Carbon::now())) continue;
+                    $working_hour = array_values(array_filter($working_hours,function($item) use ($time) {
+                        return $item['from'] <= $time->format('H:i:s') && $item['to'] >= $time->format('H:i:s');
+                    }));
+                    if(count($working_hour) > 0){
+                        $working_hour = $working_hour[0];
+                    }else{
+                        continue;
+                    }
                     $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
-                    if (!$time->lt(Carbon::now())) {
 
-                        foreach ($free_tables as $tables) {
-                            foreach ($tables as $table) {
-                                if($table['seats'] < $request->seats) continue;
-                                if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                    if(array_key_exists('booking_limits', $working_hour) && is_array($working_hour['booking_limits']) &&
+                        array_key_exists($indexFrom, $working_hour['booking_limits'])){
+                        $timeOrders_seats = 0;
+                        $timeOrders = Order::where('place_id',$request->place_id)
+                            ->where('area_id',$request->area_id)
+                            ->where('reservation_time',$time->format('Y-m-d H:i:s'))
+                            ->where('is_take_away',0)
+                            ->whereIn('status',['confirmed','arrived','pending'])
+                            ->get();
+                        foreach ($timeOrders as $timeOrder) {
+                            $timeOrders_seats += $timeOrder->seats;
+                        }
+
+                        $booking_limits = $working_hour['booking_limits'][$indexFrom];
+                        $is_max_seats = $booking_limits['max_seats'] == 0 || $booking_limits['max_seats'] > $timeOrders_seats;
+                        $is_max_books = $booking_limits['max_books'] == 0 || $booking_limits['max_books'] > count($timeOrders);
+
+                        if(!$is_max_seats || !$is_max_books) continue;
+                    }
+
+                    foreach ($free_tables as $tables) {
+                        foreach ($tables as $table) {
+                            if($table['seats'] < $request->seats) continue;
+                            if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                                $reserv_to = $time->copy()->addMinutes($custom_length->length);
+                                $reserv_from = $time->copy();
+
+                                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                    $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
+                                    if(array_key_exists('ordered', $table['time'][$i])){
+                                        continue 2;
+                                    }
+                                }
+                                array_push($times,$time->copy());
+                                break 2;
+                            }
+                        }
+                        $groups_table_seats = [];
+                        foreach ($tables as $table) {
+                            if(!array_key_exists('grouped',$table)) continue;
+                            if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                                $group_id = $table['time'][0]['group'];
+                                if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
+                                $groups_table_seats[$group_id] += $table['seats'];
+                                if($groups_table_seats[$group_id] >= $request->seats){
                                     $reserv_to = $time->copy()->addMinutes($custom_length->length);
                                     $reserv_from = $time->copy();
 
@@ -294,31 +343,9 @@ class CustomBookingLengthController extends Controller
                                     break 2;
                                 }
                             }
-                            $groups_table_seats = [];
-                            foreach ($tables as $table) {
-                                if(!array_key_exists('grouped',$table)) continue;
-                                if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
-                                    $group_id = $table['time'][0]['group'];
-                                    if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
-                                    $groups_table_seats[$group_id] += $table['seats'];
-                                    if($groups_table_seats[$group_id] >= $request->seats){
-                                        $reserv_to = $time->copy()->addMinutes($custom_length->length);
-                                        $reserv_from = $time->copy();
-
-                                        for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
-                                            $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
-                                            if(array_key_exists('ordered', $table['time'][$i])){
-                                                continue 2;
-                                            }
-                                        }
-                                        array_push($times,$time->copy());
-                                        break 2;
-                                    }
-                                }
-                            }
                         }
-
                     }
+
                 }
             }
             $times = array_values(array_unique($times));

@@ -14,6 +14,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
 
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
+  const [grabbedRow, setGrabbedRow] = useState(null)
 
   useEffect(() => {
     getOrders()
@@ -129,8 +130,29 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     setSelectedOrder(params.row)
   }
 
-  const handleRowOrderChange = async (params) => {
-    switchOrder({first_order_id: orders[params.oldIndex].id, second_id: orders[params.targetIndex].id, type: 'order'})
+  const handleMouseDown = (event) => {
+    event.preventDefault();
+    let id = Number(event.currentTarget.getAttribute('data-id'))
+    setGrabbedRow(id)
+  };
+
+  const handleMouseUp = (event) => {
+    event.preventDefault();
+    let id = Number(event.currentTarget.getAttribute('data-id'))
+    if(grabbedRow && id !== grabbedRow){
+      switchOrder({first_order_id: grabbedRow, second_id: id, type: 'order'})
+    }
+    setGrabbedRow(null)
+    document.body.style.cursor = 'auto'
+  };
+
+  const handleMouseMove = (event) => {
+    event.preventDefault();
+    if(grabbedRow){
+      document.body.style.cursor = 'move'
+    }else{
+      document.body.style.cursor = 'auto'
+    }
   };
 
   return (<>{loading ? <div><CircularProgress/></div> :
@@ -142,7 +164,14 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
         rowsPerPageOptions={[50]}
         onRowDoubleClick={doubleClickHandler}
         rowReordering
-        onRowOrderChange={handleRowOrderChange}
+        componentsProps={{
+          row: {
+            onMouseDown: handleMouseDown,
+            onMouseUp: handleMouseUp,
+            onMouseMove: handleMouseMove,
+            // style: { cursor: 'move' },
+          },
+        }}
         // checkboxSelection
       />
     </div>

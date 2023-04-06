@@ -9,9 +9,9 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
+  DialogTitle, FormControl,
   Grid,
-  IconButton, Rating, TextField,
+  IconButton, InputLabel, MenuItem, Rating, Select, TextField,
 } from "@mui/material";
 import eventBus from "../../../eventBus";
 
@@ -29,11 +29,13 @@ export default function FeedbackViewPopup(props) {
 
   const onChange = (e) => {
     if(e.target.name === 'reply') setFeedback(prev => ({...prev, reply: e.target.value}))
+    if(e.target.name === 'status') setFeedback(prev => ({...prev, status: e.target.value}))
   }
 
   const handleSave = () => {
     axios.post(`${process.env.MIX_API_URL}/api/feedbacks/${feedback.id}/reply`, {
-      reply: feedback.reply
+      reply: feedback.reply,
+      status: feedback.status
     },{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -149,7 +151,16 @@ export default function FeedbackViewPopup(props) {
         <Grid container spacing={2} sx={{pb: 2}}>
           <Grid item xs={12} sm={6}>
             <h2>{t('Reply')}</h2>
-            <TextField label={t('Reply')} size="small" fullWidth
+            <FormControl sx={{mt: 2}} size="small" fullWidth>
+              <InputLabel id="status">{t('Status')}</InputLabel>
+              <Select label={t('Status')} value={feedback.status}
+                      labelId="label_status" id="status" name="status"
+                      onChange={onChange}>
+                <MenuItem value="public">{t('Public')}</MenuItem>
+                <MenuItem value="private">{t('Private')}</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField sx={{mt: 2}} label={t('Reply')} size="small" fullWidth
                        type="text" id="labels_reply" name="reply"
                        onChange={onChange}
                        multiline

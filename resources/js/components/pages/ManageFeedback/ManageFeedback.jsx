@@ -92,6 +92,7 @@ export default function ManageFeedback() {
         open={viewPopupOpened}
         feedback={selectedFeedback}
         onClose={e => {
+          getFeedbacks()
           setViewPopupOpened(false)
         }}
       />

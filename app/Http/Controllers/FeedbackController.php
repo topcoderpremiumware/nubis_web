@@ -190,18 +190,21 @@ class FeedbackController extends Controller
                 'message' => 'It\'s not your place'
             ], 400);
         }
+        $data = ['reply' => $request->reply];
+        if($request->has('status')){
+            $data['status'] = $request->status;
+        }
+        $res = $feedback->update($data);
 
-        $res = $feedback->update([
-            'reply' => $request->reply,
-        ]);
+        if($feedback->reply !== $request->reply) {
+            $customer = $feedback->customer;
+            $smsApiToken = $feedback->place->setting('sms-api-token');
+            $result = SMS::send([$customer->phone], $request->reply, env('APP_SHORT_NAME'), $smsApiToken);
 
-        $customer = $feedback->customer;
-        $smsApiToken = $feedback->place->setting('sms-api-token');
-        $result = SMS::send([$customer->phone], $request->reply, env('APP_SHORT_NAME'), $smsApiToken);
-
-        \Illuminate\Support\Facades\Mail::html($request->reply, function($msg) use ($customer) {
-            $msg->to($customer->email)->subject('Reply to feedback');
-        });
+            \Illuminate\Support\Facades\Mail::html($request->reply, function ($msg) use ($customer) {
+                $msg->to($customer->email)->subject('Reply to feedback');
+            });
+        }
 
         Log::add($request,'change-feedback-reply','Changed feedback #'.$feedback->id);
 

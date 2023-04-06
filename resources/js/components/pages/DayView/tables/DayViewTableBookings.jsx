@@ -2,12 +2,15 @@ import React, {useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
 
 import {
-  CircularProgress,
+  CircularProgress, IconButton,
 } from "@mui/material";
 import Moment from "moment";
 import {DataGrid} from "@mui/x-data-grid";
 import eventBus from "../../../../eventBus";
 import axios from "axios";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import moment from "moment/moment";
 
 export default function DayViewTableBookings({ setSelectedOrder }) {
   const {t} = useTranslation();
@@ -43,7 +46,8 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     { field: 'last_name', headerName: t('Last name'), width: 130 },
     { field: 'seats', headerName: t('Seats'), width: 10 },
     // { field: 'take_away', headerName: t('Take away'), width: 100 },
-    { field: 'tables', headerName: t('Tables'), width: 70 },
+    { field: 'drag', headerName: t('Drag'), width: 20, renderCell: (params) => <DragIndicatorIcon style={{cursor: "pointer"}}/>},
+    { field: 'tables', headerName: t('Tables'), width: 70, editable: true },
     { field: 'length', headerName: t('Booking Length'), width: 100 },
     { field: 'source', headerName: t('Source'), width: 70 },
     { field: 'comment', headerName: t('Note'), width: 200},
@@ -126,6 +130,32 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     })
   }
 
+  const updateOrder = (order) => {
+    setLoading(true)
+    axios.post(`${process.env.MIX_API_URL}/api/orders/${order.id}`, {
+      ...order,
+      reservation_time: moment.utc(order.reservation_time).utc().format('YYYY-MM-DD HH:mm:ss'),
+    },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setLoading(false);
+      getOrders()
+      eventBus.dispatch("notification", {type: 'success', message: 'Order saved successfully'});
+    }).catch(error => {
+      setLoading(false);
+      getOrders()
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          eventBus.dispatch("notification", {type: 'error', message: value});
+        }
+      } else {
+        eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
+      }
+    })
+  }
+
   const doubleClickHandler = (params, event, details) => {
     setSelectedOrder(params.row)
   }
@@ -155,6 +185,21 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     }
   };
 
+  const handleCellEditStop = (params, event) => {
+    let order = orders[params.tabIndex]
+    if(params.field === 'tables'){
+      let table_ids = params.getValue(params.id,params.field).split(',').map(item => {
+        return Number(item.trim())
+      }).filter(item => !isNaN(item))
+      if(table_ids.length > 0 && table_ids.join(',') !== order.table_ids.join(',')){
+        order.table_ids = table_ids
+        updateOrder(order)
+      }else{
+        getOrders()
+      }
+    }
+  }
+
   return (<>{loading ? <div><CircularProgress/></div> :
     <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
@@ -164,6 +209,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
         rowsPerPageOptions={[50]}
         onRowDoubleClick={doubleClickHandler}
         rowReordering
+        onCellEditStop={handleCellEditStop}
         componentsProps={{
           row: {
             onMouseDown: handleMouseDown,

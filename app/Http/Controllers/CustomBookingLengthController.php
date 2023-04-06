@@ -299,8 +299,8 @@ class CustomBookingLengthController extends Controller
                         }
 
                         $booking_limits = $working_hour['booking_limits'][$indexFrom];
-                        $is_max_seats = $booking_limits['max_seats'] == 0 || $booking_limits['max_seats'] > $timeOrders_seats;
-                        $is_max_books = $booking_limits['max_books'] == 0 || $booking_limits['max_books'] > count($timeOrders);
+                        $is_max_seats = $booking_limits['max_seats'] == 0 || $booking_limits['max_seats'] > $timeOrders_seats+$request->seats;
+                        $is_max_books = $booking_limits['max_books'] == 0 || $booking_limits['max_books'] > count($timeOrders)+1;
 
                         if(!$is_max_seats || !$is_max_books) continue;
                     }

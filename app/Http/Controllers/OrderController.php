@@ -513,8 +513,6 @@ class OrderController extends Controller
                         $timeOrders = Order::where('place_id',$request->place_id)
                             ->where('area_id',$request->area_id)
                             ->where('reservation_time',$time->format('Y-m-d H:i:s'))
-//                            ->where('reservation_time','<=',$time->format('Y-m-d H:i:s'))
-//                            ->whereRaw('date_add(reservation_time,interval length minute) >= \''.$time->format('Y-m-d H:i:s').'\'')
                             ->where('is_take_away',0)
                             ->whereIn('status',['confirmed','arrived','pending'])
                             ->get();
@@ -523,8 +521,8 @@ class OrderController extends Controller
                         }
 
                         $booking_limits = $working_hour['booking_limits'][$indexFrom];
-                        $is_max_seats = $booking_limits['max_seats'] == 0 || $booking_limits['max_seats'] > $timeOrders_seats;
-                        $is_max_books = $booking_limits['max_books'] == 0 || $booking_limits['max_books'] > count($timeOrders);
+                        $is_max_seats = $booking_limits['max_seats'] == 0 || $booking_limits['max_seats'] > $timeOrders_seats+$request->seats;
+                        $is_max_books = $booking_limits['max_books'] == 0 || $booking_limits['max_books'] > count($timeOrders)+1;
                         $logs['limits'][] = [
                             'is_max_seats' => $is_max_seats,
                             'is_max_books' => $is_max_books,

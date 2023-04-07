@@ -19,6 +19,7 @@ function SecondBlock(props) {
   const {
     restaurantInfo,
     datesArray,
+    soldDateArray,
     selectedDay,
     setSelectedDay,
     setModalActive,
@@ -81,17 +82,33 @@ function SecondBlock(props) {
   const newDateArray = datesArray?.map((one) => one.day);
 
   const getDisabledDays = () => {
-    const newDates = [];
+    const disabledDates = [];
     for (let i = 1; i <= 31; i++) {
       if (!newDateArray?.includes(i)) {
-        newDates.push({
+        disabledDates.push({
           year: selectedDay.year,
           month: selectedDay.month,
           day: i,
         });
       }
     }
-    return newDates;
+    return disabledDates;
+  }
+
+  const getSoldDays = () => {
+    const soldDates = [];
+    console.log('getSoldDays',newDateArray,soldDateArray)
+    for (let i = 1; i <= 31; i++) {
+      if (newDateArray?.includes(i) && !soldDateArray?.includes(i)) {
+        soldDates.push({
+          year: selectedDay.year,
+          month: selectedDay.month,
+          day: i,
+          className: 'soldDay'
+        })
+      }
+    }
+    return soldDates
   }
 
   const getAlternativeRestaurants = async () => {
@@ -243,6 +260,7 @@ function SecondBlock(props) {
               onChange={(day) => setCalendarValue(day)}
               shouldHighlightWeekends
               disabledDays={getDisabledDays()}
+              customDaysClassName={getSoldDays()}
             />
           </div>
           {/*{props.blockType === "secondblock" && (*/}

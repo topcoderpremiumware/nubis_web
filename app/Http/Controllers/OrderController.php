@@ -432,11 +432,107 @@ class OrderController extends Controller
                 ->whereIn('status',['confirmed','arrived','pending'])
                 ->get();
 
-            if($this->getFreeTables($orders, $working_hours, $request->seats)){
+            $free_time = self::getFreeTime($request->place_id,$request->area_id, $request->seats,$date,$working_hours);
+            if(count($free_time) > 0){
                 array_push($result,$date);
             }
         }
         return response()->json($result);
+    }
+
+    public static function getFreeTime($place_id, $area_id, $request_seats, $request_date, $working_hours): array
+    {
+        $time_from = $request_date->copy();
+        $time_from->setTime(0, 0, 0);
+        $time_to = $request_date->copy();
+        $time_to->setTime(23, 59, 59);
+        $orders = Order::where('place_id',$place_id)
+            ->where('area_id',$area_id)
+            ->whereBetween('reservation_time',[$time_from,$time_to])
+            ->where('is_take_away',0)
+            ->whereIn('status',['confirmed','arrived','pending'])
+            ->get();
+
+        $free_tables = (new OrderController())->getFreeTables($orders, $working_hours, $request_seats, false);
+
+        $free_time = [];
+        foreach($working_hours as $working_hour){
+            $time = Carbon::parse($request_date->format('Y-m-d').' '.$working_hour['from']);
+            if($time->lt(Carbon::now())) continue;
+            $end = Carbon::parse($request_date->format('Y-m-d').' '.$working_hour['to']);
+            for($time;$time->lt($end);$time->addMinutes(15)){
+                $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
+                if(array_key_exists($working_hour['tableplan_id'],$free_tables)) {
+
+                    if(array_key_exists('booking_limits', $working_hour) && is_array($working_hour['booking_limits']) &&
+                        array_key_exists($indexFrom, $working_hour['booking_limits'])){
+                        $timeOrders_seats = 0;
+                        $timeOrders = Order::where('place_id',$place_id)
+                            ->where('area_id',$area_id)
+                            ->where('reservation_time',$time->format('Y-m-d H:i:s'))
+                            ->where('is_take_away',0)
+                            ->whereIn('status',['confirmed','arrived','pending'])
+                            ->get();
+                        foreach ($timeOrders as $timeOrder) {
+                            $timeOrders_seats += $timeOrder->seats;
+                        }
+
+                        $booking_limits = $working_hour['booking_limits'][$indexFrom];
+                        $is_max_seats = $booking_limits['max_seats'] == 0 || $booking_limits['max_seats'] >= $timeOrders_seats+$request_seats;
+                        $is_max_books = $booking_limits['max_books'] == 0 || $booking_limits['max_books'] >= count($timeOrders)+1;
+
+                        if(!$is_max_seats || !$is_max_books) continue;
+                    }
+
+                    foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
+                        if($table['seats'] < $request_seats) continue;
+                        if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                            $reserv_to = $time->copy()->addMinutes($working_hour['length']);
+                            $reserv_from = $time->copy();
+
+                            for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
+                                if(array_key_exists('ordered', $table['time'][$i])){
+                                    continue 2;
+                                }
+                            }
+                            array_push($free_time, $time->copy());
+                            break;
+                        }
+                    }
+
+                    $groups_table_seats = [];
+                    $groups_tables = [];
+                    foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
+                        if(!array_key_exists('grouped',$table)) continue;
+                        if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                            $group_id = $table['time'][0]['group'];
+                            if(!array_key_exists($group_id, $groups_table_seats)){
+                                $groups_tables[$group_id] = [];
+                                $groups_table_seats[$group_id] = 0;
+                            }
+                            $groups_tables[$group_id][] = $table;
+                            $groups_table_seats[$group_id] += $table['seats'];
+                            if($groups_table_seats[$group_id] >= $request_seats) {
+                                $reserv_to = $time->copy()->addMinutes($working_hour['length']);
+                                $reserv_from = $time->copy();
+
+                                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                    $i = intval($reserv_from->format('H')) * 4 + floor(intval($reserv_from->format('i')) / 15);
+                                    if (array_key_exists('ordered', $table['time'][$i])) {
+                                        continue 2;
+                                    }
+                                }
+                                array_push($free_time, $time->copy());
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $free_time = array_values(array_unique($free_time));
+        return $free_time;
     }
 
     public function workDates(Request $request)
@@ -482,118 +578,7 @@ class OrderController extends Controller
 
         $logs = [];
 
-        $time_from = $request_date->copy();
-        $time_from->setTime(0, 0, 0);
-        $time_to = $request_date->copy();
-        $time_to->setTime(23, 59, 59);
-        $orders = Order::where('place_id',$request->place_id)
-            ->where('area_id',$request->area_id)
-            ->whereBetween('reservation_time',[$time_from,$time_to])
-            ->where('is_take_away',0)
-            ->whereIn('status',['confirmed','arrived','pending'])
-            ->get();
-
-        $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
-
-        $logs['free_tables'] = $free_tables;
-        $logs['working_hours'] = $working_hours;
-
-        $free_time = [];
-        foreach($working_hours as $working_hour){
-            $time = Carbon::parse($request->date.' '.$working_hour['from']);
-            if($time->lt(Carbon::now())) continue;
-            $end = Carbon::parse($request->date.' '.$working_hour['to']);
-            for($time;$time->lt($end);$time->addMinutes(15)){
-                $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
-                if(array_key_exists($working_hour['tableplan_id'],$free_tables)) {
-
-                    if(array_key_exists('booking_limits', $working_hour) && is_array($working_hour['booking_limits']) &&
-                        array_key_exists($indexFrom, $working_hour['booking_limits'])){
-                        $timeOrders_seats = 0;
-                        $timeOrders = Order::where('place_id',$request->place_id)
-                            ->where('area_id',$request->area_id)
-                            ->where('reservation_time',$time->format('Y-m-d H:i:s'))
-                            ->where('is_take_away',0)
-                            ->whereIn('status',['confirmed','arrived','pending'])
-                            ->get();
-                        foreach ($timeOrders as $timeOrder) {
-                            $timeOrders_seats += $timeOrder->seats;
-                        }
-
-                        $booking_limits = $working_hour['booking_limits'][$indexFrom];
-                        $is_max_seats = $booking_limits['max_seats'] == 0 || $booking_limits['max_seats'] >= $timeOrders_seats+$request->seats;
-                        $is_max_books = $booking_limits['max_books'] == 0 || $booking_limits['max_books'] >= count($timeOrders)+1;
-                        $logs['limits'][] = [
-                            'is_max_seats' => $is_max_seats,
-                            'is_max_books' => $is_max_books,
-                            'max_seats' => $booking_limits['max_seats'],
-                            'max_books' => $booking_limits['max_books'],
-                            'timeOrders_seats' => $timeOrders_seats,
-                            'orders_count' => count($timeOrders)
-                        ];
-                        if(!$is_max_seats || !$is_max_books) continue;
-                    }
-
-                    foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
-                        if($table['seats'] < $request->seats) continue;
-                        if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
-                            $reserv_to = $time->copy()->addMinutes($working_hour['length']);
-                            $reserv_from = $time->copy();
-
-                            for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
-                                $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
-                                if(array_key_exists('ordered', $table['time'][$i])){
-                                    $logs['tables'][$table['number']][$time->toString()] = 'ordered on length '.$reserv_from->toString();
-                                    $logs['not'][$reserv_from->toString()][$table['number']] = 'ordered';
-                                    continue 2;
-                                }
-                            }
-                            $logs['selected_table'][$time->toString()][] = $table;
-                            array_push($free_time, $time->copy());
-                            break;
-                        }else{
-                            $logs['not'][$time->toString()][$table['number']] = 'ordered';
-                            $logs['tables'][$table['number']][$time->toString()] = 'ordered on time';
-                        }
-                    }
-
-                    $groups_table_seats = [];
-                    $groups_tables = [];
-                    foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
-                        if(!array_key_exists('grouped',$table)) continue;
-                        if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
-                            $group_id = $table['time'][0]['group'];
-                            if(!array_key_exists($group_id, $groups_table_seats)){
-                                $groups_tables[$group_id] = [];
-                                $groups_table_seats[$group_id] = 0;
-                            }
-                            $groups_tables[$group_id][] = $table;
-                            $groups_table_seats[$group_id] += $table['seats'];
-                            if($groups_table_seats[$group_id] >= $request->seats) {
-                                $reserv_to = $time->copy()->addMinutes($working_hour['length']);
-                                $reserv_from = $time->copy();
-
-                                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
-                                    $i = intval($reserv_from->format('H')) * 4 + floor(intval($reserv_from->format('i')) / 15);
-                                    if (array_key_exists('ordered', $table['time'][$i])) {
-                                        $logs['tables'][$table['number']][$time->toString()] = 'ordered on length ' . $reserv_from->toString();
-                                        $logs['not'][$reserv_from->toString()][$table['number']] = 'ordered';
-                                        continue 2;
-                                    }
-                                }
-                                $logs['selected_group'][$time->toString()][] = $groups_tables[$group_id];
-                                array_push($free_time, $time->copy());
-                                break;
-                            }
-                        }else{
-                            $logs['not'][$time->toString()][$table['number']] = 'ordered';
-                            $logs['tables'][$table['number']][$time->toString()] = 'ordered on time';
-                        }
-                    }
-                }
-            }
-        }
-        $free_time = array_values(array_unique($free_time));
+        $free_time = self::getFreeTime($request->place_id,$request->area_id, $request->seats,$request_date,$working_hours);
         return response()->json(['free_time' => $free_time,'logs' => $logs]);
     }
 

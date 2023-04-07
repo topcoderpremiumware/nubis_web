@@ -46,3 +46,7 @@
     width: 100vw;
     height: 100vh;
 }
+
+.Calendar .soldDay{
+    background: #ffc2c2;
+}

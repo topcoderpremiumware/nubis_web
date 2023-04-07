@@ -24,6 +24,7 @@ const App = () => {
   const [selectedDay, setSelectedDay] = useState(utils().getToday());
   const [orderDate, setOrderDate] = useState("");
   const [dates, setDates] = useState();
+  const [soldDateArray, setSoldDateArray] = useState([]);
   const [allowEmails, setAllowEmails] = useState(0);
   const [allowNews, setAllowNews] = useState(0);
   const [userData, setUserData] = useState({
@@ -260,7 +261,28 @@ const App = () => {
           setDates(response.data);
       })
       .catch((error) => {
-        console.log(`${type} error: `, error);
+        console.log(`error: `, error);
+      });
+    myAxios
+      .get(`/api/free_dates`, {
+        params: {
+          place_id: getPlaceId(),
+          area_id: localStorage.getItem('area_id'),
+          seats: guestValue,
+          from: `${day.year}-${normalizeNumber(day.month)}-01`,
+          to: `${day.year}-${normalizeNumber(day.month)}-${new Date(
+            day.year,
+            day.month,
+            0
+          ).getDate()}`,
+        },
+      })
+      .then((response) => {
+        const dates = response.data?.map((date) => (new Date(date).getDate()));
+        setSoldDateArray(dates);
+      })
+      .catch((error) => {
+        console.log(`error: `, error);
       });
   };
 
@@ -398,7 +420,6 @@ const App = () => {
               setSelectedDay={setSelectedDay}
               handleDayChange={handleDayChange}
               errorsResp={errorsResp}
-              datesArray={datesArray}
               selectedTime={selectedTime}
               restaurantInfo={restaurantInfo}
               getUserInfoReq={getUserInfoReq}
@@ -442,6 +463,7 @@ const App = () => {
               userData={userData}
               setUserData={setUserData}
               datesArray={datesArray}
+              soldDateArray={soldDateArray}
               selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
               getDatesTimeInfo={getDatesTimeInfo}

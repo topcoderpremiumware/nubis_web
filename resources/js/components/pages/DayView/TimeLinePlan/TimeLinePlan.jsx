@@ -126,8 +126,8 @@ export default function TimeLinePlan(props) {
       items={items}
       itemRenderer={itemRenderer}
       buffer={1}
-      minZoom={lineTo-lineFrom}
-      maxZoom={lineTo-lineFrom}
+      minZoom={6 * 60 * 60 * 1000}
+      maxZoom={6 * 60 * 60 * 1000}
       // defaultTimeStart={lineFrom}
       // defaultTimeEnd={lineTo}
       visibleTimeStart={lineFrom.valueOf()}

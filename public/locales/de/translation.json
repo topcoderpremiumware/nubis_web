@@ -357,7 +357,7 @@
     "Easy to install. Use Nubis academy videos to install Nubis reservations for your restaurant.": "Easy to install. Use Nubis academy videos to install Nubis reservations for your restaurant.",
     "Subscribe now": "Subscribe now",
     "Start Now": "Start Now",
-    "Saves credit card information and charges a fee in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a “No show/Not arrived”": "Saves credit card information and charges a fee in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a “No show/Not arrived”",
+    "Saves credit card information and charges a fee of <b>{{amount}}</b> per person in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a \"No show/Not arrived\"": "Saves credit card information and charges a fee of <b>{{amount}}</b> per person in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a \"No show/Not arrived\"",
     "Please, enter stripe settings in Payment gateway": "Please, enter stripe settings in Payment gateway",
     "See Nubis Academy": "See Nubis Academy",
     "Don't forget to add events to the Webhook by pressing \"Select events\" and add Payment Intent/payment_intent.succeeded event": "Don't forget to add events to the Webhook by pressing \"Select events\" and add Payment Intent/payment_intent.succeeded event",

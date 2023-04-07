@@ -9,16 +9,19 @@ import DateHeader from "react-calendar-timeline/lib/lib/headers/DateHeader";
 import Moment from "moment";
 import {BsFullscreen, BsFullscreenExit} from "react-icons/bs";
 import eventBus from "../../../../eventBus";
+import SidebarHeader from "react-calendar-timeline/lib/lib/headers/SidebarHeader";
 // https://www.npmjs.com/package/react-calendar-timeline
 
 export default function TimeLinePlan(props) {
   const { t } = useTranslation();
 
-  const [groups, setGroups] = useState([])
-  const [items, setItems] = useState([])
-
   const selectedDate = localStorage.getItem('date') || moment.utc().format('YYYY-MM-DD')
   const selectedTime = JSON.parse(localStorage.getItem('time'))
+
+  const [groups, setGroups] = useState([])
+  const [items, setItems] = useState([])
+  const [lineFrom, setLineFrom] = useState(moment.utc(selectedDate+' '+(selectedTime.from || '00:00:00'),'YYYY-MM-DD HH:mm:ss'))
+  const [lineTo, setLineTo] = useState(moment.utc(selectedDate+' '+(selectedTime.to || '22:59:59'),'YYYY-MM-DD HH:mm:ss').add(1,'hour'))
 
   const itemRenderer = ({item, itemContext, getItemProps, getResizeProps}) => {
     const { left: leftResizeProps, right: rightResizeProps } = getResizeProps()
@@ -73,12 +76,18 @@ export default function TimeLinePlan(props) {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
+      let tempLineFrom = lineFrom;
+      let tempLineTo = lineTo;
       let orders = response.data.map(item => {
         if(item.status === 'waiting' || item.is_take_away) return false
         item.from = Moment.utc(item.reservation_time)
         item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes')
+        if(tempLineFrom.isAfter(item.from)) tempLineFrom = item.from.clone()
+        if(tempLineTo.isBefore(item.to)) tempLineTo = item.to.clone().add(1,'hours')
         return item
       }).filter(x => x).sort((a, b) => a.from.valueOf() - b.from.valueOf())
+      setLineFrom(tempLineFrom)
+      setLineTo(tempLineTo)
       let it = []
       orders.forEach(item => {
         item.table_ids.forEach(t => {
@@ -89,8 +98,8 @@ export default function TimeLinePlan(props) {
             tip: tableTip(item),
             canMove: false,
             canResize: false,
-            start_time: moment.utc(selectedDate+' '+item.from.utc().format('HH:mm'),'YYYY-MM-DD HH:mm'),
-            end_time: moment.utc(selectedDate+' '+item.to.utc().format('HH:mm'),'YYYY-MM-DD HH:mm')
+            start_time: item.from,
+            end_time: item.to
           })
         })
       })
@@ -111,21 +120,22 @@ export default function TimeLinePlan(props) {
     </div>)
   }
 
-  return (<div style={{width:1000}}>
+  return (<div style={{width:2000}}>
     {(groups && items) && <Timeline
       groups={groups}
       items={items}
       itemRenderer={itemRenderer}
       buffer={1}
-      minZoom={6 * 60 * 60 * 1000}
-      maxZoom={6 * 60 * 60 * 1000}
-      // defaultTimeStart={moment.utc(selectedDate+' '+selectedTime.from,'YYYY-MM-DD HH:mm:ss')}
-      // defaultTimeEnd={moment.utc(selectedDate+' '+selectedTime.to,'YYYY-MM-DD HH:mm:ss')}
-      visibleTimeStart={moment.utc(selectedDate+' '+(selectedTime.from || '00:00:00'),'YYYY-MM-DD HH:mm:ss').valueOf()}
-      visibleTimeEnd={moment.utc(selectedDate+' '+(selectedTime.to || '22:59:59'),'YYYY-MM-DD HH:mm:ss').add(1,'hour').valueOf()}
+      minZoom={lineTo-lineFrom}
+      maxZoom={lineTo-lineFrom}
+      // defaultTimeStart={lineFrom}
+      // defaultTimeEnd={lineTo}
+      visibleTimeStart={lineFrom.valueOf()}
+      visibleTimeEnd={lineTo.valueOf()}
     >
       <TimelineHeaders>
-        <DateHeader labelFormat="HH:mm"/>
+        <DateHeader unit="primaryHeader" labelFormat="YYYY-MM-DD" />
+        <DateHeader labelFormat="HH:mm" />
       </TimelineHeaders>
     </Timeline>}
     <Button

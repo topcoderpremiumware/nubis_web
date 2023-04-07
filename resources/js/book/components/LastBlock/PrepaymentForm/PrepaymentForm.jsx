@@ -1,6 +1,6 @@
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 import '../PrepaymentModal/PrepaymentModal.scss'
 
 const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal, setOrderResponse, setUserData }) => {
@@ -82,16 +82,16 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal, setOrderRespo
       <PaymentElement />
 
       {method === 'no_show' &&
-        <p className="prepayment-text">{t('Saves credit card information and charges a fee in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a “No show/Not arrived”')}</p>
+        <p className="prepayment-text"><Trans>Saves credit card information and charges a fee of <b>{{amount: paymentInfo?.['online-payment-amount']}}</b> per person in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a "No show/Not arrived"</Trans></p>
       }
       {error && <p className="prepayment-error">{error}</p>}
       <button
         className="button-main prepayment-button"
         disabled={isLoading}
       >
-        {isLoading 
-          ? t('Processing...') 
-          : method === 'no_show' 
+        {isLoading
+          ? t('Processing...')
+          : method === 'no_show'
             ? t('Save' )
             : t('Pay now')
         }

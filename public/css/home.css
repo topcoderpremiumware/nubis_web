@@ -370,6 +370,9 @@ body {
   line-height: 20px;
   color: rgba(248, 249, 250, 0.5);
 }
+.footer-address a, .footer-copy a {
+  color: rgba(248, 249, 250, 0.5);
+}
 
 .features-hero {
   background: url("/images/features-bg-2.jpg");

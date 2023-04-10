@@ -109,7 +109,7 @@ body {
     color: #495057;
     cursor: pointer;
   }
-  
+
   &-item {
     &:hover {
       color: #F36823;
@@ -426,6 +426,9 @@ body {
     font-size: 12px;
     line-height: 20px;
     color: rgba(248, 249, 250, 0.5);
+      a{
+          color: rgba(248, 249, 250, 0.5);
+      }
   }
 }
 
@@ -1013,7 +1016,7 @@ body {
     border: 2px solid #F36823;
     border-radius: 40px;
     background: transparent;
-    margin: 0 auto; 
+    margin: 0 auto;
     cursor: pointer;
   }
 
@@ -1033,7 +1036,7 @@ body {
 
   &-banner {
     // background: url("/images/contact-banner-bg.jpg");
-    
+
     &-input {
       width: 286px;
       height: 45px;
@@ -1153,7 +1156,7 @@ body {
   main {
     padding-top: 50px;
   }
-  
+
   .features {
     &-grid {
       height: 940px;

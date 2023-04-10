@@ -31,3 +31,6 @@ mix.js('resources/js/feedbacks.js', 'public/js')
 mix.js('resources/js/home.js', 'public/js')
   .react()
   .sass('resources/sass/home.scss', 'public/css');
+
+mix.js('resources/js/terms.js', 'public/js')
+  .react();

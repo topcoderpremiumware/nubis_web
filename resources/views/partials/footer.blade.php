@@ -20,7 +20,7 @@
     <hr>
     <div class="footer-wrapper">
       <div class="footer-address">{{ __('1088, North Street, Alexandria, AU') }}</div>
-      <div class="footer-copy">&copy; 2022, {{ __('All Rights Reserved') }}</div>
+        <div class="footer-copy"><a href="/terms">Terms of use</a> | &copy; 2022, {{ __('All Rights Reserved') }}</div>
     </div>
   </div>
 </footer>

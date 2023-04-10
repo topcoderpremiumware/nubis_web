@@ -717,6 +717,11 @@ class OrderController extends Controller
             'message' => 'Non-working day'
         ], 400);
 
+        $place = Place::find($request->place_id);
+        if(!$place->is_bill_paid()) return response()->json([
+            'message' => 'Your place\'s bill has not been paid'
+        ], 401);
+
         $tableplan_id = null;
         $table_ids = [];
         $length = 120;
@@ -824,8 +829,6 @@ class OrderController extends Controller
             'marks' => ['timezone_offset' => $request->timezone_offset],
             'custom_booking_length_id' => $request->custom_booking_length_id
         ]);
-
-        $place = Place::find($request->place_id);
 
         if(intval($place->setting('is-online-payment')) === 1) {
             if ($place->setting('online-payment-method') === 'deduct') {

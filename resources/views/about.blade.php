@@ -29,17 +29,17 @@
             allowfullscreen
           ></iframe>
 
-          <h2 class="title about-title">{{__('Common Questions')}}</h2>
-          <div class="about-accordion">
-            Can I download future updates?
-            <div class="about-accordion-icon">
-              <span></span>
-              <span></span>
-            </div>
-          </div>
-          <div class="about-panel">
-            <p>Future updates. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-          </div>
+{{--          <h2 class="title about-title">{{__('Common Questions')}}</h2>--}}
+{{--          <div class="about-accordion">--}}
+{{--            Can I download future updates?--}}
+{{--            <div class="about-accordion-icon">--}}
+{{--              <span></span>--}}
+{{--              <span></span>--}}
+{{--            </div>--}}
+{{--          </div>--}}
+{{--          <div class="about-panel">--}}
+{{--            <p>Future updates. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>--}}
+{{--          </div>--}}
         </div>
       </section>
 

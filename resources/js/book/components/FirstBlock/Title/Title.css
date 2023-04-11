@@ -1,5 +1,5 @@
 .overhead {
-  margin: 83px 87px 0px 0px;
+  margin: 20px 87px 0px 0px;
   font-family: "Inter";
   font-style: normal;
   font-weight: 400;
@@ -54,4 +54,9 @@
     text-align: center;
     text-decoration: none;
   }
+}
+
+.carousel .slide .book_site_logo{
+    width: 100px;
+    margin-top: 5px;
 }

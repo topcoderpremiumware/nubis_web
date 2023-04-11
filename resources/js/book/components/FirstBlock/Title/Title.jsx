@@ -24,6 +24,7 @@ function Title(props) {
 
   return (
     <div className="main-title">
+      <img className="book_site_logo" src="/images/default_place_image.png" alt="" />
       <div className="overhead">
         {t('Welcome to the online booking for')} {props.restaurantInfo.name}
       </div>

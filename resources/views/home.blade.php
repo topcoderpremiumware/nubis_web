@@ -13,7 +13,7 @@
 
   <body>
     @include('partials/header')
-    
+
     <main class="main">
       <section class="hero">
         <img src="/images/home-bg.jpg" alt="Picture" class="hero-img">
@@ -23,13 +23,13 @@
             <p class="hero-text">{{__('Nubis reservation makes it easy to manage your restaurant`s table reservations. Stop wasting your time on daily tasks such as email replies, social media chats or phone calls. Allow guests to book a table online 24/7 and Nubis reservation will take care of the rest! The system is easy implemented to your website and there are no start up-fees ore extra costs.')}}</p>
             <a href="/pricing" class="link">{{__('Try one month free')}}</a>
           </div>
-          <iframe 
-            width="606" 
-            height="339" 
-            src="https://www.youtube.com/embed/ZkcvxE2Zufg" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          <iframe
+            width="606"
+            height="339"
+            src="https://www.youtube.com/embed/ZkcvxE2Zufg"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen
           ></iframe>
         </div>
@@ -47,7 +47,7 @@
               </div>
               <div class="swiper-slide features-item">
                 <img src="/images/feature-2.svg" alt="Icon" class="features-item-img">
-                <h4 class="features-item-title">{{__('Pre-ordering and payments from your customers. Sell gift cards and take- a- way with payment directly to your own bank account.')}}</h4>
+                <h4 class="features-item-title">{{__('Pre-ordering and payments from your customers. Sell gift cards with payment directly to your own bank account.')}}</h4>
                 <p>{{__('Preordering of menus, events, sale of gift cards and...')}} <a href="/features" class="link">{{__('Reed more')}}</a></p>
               </div>
               <div class="swiper-slide features-item">
@@ -77,7 +77,7 @@
 
       <section class="advantages">
         <h2 class="advantages-title">{{__('What you can do with Nubis restaurant reservation software?')}}</h2>
-        
+
         <div class="advantages-item">
           <img src="/images/home-bg.jpg" alt="Picture" class="advantages-img">
           <div class="container advantages-wrapper">

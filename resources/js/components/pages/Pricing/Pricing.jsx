@@ -88,7 +88,7 @@ const Pricing = () => {
         <h3 className="price-title">{t('Benefits')}</h3>
         <ul className="price-list">
           <li className="price-list-item">{t('Fully integrated booking system')}</li>
-          <li className="price-list-item">{t('Takeaway module with its own payment')}</li>
+          {/*<li className="price-list-item">{t('Takeaway module with its own payment')}</li>*/}
           <li className="price-list-item">{t('Giftcard module with direct payment to own account via stripe')}</li>
           <li className="price-list-item">{t('Waiting list')}</li>
           <li className="price-list-item">{t('Online payment via stripe for takeawey')}</li>

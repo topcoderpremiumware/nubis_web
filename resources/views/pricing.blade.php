@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+{{--<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">--}}
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, width=device-width"/>
@@ -13,7 +13,7 @@
 
   <body>
     @include('partials/header')
-    
+
     <main class="main">
       <div class="price">
         <div class="container">
@@ -73,7 +73,7 @@
             <h3 class="price-title">{{__('Benefits')}}</h3>
             <ul class="price-list">
               <li class="price-list-item">{{__('Fully integrated booking system')}}</li>
-              <li class="price-list-item">{{__('Takeaway module with its own payment')}}</li>
+{{--              <li class="price-list-item">{{__('Takeaway module with its own payment')}}</li>--}}
               <li class="price-list-item">{{__('Giftcard module with direct payment to own account via stripe')}}</li>
               <li class="price-list-item">{{__('Waiting list')}}</li>
               <li class="price-list-item">{{__('Online payment via stripe for takeawey')}}</li>

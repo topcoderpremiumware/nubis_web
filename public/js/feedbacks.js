@@ -13163,7 +13163,7 @@ window.langs = [{
 }, {
   country: 'FI',
   lang: 'fi',
-  title: 'Suomalainen'
+  title: 'Suomi'
 }];
 
 /***/ }),

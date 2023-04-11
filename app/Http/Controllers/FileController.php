@@ -18,7 +18,7 @@ class FileController extends Controller
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'file' => 'required'
+            'file' => 'required|file|max:1024'
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)){

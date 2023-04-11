@@ -108,7 +108,7 @@ return [
         'Svenska' => 'sv',
         'Polski' => 'pl',
         'Norsk' => 'no',
-        'Suomalainen' => 'fi'
+        'Suomi' => 'fi'
     ],
 
     /*

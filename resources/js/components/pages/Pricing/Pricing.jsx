@@ -51,7 +51,7 @@ const Pricing = () => {
           <button
             type="button"
             className="price-card-btn"
-            onClick={() => getPaymentLink('price_1Maz5vCVi0riU70Pp3gtayD7')} //test price_1MZzEwCVi0riU70Po6j0nClk //live price_1MZylgCVi0riU70PLpxaYmTW
+            onClick={() => getPaymentLink('price_1MZylgCVi0riU70PLpxaYmTW')}
           >{t('Choose plan')}</button>
         </div>
 
@@ -65,7 +65,7 @@ const Pricing = () => {
           <button
             type="button"
             className="price-card-btn"
-            onClick={() => getPaymentLink('price_1MZzG0CVi0riU70PGE1jT8I7')} //live price_1MZynBCVi0riU70PAo5AnE8A
+            onClick={() => getPaymentLink('price_1MZynBCVi0riU70PAo5AnE8A')}
           >{t('Choose plan')}</button>
         </div>
 
@@ -79,7 +79,7 @@ const Pricing = () => {
           <button
             type="button"
             className="price-card-btn"
-            onClick={() => getPaymentLink('price_1MZzI0CVi0riU70PTTyLxgik')} //live price_1MZyovCVi0riU70PlUHycyvz
+            onClick={() => getPaymentLink('price_1MZyovCVi0riU70PlUHycyvz')}
           >{t('Choose plan')}</button>
         </div>
       </div>

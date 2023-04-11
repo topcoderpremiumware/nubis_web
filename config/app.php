@@ -104,7 +104,11 @@ return [
         'Italiano' => 'it',
         'Español' => 'es',
         'Deutsch' => 'de',
-        'Nederlands' => 'nl'
+        'Nederlands' => 'nl',
+        'Svenska' => 'sv',
+        'Polski' => 'pl',
+        'Norsk' => 'no',
+        'Suomalainen' => 'fi'
     ],
 
     /*

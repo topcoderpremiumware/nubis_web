@@ -9,4 +9,8 @@ window.langs = [
   {country: 'ES', lang: 'es', title: 'Español'},
   {country: 'DE', lang: 'de', title: 'Deutsch'},
   {country: 'NL', lang: 'nl', title: 'Nederlands'},
+  {country: 'SE', lang: 'sv', title: 'Svenska'},
+  {country: 'PL', lang: 'pl', title: 'Polski'},
+  {country: 'NO', lang: 'no', title: 'Norsk'},
+  {country: 'FI', lang: 'fi', title: 'Suomalainen'},
 ];

@@ -19,7 +19,7 @@
     </div>
     <hr>
     <div class="footer-wrapper">
-      <div class="footer-address">{{ __('1088, North Street, Alexandria, AU') }}</div>
+      <div class="footer-address">{{ __('1088, North Street, Alexandria, AU') }} | <a href="mailto:{{env('MAIL_FROM_ADDRESS')}}">{{env('MAIL_FROM_ADDRESS')}}</a> | <a href="tel:+4531905250">+4531905250</a></div>
         <div class="footer-copy"><a href="/terms">Terms of use</a> | &copy; 2022, {{ __('All Rights Reserved') }}</div>
     </div>
   </div>

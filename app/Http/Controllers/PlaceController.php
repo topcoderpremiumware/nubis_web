@@ -247,6 +247,22 @@ class PlaceController extends Controller
         });
     }
 
+    public function sendtoAdmin(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'message' => 'required'
+        ]);
+
+        \Illuminate\Support\Facades\Mail::html($request->message.'<br><br>First name: '.$request->first_name.'<br>Last name: '.$request->last_name.'<br>Phone: '.$request->phone.'<br>Email: '.$request->email, function($msg) use ($request) {
+            $msg->to(env('MAIL_FROM_ADDRESS'))->subject('Contact Message: '.$request->first_name.' '.$request->last_name);
+        });
+        return back()->with('status', 'The message was sent successfully');
+    }
+
     public function getAlternative($place_id, Request $request)
     {
         $place = Place::find($place_id);

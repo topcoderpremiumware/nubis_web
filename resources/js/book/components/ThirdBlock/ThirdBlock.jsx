@@ -46,7 +46,7 @@ function ThirdBlock(props) {
             . <Trans>I <br />
             further accept that Nubis can collect and process <br />
             personal information bases on our</Trans>{" "}
-            <a className="no-border" href="/#">
+            <a className="no-border" href="/terms">
               {t('privacy policy.')}
             </a>
             <Copyrigth restaurantInfo={restaurantInfo} />

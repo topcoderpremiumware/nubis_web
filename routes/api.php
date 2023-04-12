@@ -65,6 +65,7 @@ Route::get('custom_booking_lengths',[CustomBookingLengthController::class, 'getA
 
 Route::post('feedbacks',[FeedbackController::class, 'create']);
 Route::post('feedbacks/is_exist',[FeedbackController::class, 'isFeedbackExist']);
+Route::post('send_admin_contact',[PlaceController::class, 'sendtoAdmin']);
 
 Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/logout',[CustomerController::class, 'logout']);

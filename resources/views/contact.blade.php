@@ -23,29 +23,34 @@
           <h1 class="title">{{__("We’re here to help you out.")}}</h1>
           <p class="contact-text">{{__("If you have any questions, just reach out to us and we’ll respond as soon as we can. Please provide as much information as possible.")}}</p>
 
-          <form action="#" class="contact-form">
+          <form action="/api/send_admin_contact" method="POST" class="contact-form">
+              @if (session('status'))
+                  <div class="alert alert-success">
+                      {{ session('status') }}
+                  </div>
+              @endif
             <label class="contact-label">
               {{__('First Name')}} *
-              <input type="text" required class="contact-input" placeholder="{{__('First Name')}}">
+              <input type="text" name="first_name" required class="contact-input" placeholder="{{__('First Name')}}">
             </label>
             <label class="contact-label">
               {{__('Last Name')}} *
-              <input type="text" required class="contact-input" placeholder="{{__('Last Name')}}">
+              <input type="text" name="last_name" required class="contact-input" placeholder="{{__('Last Name')}}">
             </label>
             <label class="contact-label">
               {{__('Email')}} *
-              <input type="email" required class="contact-input" placeholder="{{__('Email')}}">
+              <input type="email" name="email" required class="contact-input" placeholder="{{__('Email')}}">
             </label>
             <label class="contact-label">
               {{__('Phone number')}} *
-              <input type="text" required class="contact-input" placeholder="{{__('Phone number')}}">
+              <input type="text" name="phone" required class="contact-input" placeholder="{{__('Phone number')}}">
             </label>
             <label class="contact-label">
               {{__('Question')}} *
-              <textarea name="" cols="30" rows="5" required class="contact-textarea" placeholder="{{__('Type your question')}}"></textarea>
+              <textarea name="message" cols="30" rows="5" required class="contact-textarea" placeholder="{{__('Type your question')}}"></textarea>
             </label>
             <button type="submit" class="contact-btn">{{__('Submit')}}</button>
-            <p class="contact-form-text">{{__('By clicking submit you acknowledge to our')}} <a href="#" target="_blank">{{__('Privacy Policy')}}</a></p>
+            <p class="contact-form-text">{{__('By clicking submit you acknowledge to our')}} <a href="/terms" target="_blank">{{__('Privacy Policy')}}</a></p>
           </form>
         </div>
       </section>

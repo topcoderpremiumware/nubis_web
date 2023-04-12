@@ -186,9 +186,9 @@ class PlaceController extends Controller
     {
         $place = Place::find($request->place_id);
 
-        if(!$place || !$place->organization) return response()->json(['status' => 'none']);
+        if(!$place) return response()->json(['status' => 'none']);
 
-        $bill = $place->organization->paid_bills()->orderByDesc('expired_at')->first();
+        $bill = $place->paid_bills()->orderByDesc('expired_at')->first();
 
         if(!$bill){
             $status = 'none';

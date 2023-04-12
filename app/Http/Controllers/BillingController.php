@@ -28,7 +28,7 @@ class BillingController extends Controller
             ], 400);
         }
 
-        $billings = PaidBill::where('price_id',$place_id)
+        $billings = PaidBill::where('place_id',$place_id)
             ->orderBy('payment_date','desc')
             ->get();
 

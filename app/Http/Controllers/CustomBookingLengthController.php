@@ -270,6 +270,7 @@ class CustomBookingLengthController extends Controller
             }
 
             $times = [];
+            $logs = [];
             foreach ($custom_length->time_intervals as $time_interval) {
                 $time = Carbon::parse($request->reservation_date . ' ' . $time_interval['from']);
                 $end = Carbon::parse($request->reservation_date . ' ' . $time_interval['to']);
@@ -318,6 +319,7 @@ class CustomBookingLengthController extends Controller
                                         continue 2;
                                     }
                                 }
+                                $logs[$time->copy()->toString()] = $table['number'];
                                 array_push($times,$time->copy());
                                 break 2;
                             }
@@ -339,6 +341,7 @@ class CustomBookingLengthController extends Controller
                                             continue 2;
                                         }
                                     }
+                                    $logs[$time->copy()->toString().' g'] = $table['number'];
                                     array_push($times,$time->copy());
                                     break 2;
                                 }
@@ -357,7 +360,8 @@ class CustomBookingLengthController extends Controller
                     'description' => $custom_length->labels[$request->language]['description'],
                     'image' => $custom_length->image ? Storage::disk('public')->url($custom_length->image) : '',
                     'length' => intval($custom_length->length)+intval($custom_length->preparation_length),
-                    'time' => $times
+                    'time' => $times,
+                    'logs' => $logs
                 ]);
             }
         }

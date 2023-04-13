@@ -507,6 +507,16 @@ class OrderController extends Controller
                         if(!array_key_exists('grouped',$table)) continue;
                         if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                             $group_id = $table['time'][0]['group'];
+                            $reserv_to = $time->copy()->addMinutes($working_hour['length']);
+                            $reserv_from = $time->copy();
+
+                            for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                $i = intval($reserv_from->format('H')) * 4 + floor(intval($reserv_from->format('i')) / 15);
+                                if (array_key_exists('ordered', $table['time'][$i])) {
+                                    continue 2;
+                                }
+                            }
+
                             if(!array_key_exists($group_id, $groups_table_seats)){
                                 $groups_tables[$group_id] = [];
                                 $groups_table_seats[$group_id] = 0;
@@ -514,15 +524,6 @@ class OrderController extends Controller
                             $groups_tables[$group_id][] = $table;
                             $groups_table_seats[$group_id] += $table['seats'];
                             if($groups_table_seats[$group_id] >= $request_seats) {
-                                $reserv_to = $time->copy()->addMinutes($working_hour['length']);
-                                $reserv_from = $time->copy();
-
-                                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
-                                    $i = intval($reserv_from->format('H')) * 4 + floor(intval($reserv_from->format('i')) / 15);
-                                    if (array_key_exists('ordered', $table['time'][$i])) {
-                                        continue 2;
-                                    }
-                                }
                                 array_push($free_time, $time->copy());
                                 break;
                             }

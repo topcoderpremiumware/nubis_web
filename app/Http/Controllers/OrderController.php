@@ -295,6 +295,28 @@ class OrderController extends Controller
             ], 400);
         }
 
+        $customer = $order->customer;
+        $sms_delete_template = MessageTemplate::where('place_id',$order->place_id)
+            ->where('purpose','sms-delete')
+            ->where('language',$customer->language)
+            ->where('active',1)
+            ->first();
+        $place = $order->place;
+        $smsApiToken = $place->setting('sms-api-token');
+        if($sms_delete_template && $smsApiToken){
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_SHORT_NAME'), $smsApiToken);
+        }
+        $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','email-delete')
+            ->where('language',$customer->language)
+            ->where('active',1)
+            ->first();
+        if($email_delete_template){
+            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text), function($msg) use ($email_delete_template, $customer) {
+                $msg->to($customer->email)->subject($email_delete_template->subject);
+            });
+        }
+
         $this->paymentAfterOrderCancel($order);
 
         $order->delete();

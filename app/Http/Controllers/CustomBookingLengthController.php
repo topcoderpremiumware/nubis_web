@@ -325,12 +325,14 @@ class CustomBookingLengthController extends Controller
                             }
                         }
                         $groups_table_seats = [];
+                        $groups_tables = [];
                         foreach ($tables as $table) {
                             if(!array_key_exists('grouped',$table)) continue;
                             if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                                 $group_id = $table['time'][0]['group'];
                                 if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
                                 $groups_table_seats[$group_id] += $table['seats'];
+                                $groups_tables[$group_id][] = $table['number'];
                                 if($groups_table_seats[$group_id] >= $request->seats){
                                     $reserv_to = $time->copy()->addMinutes($custom_length->length);
                                     $reserv_from = $time->copy();
@@ -341,7 +343,7 @@ class CustomBookingLengthController extends Controller
                                             continue 2;
                                         }
                                     }
-                                    $logs[$time->copy()->toString().' g'] = $table['number'];
+                                    $logs[$time->copy()->toString().' g'] = json_encode($groups_tables[$group_id]).', group_seats='.$groups_table_seats[$group_id].', order_seats='.$request->seats;
                                     array_push($times,$time->copy());
                                     break 2;
                                 }

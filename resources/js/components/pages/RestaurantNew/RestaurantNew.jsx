@@ -59,7 +59,7 @@ const RestaurantNew = () => {
       }
     }).then(response => {
       localStorage.setItem('place_id', response.data.id)
-      window.location.href = "/admin"
+      window.location.href = "/admin/DayView"
     }).catch(error => { })
   }
 

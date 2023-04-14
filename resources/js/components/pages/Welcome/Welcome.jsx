@@ -7,18 +7,18 @@ import './Welcome.scss'
 const Welcome = () => {
   const { t } = useTranslation();
 
-  return (
-    <div className='welcome-wrapper'>
-      <h2 className='welcome-title'>{t('Welcome')}</h2>
-      <p className="welcome-text">{t('If you are the waiter or manager please wait until the restaurant owner will give you the permission')}</p>
-      <p className="welcome-text">{t('or')}</p>
-      <Button variant="contained">
-        <Link to="/RestaurantNew" className='thank-link'>
-          {t('Create your restaurant')}
-        </Link>
-      </Button>
-    </div>
-  )
+  return (<>{!localStorage.getItem('place_id') &&
+      <div className='welcome-wrapper'>
+        <h2 className='welcome-title'>{t('Welcome')}</h2>
+        <p className="welcome-text">{t('If you are the waiter or manager please wait until the restaurant owner will give you the permission')}</p>
+        <p className="welcome-text">{t('or')}</p>
+        <Button variant="contained">
+          <Link to="/RestaurantNew" className='thank-link'>
+            {t('Create your restaurant')}
+          </Link>
+        </Button>
+      </div>
+  }</>)
 }
 
 export default Welcome

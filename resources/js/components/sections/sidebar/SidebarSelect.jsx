@@ -10,18 +10,26 @@ export default function SidebarSelect() {
   const [places, setPlaces] = useState([])
   const [place, setPlace] = useState('')
 
-  useEffect(async () => {
-    await getPlaces()
+  useEffect( () => {
+    getPlaces()
     setPlace(localStorage.getItem('place_id'))
+    eventBus.on("roleChanged",  () => {
+      getPlaces()
+    })
   }, [])
 
-  const getPlaces = async () => {
-    await axios.get(`${process.env.MIX_API_URL}/api/places/mine`, {
+  const getPlaces = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/mine`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setPlaces(response.data.map(i => ({label: i.name+' ('+i.id+')', id: i.id})))
+      let options = []
+      if(['admin','manager'].includes(window.role)){
+        options.push({ label: 'Create new', id: 'new' })
+      }
+      options = options.concat(response.data.map(i => ({label: i.name+' ('+i.id+')', id: i.id})))
+      setPlaces(options)
     }).catch(error => {
     })
   }
@@ -41,7 +49,7 @@ export default function SidebarSelect() {
         disablePortal
         disableClearable
         id="places"
-        options={[{ label: 'Create new', id: 'new' }, ...places]}
+        options={places}
         renderOption={(props, option) => (
           option.id === 'new'
             ? (

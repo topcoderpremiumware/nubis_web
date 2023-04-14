@@ -21,7 +21,7 @@ const Banner = () => {
     return null
   }
 
-  return (
+  return (<>{['admin','manager'].includes(window.role) &&
     <div className={status === 'expired' ? 'page-banner page-banner-active' : 'page-banner'}>
       <div className="page-banner-wrapper">
         <div>
@@ -33,7 +33,7 @@ const Banner = () => {
         </a>
       </div>
     </div>
-  )
+  }</>)
 }
 
 export default Banner

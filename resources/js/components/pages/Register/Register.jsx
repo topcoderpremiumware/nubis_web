@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {Select, TextField, MenuItem, InputLabel, FormControl, Button, Autocomplete} from "@mui/material";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/material.css'
-import {Link} from "react-router-dom";
+import {Link, useSearchParams} from "react-router-dom";
 import eventBus from "../../../eventBus";
 
 export default function Register() {
@@ -33,6 +33,9 @@ export default function Register() {
   const [countryId,setCountryId] = useState('')
   const [taxNumber,setTaxNumber] = useState('')
   const [organizationName, setOrganizationName] = useState('')
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
 
   useEffect(() => {
     axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
@@ -220,17 +223,19 @@ export default function Register() {
                            onChange={onChange}/>
               </div>
               <hr/>
-              <div className="mb-3">
-                <FormControl size="small" fullWidth>
-                  <InputLabel id="label_place_id">{t('Restaurant')}</InputLabel>
-                  <Select label={t('Restaurant')} value={place}
-                          labelId="label_place_id" id="place_id" name="place_id"
-                          onChange={onChange}>
-                    <MenuItem value="0">{t('Create later')}</MenuItem>
-                    <MenuItem value="1">{t('Create new')}</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
+              {!searchParams.get('invitation') &&
+                <div className="mb-3">
+                  <FormControl size="small" fullWidth>
+                    <InputLabel id="label_place_id">{t('Restaurant')}</InputLabel>
+                    <Select label={t('Restaurant')} value={place}
+                            labelId="label_place_id" id="place_id" name="place_id"
+                            onChange={onChange}>
+                      <MenuItem value="0">{t('Create later')}</MenuItem>
+                      <MenuItem value="1">{t('Create new')}</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+              }
               {place === '1' &&
               <>
                 <div className="mb-3">

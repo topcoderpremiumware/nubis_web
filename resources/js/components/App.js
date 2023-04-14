@@ -40,6 +40,7 @@ import eventBus from '../eventBus';
 import { useState } from 'react';
 import BillingReport from "./pages/BillingReport/BillingReport";
 import Roles from "./pages/Roles/Roles";
+import Welcome from "./pages/Welcome/Welcome";
 
 function App() {
   const [sidebarIsVisible, setSidebarIsVisible] = useState(true)
@@ -78,7 +79,6 @@ function App() {
         window.role = ''
       }
       eventBus.dispatch('roleChanged')
-      console.log('role',window.role)
     }).catch(error => {
       console.log('role error',error.response)
     })
@@ -95,6 +95,7 @@ function App() {
               <Banner />
               <Routes>
                 {/* <Route path='/dailyuse' exact element={<DailyUse/>}/> */}
+                <Route path='/' exact element={<Welcome/>}/>
                 <Route path='/DayView' exact element={<DayView/>}/>
                 <Route path='/WeekView' exact element={<WeekView/>}/>
                 <Route path='/MonthView' exact element={<MonthView/>}/>

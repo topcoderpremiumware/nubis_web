@@ -25,7 +25,11 @@ export default function Login() {
         if(response.data.length > 0){
           localStorage.setItem('place_id', response.data[0].id)
         }
-        window.location.href = "/admin/DayView"
+        if(localStorage.getItem('place_id')){
+          window.location.href = "/admin/DayView"
+        }else{
+          window.location.href = "/admin"
+        }
       }).catch(error => {})
     }).catch(error => {
       setEmailError([])

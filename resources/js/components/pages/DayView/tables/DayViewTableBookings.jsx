@@ -95,6 +95,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
         }).filter(x => x)
 
         setOrders(orders)
+        eventBus.dispatch('loadedOrders',orders)
         eventBus.dispatch("dayViewOrdersLoaded",{orders: orders, columns: columns, pdfTitle: t('Bookings')});
         setLoading(false)
       }).catch(error => {

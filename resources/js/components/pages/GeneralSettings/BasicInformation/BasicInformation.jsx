@@ -136,8 +136,8 @@ export default function BasicInformation() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl size="small" fullWidth>
-              <InputLabel id="label_language">{t('Language')}</InputLabel>
-              <Select label={t('Language')} value={place.language || ''}
+              <InputLabel id="label_language">{t('Booking page language')}</InputLabel>
+              <Select label={t('Booking page language')} value={place.language || ''}
                       labelId="label_language" id="language" name="language"
                       onChange={onChange}>
                 {window.langs.map((lang,key) => {

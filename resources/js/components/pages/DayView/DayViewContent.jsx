@@ -56,6 +56,7 @@ export default function DayViewContent() {
   const [tableSidebar, setTableSidebar] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [isFullWidth, setIsFullWidth] = useState(false)
+  const [orders, setOrders] = useState([])
 
   useEffect(() => {
     eventBus.on("openTableSidebar",(data) => {
@@ -78,11 +79,21 @@ export default function DayViewContent() {
       setIsFullWidth(false)
       setTableSidebar('')
     })
+    eventBus.on("loadedOrders",(data) => {
+      setOrders(data)
+    })
   },[])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const statistic = () => {
+    return <Stack spacing={2} direction="row" alignItems="center">
+      <span>{t('Total booking')}: {orders.length}</span>
+      <span>{t('Total pax')}: {orders.reduce((prev, curr) => prev + curr.seats, 0)}</span>
+    </Stack>
+  }
 
   return (
     <div className='pages__container DayView__container'>
@@ -94,6 +105,7 @@ export default function DayViewContent() {
               <Tab label={t('Bookings')} {...a11yProps(0)} />
               <Tab label={t('Waiting List')} {...a11yProps(1)} />
               <Tab label={t('Deleted bookings')} {...a11yProps(2)} />
+              {statistic()}
             </Tabs>
           </Box>
           <TabPanel className='DayView__BoxItem' value={value} index={0}>

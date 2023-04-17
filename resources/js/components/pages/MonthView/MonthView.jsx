@@ -9,15 +9,35 @@ import AreasSelect from '../DayView/toppanel/select/AreasSelect';
 import eventBus from '../../../eventBus';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import {useTranslation} from "react-i18next";
 
 const MonthView = () => {
-  moment.locale(i18next.language);
-  const localizer = momentLocalizer(moment)
+  const {t} = useTranslation();
 
   const [events, setEvents] = useState([])
   const [reservationDate, setReservationDate] = useState(new Date())
+  const [localizer, setLocalizer] = useState(momentLocalizer(moment))
+
+  useEffect(() => {
+    getEvents()
+    eventBus.on("areaChanged", (data) => {
+      getEvents()
+    })
+    eventBus.on("placeChanged", (data) => {
+      getEvents()
+    })
+    eventBus.on("langChanged", (data) => {
+      getEvents()
+    })
+  }, [])
+
+  useEffect(() => {
+    getEvents()
+  }, [reservationDate])
 
   const getEvents = async () => {
+    moment.locale(i18next.language);
+    setLocalizer(momentLocalizer(moment))
     axios.get(process.env.MIX_API_URL + '/api/orders', {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -53,8 +73,8 @@ const MonthView = () => {
         start: value[0],
         end: value[0],
         title: <>
-          Total booking: {value[1].length} <br />
-          Total pax: {value[1].reduce((prev, curr) => prev + curr.seats, 0)}
+          {t('Total booking')}: {value[1].length} <br />
+          {t('Total pax')}: {value[1].reduce((prev, curr) => prev + curr.seats, 0)}
         </>
       }))
 
@@ -63,25 +83,6 @@ const MonthView = () => {
       console.log('Error', error)
     })
   }
-
-  useEffect(() => {
-    getEvents()
-    eventBus.on("areaChanged", (data) => {
-      getEvents()
-    })
-    eventBus.on("placeChanged", (data) => {
-      getEvents()
-    })
-
-    return () => {
-      eventBus.remove("areaChanged", (data) => {
-        getEvents()
-      })
-      eventBus.remove("placeChanged", (data) => {
-        getEvents()
-      })
-    }
-  }, [reservationDate])
 
   return (
     <div className='pages__container'>

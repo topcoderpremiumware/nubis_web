@@ -3,6 +3,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom'
 import Flag from 'react-world-flags'
+import eventBus from "../../../eventBus";
 
 const Navbar = () => {
   const { t, i18n } = useTranslation();
@@ -21,6 +22,12 @@ const Navbar = () => {
     localStorage.clear()
     localStorage.setItem('i18nextLng', lang)
     window.location.href = "/"
+  }
+
+  const changeLang = (lang) => {
+    i18n.changeLanguage(lang).then(() => {
+      eventBus.dispatch('langChanged')
+    })
   }
 
   return (
@@ -43,7 +50,7 @@ const Navbar = () => {
         <ul className="dropdown-menu" aria-labelledby="languageDropdown">
           {window.langs.map((lang, key) => {
             return <li className="language-item" key={key}
-              onClick={(e) => { i18n.changeLanguage(lang.lang) }}>
+              onClick={(e) => { changeLang(lang.lang) }}>
               <span><Flag height="13" code={lang.country} /> {lang.title}</span>
             </li>
           })}

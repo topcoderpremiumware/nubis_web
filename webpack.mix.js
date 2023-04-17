@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+require('laravel-mix-compress');
 
 /*
  |--------------------------------------------------------------------------
@@ -12,25 +13,14 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .react()
-    .sass('resources/sass/app.scss', 'public/css');
-
-mix.js('resources/js/book.js', 'public/js')
+  .sass('resources/sass/app.scss', 'public/css')
+  .js('resources/js/book.js', 'public/js')
+  .sass('resources/sass/book.scss', 'public/css')
+  .js('resources/js/giftcard.js', 'public/js')
+  .js('resources/js/feedback.js', 'public/js')
+  .js('resources/js/feedbacks.js', 'public/js')
+  .js('resources/js/home.js', 'public/js')
+  .sass('resources/sass/home.scss', 'public/css')
+  .js('resources/js/terms.js', 'public/js')
   .react()
-  .sass('resources/sass/book.scss', 'public/css');
-
-mix.js('resources/js/giftcard.js', 'public/js')
-  .react();
-
-mix.js('resources/js/feedback.js', 'public/js')
-  .react();
-
-mix.js('resources/js/feedbacks.js', 'public/js')
-  .react();
-
-mix.js('resources/js/home.js', 'public/js')
-  .react()
-  .sass('resources/sass/home.scss', 'public/css');
-
-mix.js('resources/js/terms.js', 'public/js')
-  .react();
+  .compress()

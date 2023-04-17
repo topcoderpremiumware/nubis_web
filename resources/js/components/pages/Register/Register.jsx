@@ -31,6 +31,7 @@ export default function Register() {
   const [homePage, setHomePage] = useState('')
   const [countries,setCountries] = useState([])
   const [countryId,setCountryId] = useState('')
+  const [language,setLanguage] = useState('')
   const [taxNumber,setTaxNumber] = useState('')
   const [organizationName, setOrganizationName] = useState('')
 
@@ -67,7 +68,8 @@ export default function Register() {
           home_page: homePage,
           country_id: countryId,
           tax_number: taxNumber,
-          organization_name: organizationName
+          organization_name: organizationName,
+          language: language
         },{
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -147,6 +149,9 @@ export default function Register() {
         break;
       case 'country_id':
         setCountryId(e.target.value)
+        break;
+      case 'language':
+        setLanguage(e.target.value)
         break;
       case 'tax_number':
         setTaxNumber(e.target.value)
@@ -309,6 +314,18 @@ export default function Register() {
                              type="text" id="tax_number" name="tax_number"
                              required={true}
                              onChange={onChange}/>
+                </div>
+                <div className="mb-3">
+                  <FormControl size="small" fullWidth>
+                    <InputLabel id="label_language">{t('Language')}</InputLabel>
+                    <Select label={t('Language')}
+                            labelId="label_language" id="language" name="language"
+                            onChange={onChange}>
+                      {window.langs.map((lang,key) => {
+                        return <MenuItem key={key} value={lang.lang}>{lang.title}</MenuItem>
+                      })}
+                    </Select>
+                  </FormControl>
                 </div>
                 <div className="mb-3">
                   <TextField label={t('Home page')} size="small" fullWidth

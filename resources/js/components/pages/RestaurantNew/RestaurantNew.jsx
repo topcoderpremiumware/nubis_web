@@ -19,6 +19,7 @@ const RestaurantNew = () => {
   const [homePage, setHomePage] = useState('')
   const [countries, setCountries] = useState([])
   const [countryId, setCountryId] = useState('')
+  const [language, setLanguage] = useState('')
   const [taxNumber,setTaxNumber] = useState('')
   const [organizationName, setOrganizationName] = useState('')
   const [hasOrganization,setHasOrganization] = useState(false)
@@ -52,7 +53,8 @@ const RestaurantNew = () => {
       home_page: homePage,
       country_id: countryId,
       tax_number: taxNumber,
-      organization_name: organizationName
+      organization_name: organizationName,
+      language: language
     }, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -89,6 +91,12 @@ const RestaurantNew = () => {
       case 'country_id':
         setCountryId(e.target.value)
         break;
+      case 'language':
+        setLanguage(e.target.value)
+        break;
+      case 'language':
+        setLanguage(e.target.value)
+        break;
       case 'tax_number':
         setTaxNumber(e.target.value)
         break;
@@ -108,7 +116,7 @@ const RestaurantNew = () => {
   }
 
   return (
-    <div className="pages__container">
+    <Grid className="pages__container">
       <h2>{t('Create new restaurant')}</h2>
       <form onSubmit={onSubmit}>
         <Grid container spacing={2} sx={{pb: 2, mt: 3}}>
@@ -180,6 +188,18 @@ const RestaurantNew = () => {
                        onChange={onChange}/>
           </Grid>
           <Grid item xs={12} sm={6}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_language">{t('Language')}</InputLabel>
+              <Select label={t('Language')}
+                      labelId="label_language" id="language" name="language"
+                      onChange={onChange}>
+                {window.langs.map((lang,key) => {
+                  return <MenuItem key={key} value={lang.lang}>{lang.title}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <TextField label={t('Home page')} size="small" fullWidth
               type="text" id="home_page" name="home_page"
               onChange={onChange} />
@@ -187,7 +207,7 @@ const RestaurantNew = () => {
         </Grid>
         <Button variant="contained" type="submit">{t('Create new')}</Button>
       </form>
-    </div>
+    </Grid>
   )
 }
 

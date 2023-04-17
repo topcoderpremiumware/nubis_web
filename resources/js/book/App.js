@@ -15,6 +15,8 @@ import LoadingPage from "../components/LoadingPage";
 import {useTranslation} from "react-i18next";
 import SelectArea from "./components/SelectArea/SelectArea";
 import axios from "axios";
+import i18n from "i18next";
+import eventBus from "../eventBus";
 
 const App = () => {
   const ref = useRef(null);
@@ -334,6 +336,11 @@ const App = () => {
 
   const getPlaceData = () => {
     axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}`).then(response => {
+      if(!localStorage.getItem('langChanged')){
+        i18n.changeLanguage(response.data.language).then(() => {
+          eventBus.dispatch("langChanged")
+        })
+      }
       setRestaurantInfo((prev) => ({
         ...prev,
         ...response.data,

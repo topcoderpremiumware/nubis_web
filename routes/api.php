@@ -112,6 +112,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('places/{place_id}/is_trial_paid',[PlaceController::class, 'isTrialBillPaid']);
     Route::post('places/{place_id}/pay_trial',[BillingController::class, 'payTrial']);
     Route::get('places/{place_id}/billings',[BillingController::class, 'getAllByPlace']);
+    Route::delete('places/{id}',[PlaceController::class, 'delete']);
 
     Route::get('check_customer',[CustomerController::class, 'getByEmail']);
 

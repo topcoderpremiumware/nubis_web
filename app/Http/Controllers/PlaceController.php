@@ -56,7 +56,8 @@ class PlaceController extends Controller
             'home_page' => $request->home_page ?? '',
             'country_id' => $request->country_id,
             'tax_number' => $request->tax_number,
-            'organization_id' => $organization_id
+            'organization_id' => $organization_id,
+            'language' => $request->language
         ]);
 
         MessageTemplate::seedPlace($place->id);
@@ -113,7 +114,8 @@ class PlaceController extends Controller
             'email' => $request->email ?? '',
             'home_page' => $request->home_page ?? '',
             'country_id' => $request->country_id,
-            'tax_number' => $request->tax_number
+            'tax_number' => $request->tax_number,
+            'language' => $request->language
         ]);
 
         Log::add($request,'change-place','Changed place #'.$id);
@@ -290,5 +292,28 @@ class PlaceController extends Controller
             }
         }
         return response()->json(max($seats));
+    }
+
+    public function delete($id, Request $request)
+    {
+        $place = Place::find($id);
+
+        if(!Auth::user()->places->contains($id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        Log::add($request,'delete-place','Deleted place #'.$id);
+
+        if($place->is_bill_paid()){
+            \Illuminate\Support\Facades\Mail::html('The place #'.$id.' '.$place->name.' was deleted by admin. Maybe you need to unsubscribe this place from the Stripe.', function($msg) use ($id) {
+                $msg->to(env('MAIL_FROM_ADDRESS'))->subject('Place was deleted #'.$id);
+            });
+        }
+
+        $place->delete();
+
+        return response()->json(['message' => 'Place is deleted']);
     }
 }

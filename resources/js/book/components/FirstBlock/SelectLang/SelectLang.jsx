@@ -5,8 +5,10 @@ import i18n from "i18next";
 
 function SelectLang() {
   const onChange = (e) => {
-    i18n.changeLanguage(e.target.value)
-    eventBus.dispatch("langChanged")
+    i18n.changeLanguage(e.target.value).then(() => {
+      localStorage.setItem('langChanged','1')
+      eventBus.dispatch("langChanged")
+    })
   }
   return (
     <div className="select-lang">

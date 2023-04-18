@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import Topbar from "./sections/topbar/topbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -39,8 +39,6 @@ const Roles = React.lazy(() => import('./pages/Roles/Roles'))
 const Welcome = React.lazy(() => import('./pages/Welcome/Welcome'))
 
 import eventBus from '../eventBus';
-import { useState } from 'react';
-
 
 function App() {
   const [sidebarIsVisible, setSidebarIsVisible] = useState(true)

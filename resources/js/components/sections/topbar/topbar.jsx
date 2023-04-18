@@ -10,7 +10,7 @@ export default function Topbar() {
     <>
       <nav className="navbar navbar-expand-lg navbar-dark sticky-top">
         <div className="container">
-          <Link className="navbar-brand" to="/"><img src='/images/logo.png' alt="" width="90"/></Link>
+          <Link className="navbar-brand" to="/"><img src='/images/logo.webp' alt="" width="90"/></Link>
           <button
             className="navbar-toggler"
             type="button"

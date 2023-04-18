@@ -6,7 +6,7 @@
     body{
         font-family: "Poppins", sans-serif;
         margin:0;
-        background-image: url({{url('/')}}/images/features-bg.jpg);
+        background-image: url({{url('/')}}/images/features-bg.webp);
         background-repeat: no-repeat;
         background-size: cover;
         position: relative;

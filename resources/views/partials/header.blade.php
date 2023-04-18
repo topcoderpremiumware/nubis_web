@@ -2,7 +2,7 @@
   <div class="container">
     <div class="header-wrapper-mobile">
       <a class="header-logo-mobile" href="/">
-        <img src='/images/logo.png' width="156"/>
+        <img src='/images/logo.webp' width="156"/>
       </a>
       <div class="header-wrapper-flex">
         @include('partials/language_switcher')
@@ -15,7 +15,7 @@
     </div>
     <div class="header-wrapper">
       <a class="header-logo" href="/">
-        <img src='/images/logo.png' width="156"/>
+        <img src='/images/logo.webp' width="156"/>
       </a>
       <nav class="nav">
         <a href="/" class="nav-link nav-link-active">{{ __('Home') }}</a>

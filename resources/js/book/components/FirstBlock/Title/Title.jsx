@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import "./Title.css";
 import {Trans, useTranslation} from "react-i18next";
 import axios from "axios";
-import eventBus from "../../../../eventBus";
 
 function Title(props) {
   const { t } = useTranslation();

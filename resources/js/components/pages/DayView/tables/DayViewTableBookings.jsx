@@ -2,13 +2,12 @@ import React, {useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
 
 import {
-  CircularProgress, IconButton,
+  CircularProgress,
 } from "@mui/material";
 import Moment from "moment";
 import {DataGrid} from "@mui/x-data-grid";
 import eventBus from "../../../../eventBus";
 import axios from "axios";
-import ReceiptIcon from "@mui/icons-material/Receipt";
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import moment from "moment/moment";
 

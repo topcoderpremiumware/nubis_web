@@ -6,7 +6,7 @@ import Copyrigth from "../FirstBlock/Copyrigth/Copyrigth";
 import Time from "./Calendar/Time";
 import MainModal from "../MainModal/MainModal";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
-import { Calendar, utils } from "react-modern-calendar-datepicker";
+import { Calendar } from "react-modern-calendar-datepicker";
 import WaitingModal from "./WaitingModal/WaitingModal";
 import { normalizeNumber } from "../../../helper"
 import eventBus from "../../../eventBus";

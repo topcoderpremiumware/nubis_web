@@ -10,10 +10,10 @@ export default function Topbar() {
     <>
       <nav className="navbar navbar-expand-lg navbar-dark sticky-top">
         <div className="container">
-          <Link className="navbar-brand" to="/"><img src='/images/logo.png' width="90"/></Link>
-          <button 
-            className="navbar-toggler" 
-            type="button" 
+          <Link className="navbar-brand" to="/"><img src='/images/logo.png' alt="" width="90"/></Link>
+          <button
+            className="navbar-toggler"
+            type="button"
             onClick={() => eventBus.dispatch('toggleSidebar')}
           >
             <span className="navbar-toggler-icon"/>

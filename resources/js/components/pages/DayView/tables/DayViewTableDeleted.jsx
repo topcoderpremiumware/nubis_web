@@ -7,9 +7,6 @@ import {
 import Moment from "moment";
 import {DataGrid} from "@mui/x-data-grid";
 import eventBus from "../../../../eventBus";
-import Button from "@mui/material/Button";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import DayViewPdf from "../DayViewPdf/DayViewPdf";
 
 export default function DayViewTableWaiting() {
   const {t} = useTranslation();

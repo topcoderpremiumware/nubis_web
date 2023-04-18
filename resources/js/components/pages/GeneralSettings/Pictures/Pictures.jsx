@@ -125,7 +125,7 @@ export default function Pictures() {
           <Button variant="contained" onClick={onSaveDescription}>{t('Save')}</Button>
         </div>
         <div className="col-md-6 mb-3">
-          <img className="added_picture" src={getPicture('online_booking_picture')} />
+          <img className="added_picture" alt="" src={getPicture('online_booking_picture')} />
         </div>
       </div>
     </div>

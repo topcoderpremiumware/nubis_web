@@ -1,11 +1,12 @@
-import * as React from 'react';
+// import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import './CheckGiftCardPopup.scss';
 
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
-import { Button, TextField } from '@mui/material';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import eventBus from '../../../../eventBus';

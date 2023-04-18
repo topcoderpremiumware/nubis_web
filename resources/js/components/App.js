@@ -1,46 +1,46 @@
 import React, { Suspense, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Topbar from "./sections/topbar/topbar";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './../i18nextConf';
 
 import Sidebar from "./sections/sidebar/Sidebar";
-import DayView from './pages/DayView/DayViewContent';
-import WeekView from './pages/WeekView/WeekViewPage';
-import Activity from './pages/Activity/ActivityPage';
 import LoadingPage from "./LoadingPage";
-import Login from "./pages/Login/Login";
-import Register from "./pages/Register/Register";
-import SmsTemplate from "./pages/SmsTemplate/SmsTemplate";
-import SmsApiKeys from './pages/GeneralSettings/SmsApiKeys/SmsApiKeys';
-import EmailTemplate from "./pages/EmailTemplate/EmailTemplate";
-import TablePlanSetup from "./pages/TablePlanSetup/TablePlanSetup";
-import Areas from "./pages/Areas/Areas";
-import ManageFeedback from "./pages/ManageFeedback/ManageFeedback";
-import OpeningTimes from "./pages/OpeningTimes/OpeningTimes";
-import CustomBookingLength from "./pages/CustomBookingLength/CustomBookingLength"
-
-import BasicInformation from './pages/GeneralSettings/BasicInformation/BasicInformation';
-import Pictures from './pages/GeneralSettings/Pictures/Pictures';
-import Pricing from './pages/Pricing/Pricing';
-import RestaurantNew from './pages/RestaurantNew/RestaurantNew';
-import ThankYou from './pages/ThankYou/ThankYou';
-import ManageGiftCards from './pages/ManageGiftCards/ManageGiftCards';
-import BookingLinkGuide from './pages/BookingLinkGuide/BookingLinkGuide';
-import NotificationsSettings from './pages/GeneralSettings/NotificationsSettings/NotificationsSettings';
-import Support from './pages/Support/Support';
-import PaymentGateway from './pages/GuestPayment/PaymentGateway/PaymentGateway';
-import PaymentSettings from './pages/GuestPayment/PaymentSettings/PaymentSettings';
-import VideoGuideSettings from './pages/VideoGuideSettings/VideoGuideSettings';
-import MonthView from './pages/MonthView/MonthView';
-import SendBulkSMS from "./pages/SendBulkSMS/SendBulkSMS";
-import VideoGuides from './pages/VideoGuides/VideoGuides';
 import Banner from './sections/banner/Banner';
+
+const DayView = React.lazy(() => import('./pages/DayView/DayViewContent'))
+const Login = React.lazy(() => import('./pages/Login/Login'))
+const Register = React.lazy(() => import('./pages/Register/Register'))
+const SmsTemplate = React.lazy(() => import('./pages/SmsTemplate/SmsTemplate'))
+const SmsApiKeys = React.lazy(() => import('./pages/GeneralSettings/SmsApiKeys/SmsApiKeys'))
+const EmailTemplate = React.lazy(() => import('./pages/EmailTemplate/EmailTemplate'))
+const TablePlanSetup = React.lazy(() => import('./pages/TablePlanSetup/TablePlanSetup'))
+const Areas = React.lazy(() => import('./pages/Areas/Areas'))
+const ManageFeedback = React.lazy(() => import('./pages/ManageFeedback/ManageFeedback'))
+const OpeningTimes = React.lazy(() => import('./pages/OpeningTimes/OpeningTimes'))
+const CustomBookingLength = React.lazy(() => import('./pages/CustomBookingLength/CustomBookingLength'))
+const BasicInformation = React.lazy(() => import('./pages/GeneralSettings/BasicInformation/BasicInformation'))
+const Pictures = React.lazy(() => import('./pages/GeneralSettings/Pictures/Pictures'))
+const Pricing = React.lazy(() => import('./pages/Pricing/Pricing'))
+const RestaurantNew = React.lazy(() => import('./pages/RestaurantNew/RestaurantNew'))
+const ThankYou = React.lazy(() => import('./pages/ThankYou/ThankYou'))
+const ManageGiftCards = React.lazy(() => import('./pages/ManageGiftCards/ManageGiftCards'))
+const BookingLinkGuide = React.lazy(() => import('./pages/BookingLinkGuide/BookingLinkGuide'))
+const NotificationsSettings = React.lazy(() => import('./pages/GeneralSettings/NotificationsSettings/NotificationsSettings'))
+const Support = React.lazy(() => import('./pages/Support/Support'))
+const PaymentGateway = React.lazy(() => import('./pages/GuestPayment/PaymentGateway/PaymentGateway'))
+const PaymentSettings = React.lazy(() => import('./pages/GuestPayment/PaymentSettings/PaymentSettings'))
+const VideoGuideSettings = React.lazy(() => import('./pages/VideoGuideSettings/VideoGuideSettings'))
+const MonthView = React.lazy(() => import('./pages/MonthView/MonthView'))
+const SendBulkSMS = React.lazy(() => import('./pages/SendBulkSMS/SendBulkSMS'))
+const VideoGuides = React.lazy(() => import('./pages/VideoGuides/VideoGuides'))
+const BillingReport = React.lazy(() => import('./pages/BillingReport/BillingReport'))
+const Roles = React.lazy(() => import('./pages/Roles/Roles'))
+const Welcome = React.lazy(() => import('./pages/Welcome/Welcome'))
+
 import eventBus from '../eventBus';
 import { useState } from 'react';
-import BillingReport from "./pages/BillingReport/BillingReport";
-import Roles from "./pages/Roles/Roles";
-import Welcome from "./pages/Welcome/Welcome";
+
 
 function App() {
   const [sidebarIsVisible, setSidebarIsVisible] = useState(true)
@@ -94,43 +94,94 @@ function App() {
             <div className='scroll_wrapper'>
               <Banner />
               <Routes>
-                {/* <Route path='/dailyuse' exact element={<DailyUse/>}/> */}
-                <Route path='/' exact element={<Welcome/>}/>
-                <Route path='/DayView' exact element={<DayView/>}/>
-                <Route path='/WeekView' exact element={<WeekView/>}/>
-                <Route path='/MonthView' exact element={<MonthView/>}/>
-                <Route path='/Activity' exact element={<Activity/>}/>
-                <Route path='/TablePlanSetup' exact element={<TablePlanSetup/>}/>
-                <Route path='/Areas' exact element={<Areas/>}/>
-                <Route path='/ManageFeedback' exact element={<ManageFeedback/>}/>
-                <Route path='/SmsTemplates/:purpose' exact element={<SmsTemplate/>}/>
-                <Route path='/EmailTemplates/:purpose' exact element={<EmailTemplate/>}/>
-                <Route path='/OpeningTimes' exact element={<OpeningTimes/>}/>
-                <Route path='/ManageGiftCards' exact element={<ManageGiftCards/>}/>
+                <Route path='/' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Welcome/>
+                </Suspense>}/>
+                <Route path='/DayView' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <DayView/>
+                </Suspense>}/>
+                <Route path='/MonthView' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <MonthView/>
+                </Suspense>}/>
+                <Route path='/TablePlanSetup' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <TablePlanSetup/>
+                </Suspense>}/>
+                <Route path='/Areas' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Areas/>
+                </Suspense>}/>
+                <Route path='/ManageFeedback' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <ManageFeedback/>
+                </Suspense>}/>
+                <Route path='/SmsTemplates/:purpose' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <SmsTemplate/>
+                </Suspense>}/>
+                <Route path='/EmailTemplates/:purpose' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <EmailTemplate/>
+                </Suspense>}/>
+                <Route path='/OpeningTimes' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <OpeningTimes/>
+                </Suspense>}/>
+                <Route path='/ManageGiftCards' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <ManageGiftCards/>
+                </Suspense>}/>
 
-                <Route path='/BasicInformation' exact element={<BasicInformation/>} />
-                <Route path='/Pictures' exact element={<Pictures/>} />
-                <Route path='/SmsKeys' exact element={<SmsApiKeys/>}/>
-                <Route path='/PaymentGateway' exact element={<PaymentGateway/>}/>
-                <Route path='/NotificationsSettings' exact element={<NotificationsSettings/>}/>
-                <Route path='/PaymentSettings' exact element={<PaymentSettings/>}/>
-                <Route path='/VideoGuideSettings' exact element={<VideoGuideSettings/>}/>
+                <Route path='/BasicInformation' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <BasicInformation/>
+                </Suspense>} />
+                <Route path='/Pictures' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Pictures/>
+                </Suspense>} />
+                <Route path='/SmsKeys' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <SmsApiKeys/>
+                </Suspense>}/>
+                <Route path='/PaymentGateway' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <PaymentGateway/>
+                </Suspense>}/>
+                <Route path='/NotificationsSettings' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <NotificationsSettings/>
+                </Suspense>}/>
+                <Route path='/PaymentSettings' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <PaymentSettings/>
+                </Suspense>}/>
+                <Route path='/VideoGuideSettings' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <VideoGuideSettings/>
+                </Suspense>}/>
 
-                <Route path='/VideoGuides' exact element={<VideoGuides/>}/>
+                <Route path='/VideoGuides' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <VideoGuides/>
+                </Suspense>}/>
 
-                <Route path='/CustomBookingLength' exact element={<CustomBookingLength/>}/>
-                <Route path='/BookingLinkGuide' exact element={<BookingLinkGuide/>}/>
+                <Route path='/CustomBookingLength' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <CustomBookingLength/>
+                </Suspense>}/>
+                <Route path='/BookingLinkGuide' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <BookingLinkGuide/>
+                </Suspense>}/>
 
-                <Route path='/pricing' exact element={<Pricing/>}/>
-                <Route path='/billingReport' exact element={<BillingReport/>}/>
+                <Route path='/pricing' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Pricing/>
+                </Suspense>}/>
+                <Route path='/billingReport' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <BillingReport/>
+                </Suspense>}/>
 
-                <Route path='/RestaurantNew' exact element={<RestaurantNew/>}/>
+                <Route path='/RestaurantNew' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <RestaurantNew/>
+                </Suspense>}/>
 
-                <Route path='/ThankYou' exact element={<ThankYou/>}/>
+                <Route path='/ThankYou' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <ThankYou/>
+                </Suspense>}/>
 
-                <Route path='/Support' exact element={<Support/>}/>
-                <Route path='/SendBulkSMS' exact element={<SendBulkSMS/>}/>
-                <Route path='/Roles' exact element={<Roles/>}/>
+                <Route path='/Support' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Support/>
+                </Suspense>}/>
+                <Route path='/SendBulkSMS' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <SendBulkSMS/>
+                </Suspense>}/>
+                <Route path='/Roles' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Roles/>
+                </Suspense>}/>
               </Routes>
             </div>
           </div>
@@ -138,8 +189,12 @@ function App() {
           <div className="content">
             <div className='scroll_wrapper'>
               <Routes>
-                <Route path='/login' exact element={<Login/>}/>
-                <Route path='/register' exact element={<Register/>}/>
+                <Route path='/login' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Login/>
+                </Suspense>}/>
+                <Route path='/register' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Register/>
+                </Suspense>}/>
               </Routes>
             </div>
           </div>

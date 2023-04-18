@@ -34,12 +34,12 @@ export default function DayViewTop() {
       <DatePicker/>
       <div className='TimeTablePopper__container'>
         <div className='TimePlan-logo'>
-          <img src='/images/timeplan-icon.svg'
+          <img src='/images/timeplan-icon.svg' alt=""
                onClick={(e) => {openTableSidebar('timePlan')}}
           />
         </div>
         <div className='TablePlan-logo'>
-          <img src='/images/tableplan-icon.svg'
+          <img src='/images/tableplan-icon.svg' alt=""
                onClick={(e) => {openTableSidebar('tablePlan')}}
           />
         </div>

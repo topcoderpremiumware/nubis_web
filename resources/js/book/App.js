@@ -12,7 +12,6 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import {normalizeNumber} from "../helper"
 import './../i18nextConf';
 import LoadingPage from "../components/LoadingPage";
-import {useTranslation} from "react-i18next";
 import SelectArea from "./components/SelectArea/SelectArea";
 import axios from "axios";
 import i18n from "i18next";

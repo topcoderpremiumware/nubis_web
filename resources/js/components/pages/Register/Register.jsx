@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {Select, TextField, MenuItem, InputLabel, FormControl, Button, Autocomplete} from "@mui/material";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/material.css'
-import {Link, useSearchParams} from "react-router-dom";
-import eventBus from "../../../eventBus";
+import {useSearchParams} from "react-router-dom";
 
 export default function Register() {
   const { t } = useTranslation();

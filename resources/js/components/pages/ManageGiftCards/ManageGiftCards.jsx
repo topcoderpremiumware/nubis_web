@@ -1,8 +1,10 @@
-import { Button, CircularProgress, Stack } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Stack from '@mui/material/Stack';
+import {DataGrid} from '@mui/x-data-grid';
 import axios from 'axios';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
 import CheckGiftCardPopup from './CheckGiftCardPopup/CheckGiftCardPopup';

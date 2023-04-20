@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderCreated;
+use App\Events\OrderDeleted;
+use App\Events\OrderUpdated;
 use App\Helpers\TemplateHelper;
 use App\Models\Customer;
 use App\Models\Giftcard;
@@ -13,16 +16,16 @@ use App\Models\Setting;
 use App\Models\Tableplan;
 use App\SMS\SMS;
 use Carbon\CarbonPeriod;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Stripe\StripeClient;
-use Stripe\Webhook;
 
 class OrderController extends Controller
 {
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
         if(!Auth::user()->tokenCan('admin')) return response()->json([
             'message' => 'Unauthorized.'
@@ -88,11 +91,11 @@ class OrderController extends Controller
                 });
             }
         }
-
+        event(new OrderCreated($order));
         return response()->json($order);
     }
 
-    public function save($id, Request $request)
+    public function save($id, Request $request): JsonResponse
     {
         if(!Auth::user()->tokenCan('admin')) return response()->json([
             'message' => 'Unauthorized.'
@@ -169,13 +172,14 @@ class OrderController extends Controller
 
         if($res){
             $order = Order::find($id);
+            event(new OrderUpdated($order));
             return response()->json($order);
         }else{
             return response()->json(['message' => 'Order not updated'],400);
         }
     }
 
-    public function getId($id, Request $request)
+    public function getId($id, Request $request): JsonResponse
     {
         $order = Order::where('id',$id)->with(['customer', 'custom_booking_length'])->first();
 
@@ -188,7 +192,7 @@ class OrderController extends Controller
         return response()->json($order);
     }
 
-    public function getAllByParams(Request $request)
+    public function getAllByParams(Request $request): JsonResponse
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
@@ -217,7 +221,7 @@ class OrderController extends Controller
         return response()->json($orders);
     }
 
-    public function getAllByCustomer(Request $request)
+    public function getAllByCustomer(Request $request): JsonResponse
     {
         if(!Auth::user()->tokenCan('customer')) return response()->json([
             'message' => 'Unauthorized.'
@@ -230,7 +234,7 @@ class OrderController extends Controller
         return response()->json($orders);
     }
 
-    public function delete($id, Request $request)
+    public function delete($id, Request $request): JsonResponse
     {
         $order = Order::find($id);
 
@@ -273,13 +277,13 @@ class OrderController extends Controller
         }
 
         $this->paymentAfterOrderCancel($order);
-
+        event(new OrderDeleted($order));
         $order->delete();
 
         return response()->json(['message' => 'Order is deleted']);
     }
 
-    public function cancel($id, Request $request)
+    public function cancel($id, Request $request): JsonResponse
     {
         $order = Order::find($id);
 
@@ -318,7 +322,7 @@ class OrderController extends Controller
         }
 
         $this->paymentAfterOrderCancel($order);
-
+        event(new OrderDeleted($order));
         $order->delete();
 
         return response()->json(['message' => 'Order is canceled']);
@@ -366,7 +370,7 @@ class OrderController extends Controller
         }
     }
 
-    public function setStatus($id, Request $request)
+    public function setStatus($id, Request $request): JsonResponse
     {
         if(!Auth::user()->tokenCan('admin')) return response()->json([
             'message' => 'Unauthorized.'
@@ -427,7 +431,7 @@ class OrderController extends Controller
         }
     }
 
-    public function freeDates(Request $request)
+    public function freeDates(Request $request): JsonResponse
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
@@ -558,7 +562,7 @@ class OrderController extends Controller
         return $free_time;
     }
 
-    public function workDates(Request $request)
+    public function workDates(Request $request): JsonResponse
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
@@ -581,7 +585,7 @@ class OrderController extends Controller
         return response()->json($result);
     }
 
-    public function freeTime(Request $request)
+    public function freeTime(Request $request): JsonResponse
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
@@ -605,7 +609,7 @@ class OrderController extends Controller
         return response()->json(['free_time' => $free_time,'logs' => $logs]);
     }
 
-    public function workTime(Request $request)
+    public function workTime(Request $request): JsonResponse
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
@@ -718,7 +722,7 @@ class OrderController extends Controller
         return $free_tables;
     }
 
-    public function makeOrder(Request $request)
+    public function makeOrder(Request $request): JsonResponse
     {
         $log = [];
         $prepayment_url = null;
@@ -898,11 +902,11 @@ class OrderController extends Controller
         }
 
         $order->prepayment_url = $prepayment_url;
-
+        event(new OrderCreated($order));
         return response()->json($order);
     }
 
-    private function getPrepaymentUrl($request,$order)
+    private function getPrepaymentUrl($request,$order): JsonResponse|string
     {
         $url = '';
         $place = Place::find($request->place_id);
@@ -957,7 +961,7 @@ class OrderController extends Controller
         return $url;
     }
 
-    private function processPaymentAlgorithm($request,$order)
+    private function processPaymentAlgorithm($request,$order): array
     {
         $place = Place::find($request->place_id);
         $method = $place->setting('online-payment-method');
@@ -1071,7 +1075,7 @@ class OrderController extends Controller
         }
     }
 
-    public function freeTables(Request $request)
+    public function freeTables(Request $request): JsonResponse
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
@@ -1152,7 +1156,7 @@ class OrderController extends Controller
         return response()->json($result);
     }
 
-    public function getStripeClientSecret(Request $request)
+    public function getStripeClientSecret(Request $request): JsonResponse
     {
         $request->validate([
             'place_id' => 'required|exists:places,id'
@@ -1195,7 +1199,7 @@ class OrderController extends Controller
         return response()->json($output);
     }
 
-    public function getPlacePaymentMethod($place_id, Request $request)
+    public function getPlacePaymentMethod($place_id, Request $request): JsonResponse
     {
         $settings = Setting::where('place_id',$place_id)
             ->whereIn('name',['is-online-payment','online-payment-amount','online-payment-currency','online-payment-method','online-payment-cancel-deadline'])
@@ -1207,7 +1211,7 @@ class OrderController extends Controller
         return response()->json($output);
     }
 
-    public function getPlaceOnlineBookingDescription($place_id, Request $request)
+    public function getPlaceOnlineBookingDescription($place_id, Request $request): JsonResponse
     {
         $settings = Setting::where('place_id',$place_id)
             ->whereIn('name',['online-booking-description'])
@@ -1241,7 +1245,7 @@ class OrderController extends Controller
         }
     }
 
-    public function switchTables(Request $request)
+    public function switchTables(Request $request): JsonResponse
     {
         $request->validate([
             'first_order_id' => 'required|exists:orders,id',

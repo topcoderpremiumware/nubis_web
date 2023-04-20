@@ -18,7 +18,6 @@ function SelectLang() {
           return <option key={key} value={el.lang}>{el.title}</option>
         })}
       </select>
-      <Alert/>
     </div>
   );
 }

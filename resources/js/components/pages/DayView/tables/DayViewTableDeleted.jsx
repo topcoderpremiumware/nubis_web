@@ -28,6 +28,11 @@ export default function DayViewTableWaiting() {
     eventBus.on("dateChanged",  () => {
       getOrders()
     });
+    Echo.channel(`place-${localStorage.getItem('place_id')}`)
+      .listen('.order-deleted', function(data) {
+        console.log('echo order-deleted',data)
+        getOrders()
+      })
   }, [])
 
   const columns = [

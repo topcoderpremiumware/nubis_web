@@ -35,6 +35,19 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     eventBus.on("orderEdited",  () => {
       getOrders()
     });
+    Echo.channel(`place-${localStorage.getItem('place_id')}`)
+      .listen('.order-created', function(data) {
+        console.log('echo order-created',data)
+        getOrders()
+      })
+      .listen('.order-updated', function(data) {
+        console.log('echo order-updated',data)
+        getOrders()
+      })
+      .listen('.order-deleted', function(data) {
+        console.log('echo order-deleted',data)
+        getOrders()
+      })
   }, [])
 
   const columns = [

@@ -16,6 +16,7 @@ import SelectArea from "./components/SelectArea/SelectArea";
 import axios from "axios";
 import i18n from "i18next";
 import eventBus from "../eventBus";
+import Alert from "../components/Notification/Alert";
 
 const App = () => {
   const ref = useRef(null);
@@ -394,6 +395,7 @@ const App = () => {
   return (
     <Suspense fallback={<LoadingPage/>}>
       <div>
+        <Alert/>
         <Carousel
           swipeable={false}
           showArrows={false}

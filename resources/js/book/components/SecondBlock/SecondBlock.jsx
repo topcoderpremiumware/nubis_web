@@ -207,13 +207,17 @@ function SecondBlock(props) {
   }
 
   const checkToken = () => {
+    console.log('next button pressed on SecondBlock (Calendar)')
     console.log('selectedTime', props.selectedTime)
     if (props.selectedTime) {
       if (localStorage.getItem("token")) {
+        console.log('next button pressed has auth')
         props.getUserInfoReq();
         props.handleChangeItem();
       } else {
+        console.log('next button pressed has no auth')
         setModalActive(true);
+        props.setDefaultModal("email");
       }
       props.setBlockType("lastblock");
     }

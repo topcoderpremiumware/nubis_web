@@ -80,9 +80,9 @@ function MainBlock(props) {
           <SelectLang />
           <Title restaurantInfo={props.restaurantInfo}/>
           <Counter
-            increment={props.increment}
-            decrement={props.decrement}
+            maxSeats={maxSeats}
             guestValue={props.guestValue}
+            setGuestValue={props.setGuestValue}
           />
           <button
             className="button-main"

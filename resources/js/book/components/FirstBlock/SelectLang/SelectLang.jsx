@@ -2,6 +2,7 @@ import React from "react";
 import "./SelectLang.css";
 import eventBus from "../../../../eventBus";
 import i18n from "i18next";
+import Alert from "../../../../components/Notification/Alert";
 
 function SelectLang() {
   const onChange = (e) => {
@@ -17,6 +18,7 @@ function SelectLang() {
           return <option key={key} value={el.lang}>{el.title}</option>
         })}
       </select>
+      <Alert/>
     </div>
   );
 }

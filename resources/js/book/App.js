@@ -103,16 +103,6 @@ const App = () => {
     }
   };
 
-  function increment() {
-    setGuestValue(guestValue + 1);
-  }
-
-  function decrement() {
-    if (guestValue !== 0) {
-      setGuestValue(guestValue - 1);
-    }
-  }
-
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -178,6 +168,16 @@ const App = () => {
         }
       })
       .catch((error) => {
+        if (error.response && error.response.data && error.response.data.errors) {
+          for (const [key, value] of Object.entries(error.response.data.errors)) {
+            value.forEach(v => {
+              eventBus.dispatch("notification", {type: 'error', message: v});
+            })
+          }
+        } else {
+          eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
+          console.error('Error', error.message,error.response.data.message)
+        }
         if (type === "register" || type === "edit") {
           setErrorsResp({
             title: "Please go back and fix the errors:",
@@ -406,9 +406,8 @@ const App = () => {
           <div>
             <MainBlock
               handleChangeItem={handleChangeItem}
-              increment={increment}
-              decrement={decrement}
               guestValue={guestValue}
+              setGuestValue={setGuestValue}
               getPlaceId={getPlaceId}
               blockType={blockType}
               setBlockType={setBlockType}

@@ -13,7 +13,7 @@ const Welcome = () => {
         <p className="welcome-text">{t('If you are the waiter or manager please wait until the restaurant owner will give you the permission')}</p>
         <p className="welcome-text">{t('or')}</p>
         <Button variant="contained">
-          <Link to="/RestaurantNew" className='thank-link'>
+          <Link to="/RestaurantNew" className='welcome-link'>
             {t('Create your restaurant')}
           </Link>
         </Button>

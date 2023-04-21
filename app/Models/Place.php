@@ -127,4 +127,36 @@ class Place extends Model
         }
         return $admins;
     }
+
+    public function allow_send_sms(): bool
+    {
+        //TODO: get limit sms count from place settings if > 0 then true
+//        $sms_limit_count = $this->setting('sms_limit_count') ?? 0;
+//        return $sms_limit_count > 0;
+        return true; //temporary
+    }
+
+    public function increase_sms_limit($number = 1)
+    {
+        $sms_limit_count = $this->setting('sms_limit_count') ?? 0;
+        Setting::updateOrCreate([
+            'place_id' => $this->id,
+            'name' => 'sms_limit_count'
+        ],[
+            'value' => $sms_limit_count+$number
+        ]);
+    }
+
+    public function decrease_sms_limit($number = 1)
+    {
+        $sms_limit_count = $this->setting('sms_limit_count') ?? 0;
+        if($sms_limit_count-$number >= 0){
+            Setting::updateOrCreate([
+                'place_id' => $this->id,
+                'name' => 'sms_limit_count'
+            ],[
+                'value' => $sms_limit_count-$number
+            ]);
+        }
+    }
 }

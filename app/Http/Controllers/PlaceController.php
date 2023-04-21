@@ -235,18 +235,26 @@ class PlaceController extends Controller
     public function sendContact($place_id, Request $request)
     {
         $request->validate([
-            'message' => 'required'
+            'message' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required',
+            'phone' => 'required'
         ]);
         $place = Place::find($place_id);
-        $smsApiToken = $place->setting('sms-api-token');
-        $customer_name = Auth::user()->first_name.' '.Auth::user()->last_name.' ('.Auth::user()->id.')';
+        $customer_name = $request->first_name.' '.$request->last_name;
         $sms_notification_number = $place->setting('sms-notification-number') ?? $place->phone;
-        if($smsApiToken){
-            $result = SMS::send([$sms_notification_number], $customer_name.': '.$request->message, env('APP_SHORT_NAME'), $smsApiToken);
+        if($place->allow_send_sms()){
+            $place->decrease_sms_limit();
+            $result = SMS::send([$sms_notification_number], $customer_name.': '.$request->message, env('APP_SHORT_NAME'));
         }
-        \Illuminate\Support\Facades\Mail::html($request->message.'<br><br>Phone: '.Auth::user()->phone.'<br>Email: '.Auth::user()->email, function($msg) use ($customer_name, $place, $request) {
-            $msg->to($place->email)->subject('Customer Message: '.$customer_name);
-        });
+        try{
+            \Illuminate\Support\Facades\Mail::html($request->message.'<br><br>Phone: '.$request->phone.'<br>Email: '.$request->email, function($msg) use ($customer_name, $place, $request) {
+                $msg->to($place->email)->subject('Customer Message: '.$customer_name);
+            });
+        }catch (\Exception $e){
+
+        }
     }
 
     public function sendtoAdmin(Request $request)

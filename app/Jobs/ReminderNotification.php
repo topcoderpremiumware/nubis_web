@@ -55,9 +55,10 @@ class ReminderNotification implements ShouldQueue
                     ->where('active',1)
                     ->first();
                 $place = Place::find($order->place_id);
-                $smsApiToken = $place->setting('sms-api-token');
-                if($reminder_template && $smsApiToken){
-                    $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$reminder_template->text), env('APP_SHORT_NAME'), $smsApiToken);
+
+                if($reminder_template && $place->allow_send_sms()){
+                    $place->decrease_sms_limit();
+                    $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$reminder_template->text), env('APP_SHORT_NAME'));
                 }
                 $marks = $order->marks;
                 if(!$marks) $marks = [];

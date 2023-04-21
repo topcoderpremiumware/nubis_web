@@ -16,18 +16,16 @@ class SendBulkSms implements ShouldQueue
 
     private $phones;
     private $text;
-    private $token;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($phones,$text,$token = null)
+    public function __construct($phones,$text)
     {
        $this->phones = $phones;
        $this->text = $text;
-       $this->token = $token;
     }
 
     /**
@@ -37,6 +35,6 @@ class SendBulkSms implements ShouldQueue
      */
     public function handle()
     {
-        $result = SMS::send($this->phones, $this->text, env('APP_SHORT_NAME'), $this->token);
+        $result = SMS::send($this->phones, $this->text, env('APP_SHORT_NAME'));
     }
 }

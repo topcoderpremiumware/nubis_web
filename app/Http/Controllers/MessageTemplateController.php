@@ -105,9 +105,10 @@ class MessageTemplateController extends Controller
         }
 
         $place = Place::find($request->place_id);
-        $smsApiToken = $place->setting('sms-api-token');
-        if($smsApiToken){
-            $result = SMS::send([$request->phone], $request->text, env('APP_SHORT_NAME'), $smsApiToken);
+
+        if($place->allow_send_sms()){
+            $place->decrease_sms_limit();
+            $result = SMS::send([$request->phone], $request->text, env('APP_SHORT_NAME'));
         }else{
             return response()->json([
                 'message' => 'SMS API Token is not set'
@@ -159,14 +160,14 @@ class MessageTemplateController extends Controller
         }
 
         $place = Place::find($request->place_id);
-        $smsApiToken = $place->setting('sms-api-token');
 
-        if($smsApiToken){
+        if($place->allow_send_sms()){
             $phones = $this->getPhonesByType($request->type,$place);
-            dispatch(new SendBulkSms($phones, TemplateHelper::setPlaceVariables($place,$request->text), $smsApiToken));
+            $place->decrease_sms_limit();
+            dispatch(new SendBulkSms($phones, TemplateHelper::setPlaceVariables($place,$request->text)));
         }else{
             return response()->json([
-                'message' => 'SMS API Token is not set'
+                'message' => 'SMS limit is low'
             ], 400);
         }
 

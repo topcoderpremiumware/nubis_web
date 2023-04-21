@@ -43,12 +43,12 @@ function MainBlock(props) {
 
   const showModalMore = (e) => {
     e.preventDefault();
-    if (localStorage.getItem("token")) {
+    // if (localStorage.getItem("token")) {
       props.setDefaultModal("morePeople");
-      props.getUserInfoReq();
-    } else {
-      props.setDefaultModal("emailMore");
-    }
+      // props.getUserInfoReq();
+    // } else {
+    //   props.setDefaultModal("emailMore");
+    // }
     props.setModalActive(true);
   };
 

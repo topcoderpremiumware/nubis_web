@@ -45,7 +45,6 @@ class ReserveAmountPayment implements ShouldQueue
                 $online_payment_amount = $order->marks['amount'];
                 $online_payment_currency = $order->marks['currency'];
                 $stripe_secret = $place->setting('stripe-secret');
-                $smsApiToken = $place->setting('sms-api-token');
 
                 $stripe = new StripeClient($stripe_secret);
 
@@ -71,14 +70,15 @@ class ReserveAmountPayment implements ShouldQueue
                 $order_data = clone $order;
                 $order_data->payment_link = $link->url;
 
-                if($smsApiToken){
+                if($place->allow_send_sms()){
                     $sms_template = MessageTemplate::where('place_id',$order->place_id)
                         ->where('purpose','sms-payment-request')
                         ->where('language',$order->customer->language)
                         ->where('active',1)
                         ->first();
                     if($sms_template) {
-                        $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order_data,$sms_template->text), env('APP_SHORT_NAME'), $smsApiToken);
+                        $place->decrease_sms_limit();
+                        $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order_data,$sms_template->text), env('APP_SHORT_NAME'));
                     }
                 }
                 $email_template = MessageTemplate::where('place_id',$order->place_id)

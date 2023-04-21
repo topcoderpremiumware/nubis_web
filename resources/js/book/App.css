@@ -50,3 +50,18 @@
 .Calendar .soldDay{
     background: #ffc2c2;
 }
+
+.phone-input.react-tel-input{
+  border: 0 !important;
+  height: 40px !important;
+}
+.phone-input input {
+  padding: 8.5px 14px 8.5px 55px !important;
+  width: 100% !important;
+  height: 100% !important;
+  font-size: 16px !important;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+}
+.phone-input .special-label {
+  font-size: 10px !important;
+}

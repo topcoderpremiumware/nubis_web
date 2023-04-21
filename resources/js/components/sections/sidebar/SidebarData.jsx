@@ -269,10 +269,10 @@ export const SidebarData = (data) => { return [
     iconOpened: <KeyboardArrowUp />,
     show: data.is_superadmin,
     subNav: [
-      {
-        title: 'SMS Keys',
-        path: '/SmsKeys'
-      },
+      // {
+      //   title: 'SMS Keys',
+      //   path: '/SmsKeys'
+      // },
       {
         title: 'Video Guide Settings',
         path: '/VideoGuideSettings',

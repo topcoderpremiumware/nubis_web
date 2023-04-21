@@ -1,8 +1,11 @@
-import PhoneInput from "react-phone-number-input";
+import PhoneInput from 'react-phone-input-2'
 import "./CancelingModal.css";
 import {Trans, useTranslation} from "react-i18next";
 import moment from "moment";
-import {normalizeNumber} from "../../../../helper";
+import {TextField} from "@mui/material";
+import React, {useState} from "react";
+import 'react-phone-input-2/lib/material.css'
+import eventBus from "../../../../eventBus";
 
 export default function CancelingModal(props) {
   const { t } = useTranslation();
@@ -17,6 +20,12 @@ export default function CancelingModal(props) {
     selectedTime,
   } = props;
 
+  const [contact, setContact] = useState({})
+
+  const onChange = (e) => {
+    setContact(prev => ({...prev, [e.target.name]: e.target.value}))
+  }
+
   const getPlaceId = () => {
     let pathArray = window.location.pathname.split('/')
     return pathArray.length === 3 ? pathArray[2] : 0
@@ -24,13 +33,21 @@ export default function CancelingModal(props) {
 
   const submit = () => {
     if(defaultModal === 'morePeople'){
-      axios.post(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/send_contact`, {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }).then(response => {
+      axios.post(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/send_contact`,contact).then(response => {
+        setContact({})
         setActive(false)
-      }).catch(error => { })
+      }).catch(error => {
+        if (error.response && error.response.data && error.response.data.errors) {
+          for (const [key, value] of Object.entries(error.response.data.errors)) {
+            value.forEach(v => {
+              eventBus.dispatch("notification", {type: 'error', message: v});
+            })
+          }
+        } else {
+          eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
+          console.error('Error', error.message,error.response.data.message)
+        }
+      })
     }
     if(defaultModal === 'canceling'){
       setCancelType()
@@ -66,7 +83,6 @@ export default function CancelingModal(props) {
     props.setUserData((prev) => ({ ...prev, [name]: value }));
   };
 
-  console.log("User Data: ", props.userData);
   console.log("Type: ", defaultModal);
 
   return (
@@ -139,43 +155,35 @@ export default function CancelingModal(props) {
           </div>
         )}
         {defaultModal === "morePeople" && (
-          <div>
-            <div
-              className="info-body"
-              style={{
-                backgroundColor: "#f6f6f6",
-                paddingBottom: "9px",
-                marginTop: "20px",
-                justifyContent: "center",
-              }}
-            >
-              <div className="client-info">
-                <div className="client-title">{t('Your contact information')}</div>
-                <div
-                  className="client-adress"
-                  style={{ justifyContent: "center", textAlign: "center" }}
-                >
-                  {props.userData.first_name} {props.userData.last_name}
-                  <br />
-                  {props.userData.email}
-                  <br />
-                  {props.userData.phone}
-                  <br />
-                  {props.userData.zip_code}
-                </div>
-              </div>
+          <>
+            <div className="my-3">
+              <TextField label={t('First name')} required size="small" fullWidth
+                         type="text" id="first_name" name="first_name"
+                         onChange={onChange}/>
             </div>
-            <div style={{}}>
-              <div className="client-title__comment">{t('Add a comment')}</div>
-              <div className="form-comment">
-                <input
-                  type="text"
-                  className="form-name__comment"
-                  placeholder={t('Add a comment')}
-                />
-              </div>
+            <div className="mb-3">
+              <TextField label={t('Last name')} required size="small" fullWidth
+                         type="text" id="last_name" name="last_name"
+                         onChange={onChange}/>
             </div>
-          </div>
+            <div className="mb-3">
+              <TextField label={t('Email address')} required size="small" fullWidth
+                         type="email" id="email" name="email"
+                         onChange={onChange}/>
+            </div>
+            <div className="mb-3">
+              <PhoneInput
+                country={'dk'}
+                onChange={phone => setContact(prev => ({...prev, phone: '+'+phone}))}
+                containerClass="phone-input"
+              />
+            </div>
+            <div className="mb-3">
+              <TextField label={t('Add a comment')} required size="small" fullWidth
+                         type="text" id="message" name="message"
+                         onChange={onChange}/>
+            </div>
+          </>
         )}
         {(defaultModal === "canceling" ||
           defaultModal === "morePeople") && (

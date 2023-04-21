@@ -57,6 +57,7 @@ Route::get('places/{place_id}/alternative',[PlaceController::class, 'getAlternat
 Route::get('places/{place_id}/payment_method',[OrderController::class, 'getPlacePaymentMethod']);
 Route::get('places/{place_id}/max_available_seats',[PlaceController::class, 'getMaxAvailableSeats']);
 Route::get('places/{place_id}/online_booking_description',[OrderController::class, 'getPlaceOnlineBookingDescription']);
+Route::post('places/{place_id}/send_contact',[PlaceController::class, 'sendContact']);
 
 Route::get('files_purpose',[FileController::class, 'getByPurpose']);
 Route::get('countries',[CountryController::class, 'getAll']);
@@ -79,7 +80,7 @@ Route::middleware('auth:customer_api')->group(function(){
     Route::get('customers/client_secret',[OrderController::class, 'getStripeClientSecret']);
     Route::get('customers/all',[CustomerController::class, 'allCustomers']);
 
-    Route::post('places/{place_id}/send_contact',[PlaceController::class, 'sendContact']);
+
 
     Route::post('make_order',[OrderController::class, 'makeOrder']);
     Route::delete('cancel_order/{id}',[OrderController::class, 'cancel']);

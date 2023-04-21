@@ -23,6 +23,8 @@ export default function TimeLinePlan(props) {
   const [lineFrom, setLineFrom] = useState(moment.utc(selectedDate+' '+(selectedTime.from || '00:00:00'),'YYYY-MM-DD HH:mm:ss'))
   const [lineTo, setLineTo] = useState(moment.utc(selectedDate+' '+(selectedTime.to || '22:59:59'),'YYYY-MM-DD HH:mm:ss').add(1,'hour'))
 
+  let channelName
+
   const itemRenderer = ({item, itemContext, getItemProps, getResizeProps}) => {
     const { left: leftResizeProps, right: rightResizeProps } = getResizeProps()
     return (
@@ -42,10 +44,21 @@ export default function TimeLinePlan(props) {
   useEffect(() => {
     getPlan()
     getOrders()
+    eventBus.on("placeChanged", () => {
+      getOrders()
+      Echo.leave(channelName)
+      channelName = `place-${localStorage.getItem('place_id')}`
+      Echo.channel(channelName)
+        .listen('.order-deleted', function(data) {
+          console.log('echo order-deleted',data)
+          getOrders()
+        })
+    });
     eventBus.on("orderEdited",  () => {
       getOrders()
     });
-    Echo.channel(`place-${localStorage.getItem('place_id')}`)
+    channelName = `place-${localStorage.getItem('place_id')}`
+    Echo.channel(channelName)
       .listen('.order-created', function(data) {
         console.log('echo order-created',data)
         getOrders()

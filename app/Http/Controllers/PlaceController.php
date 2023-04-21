@@ -220,16 +220,16 @@ class PlaceController extends Controller
             'place_id' => 'required'
         ]);
 
-        $superadmins = User::where('is_superadmin',1)->get();
-        if(count($superadmins) > 0){
-            foreach ($superadmins as $superadmin){
-                if($superadmin->id !== Auth::user()->id){
-                    \Illuminate\Support\Facades\Mail::html($request->message, function($msg) use ($request, $superadmin) {
-                        $msg->to($superadmin->email)->subject('Place ID: '.$request->place_id.' '.$request->subject);
+//        $superadmins = User::where('is_superadmin',1)->get();
+//        if(count($superadmins) > 0){
+//            foreach ($superadmins as $superadmin){
+//                if($superadmin->id !== Auth::user()->id){
+                    \Illuminate\Support\Facades\Mail::html($request->message, function($msg) use ($request) {
+                        $msg->to('support@nubisreservation.com')->subject('Place ID: '.$request->place_id.' '.$request->subject);
                     });
-                }
-            }
-        }
+//                }
+//            }
+//        }
     }
 
     public function sendContact($place_id, Request $request)

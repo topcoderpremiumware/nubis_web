@@ -14,10 +14,19 @@ export default function DayViewTableWaiting() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
 
+  let channelName
+
   useEffect( () => {
     getOrders()
     eventBus.on("placeChanged", () => {
       getOrders()
+      Echo.leave(channelName)
+      channelName = `place-${localStorage.getItem('place_id')}`
+      Echo.channel(channelName)
+        .listen('.order-deleted', function(data) {
+          console.log('echo order-deleted',data)
+          getOrders()
+        })
     });
     eventBus.on("areaChanged",  () => {
       getOrders()
@@ -28,7 +37,8 @@ export default function DayViewTableWaiting() {
     eventBus.on("dateChanged",  () => {
       getOrders()
     });
-    Echo.channel(`place-${localStorage.getItem('place_id')}`)
+    channelName = `place-${localStorage.getItem('place_id')}`
+    Echo.channel(channelName)
       .listen('.order-deleted', function(data) {
         console.log('echo order-deleted',data)
         getOrders()

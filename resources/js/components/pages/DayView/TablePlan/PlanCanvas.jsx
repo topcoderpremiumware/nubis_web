@@ -34,14 +34,27 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
   const lineStroke = '#ebebeb'
   var upperCanvas
 
+  let channelName
+
   useEffect(() => {
     getPlan()
     getOrders()
     getTimesList()
+    eventBus.on("placeChanged", () => {
+      getOrders()
+      Echo.leave(channelName)
+      channelName = `place-${localStorage.getItem('place_id')}`
+      Echo.channel(channelName)
+        .listen('.order-deleted', function(data) {
+          console.log('echo order-deleted',data)
+          getOrders()
+        })
+    });
     eventBus.on("orderEdited",  () => {
       getOrders()
     });
-    Echo.channel(`place-${localStorage.getItem('place_id')}`)
+    channelName = `place-${localStorage.getItem('place_id')}`
+    Echo.channel(channelName)
       .listen('.order-created', function(data) {
         console.log('echo order-created',data)
         getOrders()

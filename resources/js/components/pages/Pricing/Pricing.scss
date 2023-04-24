@@ -7,6 +7,15 @@
   position: relative;
   z-index: 2;
 
+  .price-card-btn{
+    border: 2px solid #F36823;
+    color: #F36823;
+    &:hover {
+      background: #F36823;
+      color: #fff;
+    }
+  }
+
   &-title {
     font-weight: 600;
     font-size: 32px;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Feedback;
 use App\Models\Log;
 use App\Models\PaidBill;
+use App\Models\PaidMessage;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,6 +84,51 @@ class BillingController extends Controller
         if(count($place->paid_bills) === 0){
             $payment_link_data['subscription_data'] = ['trial_period_days' => 30];
         }
+
+        $link = $stripe->paymentLinks->create($payment_link_data);
+
+        return response()->json(['url'=> $link->url]);
+    }
+
+    public function getHelpInvoiceByPrice(Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'price_id' => 'required',
+            'place_id' => 'required|exists:places,id'
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+        $place = Place::find($request->place_id);
+
+        $payment_link_data = [
+            'line_items' => [['price' => $request->price_id, 'quantity' => 1]],
+            'metadata' => [
+                'place_id' => $place->id,
+                'help' => true,
+                'tax_number' => $place->tax_number
+            ],
+            'automatic_tax' => [
+                'enabled' => true
+            ],
+            'tax_id_collection' => [
+                'enabled' => true
+            ],
+            'after_completion' => [
+                'type' => 'redirect',
+                'redirect' => ['url' => env('APP_URL').'/admin/ThankYou'],
+            ],
+        ];
 
         $link = $stripe->paymentLinks->create($payment_link_data);
 
@@ -196,6 +242,53 @@ class BillingController extends Controller
                 ]);
             }
         }
+
+        if ($event->type == 'payment_intent.succeeded') {
+            $stripe = new StripeClient(env('STRIPE_SECRET'));
+            $object = $event->data->object;
+            $place_id = false;
+
+            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
+            if(count($sessions->data) > 0){
+                $metadata = $sessions->data[0]->metadata;
+            }else{
+                $metadata = $object->metadata;
+            }
+
+            if(array_key_exists('help',$metadata->toArray())){
+                $tax_number = $metadata->tax_number;
+                $place_id = $metadata->place_id;
+
+                $place = Place::find($place_id);
+
+                \Illuminate\Support\Facades\Mail::html('The Place '.$place->name.' #'.$place_id.' paid you to help him', function ($msg) {
+                    $msg->to('support@nubisreservation.com')->subject('Paid for help');
+                });
+            }
+
+            if(array_key_exists('quantity',$metadata->toArray())){
+                $quantity = $metadata->quantity;
+                $product_name = $metadata->name;
+                $tax_number = $metadata->tax_number;
+                $place_id = $metadata->place_id;
+
+                $place = Place::find($place_id);
+
+                PaidMessage::create([
+                    'place_id' => $place_id,
+                    'amount' => $object->amount_paid / 100,
+                    'currency' => strtoupper($object->currency),
+                    'payment_date' => \Carbon\Carbon::now()->timestamp($object->created),
+                    'product_name' => $product_name,
+                    'quantity' => $quantity,
+                    'payment_intent_id' => $object->id,
+                    'receipt_url' => $object->hosted_invoice_url
+                ]);
+
+                $place->increase_sms_limit($quantity);
+            }
+        }
+
         return response()->json(['result'=> 'OK']);
     }
 }

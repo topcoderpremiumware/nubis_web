@@ -39,6 +39,20 @@ const Pricing = () => {
     }).catch(error => { })
   }
 
+  const getHelpPaymentLink = (price_id) => {
+    axios.get(`${process.env.MIX_API_URL}/api/billing/get_help_payment_link`, {
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        price_id: price_id
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      window.open(response.data.url, '_blank').focus();
+    }).catch(error => { })
+  }
+
   return (
     <div className='price'>
       <h2 className="price-title price-top-title">{t('The right pricing plans for you')}</h2>
@@ -83,7 +97,14 @@ const Pricing = () => {
           >{t('Choose plan')}</button>
         </div>
       </div>
-      <p className="price-text">{t('Tied into another solution? If you have a notice period on your current booking system, you will receive Nubis reservation for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system fro free using our Nubis Academy videos ore let us set it up for you for')} € 149</p>
+      <p className="price-text">{t('Tied into another solution? If you have a notice period on your current booking system, you will receive Nubis reservation for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system for free using our Nubis Academy videos or let us set it up for you for')} € 149</p>
+      <div style={{marginTop: '15px', display: 'flex', justifyContent: 'center'}}>
+        <button
+          type="button"
+          className="price-card-btn"
+          onClick={() => getHelpPaymentLink('price_1Mvg3pCVi0riU70PmnHz6b2b')}
+        >{t('Pay for help')}</button>
+      </div>
       <div className="price-benefits">
         <h3 className="price-title">{t('Benefits')}</h3>
         <ul className="price-list">

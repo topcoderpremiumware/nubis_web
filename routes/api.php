@@ -15,6 +15,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MessageTemplateController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderWebhookController;
+use App\Http\Controllers\PaidMessageController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
@@ -113,6 +114,8 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('places/{place_id}/is_trial_paid',[PlaceController::class, 'isTrialBillPaid']);
     Route::post('places/{place_id}/pay_trial',[BillingController::class, 'payTrial']);
     Route::get('places/{place_id}/billings',[BillingController::class, 'getAllByPlace']);
+    Route::post('places/{place_id}/pay_messages_trial',[PaidMessageController::class, 'payTrial']);
+    Route::get('places/{place_id}/paid_messages',[PaidMessageController::class, 'getAllByPlace']);
     Route::delete('places/{id}',[PlaceController::class, 'delete']);
 
     Route::get('check_customer',[CustomerController::class, 'getByEmail']);
@@ -188,6 +191,8 @@ Route::middleware('auth:user_api')->group(function(){
     Route::delete('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'delete']);
 
     Route::get('billing/get_payment_link',[BillingController::class, 'getInvoiceByPrice']);
+    Route::get('billing/get_help_payment_link',[BillingController::class, 'getHelpInvoiceByPrice']);
+    Route::get('paid_messages/get_payment_link',[PaidMessageController::class, 'getInvoiceByPrice']);
 
     Route::get('video_guides',[VideoGuideController::class, 'getByLanguage']);
     Route::post('video_guides',[VideoGuideController::class, 'save']);

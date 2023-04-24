@@ -99,6 +99,11 @@ class Place extends Model
         return $this->hasMany(PaidBill::class);
     }
 
+    public function paid_messages()
+    {
+        return $this->hasMany(PaidMessage::class);
+    }
+
     public function is_bill_paid()
     {
         $bill = $this->paid_bills()->orderByDesc('expired_at')->first();

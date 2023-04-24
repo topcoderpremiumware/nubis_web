@@ -240,7 +240,11 @@ export const SidebarData = (data) => { return [
       {
         title: 'Billing Report',
         path: '/billingReport'
-      }
+      },
+      {
+        title: 'SMS Pricing',
+        path: '/smsPricing'
+      },
     ]
   },
   {

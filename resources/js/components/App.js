@@ -37,6 +37,7 @@ const VideoGuides = React.lazy(() => import('./pages/VideoGuides/VideoGuides'))
 const BillingReport = React.lazy(() => import('./pages/BillingReport/BillingReport'))
 const Roles = React.lazy(() => import('./pages/Roles/Roles'))
 const Welcome = React.lazy(() => import('./pages/Welcome/Welcome'))
+const SmsPricing = React.lazy(() => import('./pages/SmsPricing/SmsPricing'))
 
 import eventBus from '../eventBus';
 
@@ -161,6 +162,9 @@ function App() {
                 </Suspense>}/>
                 <Route path='/billingReport' exact element={<Suspense fallback={<LoadingPage/>}>
                   <BillingReport/>
+                </Suspense>}/>
+                <Route path='/smsPricing' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <SmsPricing/>
                 </Suspense>}/>
 
                 <Route path='/RestaurantNew' exact element={<Suspense fallback={<LoadingPage/>}>

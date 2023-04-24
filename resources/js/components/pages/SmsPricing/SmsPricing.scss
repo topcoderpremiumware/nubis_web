@@ -1,0 +1,158 @@
+.smsPricing {
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  z-index: 1;
+
+  &-title {
+    background-image: url("/images/feedback-bg.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    height: 165px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 46px;
+    color: #FFFFFF;
+  }
+
+  &-container {
+    padding: 100px 20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &-item {
+    width: 453px;
+    background: #FFFFFF;
+    border: 3px solid #212529;
+    border-radius: 30px;
+    position: relative;
+    overflow: hidden;
+    padding: 100px 30px 30px;
+    display: flex;
+    flex-direction: column;
+
+    &:nth-of-type(2) {
+      border-color: #F36823;
+
+      .smsPricing-item-title {
+        background: #F36823;
+      }
+
+      .smsPricing-btn {
+        background: #F36823;
+      }
+
+      .smsPricing-list-item::before {
+        background-color: #F36823;
+      }
+    }
+
+    &:nth-of-type(3) {
+      border-color: #2A95FF;
+
+      .smsPricing-item-title {
+        background: #2A95FF;
+      }
+
+      .smsPricing-btn {
+        background: #2A95FF;
+      }
+
+      .smsPricing-list-item::before {
+        background-color: #2A95FF;
+      }
+    }
+
+    &-title {
+      transform: rotate(45deg) translate(60px, -100px);
+      width: 300px;
+      height: 120px;
+      text-align: center;
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #212529;
+      
+      span {
+        font-weight: 600;
+        font-size: 26px;
+        line-height: 32px;
+        color: #FFFFFF;
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: block;
+        max-width: 110px;
+      }
+    }
+  }
+
+  &-price-1 {
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 46px;
+    color: #212529;
+  }
+
+  &-price-2 {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: #212529;
+    margin-bottom: 20px;
+  }
+
+  &-hr {
+    background: #989898;
+    height: 1px;
+  }
+
+  &-list {
+    list-style: none;
+    margin-top: 26px;
+    margin-bottom: auto;
+    padding: 0;
+
+    &-item {
+      font-size: 18px;
+      line-height: 27px;
+      color: #212529;
+      position: relative;
+      margin-bottom: 34px;
+      padding-left: 30px;
+
+      &::before {
+        content: '';
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #212529 url("/images/check.png") no-repeat center center;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+      }
+    }
+  }
+
+  &-btn {
+    border-radius: 30px;
+    width: 100%;
+    height: 47px;
+    margin-top: 30px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    color: #FFFFFF;
+    background: #212529;
+    border: none;
+  }
+}

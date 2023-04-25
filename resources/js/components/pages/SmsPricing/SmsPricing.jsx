@@ -35,7 +35,7 @@ const SmsPricing = () => {
           </ul>
           <div className="smsPricing-hr" />
           <button className='smsPricing-btn'
-                  onClick={() => getPaymentLink('price_1MyEdlCVi0riU70Pq20JRKIM')}
+                  onClick={() => getPaymentLink('price_1N0kdaCVi0riU70PkLUOfFfm')}
           >{t('Buy now')}</button>
         </div>
         <div className="smsPricing-item">
@@ -65,7 +65,7 @@ const SmsPricing = () => {
           </ul>
           <div className="smsPricing-hr" />
           <button className='smsPricing-btn'
-                  onClick={() => getPaymentLink('price_1MyEcVCVi0riU70Pvse32HDl')}
+                  onClick={() => getPaymentLink('price_1N0kcECVi0riU70PljC75ezq')}
           >{t('Buy now')}</button>
         </div>
       </div>

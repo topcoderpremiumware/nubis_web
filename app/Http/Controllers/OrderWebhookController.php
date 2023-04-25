@@ -8,6 +8,7 @@ use App\Models\Place;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 use Stripe\Webhook;
 
@@ -15,6 +16,7 @@ class OrderWebhookController extends Controller
 {
     public function webhook($place_id, Request $request)
     {
+        Log::debug('OrderWebhookController webhook place_id {place_id}',['place_id' => $place_id]);
         $place = Place::find($place_id);
         $stripe_secret = $place->setting('stripe-secret');
         $stripe_webhook_secret = $place->setting('stripe-webhook-secret');

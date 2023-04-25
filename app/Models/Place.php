@@ -135,10 +135,9 @@ class Place extends Model
 
     public function allow_send_sms(): bool
     {
-        //TODO: get limit sms count from place settings if > 0 then true
-//        $sms_limit_count = $this->setting('sms_limit_count') ?? 0;
-//        return $sms_limit_count > 0;
-        return true; //temporary
+        $sms_limit_count = $this->setting('sms_limit_count') ?? 0;
+        return $sms_limit_count > 0;
+//        return true;
     }
 
     public function increase_sms_limit($number = 1)

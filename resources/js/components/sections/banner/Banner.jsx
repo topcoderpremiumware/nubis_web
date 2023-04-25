@@ -19,7 +19,7 @@ const Banner = () => {
       })
     axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/message_limit`)
       .then(response => {
-        if(response.data.count == 0){
+        if(response.data.count < 100){
           setSmsStatus('sms_limit')
         }
       })
@@ -43,8 +43,8 @@ const Banner = () => {
         <div className="page-banner">
           <div className="page-banner-wrapper">
             <div>
-              <h2 className="page-banner-title">{t('If you want to send SMS?')}</h2>
-              <p className="page-banner-text">{t('Buy more SMS')}</p>
+              <h2 className="page-banner-title">{t('Your sms sending limit will finish soon!')}</h2>
+              {/*<p className="page-banner-text">{t('Buy more SMS')}</p>*/}
             </div>
             <a href="/admin/smsPricing" className="page-banner-link">
               {t('Buy SMS limit')}

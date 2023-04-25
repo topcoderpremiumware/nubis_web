@@ -9,30 +9,50 @@ const Banner = () => {
   const location = useLocation()
 
   const [status, setStatus] = useState('')
+  const [smsStatus, setSmsStatus] = useState('')
 
   useEffect(() => {
     axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/bill_paid_status`)
       .then(response => {
+        console.log('bill_paid_status',response.data?.status)
         setStatus(response.data?.status)
+      })
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/message_limit`)
+      .then(response => {
+        if(response.data.count == 0){
+          setSmsStatus('sms_limit')
+        }
       })
   }, [])
 
-  if (location.pathname === '/pricing' || status === 'paid') {
-    return null
-  }
-
-  return (<>{['admin','manager'].includes(window.role) &&
-    <div className={status === 'expired' ? 'page-banner page-banner-active' : 'page-banner'}>
-      <div className="page-banner-wrapper">
-        <div>
-          <h2 className="page-banner-title">{t('One booking system. One fixed price.')}</h2>
-          <p className="page-banner-text">{t('Easy to install. Use Nubis academy videos to install Nubis reservations for your restaurant.')}</p>
+  return (<>{(['admin','manager'].includes(window.role) && !['/pricing','/smsPricing'].includes(location.pathname)) &&
+    <>
+      {status !== 'paid' &&
+        <div className={status === 'expired' ? 'page-banner page-banner-active' : 'page-banner'}>
+          <div className="page-banner-wrapper">
+            <div>
+              <h2 className="page-banner-title">{t('One booking system. One fixed price.')}</h2>
+              <p className="page-banner-text">{t('Easy to install. Use Nubis academy videos to install Nubis reservations for your restaurant.')}</p>
+            </div>
+            <a href="/admin/pricing" className="page-banner-link">
+              {status === 'expired' ? t('Subscribe now ') : t('Try one month free')}
+            </a>
+          </div>
+        </div>}
+      {(status === 'paid' && smsStatus === 'sms_limit') &&
+        <div className="page-banner">
+          <div className="page-banner-wrapper">
+            <div>
+              <h2 className="page-banner-title">{t('If you want to send SMS?')}</h2>
+              <p className="page-banner-text">{t('Buy more SMS')}</p>
+            </div>
+            <a href="/admin/smsPricing" className="page-banner-link">
+              {t('Buy SMS limit')}
+            </a>
+          </div>
         </div>
-        <a href="/admin/pricing" className="page-banner-link">
-          {status === 'expired' ? t('Subscribe now ') : t('Try one month free')}
-        </a>
-      </div>
-    </div>
+      }
+    </>
   }</>)
 }
 

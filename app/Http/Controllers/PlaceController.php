@@ -184,6 +184,13 @@ class PlaceController extends Controller
         return response()->json($place->is_bill_paid());
     }
 
+    public function getPaidMessages($place_id, Request $request)
+    {
+        $place = Place::find($request->place_id);
+        $sms_limit_count = $place->setting('sms_limit_count') ?? 0;
+        return response()->json(['count' => $sms_limit_count]);
+    }
+
     public function getBillPaidStatus($place_id, Request $request)
     {
         $place = Place::find($request->place_id);

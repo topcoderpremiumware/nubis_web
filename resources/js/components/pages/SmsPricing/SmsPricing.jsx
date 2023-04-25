@@ -5,6 +5,20 @@ import './SmsPricing.scss'
 const SmsPricing = () => {
   const { t } = useTranslation();
 
+  const getPaymentLink = (price_id) => {
+    axios.get(`${process.env.MIX_API_URL}/api/paid_messages/get_payment_link`, {
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        price_id: price_id
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      window.open(response.data.url, '_blank').focus();
+    }).catch(error => { })
+  }
+
   return (
     <div className='smsPricing'>
       <h2 className="smsPricing-title">{t('The Right Pricing For You')}</h2>
@@ -20,7 +34,9 @@ const SmsPricing = () => {
             <li className="smsPricing-list-item">{t('The total cost of the plan is relatively low at')} 250 DKK.</li>
           </ul>
           <div className="smsPricing-hr" />
-          <button className='smsPricing-btn'>{t('Buy now')}</button>
+          <button className='smsPricing-btn'
+                  onClick={() => getPaymentLink('price_1MyEdlCVi0riU70Pq20JRKIM')}
+          >{t('Buy now')}</button>
         </div>
         <div className="smsPricing-item">
           <h3 className='smsPricing-item-title'><span>{t('Most Popular')}</span></h3>
@@ -33,7 +49,9 @@ const SmsPricing = () => {
             <li className="smsPricing-list-item">{t('The total cost of the plan is reasonable at')} 450 DKK.</li>
           </ul>
           <div className="smsPricing-hr" />
-          <button className='smsPricing-btn'>{t('Buy now')}</button>
+          <button className='smsPricing-btn'
+                  onClick={() => getPaymentLink('price_1MyEacCVi0riU70PUza10X55')}
+          >{t('Buy now')}</button>
         </div>
         <div className="smsPricing-item">
           <h3 className='smsPricing-item-title'><span>{t('Best Value')}</span></h3>
@@ -46,7 +64,9 @@ const SmsPricing = () => {
             <li className="smsPricing-list-item">{t('This plan costs more than the other two options, but provides better value for heavy SMS users.')}</li>
           </ul>
           <div className="smsPricing-hr" />
-          <button className='smsPricing-btn'>{t('Buy now')}</button>
+          <button className='smsPricing-btn'
+                  onClick={() => getPaymentLink('price_1MyEcVCVi0riU70Pvse32HDl')}
+          >{t('Buy now')}</button>
         </div>
       </div>
     </div>

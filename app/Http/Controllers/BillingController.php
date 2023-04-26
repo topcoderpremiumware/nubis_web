@@ -276,13 +276,13 @@ class BillingController extends Controller
 
                 PaidMessage::create([
                     'place_id' => $place_id,
-                    'amount' => $object->amount_paid / 100,
+                    'amount' => $object->amount / 100,
                     'currency' => strtoupper($object->currency),
                     'payment_date' => \Carbon\Carbon::now()->timestamp($object->created),
                     'product_name' => $product_name,
                     'quantity' => $quantity,
                     'payment_intent_id' => $object->id,
-                    'receipt_url' => $object->hosted_invoice_url
+                    'receipt_url' => $object->charges->data[0]->receipt_url
                 ]);
 
                 $place->increase_sms_limit($quantity);

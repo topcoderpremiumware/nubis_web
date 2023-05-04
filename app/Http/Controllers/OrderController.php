@@ -488,7 +488,7 @@ class OrderController extends Controller
         $free_time = [];
         foreach($working_hours as $working_hour){
             $time = Carbon::parse($request_date->format('Y-m-d').' '.$working_hour['from']);
-            if($time->lt(Carbon::now())) continue;
+            if($time->lt(Carbon::now()->addMinutes($working_hour['min_time_before']))) continue;
             $end = Carbon::parse($request_date->format('Y-m-d').' '.$working_hour['to']);
             for($time;$time->lt($end);$time->addMinutes(15)){
                 $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
@@ -641,7 +641,7 @@ class OrderController extends Controller
                 if(array_key_exists($working_hour['tableplan_id'],$free_tables)){
                     foreach ($free_tables[$working_hour['tableplan_id']] as $table){
                         if(!array_key_exists('ordered',$table['time'][$indexFrom])){
-                            if(!$time->lt(Carbon::now())){
+                            if(!$time->lt(Carbon::now()->addMinutes($working_hour['min_time_before']))){
                                 array_push($work_time,$time->copy());
                                 break;
                             }

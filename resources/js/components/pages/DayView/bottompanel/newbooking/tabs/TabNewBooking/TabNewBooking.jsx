@@ -14,6 +14,7 @@ import {
   TextField
 } from "@mui/material";
 import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css';
 import Moment from "moment";
 import {useTranslation} from "react-i18next";
 import eventBus from "../../../../../../../eventBus";

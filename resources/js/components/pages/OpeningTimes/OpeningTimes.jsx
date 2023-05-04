@@ -126,7 +126,8 @@ export default function OpeningTimes() {
         max: 999,
         min: 0,
         status: 'working',
-        booking_limits: []
+        booking_limits: [],
+        min_time_before: 0,
       }
     }
     if(!time.booking_limits){
@@ -193,8 +194,8 @@ export default function OpeningTimes() {
     <div className='pages__container'>
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
         <h2>{t('Opening Times')}</h2>
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           size="sm"
           type="button"
           onClick={() => navigate('/VideoGuides')}

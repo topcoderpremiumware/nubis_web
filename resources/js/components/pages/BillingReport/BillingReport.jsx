@@ -17,9 +17,9 @@ export default function BillingReport() {
   const [loading, setLoading] = useState(true)
 
   useEffect( () => {
-    getBillings()
+    getData()
     eventBus.on("placeChanged", () => {
-      getBillings()
+      getData()
     })
   }, [])
 
@@ -38,14 +38,32 @@ export default function BillingReport() {
         </span>, },
   ];
 
-  const getBillings = () => {
+  const getData = () => {
     setLoading(true)
-    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/billings`,{
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
+    axios.all([
+      axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/billings`,{
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }),
+      axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/paid_messages`,{
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+    ]).then(responses => {
+      let billing = []
+      responses.forEach(response => {
+        response.data.forEach(data => {
+          if(!data.hasOwnProperty('expired_at')) data.expired_at = ''
+          data.no = billing.length
+          billing.push(data)
+        })
+      })
+      if(billing.length > 0){
+        billing = billing.sort((a, b) => Moment.utc(b.payment_date).valueOf() - Moment.utc(a.payment_date).valueOf())
       }
-    }).then(response => {
-      setBillings(response.data)
+      setBillings(billing)
       setLoading(false)
     }).catch(error => {
     })
@@ -60,6 +78,7 @@ export default function BillingReport() {
             <DataGrid
               rows={billings}
               columns={columns}
+              getRowId={(row) => row.no}
               pageSize={10}
               rowsPerPageOptions={[10]}
             />

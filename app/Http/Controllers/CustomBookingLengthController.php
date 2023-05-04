@@ -35,6 +35,7 @@ class CustomBookingLengthController extends Controller
 //            'week_days' => 'array',
 //            'spec_dates' => 'array',
             'time_intervals' => 'required|array',
+            'min_time_before' => 'required|integer',
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)){
@@ -69,6 +70,7 @@ class CustomBookingLengthController extends Controller
             'spec_dates' => $request->has('spec_dates') && $request->spec_dates != 'null' ? $request->spec_dates : [],
             'time_intervals' => $request->has('time_intervals') && $request->time_intervals != 'null' ? $request->time_intervals : [],
             'image' => $filename,
+            'min_time_before' => $request->min_time_before
         ]);
 
         Log::add($request,'create-custom_booking_length','Created custom booking length #'.$custom_booking_length->id);
@@ -100,6 +102,7 @@ class CustomBookingLengthController extends Controller
 //            'week_days' => 'array',
 //            'spec_dates' => 'array',
             'time_intervals' => 'required|array',
+            'min_time_before' => 'required|integer',
         ]);
 
         $custom_booking_length = CustomBookingLength::find($id);
@@ -141,6 +144,7 @@ class CustomBookingLengthController extends Controller
             'spec_dates' => $request->has('spec_dates') && $request->spec_dates != 'null' ? $request->spec_dates : [],
             'time_intervals' => $request->has('time_intervals') && $request->time_intervals != 'null' ? $request->time_intervals : [],
             'image' => $filename ? $filename : $custom_booking_length->image,
+            'min_time_before' => $request->min_time_before
         ]);
 
         Log::add($request,'change-custom_booking_length','Changed custom booking length #'.$id);
@@ -275,7 +279,7 @@ class CustomBookingLengthController extends Controller
                 $time = Carbon::parse($request->reservation_date . ' ' . $time_interval['from']);
                 $end = Carbon::parse($request->reservation_date . ' ' . $time_interval['to']);
                 for ($time; $time->lt($end); $time->addMinutes(15)) {
-                    if($time->lt(Carbon::now())) continue;
+                    if($time->lt(Carbon::now()->addMinutes($custom_length->min_time_before))) continue;
                     $working_hour = array_values(array_filter($working_hours,function($item) use ($time) {
                         return $item['from'] <= $time->format('H:i:s') && $item['to'] >= $time->format('H:i:s');
                     }));

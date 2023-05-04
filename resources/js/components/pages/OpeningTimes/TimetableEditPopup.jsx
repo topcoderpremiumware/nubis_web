@@ -16,6 +16,7 @@ import {
   IconButton, InputLabel, MenuItem, Select, styled, Table, TableBody, TableCell, TableHead, TableRow, TextField,
 } from "@mui/material";
 import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css';
 import EditIcon from "@mui/icons-material/Edit";
 
 export default function TimetableEditPopup(props) {
@@ -69,6 +70,7 @@ export default function TimetableEditPopup(props) {
     if(e.target.name === 'length') setTimetable(prev => ({...prev, length: e.target.value}))
     if(e.target.name === 'max') setTimetable(prev => ({...prev, max: intWrapper(e.target.value)}))
     if(e.target.name === 'status') setTimetable(prev => ({...prev, status: e.target.value}))
+    if(e.target.name === 'min_time_before') setTimetable(prev => ({...prev, min_time_before: e.target.value}))
   }
 
   const onTimeChange = (e, key) => {
@@ -272,6 +274,18 @@ export default function TimetableEditPopup(props) {
                        type="number" id="max" name="max" required
                        onChange={onChange} value={timetable.max}
                        />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_min_time_before">{t('Minimum time before book')}</InputLabel>
+              <Select label={t('Minimum time before book')} value={timetable.min_time_before}
+                      labelId="label_min_time_before" id="min_time_before" name="min_time_before"
+                      onChange={onChange}>
+                {bookingOptions().map((el,key) => {
+                  return <MenuItem key={key} value={el}>{el}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
         <Grid container spacing={2} sx={{pb: 2}}>

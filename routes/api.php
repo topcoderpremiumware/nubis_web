@@ -38,10 +38,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('register',[AuthApiController::class, 'register']);
 Route::post('login',[AuthApiController::class, 'login']);
+Route::post('forgot_password',[AuthApiController::class, 'forgot']);
+Route::post('reset_password',[AuthApiController::class, 'reset']);
 
 Route::post('customers/register',[CustomerController::class, 'register']);
 Route::post('customers/login',[CustomerController::class, 'login']);
 Route::post('customers/verify',[CustomerController::class, 'checkEmail']);
+Route::post('customers/forgot_password',[CustomerController::class, 'forgot']);
+Route::post('customers/reset_password',[CustomerController::class, 'reset']);
 
 Route::get('places',[PlaceController::class, 'getAll']);
 

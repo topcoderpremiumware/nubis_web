@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\User;
+use App\Notifications\PasswordResetNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use mysql_xdevapi\Exception;
 
 class CustomerController extends Controller
@@ -178,5 +181,60 @@ class CustomerController extends Controller
         $customer = Customer::whereEmail($request->email)->first();
 
         return response()->json($customer);
+    }
+
+    public function forgot(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $user = Customer::where('email',$request->email)->first();
+        if(!$user || !$user->email){
+            return response()->json(['message' => 'Email not found'],400);
+        }
+
+        $token = str_pad(random_int(1, 9999),4,'0',STR_PAD_LEFT);
+
+        $password_reset = DB::table('password_resets')->where('email',$request->email)->first();
+        if($password_reset){
+            DB::table('password_resets')->where('email',$request->email)->update(['token' => $token]);
+        }else{
+            DB::table('password_resets')->insert(['email' => $request->email,'token' => $token]);
+        }
+
+        $user->notify(new PasswordResetNotification($user,$token,'customer'));
+
+        return response()->json([
+            'message' => 'A code has been sent to your email address.'
+        ]);
+    }
+
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'token' => 'required',
+            'password' => 'required|min:4|confirmed'
+        ]);
+
+        $user = Customer::where('email',$request->email)->first();
+        if(!$user || !$user->email){
+            return response()->json(['message' => 'Email not found'],400);
+        }
+
+        $password_reset = DB::table('password_resets')->where('email',$request->email)->first();
+
+        if(!$password_reset || $password_reset->token != $request->token){
+            return response()->json(['message' => 'Token mismatch'],400);
+        }
+
+        $user->fill(['password' => bcrypt($request->password)]);
+        $user->save();
+
+        $user->tokens()->delete();
+        $password_reset->delete();
+
+        return $this->response($user);
     }
 }

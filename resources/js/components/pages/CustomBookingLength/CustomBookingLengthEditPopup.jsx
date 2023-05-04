@@ -16,6 +16,7 @@ import {
   IconButton, InputLabel, MenuItem, Select, TextField,
 } from "@mui/material";
 import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css';
 import ListSubheader from "@mui/material/ListSubheader";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -112,6 +113,7 @@ export default function CustomBookingLengthEditPopup(props) {
     }
     if(e.target.name === 'name') setLengths(prev => ({...prev, name: e.target.value}))
     if(e.target.name === 'length') setLengths(prev => ({...prev, length: e.target.value}))
+    if(e.target.name === 'min_time_before') setLengths(prev => ({...prev, min_time_before: e.target.value}))
     if(e.target.name === 'preparation_length') setLengths(prev => ({...prev, preparation_length: e.target.value}))
     if(e.target.name === 'active') setLengths(prev => ({...prev, active: e.target.checked ? 1 : 0}))
     if(e.target.name === 'start_date') setLengths(prev => ({...prev, start_date: e.target.value}))
@@ -273,6 +275,18 @@ export default function CustomBookingLengthEditPopup(props) {
                       labelId="label_preparation_length" id="preparation_length" name="preparation_length"
                       onChange={onChange}>
                 {preparationOptions().map((el,key) => {
+                  return <MenuItem key={key} value={el}>{el}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_min_time_before">{t('Minimum time before book')}</InputLabel>
+              <Select label={t('Minimum time before book')} value={lengths.min_time_before}
+                      labelId="label_min_time_before" id="min_time_before" name="min_time_before"
+                      onChange={onChange}>
+                {bookingOptions().map((el,key) => {
                   return <MenuItem key={key} value={el}>{el}</MenuItem>
                 })}
               </Select>

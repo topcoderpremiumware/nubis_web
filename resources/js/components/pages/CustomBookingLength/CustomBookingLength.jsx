@@ -150,7 +150,8 @@ export default function CustomBookingLength() {
       week_days: [],
       spec_dates: [],
       time_intervals: [],
-      area_ids: []
+      area_ids: [],
+      min_time_before: 0
     }
     setSelectedLength(time)
     setEditPopupOpened(true)
@@ -178,8 +179,8 @@ export default function CustomBookingLength() {
     <div className='pages__container'>
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
         <h2>{t('Menus setup')}</h2>
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           size="sm"
           type="button"
           onClick={() => navigate('/VideoGuides')}

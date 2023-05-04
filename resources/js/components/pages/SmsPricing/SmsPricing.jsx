@@ -1,9 +1,18 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { useTranslation } from 'react-i18next';
 import './SmsPricing.scss'
+import eventBus from "../../../eventBus";
 
 const SmsPricing = () => {
   const { t } = useTranslation();
+  const [smsLimitCount, setSmsLimitCount] = useState(0)
+
+  useEffect(() => {
+    getSmsLimitCount()
+    eventBus.on("placeChanged", () => {
+      getSmsLimitCount()
+    })
+  }, [])
 
   const getPaymentLink = (price_id) => {
     axios.get(`${process.env.MIX_API_URL}/api/paid_messages/get_payment_link`, {
@@ -19,10 +28,27 @@ const SmsPricing = () => {
     }).catch(error => { })
   }
 
+  const getSmsLimitCount = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'sms_limit_count'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setSmsLimitCount(response.data.value)
+    }).catch(error => {
+      setSmsLimitCount(0)
+    })
+  }
+
   return (
     <div className='smsPricing'>
       <h2 className="smsPricing-title">{t('The Right Pricing For You')}</h2>
       <div className="smsPricing-container">
+        <div style={{width:'100%'}}>{t('You have')} {smsLimitCount} SMS</div>
         <div className="smsPricing-item">
           <h3 className='smsPricing-item-title'><span>{t('Standard')}</span></h3>
           <div className="smsPricing-price-1">500 SMS/250 DKK</div>

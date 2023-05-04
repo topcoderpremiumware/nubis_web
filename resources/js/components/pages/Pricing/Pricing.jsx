@@ -50,7 +50,37 @@ const Pricing = () => {
       }
     }).then(response => {
       window.open(response.data.url, '_blank').focus();
-    }).catch(error => { })
+    }).catch(error => {
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          value.forEach(v => {
+            eventBus.dispatch("notification", {type: 'error', message: v});
+          })
+        }
+      }else if(error.response && error.response.data && error.response.data.message){
+        eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
+      } else {
+        eventBus.dispatch("notification", {type: 'error', message: error.message});
+        console.log('Error', error.message)
+      }
+    })
+  }
+
+  const payTrial = () => {
+    axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Paid Trial successfully'});
+    }).catch(error => {
+      if (error.response && error.response.data && error.response.data.errors) {
+        for (const [key, value] of Object.entries(error.response.data.errors)) {
+          value.forEach(v => {
+            eventBus.dispatch("notification", {type: 'error', message: v});
+          })
+        }
+      } else {
+        eventBus.dispatch("notification", {type: 'error', message: error.message});
+        console.log('Error', error.message)
+      }
+    })
   }
 
   return (
@@ -97,6 +127,13 @@ const Pricing = () => {
           >{t('Choose plan')}</button>
         </div>
       </div>
+      {window.is_superadmin === 1 && <div style={{marginBottom: '15px', display: 'flex', justifyContent: 'center'}}>
+        <button
+          type="button"
+          className="price-card-btn"
+          onClick={() => payTrial()}
+        >{t('Pay trial (for superadmin only)')}</button>
+      </div>}
       <p className="price-text">{t('Tied into another solution? If you have a notice period on your current booking system, you will receive Nubis reservation for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system for free using our Nubis Academy videos or let us set it up for you for')} € 149</p>
       <div style={{marginTop: '15px', display: 'flex', justifyContent: 'center'}}>
         <button

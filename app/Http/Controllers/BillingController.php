@@ -81,7 +81,7 @@ class BillingController extends Controller
             ],
         ];
 
-        if(count($place->paid_bills) === 0){
+        if($place->paid_bills()->where('product_name','!=','Trial')->count() === 0){
             $payment_link_data['subscription_data'] = ['trial_period_days' => 30];
         }
 
@@ -141,6 +141,10 @@ class BillingController extends Controller
             'message' => 'Unauthorized.'
         ], 401);
 
+        if(!Auth::user()->is_superadmin) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
         if(!Auth::user()->places->contains($place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
@@ -148,13 +152,13 @@ class BillingController extends Controller
         }
 
         $place = Place::find($place_id);
-        $trial_bill = $place->paid_bills()->where('product_name','Trial')->first();
-
-        if($trial_bill){
-            return response()->json([
-                'message' => 'Trial has already been used'
-            ], 400);
-        }
+//        $trial_bill = $place->paid_bills()->where('product_name','Trial')->first();
+//
+//        if($trial_bill){
+//            return response()->json([
+//                'message' => 'Trial has already been used'
+//            ], 400);
+//        }
 
         $months_duration = 1;
 

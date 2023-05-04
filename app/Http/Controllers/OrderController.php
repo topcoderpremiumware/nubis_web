@@ -653,7 +653,7 @@ class OrderController extends Controller
         return response()->json($work_time);
     }
 
-    public function getFreeTables($orders,$working_hours,$seats,$boolean = true)
+    public function getFreeTables($orders,$working_hours,$seats,$boolean = true,$for_admin = false)
     {
         $free_tables = [];
         //Отримується список всіх столів, які фізично доступні для замовлення, тобто підходять за кількістю місць. Сюди ще додаються столи які можуть бути згруповані в групи, і при цьому підходять за кількістю місць.
@@ -663,15 +663,15 @@ class OrderController extends Controller
             if(!$tableplan) continue;
             $tables = $tableplan->getTables();
             foreach ($tables as $tab){
-                if($tab['seats'] < $seats) continue;
-                if($tab['time'][0]['is_online'] && $tab['time'][0]['min_seats'] > $seats) continue;
+                if(!$for_admin && $tab['seats'] < $seats) continue;
+                if(!$for_admin && $tab['time'][0]['is_online'] && $tab['time'][0]['min_seats'] > $seats) continue;
                 if(!array_key_exists($tableplan->id,$free_tables) || !array_key_exists($tab['number'],$free_tables[$tableplan->id])){
                     $free_tables[$tableplan->id][$tab['number']] = $tab;
                 }
             }
             $groups = $tableplan->getTableGroups();
             foreach ($groups as $group) {
-                if($group['seats'] < $seats) continue;
+                if(!$for_admin && $group['seats'] < $seats) continue;
                 if(!$group['is_online']) continue;
                 foreach ($group['tables'] as $tab) {
                     $free_tables[$tableplan->id][$tab['number']] = $tab;
@@ -1109,14 +1109,14 @@ class OrderController extends Controller
             ->whereIn('status',['confirmed','arrived','pending'])
             ->get();
 
-        $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false);
+        $free_tables = $this->getFreeTables($orders, $working_hours, $request->seats, false,true);
 
         $result = [];
 
         $indexFrom = intval($reservation_time->format('H'))*4 + floor(intval($reservation_time->format('i'))/15);
         foreach ($free_tables as $plan_id => $tables){
             foreach ($tables as $table) {
-                if($table['seats'] < $request->seats) continue;
+//                if($table['seats'] < $request->seats) continue;
                 if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                     $reserv_to = $reservation_time->copy()->addMinutes($request->length);
                     $reserv_from = $reservation_time->copy();
@@ -1131,30 +1131,30 @@ class OrderController extends Controller
                 }
             }
 
-            $groups_tables = [];
-            $groups_table_seats = [];
-            foreach ($tables as $table) {
-                if(!array_key_exists('grouped',$table)) continue;
-                if(array_key_exists('ordered', $table['time'][$indexFrom])) continue;
-                $reserv_to = $reservation_time->copy()->addMinutes($request->length);
-                $reserv_from = $reservation_time->copy();
-
-                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
-                    $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
-                    if(array_key_exists('ordered', $table['time'][$i])){
-                        continue 2;
-                    }
-                }
-                $group_id = $table['time'][0]['group'];
-                $groups_tables[$group_id][] = $table;
-                if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
-                $groups_table_seats[$group_id] += $table['seats'];
-                if($groups_table_seats[$group_id] >= $request->seats){
-                    if(!array_key_exists($plan_id,$result) || !is_array($result[$plan_id])) $result[$plan_id] = [];
-                    $result[$plan_id] = array_merge($result[$plan_id],$groups_tables[$group_id]);
-                    break;
-                }
-            }
+//            $groups_tables = [];
+//            $groups_table_seats = [];
+//            foreach ($tables as $table) {
+//                if(!array_key_exists('grouped',$table)) continue;
+//                if(array_key_exists('ordered', $table['time'][$indexFrom])) continue;
+//                $reserv_to = $reservation_time->copy()->addMinutes($request->length);
+//                $reserv_from = $reservation_time->copy();
+//
+//                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+//                    $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
+//                    if(array_key_exists('ordered', $table['time'][$i])){
+//                        continue 2;
+//                    }
+//                }
+//                $group_id = $table['time'][0]['group'];
+//                $groups_tables[$group_id][] = $table;
+//                if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
+//                $groups_table_seats[$group_id] += $table['seats'];
+//                if($groups_table_seats[$group_id] >= $request->seats){
+//                    if(!array_key_exists($plan_id,$result) || !is_array($result[$plan_id])) $result[$plan_id] = [];
+//                    $result[$plan_id] = array_merge($result[$plan_id],$groups_tables[$group_id]);
+//                    break;
+//                }
+//            }
             if(array_key_exists($plan_id,$result)){
                 $result[$plan_id] = array_map("unserialize", array_unique(array_map("serialize", $result[$plan_id])));
             }

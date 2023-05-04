@@ -1150,6 +1150,7 @@ class OrderController extends Controller
                 if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
                 $groups_table_seats[$group_id] += $table['seats'];
                 if($groups_table_seats[$group_id] >= $request->seats){
+                    if(!array_key_exists($plan_id,$result) || !is_array($result[$plan_id])) $result[$plan_id] = [];
                     $result[$plan_id] = array_merge($result[$plan_id],$groups_tables[$group_id]);
                     break;
                 }

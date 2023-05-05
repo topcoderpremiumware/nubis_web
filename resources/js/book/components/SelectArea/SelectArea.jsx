@@ -14,8 +14,10 @@ function SelectArea(props) {
   } = props;
 
   const checkToken = () => {
-    props.handleChangeItem();
-    props.setBlockType("secondblock");
+    if(selectedArea){
+      props.handleChangeItem();
+      props.setBlockType("secondblock");
+    }
   }
 
   const [selectedArea, setSelectedArea] = useState('')

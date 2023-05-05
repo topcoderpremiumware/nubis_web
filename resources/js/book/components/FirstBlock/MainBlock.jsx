@@ -9,7 +9,7 @@ import Cancel from "./Cancel/Cancel.jsx";
 import Copyrigth from "./Copyrigth/Copyrigth.jsx";
 import CancelingModal from "./CancelingModal/CancelingModal.jsx";
 import MainModal from "../MainModal/MainModal.jsx";
-import {useTranslation} from "react-i18next";
+import {Trans, useTranslation} from "react-i18next";
 import {utils} from "react-modern-calendar-datepicker";
 import axios from "axios";
 import eventBus from "../../../eventBus";
@@ -69,7 +69,10 @@ function MainBlock(props) {
     canceling: t('Canceling'),
     confirmation: t('You are about to cancel the following reservation:'),
     canceled: t('You cancelled the reservation'),
-    morePeople: t('Please enter your message'),
+    morePeople: <>
+      <Trans>Please enter your message or call us:</Trans>
+      <a href={'tel:'+props.restaurantInfo.phone}>{props.restaurantInfo.phone}</a>
+    </>,
   };
 
   return (

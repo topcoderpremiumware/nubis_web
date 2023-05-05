@@ -29,6 +29,29 @@ export default function TimetableEditPopup(props) {
   const [copy, setCopy] = useState(true)
   const [focusOn, setFocusOn] = useState('')
 
+  const minBeforeTimes = [
+    {title: `0 ${t('minutes')}`, value: 0},
+    {title: `30 ${t('minutes')}`, value: 30},
+    {title: `1 ${t('hour')}`, value: 60},
+    {title: `2 ${t('hours')}`, value: 60*2},
+    {title: `3 ${t('hours')}`, value: 60*3},
+    {title: `4 ${t('hours')}`, value: 60*4},
+    {title: `5 ${t('hours')}`, value: 60*5},
+    {title: `6 ${t('hours')}`, value: 60*6},
+    {title: `8 ${t('hours')}`, value: 60*8},
+    {title: `12 ${t('hours')}`, value: 60*12},
+    {title: `24 ${t('hours')}`, value: 60*24},
+    {title: `36 ${t('hours')}`, value: 60*36},
+    {title: `48 ${t('hours')}`, value: 60*48},
+    {title: `3 ${t('days')}`, value: 60*24*3},
+    {title: `4 ${t('days')}`, value: 60*24*4},
+    {title: `5 ${t('days')}`, value: 60*24*5},
+    {title: `6 ${t('days')}`, value: 60*24*6},
+    {title: `7 ${t('days')}`, value: 60*24*7},
+    {title: `14 ${t('days')}`, value: 60*24*14},
+    {title: `21 ${t('days')}`, value: 60*24*21},
+  ]
+
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.action.hover,
@@ -281,8 +304,8 @@ export default function TimetableEditPopup(props) {
               <Select label={t('Minimum time before book')} value={timetable.min_time_before}
                       labelId="label_min_time_before" id="min_time_before" name="min_time_before"
                       onChange={onChange}>
-                {bookingOptions().map((el,key) => {
-                  return <MenuItem key={key} value={el}>{el}</MenuItem>
+                {minBeforeTimes.map((el,key) => {
+                  return <MenuItem key={key} value={el.value}>{el.title}</MenuItem>
                 })}
               </Select>
             </FormControl>

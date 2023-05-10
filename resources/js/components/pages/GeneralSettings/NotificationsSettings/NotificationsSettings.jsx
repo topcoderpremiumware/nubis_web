@@ -1,16 +1,19 @@
-import {Button, FormControl, InputLabel, MenuItem, Select, Stack} from '@mui/material'
+import {Button, FormControl, FormGroup, InputLabel, MenuItem, Select, Stack} from '@mui/material'
 import React, {useEffect} from 'react'
 import { useState } from 'react'
 import eventBus from "../../../../eventBus";
 import {useTranslation} from "react-i18next";
 import { useNavigate } from 'react-router-dom';
 import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/material.css'
+import './NotificationsSettings.scss';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const NotificationsSettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [number, setNumber] = useState('')
+  const [numbers, setNumbers] = useState([])
   const [smsTime, setSmsTime] = useState(0)
   const [emailTime, setEmailTime] = useState(0)
 
@@ -24,6 +27,10 @@ const NotificationsSettings = () => {
       getNumber()
     })
   },[])
+
+  useEffect(() => {
+    console.log('numbers',numbers)
+  },[numbers])
 
   const onSave = async (e) => {
     e.preventDefault()
@@ -46,7 +53,7 @@ const NotificationsSettings = () => {
     axios.post(`${process.env.MIX_API_URL}/api/settings`, {
       place_id: localStorage.getItem('place_id'),
       name: 'sms-notification-number',
-      value: number
+      value: numbers.join(',')
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'SMS notification number saved'});
     }).catch(error => {})
@@ -94,9 +101,9 @@ const NotificationsSettings = () => {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setNumber(response.data.value)
+      setNumbers(response.data.value.split(','))
     }).catch(error => {
-      setNumber('')
+      setNumbers([])
     })
   }
 
@@ -106,6 +113,18 @@ const NotificationsSettings = () => {
       output.push({name:i+' hours before',value:i})
     }
     return output
+  }
+
+  const removePhone = (key) => {
+    let tempNumbers = numbers
+    tempNumbers.splice(key, 1)
+    setNumbers(prev => ([...tempNumbers]))
+  }
+
+  const changePhone = (key, phone) => {
+    let tempNumbers = numbers
+    tempNumbers[key] = phone
+    setNumbers(prev => ([...tempNumbers]))
   }
 
   return (
@@ -157,14 +176,26 @@ const NotificationsSettings = () => {
                   </Select>
                 </FormControl>
               </div>
+              {numbers.length > 0 && numbers.map((number, key) => {
+                return <div className="mb-3" key={key}>
+                  <Stack spacing={2} direction="row">
+                    <PhoneInput
+                      specialLabel={t('Admin SMS number')}
+                      country={'dk'}
+                      value={number}
+                      onChange={phone => changePhone(key,'+'+phone)}
+                      containerClass="phone-input"
+                    />
+                    <Button variant="contained" color="error" type="button" onClick={() => {removePhone(key)}}>
+                      <DeleteIcon />
+                    </Button>
+                  </Stack>
+                </div>
+              })}
               <div className="mb-3">
-                <PhoneInput
-                  specialLabel={t('Admin SMS number')}
-                  country={'dk'}
-                  value={number}
-                  onChange={phone => setNumber('+'+phone)}
-                  containerClass="phone-input"
-                />
+                <Button variant="contained" type="button" color="success" onClick={() => {setNumbers(prev => ([...prev,'']))}}>
+                  {t('Add admin SMS number')}
+                </Button>
               </div>
               <Button variant="contained" type="submit">{t('Save')}</Button>
             </form>

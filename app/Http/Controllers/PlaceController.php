@@ -250,11 +250,19 @@ class PlaceController extends Controller
         ]);
         $place = Place::find($place_id);
         $customer_name = $request->first_name.' '.$request->last_name;
-        $sms_notification_number = $place->setting('sms-notification-number') ?? $place->phone;
-        if($place->allow_send_sms()){
-            $place->decrease_sms_limit();
-            $result = SMS::send([$sms_notification_number], $customer_name.': '.$request->message, env('APP_SHORT_NAME'));
+
+        if($place->setting('sms-notification-number')){
+            $sms_notification_numbers = explode(',',$place->setting('sms-notification-number'));
+        }else{
+            $sms_notification_numbers = [$place->phone];
         }
+        foreach ($sms_notification_numbers as $number) {
+            if($place->allow_send_sms()){
+                $place->decrease_sms_limit();
+                $result = SMS::send([$number], $customer_name.': '.$request->message, env('APP_SHORT_NAME'));
+            }
+        }
+
         try{
             \Illuminate\Support\Facades\Mail::html($request->message.'<br><br>Phone: '.$request->phone.'<br>Email: '.$request->email, function($msg) use ($customer_name, $place, $request) {
                 $msg->to($place->email)->subject('Customer Message: '.$customer_name);
@@ -294,9 +302,15 @@ class PlaceController extends Controller
     public function getMaxAvailableSeats($place_id, Request $request)
     {
         $place = Place::find($place_id);
-        $tableplans = $place->tableplans;
+
+        $workings = $place->timetables()
+            ->whereNotNull('tableplan_id')
+            ->where('status','working')
+            ->get();
+
         $seats = [0];
-        foreach ($tableplans as $tableplan) {
+        foreach ($workings as $working) {
+            $tableplan = $working->tableplan;
             $tables = $tableplan->getTables();
             foreach ($tables as $table) {
                 $seats[] = $table['seats'];

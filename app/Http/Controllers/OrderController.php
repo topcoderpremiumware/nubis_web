@@ -1074,10 +1074,18 @@ class OrderController extends Controller
             ->where('purpose','sms-notification')
             ->where('active',1)
             ->first();
-        if($sms_notification_template && $place->allow_send_sms()){
-            $sms_notification_number = $place->setting('sms-notification-number') ?? $place->phone;
-            $place->decrease_sms_limit();
-            $result = SMS::send([$sms_notification_number], TemplateHelper::setVariables($order,$sms_notification_template->text), env('APP_SHORT_NAME'));
+        if($sms_notification_template){
+            if($place->setting('sms-notification-number')){
+                $sms_notification_numbers = explode(',',$place->setting('sms-notification-number'));
+            }else{
+                $sms_notification_numbers = [$place->phone];
+            }
+            foreach ($sms_notification_numbers as $number) {
+                if($place->allow_send_sms()){
+                    $place->decrease_sms_limit();
+                    $result = SMS::send([$number], TemplateHelper::setVariables($order, $sms_notification_template->text), env('APP_SHORT_NAME'));
+                }
+            }
         }
     }
 

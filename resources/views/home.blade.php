@@ -23,13 +23,13 @@
             <p class="hero-text">{{__('Nubis reservation makes it easy to manage your restaurant`s table reservations. Stop wasting your time on daily tasks such as email replies, social media chats or phone calls. Allow guests to book a table online 24/7 and Nubis reservation will take care of the rest! The system is easy implemented to your website and there are no start up-fees ore extra costs.')}}</p>
             <a href="/pricing" class="link">{{__('Try one month free')}}</a>
           </div>
-          <iframe
-            width="606"
-            height="339"
-            src="https://www.youtube.com/embed/ZkcvxE2Zufg"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          <iframe 
+            width="606" 
+            height="339" 
+            src="https://www.youtube.com/embed/fZCxOi_f4zQ" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
             allowfullscreen
           ></iframe>
         </div>

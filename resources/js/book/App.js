@@ -23,7 +23,7 @@ const App = () => {
 
   const [guestValue, setGuestValue] = useState(0);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
-  const [selectedDay, setSelectedDay] = useState(utils().getToday());
+  const [selectedDay, setSelectedDay] = useState('');
   const [orderDate, setOrderDate] = useState("");
   const [dates, setDates] = useState();
   const [soldDateArray, setSoldDateArray] = useState([]);

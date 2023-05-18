@@ -8,6 +8,7 @@ use App\Models\Tableplan;
 use App\Models\Timetable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TimetableController extends Controller
 {
@@ -185,32 +186,48 @@ class TimetableController extends Controller
         $without_year = $date_arr[1].'-'.$date_arr[2];
         $week_day = date('w',strtotime($date));
 
-        $working = Timetable::where('area_id',$area_id)
-            ->where(function($q) use ($date,$without_year){
-                $q->whereDate('start_date','<=',$date)
-                    ->orWhereNull('start_date')
-                    ->orWhereDate('start_date','<=','0004-'.$without_year);
-            })
-            ->where(function($q) use ($date,$without_year){
-                $q->whereDate('end_date','>=',$date)
-                    ->orWhereNull('end_date')
-                    ->orWhereDate('end_date','>=','0004-'.$without_year);
-            })
-            ->where('status','working')
+        $working = Timetable::where('area_id', 1)
+            ->where(function ($query) use ($date,$without_year) {
+                $query->where(function ($query) use ($date) {
+                    $query->where(function ($query) use ($date) {
+                        $query->whereDate('start_date', '<=', $date)
+                            ->orWhereNull('start_date');
+                    })->where(function ($query) use ($date) {
+                        $query->whereDate('end_date', '>=', $date)
+                            ->orWhereNull('end_date');
+                    });
+                })->orWhere(function ($query) use ($without_year) {
+                    $query->where(function ($query) use ($without_year) {
+                        $query->whereDate('start_date', '<=', '0004-'.$without_year)
+                            ->orWhereNull('start_date');
+                    })->where(function ($query) use ($without_year) {
+                        $query->whereDate('end_date', '>=', '0004-'.$without_year)
+                            ->orWhereNull('end_date');
+                    });
+                });
+            })->where('status', 'working')
             ->get();
 
-        $non_working = Timetable::where('area_id',$area_id)
-            ->where(function($q) use ($date,$without_year){
-                $q->whereDate('start_date','<=',$date)
-                    ->orWhereNull('start_date')
-                    ->orWhereDate('start_date','<=','0004-'.$without_year);
-            })
-            ->where(function($q) use ($date,$without_year){
-                $q->whereDate('end_date','>=',$date)
-                    ->orWhereNull('end_date')
-                    ->orWhereDate('end_date','>=','0004-'.$without_year);
-            })
-            ->where('status','non-working')
+        $non_working = Timetable::where('area_id', 1)
+            ->where(function ($query) use ($date,$without_year) {
+                $query->where(function ($query) use ($date) {
+                    $query->where(function ($query) use ($date) {
+                        $query->whereDate('start_date', '<=', $date)
+                            ->orWhereNull('start_date');
+                    })->where(function ($query) use ($date) {
+                        $query->whereDate('end_date', '>=', $date)
+                            ->orWhereNull('end_date');
+                    });
+                })->orWhere(function ($query) use ($without_year) {
+                    $query->where(function ($query) use ($without_year) {
+                        $query->whereDate('start_date', '<=', '0004-'.$without_year)
+                            ->orWhereNull('start_date');
+                    })->where(function ($query) use ($without_year) {
+                        $query->whereDate('end_date', '>=', '0004-'.$without_year)
+                            ->orWhereNull('end_date');
+                    });
+                });
+            })->where('status','non-working')
             ->get();
 
         $working_hours = [];
@@ -218,6 +235,7 @@ class TimetableController extends Controller
         foreach ($working as $item){
             if(empty($item->week_days) || in_array($week_day,$item->week_days)){
                 $working_hours[] = [
+                    'date' => $date,
                     'from' => $item->start_time,
                     'to' => $item->end_time,
                     'tableplan_id' => $item->tableplan_id ?? $default_tableplan->id,
@@ -238,6 +256,7 @@ class TimetableController extends Controller
                 }
             }
         }
+
 //        TODO: згрупувати діапазони, якщо в них однакові плани і час пересікається
 //         Якщо час не накладається то нічого не робити
 //        Якщо накладається, і різні столи, то перший закінчується коли починається інший

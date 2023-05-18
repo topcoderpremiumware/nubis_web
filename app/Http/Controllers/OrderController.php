@@ -455,12 +455,12 @@ class OrderController extends Controller
             $time_from->setTime(0, 0, 0);
             $time_to = $date->copy();
             $time_to->setTime(23, 59, 59);
-            $orders = Order::where('place_id',$request->place_id)
-                ->where('area_id',$request->area_id)
-                ->whereBetween('reservation_time',[$time_from,$time_to])
-                ->where('is_take_away',0)
-                ->whereIn('status',['confirmed','arrived','pending'])
-                ->get();
+//            $orders = Order::where('place_id',$request->place_id)
+//                ->where('area_id',$request->area_id)
+//                ->whereBetween('reservation_time',[$time_from,$time_to])
+//                ->where('is_take_away',0)
+//                ->whereIn('status',['confirmed','arrived','pending'])
+//                ->get();
 
             $free_time = self::getFreeTime($request->place_id,$request->area_id, $request->seats,$date,$working_hours);
             if(count($free_time) > 0){

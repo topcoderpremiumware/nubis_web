@@ -22,6 +22,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PictureUploadButton from "../GeneralSettings/Pictures/PictureUploadButton";
+import Box from '@mui/material/Box';
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function CustomBookingLengthEditPopup(props) {
   const { t } = useTranslation();
@@ -58,7 +60,7 @@ export default function CustomBookingLengthEditPopup(props) {
     if(props.lengths.hasOwnProperty('start_date')){
       setAreas(props.areas)
       setLengths(props.lengths)
-      if(props.lengths.image) setImg(props.lengths.image_url)
+      setImg(props.lengths.image_url)
     }
   },[props])
 
@@ -237,6 +239,11 @@ export default function CustomBookingLengthEditPopup(props) {
     setLengths(prev => ({...prev, time_intervals: time_intervals}))
   }
 
+  const removeImage = () => {
+    setImg('')
+    setLengths(prev => ({...prev, remove_image: true}))
+  }
+
   return (<>
     {lengths.hasOwnProperty('start_date') &&
     <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="md"
@@ -259,10 +266,12 @@ export default function CustomBookingLengthEditPopup(props) {
       <DialogContent dividers>
         <PictureUploadButton name="image" onChange={onChange} />
         {img &&
-          <div>
-            <br />
+          <Box sx={{mt:3}}>
             <img src={img} alt="image" width={200} height={'auto'} />
-          </div>
+            <IconButton onClick={e => {removeImage()}} size="small">
+              <DeleteIcon fontSize="small"/>
+            </IconButton>
+          </Box>
         }
         <ListSubheader component="div" disableSticky sx={{mb:2}}>{t('General Info')}</ListSubheader>
         <Grid container spacing={2} sx={{pb: 2}}>

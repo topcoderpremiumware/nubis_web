@@ -123,8 +123,12 @@ class CustomBookingLengthController extends Controller
             Storage::disk('public')->put($filename,$content);
         }
 
-        if($custom_booking_length->image && $filename && $custom_booking_length->image != $filename){
+        if(($custom_booking_length->image && $filename && $custom_booking_length->image != $filename) || $request->has('remove_image')){
             Storage::disk('public')->delete($custom_booking_length->image);
+        }
+
+        if($request->has('remove_image')){
+            $custom_booking_length->image = null;
         }
 
         $res = $custom_booking_length->update([

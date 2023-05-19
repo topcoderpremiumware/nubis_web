@@ -79,22 +79,18 @@ export default function Pictures() {
   }
 
   const getPictures = () => {
-    axios.get(process.env.MIX_API_URL+'/api/files',{
+    axios.get(`${process.env.MIX_API_URL}/api/files_purpose`, {
       params: {
-        place_id: localStorage.getItem('place_id')
+        place_id: localStorage.getItem('place_id'),
+        purpose: "online_booking_picture",
       },
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    }).then(response => {
+    }).then((response) => {
       let data = []
-      response.data.forEach(item => {
-        data[item.purpose] = item
-      })
+      data[response.data.purpose] = response.data
       setPictures(data)
-    }).catch(error => {
+    }).catch((error) => {
       setPictures({})
-    })
+    });
   }
 
   const getPicture = (purpose) => {

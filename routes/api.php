@@ -189,6 +189,8 @@ Route::middleware('auth:user_api')->group(function(){
 
     Route::post('files/{purpose}',[FileController::class, 'set']);
     Route::get('files',[FileController::class, 'getAllByPlace']);
+    Route::get('files_find',[FileController::class, 'findByPurpose']);
+    Route::delete('files/{id}',[FileController::class, 'delete']);
 
     Route::post('custom_booking_lengths',[CustomBookingLengthController::class, 'create']);
     Route::get('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'getId']);

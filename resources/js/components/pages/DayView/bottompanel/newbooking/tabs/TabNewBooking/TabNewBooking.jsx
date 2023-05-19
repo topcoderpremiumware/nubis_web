@@ -5,7 +5,7 @@ import {
   Button,
   CircularProgress,
   FormControl,
-  FormControlLabel,
+  FormControlLabel, IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -23,6 +23,8 @@ import moment from 'moment';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css'
 import GuestTables from "./tables/GuestTables";
+import Box from "@mui/material/Box";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function TabNewBooking(props) {
   const {t} = useTranslation();
@@ -36,6 +38,7 @@ export default function TabNewBooking(props) {
   const [isWalkIn, setIsWalkIn] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [documents, setDocuments] = React.useState([])
 
   useEffect(() => {
     (async () => {
@@ -68,6 +71,9 @@ export default function TabNewBooking(props) {
       if(!props.order.customer_id) {
         setIsWalkIn(true)
       }
+    }
+    if(props.order.hasOwnProperty('id') && props.order.id){
+      getDocuments()
     }
   }, [props])
 
@@ -312,6 +318,61 @@ export default function TabNewBooking(props) {
     setIsWalkIn(prev => !prev)
   }
 
+  const addDocument = (e) => {
+    if(e.target.files && e.target.files.length > 0){
+      let formData = new FormData()
+      formData.append('place_id', localStorage.getItem('place_id'))
+      formData.append('file', e.target.files[0])
+      axios.post(`${process.env.MIX_API_URL}/api/files/order_${props.order.id}_${Moment().valueOf()}`, formData,{
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        getDocuments()
+      }).catch(error => {
+        if (error.response && error.response.data && error.response.data.errors) {
+          for (const [key, value] of Object.entries(error.response.data.errors)) {
+            eventBus.dispatch("notification", {type: 'error', message: value});
+          }
+        } else if (error.response.status === 401) {
+          eventBus.dispatch("notification", {type: 'error', message: 'Authorization error'});
+        } else {
+          eventBus.dispatch("notification", {type: 'error', message: error.message});
+          console.log('Error', error.message)
+        }
+      })
+    }
+  }
+  const getDocuments = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/files_find`, {
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        purpose: `order_${props.order.id}_`,
+      },
+    }).then((response) => {
+      setDocuments(response.data)
+    }).catch((error) => {
+      setDocuments([])
+    });
+  }
+
+  const removeDocument = (id) => {
+    if (window.confirm(t('Are you sure you want to delete this document?'))) {
+      axios.delete(process.env.MIX_API_URL + '/api/files/' + id, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        getDocuments()
+        eventBus.dispatch("notification", {type: 'success', message: 'Document deleted successfully'});
+      }).catch(error => {
+        eventBus.dispatch("notification", {type: 'error', message: error.message});
+        console.log('Error', error)
+      })
+    }
+  }
+
   return (
     loading ? <div><CircularProgress/></div> :
       <div className="row pt-3 TabNewBooking__container">
@@ -419,6 +480,20 @@ export default function TabNewBooking(props) {
                               <Switch onChange={toogleWalkIn}
                                       checked={isWalkIn} />
                             }/>
+          <Box sx={{mb:2}}>
+          {order.hasOwnProperty('id') && <Button variant="contained" size="small" component="label">
+            {t('Add document')}
+            <input hidden name={props.name} onChange={e => {addDocument(e)}} type="file" />
+          </Button>}
+          {documents.map((doc,key) => {
+            return <Box key={key} sx={{mt:2}}>
+              <IconButton onClick={e => {removeDocument(doc.id)}} size="small">
+                <DeleteIcon fontSize="small"/>
+              </IconButton>
+              <a href={doc.url} target="_blank">{doc.filename}</a>
+            </Box>
+          })}
+          </Box>
         </div>
         <div className="col-md-8">
           <div className="row">
@@ -507,7 +582,7 @@ export default function TabNewBooking(props) {
         {error && <p className='TabNewBooking__error'>{error}</p>}
         <Stack spacing={2} direction="row">
           <Button variant="contained" onClick={createOrder}>Save</Button>
-          <Button variant="outlined" onClick={deleteOrder}>Delete</Button>
+          {order.hasOwnProperty('id') && <Button variant="outlined" onClick={deleteOrder}>Delete</Button>}
           <Button variant="outlined" onClick={() => props.handleClose()}>Cancel</Button>
         </Stack>
       </div>

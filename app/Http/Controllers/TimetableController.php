@@ -186,7 +186,7 @@ class TimetableController extends Controller
         $without_year = $date_arr[1].'-'.$date_arr[2];
         $week_day = date('w',strtotime($date));
 
-        $working = Timetable::where('area_id', 1)
+        $working = Timetable::where('area_id', $area_id)
             ->where(function ($query) use ($date,$without_year) {
                 $query->where(function ($query) use ($date) {
                     $query->where(function ($query) use ($date) {
@@ -208,7 +208,7 @@ class TimetableController extends Controller
             })->where('status', 'working')
             ->get();
 
-        $non_working = Timetable::where('area_id', 1)
+        $non_working = Timetable::where('area_id', $area_id)
             ->where(function ($query) use ($date,$without_year) {
                 $query->where(function ($query) use ($date) {
                     $query->where(function ($query) use ($date) {

@@ -64,7 +64,7 @@ export default function TimetableEditPopup(props) {
 
   useEffect(() => {
     if(props.timetable.hasOwnProperty('start_date')){
-      if(props.timetable.start_date.startsWith('0004')) setYearly(true)
+      setYearly(props.timetable.start_date.startsWith('0004'))
       setTimetable(props.timetable)
       setAreas(props.areas)
       setTableplans(props.tableplans)
@@ -75,14 +75,14 @@ export default function TimetableEditPopup(props) {
     if(e.target.name === 'copy') setCopy(e.target.checked)
     if(e.target.name === 'yearly') {
       setYearly(e.target.checked)
-      let year = e.target.checked ? '0004' : 'YYYY'
+      let year = e.target.checked ? '0004' : Moment.utc().format('YYYY')
       setTimetable(prev => ({...prev,
-        start_date: Moment(prev.start_date).utc().format(year+'-MM-DD'),
-        end_date: Moment(prev.end_date).utc().format(year+'-MM-DD')
+        start_date: Moment.utc(prev.start_date).format(year+'-MM-DD'),
+        end_date: Moment.utc(prev.end_date).format(year+'-MM-DD')
       }))
     }
-    if(e.target.name === 'start_date') setTimetable(prev => ({...prev, start_date: e.target.value}))
-    if(e.target.name === 'end_date') setTimetable(prev => ({...prev, end_date: e.target.value}))
+    if(e.target.name === 'start_date') setTimetable(prev => ({...prev, start_date: normalizeYearOfDate(e.target.value)}))
+    if(e.target.name === 'end_date') setTimetable(prev => ({...prev, end_date: normalizeYearOfDate(e.target.value)}))
     if(e.target.name === 'start_time') setTimetable(prev => ({...prev,
       start_time: Moment(e.target.value,'HH:mm:ss').utc().format('HH:mm:ss')}))
     if(e.target.name === 'end_time') setTimetable(prev => ({...prev,
@@ -94,6 +94,11 @@ export default function TimetableEditPopup(props) {
     if(e.target.name === 'max') setTimetable(prev => ({...prev, max: intWrapper(e.target.value)}))
     if(e.target.name === 'status') setTimetable(prev => ({...prev, status: e.target.value}))
     if(e.target.name === 'min_time_before') setTimetable(prev => ({...prev, min_time_before: e.target.value}))
+  }
+
+  const normalizeYearOfDate = (date) => {
+    let year = yearly ? '0004' : 'YYYY'
+    return Moment.utc(date).format(year+'-MM-DD')
   }
 
   const onTimeChange = (e, key) => {

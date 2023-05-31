@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import  './Login.scss';
 import { useTranslation } from 'react-i18next';
-import {TextField, Button} from "@mui/material";
+import {TextField, Button, Stack} from "@mui/material";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -85,7 +85,10 @@ export default function Login() {
               <Button variant="contained" type="submit">{t('Sign in')}</Button>
             </form>
             <hr/>
-            <Button variant="contained" href="/admin/register">{t('Create profile')}</Button>
+            <Stack spacing={2} sx={{mt: 2}} direction="row">
+              <Button variant="contained" href="/admin/register">{t('Create profile')}</Button>
+              <Button variant="contained" href="/admin/forgot">{t('Forgot password?')}</Button>
+            </Stack>
           </div>
         </div>
       </div>

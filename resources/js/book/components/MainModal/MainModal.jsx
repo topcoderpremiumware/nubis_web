@@ -122,13 +122,16 @@ export default function MainModal(props) {
                 defaultModal === "register" ||
                 defaultModal === "loginCancel" ||
                 defaultModal === "loginMore") && (
-                <input
-                  type="password"
-                  className="form-name__password"
-                  placeholder={t('Password')}
-                  value={userData.password}
-                  onChange={(event) => setInput("password", event.target.value)}
-                />
+                  <>
+                    <input
+                      type="password"
+                      className="form-name__password"
+                      placeholder={t('Password')}
+                      value={userData.password}
+                      onChange={(event) => setInput("password", event.target.value)}
+                    />
+                    {defaultModal !== "register" && <a href="/admin/forgot?type=customer">{t('Forgot password?')}</a>}
+                  </>
               )}
               {defaultModal === "register" && (
                 <input

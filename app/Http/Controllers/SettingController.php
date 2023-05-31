@@ -18,8 +18,7 @@ class SettingController extends Controller
 
         $request->validate([
             'place_id' => 'required|integer|exists:places,id',
-            'name' => 'required',
-            'value' => 'required'
+            'name' => 'required'
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)){
@@ -32,7 +31,7 @@ class SettingController extends Controller
             'place_id' => $request->place_id,
             'name' => $request->name
         ],[
-            'value' => $request->value
+            'value' => $request->value ?? ''
         ]);
 
         Log::add($request,'change-settings','Changed place settings');

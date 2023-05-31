@@ -1238,6 +1238,18 @@ class OrderController extends Controller
         return response()->json($output);
     }
 
+    public function getPlaceOnlineBookingTitle($place_id, Request $request): JsonResponse
+    {
+        $settings = Setting::where('place_id',$place_id)
+            ->whereIn('name',['online-booking-title'])
+            ->get();
+        $output = [];
+        foreach ($settings as $setting) {
+            $output[$setting->name] = $setting->value;
+        }
+        return response()->json($output);
+    }
+
     public static function getAmountAfterDiscount($amount,$code,$currency,$place_id)
     {
         switch (strtolower($currency)) {

@@ -44,7 +44,7 @@ class PasswordResetNotification extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Password reset')
             ->line('You can reset your password by the link bellow')
-            ->action('Reset link', env('MIX_APP_URL').'/password_reset?email='.$this->user->email.'&token='.$this->token.'&type='.$this->type);
+            ->action('Reset link', env('MIX_APP_URL').'/admin/password_reset?email='.$this->user->email.'&token='.$this->token.'&type='.$this->type);
     }
 
     /**

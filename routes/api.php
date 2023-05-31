@@ -63,6 +63,7 @@ Route::get('places/{place_id}/alternative',[PlaceController::class, 'getAlternat
 Route::get('places/{place_id}/payment_method',[OrderController::class, 'getPlacePaymentMethod']);
 Route::get('places/{place_id}/max_available_seats',[PlaceController::class, 'getMaxAvailableSeats']);
 Route::get('places/{place_id}/online_booking_description',[OrderController::class, 'getPlaceOnlineBookingDescription']);
+Route::get('places/{place_id}/online_booking_title',[OrderController::class, 'getPlaceOnlineBookingTitle']);
 Route::post('places/{place_id}/send_contact',[PlaceController::class, 'sendContact']);
 
 Route::get('files_purpose',[FileController::class, 'getByPurpose']);

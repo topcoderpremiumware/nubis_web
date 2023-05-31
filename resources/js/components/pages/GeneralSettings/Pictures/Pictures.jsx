@@ -12,6 +12,7 @@ export default function Pictures() {
   const navigate = useNavigate();
 
   const [pictures, setPictures] = useState({});
+  const [onlineBookingTitle, setOnlineBookingTitle] = useState('');
   const [onlineBookingDescription, setOnlineBookingDescription] = useState('');
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export default function Pictures() {
       })
     }
     if(e.target.name === 'online_booking_description') setOnlineBookingDescription(e.target.value)
+    if(e.target.name === 'online_booking_title') setOnlineBookingTitle(e.target.value)
   }
 
   const onSaveDescription = (e) => {
@@ -60,6 +62,15 @@ export default function Pictures() {
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Online Booking Description saved'});
     }).catch(error => {})
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
+      place_id: localStorage.getItem('place_id'),
+      name: 'online-booking-title',
+      value: onlineBookingTitle
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Online Booking Title saved'});
+    }).catch(error => {
+      console.log('error',error)
+    })
   }
 
   const getOnlineDescription = () => {
@@ -75,6 +86,19 @@ export default function Pictures() {
       setOnlineBookingDescription(response.data.value)
     }).catch(error => {
       setOnlineBookingDescription('')
+    })
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'online-booking-title'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setOnlineBookingTitle(response.data.value)
+    }).catch(error => {
+      setOnlineBookingTitle('')
     })
   }
 
@@ -113,6 +137,11 @@ export default function Pictures() {
         <div className="col-md-6 mb-3">
           <PictureUploadButton name="online_booking_picture" onChange={e => {onChange(e)}}/>
 
+          <TextField label={t('Online Booking Title')} size="small" fullWidth className="my-3"
+                     type="text" id="online_booking_title" name="online_booking_title"
+                     onChange={onChange}
+                     value={onlineBookingTitle}
+          />
           <TextField label={t('Online Booking Description')} size="small" fullWidth multiline rows="3" className="my-3"
                      type="text" id="online_booking_description" name="online_booking_description"
                      onChange={onChange}

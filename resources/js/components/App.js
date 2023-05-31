@@ -38,6 +38,8 @@ const BillingReport = React.lazy(() => import('./pages/BillingReport/BillingRepo
 const Roles = React.lazy(() => import('./pages/Roles/Roles'))
 const Welcome = React.lazy(() => import('./pages/Welcome/Welcome'))
 const SmsPricing = React.lazy(() => import('./pages/SmsPricing/SmsPricing'))
+const Forgot = React.lazy(() => import('./pages/Forgot/Forgot'))
+const PasswordReset = React.lazy(() => import('./pages/PasswordReset/PasswordReset'))
 
 import eventBus from '../eventBus';
 
@@ -196,6 +198,12 @@ function App() {
                 </Suspense>}/>
                 <Route path='/register' exact element={<Suspense fallback={<LoadingPage/>}>
                   <Register/>
+                </Suspense>}/>
+                <Route path='/forgot' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Forgot/>
+                </Suspense>}/>
+                <Route path='/password_reset' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <PasswordReset/>
                 </Suspense>}/>
               </Routes>
             </div>

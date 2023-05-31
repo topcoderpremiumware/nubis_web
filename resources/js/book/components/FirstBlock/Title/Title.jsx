@@ -6,9 +6,11 @@ import axios from "axios";
 function Title(props) {
   const { t } = useTranslation();
   const [onlineBookingDescription, setOnlineBookingDescription] = useState("");
+  const [onlineBookingTitle, setOnlineBookingTitle] = useState("");
 
   useEffect(() => {
     getOnlineBookingDescription()
+    getOnlineBookingTitle()
   },[])
 
   const getPlaceId = () => {
@@ -19,6 +21,10 @@ function Title(props) {
   const getOnlineBookingDescription = async () => {
     const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/online_booking_description`)
     setOnlineBookingDescription(res.data['online-booking-description'])
+  }
+  const getOnlineBookingTitle = async () => {
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/online_booking_title`)
+    setOnlineBookingTitle(res.data['online-booking-title'])
   }
 
   return (
@@ -31,9 +37,9 @@ function Title(props) {
         {onlineBookingDescription}
       </div>
       <div className="title">
-        <Trans i18nKey="select_number_of_guests">
+        {onlineBookingTitle ? onlineBookingTitle : <Trans i18nKey="select_number_of_guests">
           Select number <br /> of Guests
-        </Trans>
+        </Trans>}
       </div>
     </div>
   );

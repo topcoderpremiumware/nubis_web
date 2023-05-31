@@ -35,6 +35,14 @@ function SecondBlock(props) {
   const [times, setTimes] = useState([]);
 
   useEffect(async () => {
+    if(!selectedDay){
+      let today = moment()
+      setSelectedDay({
+        day:Number(today.format('D')),
+        month:Number(today.format('M')),
+        year:Number(today.format('YYYY'))
+      })
+    }
     if(props.blockType === 'secondblock') {
       getExtraTime(selectedDay)
       getAlternativeRestaurants()

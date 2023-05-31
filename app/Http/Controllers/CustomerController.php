@@ -233,7 +233,7 @@ class CustomerController extends Controller
         $user->save();
 
         $user->tokens()->delete();
-        $password_reset->delete();
+        DB::table('password_resets')->where('email',$request->email)->delete();
 
         return $this->response($user);
     }

@@ -21,7 +21,7 @@ function Counter(props) {
       <button onClick={decrement} className="decrement">
         –
       </button>
-      <div className="title-counter">{props.guestValue} {t('guests')}</div>
+      <div className="title-counter">{props.guestValue}</div>
       <button onClick={increment} className="increment">
         +
       </button>

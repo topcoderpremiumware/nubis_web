@@ -99,7 +99,6 @@ function MainBlock(props) {
             <a href="#" onClick={(e) => showModalMore(e)}>
               {t('more than')} {maxSeats}
             </a>{" "}
-            {t('people?')}
             <br /> {t('Do you want to')}{" "}
             <a href="#" onClick={(e) => showModalWindow(e)}>
               {t('cancel a booking')}

@@ -277,21 +277,27 @@ function SecondBlock(props) {
           </div>
           {/*{props.blockType === "secondblock" && (*/}
             <div>
-              {console.log('extraTimeReq', extraTimeReq)}
-              {extraTimeReq.length > 0 ? extraTimeReq.map((blockTime, key) => (
-                <div className="select-time" key={key}>
-                  <div className="select-time-wrapper" onClick={() => setTimelineType(blockTime)}>
-                    {blockTime?.image && <img src={blockTime.image} alt="" />}
-                    <div>
-                      <p className="select-time-title">{blockTime.name}</p>
-                      {blockTime.description}
+              {extraTimeReq.length > 0 ? extraTimeReq.map((blockTime, key) => {
+                const freeTime = blockTime.time.map((time) => ({
+                  time: moment.utc(time).format('HH:mm:ss'),
+                  shortTime: moment.utc(time).local().format('HH:mm'),
+                }))
+
+                return (
+                  <div className="select-time" key={key}>
+                    <div className="select-time-wrapper" onClick={() => setTimelineType(blockTime)}>
+                      {blockTime?.image && <img src={blockTime.image} alt="" />}
+                      <div>
+                        <p className="select-time-title">{blockTime.name}</p>
+                        {blockTime.description}
+                      </div>
                     </div>
+                    {(timelineId === blockTime.id && timeline === blockTime.length) &&
+                      <Time setSelectedTime={props.setSelectedTime} times={freeTime} />
+                    }
                   </div>
-                  {(timelineId === blockTime.id && timeline === blockTime.length) &&
-                    <Time setSelectedTime={props.setSelectedTime} times={times} />
-                  }
-                </div>
-              )) :
+                )
+              }) :
                 <div className="select-time">
                   <div>
                     <p className="select-time-title">{t('Select time')}</p>

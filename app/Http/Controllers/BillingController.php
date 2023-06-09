@@ -79,6 +79,7 @@ class BillingController extends Controller
                 'type' => 'redirect',
                 'redirect' => ['url' => env('APP_URL').'/admin/ThankYou'],
             ],
+            'allow_promotion_codes' => true
         ];
 
         if($place->paid_bills()->where('product_name','!=','Trial')->count() === 0){

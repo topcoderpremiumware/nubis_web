@@ -9,11 +9,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <link rel="stylesheet" href="/css/home.css">
     <title>{{ env('APP_NAME') }}</title>
+      @include('partials/meta')
   </head>
 
   <body>
     @include('partials/header')
-    
+
     <main class="main features-main">
       <section class="features-hero">
         <div class="container">

@@ -10,7 +10,7 @@
             rel="stylesheet">
         <link rel="stylesheet" href="/css/giftcard.css">
         <title>{{ env('APP_NAME') }}</title>
-
+        @include('partials/meta')
     </head>
 
     <body>

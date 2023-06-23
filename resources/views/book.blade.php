@@ -10,7 +10,7 @@
             rel="stylesheet">
         <link rel="stylesheet" href="/css/book.css">
         <title>{{ env('APP_NAME') }}</title>
-
+        @include('partials/meta')
     </head>
 
     <body>

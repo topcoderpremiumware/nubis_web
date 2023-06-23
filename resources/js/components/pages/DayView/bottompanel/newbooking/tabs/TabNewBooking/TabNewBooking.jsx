@@ -257,12 +257,14 @@ export default function TabNewBooking(props) {
     let newCustomerId = ''
     if(!customer_id && !isWalkIn) {
       try {
-        const customer_response = await axios.get(`${process.env.MIX_API_URL}/api/check_customer?email=${customer.email}`, {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('token')
-          }
-        })
-        if(customer_response.data.hasOwnProperty('id')){
+        if(customer.email){
+          const customer_response = await axios.get(`${process.env.MIX_API_URL}/api/check_customer?email=${customer.email}`, {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+          })
+        }
+        if(customer.email && customer_response.data.hasOwnProperty('id')){
           newCustomerId = customer_response.data.id
         }else{
           const response = await axios.post(`${process.env.MIX_API_URL}/api/customers/register`, {
@@ -461,11 +463,11 @@ export default function TabNewBooking(props) {
             <Select label={t('Language')} value={order.status}
                     labelId="label_status" id="status" name="status"
                     onChange={onChange}>
+              <MenuItem value="arrived">{t('Arrived')}</MenuItem>
               <MenuItem value="waiting">{t('Waiting')}</MenuItem>
               <MenuItem value="pending">{t('Pending')}</MenuItem>
               <MenuItem value="confirmed">{t('Confirmed')}</MenuItem>
               <MenuItem value="no_show">{t('No show')}</MenuItem>
-              <MenuItem value="arrived">{t('Arrived')}</MenuItem>
               <MenuItem value="completed">{t('Completed')}</MenuItem>
             </Select>
           </FormControl>

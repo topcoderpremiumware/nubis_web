@@ -28,8 +28,8 @@ class CustomerController extends Controller
         $request->validate([
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:2',
-            'email' => 'required|email|unique:customers',
-            'password' => 'required|min:4|confirmed',
+//            'email' => 'email|unique:customers',
+            'password' => 'min:4|confirmed',
         ]);
 
         $customer = Customer::create([

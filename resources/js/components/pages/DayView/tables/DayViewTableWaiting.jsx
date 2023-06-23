@@ -55,6 +55,7 @@ export default function DayViewTableWaiting() {
 
   const columns = [
     { field: 'id', headerName: t('Booking id'), width: 100 },
+    { field: 'status', headerName: t('Status'), width: 100 },
     { field: 'from', headerName: t('From'), width: 70 },
     { field: 'to', headerName: t('To'), width: 70 },
     { field: 'first_name', headerName: t('First name'), width: 130 },
@@ -62,7 +63,6 @@ export default function DayViewTableWaiting() {
     { field: 'seats', headerName: t('Seats'), width: 10 },
     { field: 'comment', headerName: t('Note'), width: 200},
     { field: 'order_date', headerName: t('Order date'), width: 140 },
-    { field: 'status', headerName: t('Status'), width: 100 },
     { field: 'area_name', headerName: t('Area'), width: 160 },
   ];
 
@@ -115,6 +115,7 @@ export default function DayViewTableWaiting() {
         columns={columns}
         pageSize={50}
         rowsPerPageOptions={[50]}
+        getRowClassName={(params) => `dayview_table_row_${params.row.status}`}
         // checkboxSelection
       />
     </div>

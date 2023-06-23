@@ -62,3 +62,25 @@
     font-size: 10px !important;
   }
 }
+
+.scroll_wrapper{
+  .dayview_table_row_waiting{
+    background: rgba(128,128,128,0.5);
+  }
+  .dayview_table_row_pending{
+    background: rgba(169,169,169,0.5);
+  }
+  .dayview_table_row_no_show{
+    background: rgba(255,0,0,0.5);
+  }
+  .dayview_table_row_confirmed{
+    background: rgba(255,255,0,0.5);
+  }
+  .dayview_table_row_arrived{
+    background: rgba(0,128,0,0.5);
+  }
+  .dayview_table_row_completed{
+    background: rgba(0,0,255,0.5);
+  }
+}
+

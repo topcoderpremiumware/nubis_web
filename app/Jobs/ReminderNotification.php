@@ -88,7 +88,7 @@ class ReminderNotification implements ShouldQueue
                     ->where('language',$customer->language)
                     ->where('active',1)
                     ->first();
-                if($reminder_template){
+                if($reminder_template && $customer->email){
                     try{
                         \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$reminder_template->text), function($msg) use ($reminder_template, $customer) {
                             $msg->to($customer->email)->subject($reminder_template->subject);

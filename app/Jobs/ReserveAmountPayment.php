@@ -86,7 +86,7 @@ class ReserveAmountPayment implements ShouldQueue
                     ->where('language',$order->customer->language)
                     ->where('active',1)
                     ->first();
-                if($email_template) {
+                if($email_template && $order->customer->email) {
                     \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order_data,$email_template->text), function ($msg) use ($email_template, $order) {
                         $msg->to($order->customer->email)->subject($email_template->subject);
                     });

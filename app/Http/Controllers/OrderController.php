@@ -86,7 +86,7 @@ class OrderController extends Controller
                 ->where('language',$customer->language)
                 ->where('active',1)
                 ->first();
-            if($email_confirmation_template){
+            if($email_confirmation_template && $customer->email){
                 \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($email_confirmation_template, $customer) {
                     $msg->to($customer->email)->subject($email_confirmation_template->subject);
                 });
@@ -165,7 +165,7 @@ class OrderController extends Controller
                 ->where('language',$customer->language)
                 ->where('active',1)
                 ->first();
-            if($email_change_template){
+            if($email_change_template && $customer->email){
                 \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text), function($msg) use ($email_change_template, $customer) {
                     $msg->to($customer->email)->subject($email_change_template->subject);
                 });
@@ -272,7 +272,7 @@ class OrderController extends Controller
                 ->where('language',$customer->language)
                 ->where('active',1)
                 ->first();
-            if($email_delete_template){
+            if($email_delete_template && $customer->email){
                 \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text), function($msg) use ($email_delete_template, $customer) {
                     $msg->to($customer->email)->subject($email_delete_template->subject);
                 });
@@ -319,7 +319,7 @@ class OrderController extends Controller
             ->where('language',$customer->language)
             ->where('active',1)
             ->first();
-        if($email_delete_template){
+        if($email_delete_template && $customer->email){
             \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text), function($msg) use ($email_delete_template, $customer) {
                 $msg->to($customer->email)->subject($email_delete_template->subject);
             });
@@ -427,7 +427,7 @@ class OrderController extends Controller
                 ->where('language',$order->customer->language)
                 ->where('active',1)
                 ->first();
-            if($email_template) {
+            if($email_template && $order->customer->email) {
                 \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text), function ($msg) use ($email_template, $order) {
                     $msg->to($order->customer->email)->subject($email_template->subject);
                 });
@@ -1049,25 +1049,27 @@ class OrderController extends Controller
 
     public static function sendNewOrderNotification($order,$place)
     {
-        $sms_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
-            ->where('purpose','sms-confirmation')
-            ->where('language',$order->customer->language)
-            ->where('active',1)
-            ->first();
+        if($order->customer_id){
+            $sms_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
+                ->where('purpose','sms-confirmation')
+                ->where('language',$order->customer->language)
+                ->where('active',1)
+                ->first();
 
-        if($sms_confirmation_template && $place->allow_send_sms()){
-            $place->decrease_sms_limit();
-            $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_SHORT_NAME'));
-        }
-        $email_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
-            ->where('purpose','email-confirmation')
-            ->where('language',$order->customer->language)
-            ->where('active',1)
-            ->first();
-        if($email_confirmation_template){
-            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($order, $email_confirmation_template) {
-                $msg->to($order->customer->email)->subject($email_confirmation_template->subject);
-            });
+            if($sms_confirmation_template && $place->allow_send_sms()){
+                $place->decrease_sms_limit();
+                $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_SHORT_NAME'));
+            }
+            $email_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
+                ->where('purpose','email-confirmation')
+                ->where('language',$order->customer->language)
+                ->where('active',1)
+                ->first();
+            if($email_confirmation_template && $order->customer->email){
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($order, $email_confirmation_template) {
+                    $msg->to($order->customer->email)->subject($email_confirmation_template->subject);
+                });
+            }
         }
 
         $sms_notification_template = MessageTemplate::where('place_id',$order->place_id)
@@ -1289,7 +1291,7 @@ class OrderController extends Controller
 
         $tableplan_data = $first_order->tableplan->data;
         $first_tables = array_values(array_filter($tableplan_data,function($item) use ($first_order) {
-            return in_array($item['number'],$first_order->table_ids);
+            return array_key_exists('number',$item) && in_array($item['number'],$first_order->table_ids);
         }));
 
         $first_tables_seats = 0;
@@ -1307,7 +1309,7 @@ class OrderController extends Controller
             }
 
             $second_table = array_values(array_filter($tableplan_data,function($item) use ($second_order) {
-                return $item['number'] == $second_order->table_ids[0];
+                return array_key_exists('number',$item) && $item['number'] == $second_order->table_ids[0];
             }))[0];
 
             if($first_order->seats > $second_table['seats'] || $second_order->seats > $first_tables_seats){
@@ -1334,7 +1336,7 @@ class OrderController extends Controller
             $second_order->save();
         }else{
             $second_table = array_values(array_filter($tableplan_data,function($item) use ($request) {
-                return $item['number'] == $request->second_id;
+                return array_key_exists('number',$item) && $item['number'] == $request->second_id;
             }))[0];
 
             if($first_order->seats > $second_table['seats']){

@@ -187,7 +187,11 @@ class PlaceController extends Controller
     public function getPaidMessages($place_id, Request $request)
     {
         $place = Place::find($request->place_id);
-        $sms_limit_count = $place->setting('sms_limit_count') ?? 0;
+        if($place){
+            $sms_limit_count = $place->setting('sms_limit_count') ?? 0;
+        }else{
+            $sms_limit_count = 0;
+        }
         return response()->json(['count' => $sms_limit_count]);
     }
 

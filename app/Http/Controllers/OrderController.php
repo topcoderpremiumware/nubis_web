@@ -209,7 +209,7 @@ class OrderController extends Controller
             ], 400);
         }
 
-        $orders = Order::where('place_id',$request->place_id);
+        $orders = Order::where('place_id',$request->place_id)->orderBy('reservation_time','ASC');
         if($request->area_id != 'all') {
             $orders = $orders->where('area_id', $request->area_id);
         }

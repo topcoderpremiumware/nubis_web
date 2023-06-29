@@ -64,22 +64,22 @@
 }
 
 .scroll_wrapper{
-  .dayview_table_row_waiting{
+  .dayview_table_row_waiting:hover{
     background: rgba(128,128,128,0.5);
   }
-  .dayview_table_row_pending{
+  .dayview_table_row_pending:hover{
     background: rgba(169,169,169,0.5);
   }
-  .dayview_table_row_no_show{
+  .dayview_table_row_no_show:hover{
     background: rgba(255,0,0,0.5);
   }
-  .dayview_table_row_confirmed{
+  .dayview_table_row_confirmed:hover{
     background: rgba(255,255,0,0.5);
   }
-  .dayview_table_row_arrived{
+  .dayview_table_row_arrived:hover{
     background: rgba(0,128,0,0.5);
   }
-  .dayview_table_row_completed{
+  .dayview_table_row_completed:hover{
     background: rgba(0,0,255,0.5);
   }
 }

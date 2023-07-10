@@ -19,7 +19,7 @@ export default function Register() {
   const [emailError, setEmailError] = useState([])
   const [phoneError, setPhoneError] = useState([])
   const [passwordError, setPasswordError] = useState([])
-  const [place, setPlace] = useState(1)
+  const [place, setPlace] = useState('1')
   const [placeNameError, setPlaceNameError] = useState([])
   const [placeName, setPlaceName] = useState([])
   const [address, setAddress] = useState('')

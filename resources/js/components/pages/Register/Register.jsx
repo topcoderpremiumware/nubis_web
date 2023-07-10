@@ -19,7 +19,7 @@ export default function Register() {
   const [emailError, setEmailError] = useState([])
   const [phoneError, setPhoneError] = useState([])
   const [passwordError, setPasswordError] = useState([])
-  const [place, setPlace] = useState(0)
+  const [place, setPlace] = useState(1)
   const [placeNameError, setPlaceNameError] = useState([])
   const [placeName, setPlaceName] = useState([])
   const [address, setAddress] = useState('')
@@ -234,8 +234,8 @@ export default function Register() {
                     <Select label={t('Restaurant')} value={place}
                             labelId="label_place_id" id="place_id" name="place_id"
                             onChange={onChange}>
-                      <MenuItem value="0">{t('Create later')}</MenuItem>
                       <MenuItem value="1">{t('Create new')}</MenuItem>
+                      <MenuItem value="0">{t('Create later')}</MenuItem>
                     </Select>
                   </FormControl>
                 </div>

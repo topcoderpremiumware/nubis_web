@@ -234,8 +234,8 @@ export default function Register() {
                     <Select label={t('Restaurant')} value={place}
                             labelId="label_place_id" id="place_id" name="place_id"
                             onChange={onChange}>
-                      <MenuItem value="1">{t('Create new')}</MenuItem>
-                      <MenuItem value="0">{t('Create later')}</MenuItem>
+                      <MenuItem value="1">{t('Restaurant Registration')}</MenuItem>
+                      <MenuItem value="0">{t('Waiter Registration')}</MenuItem>
                     </Select>
                   </FormControl>
                 </div>
@@ -249,7 +249,7 @@ export default function Register() {
                              />
                 </div>
                 <div className="mb-3">
-                  <TextField label={t('Name')} size="small" fullWidth
+                  <TextField label={t('Restaurant Name')} size="small" fullWidth
                              type="text" id="place_name" name="place_name"
                              onChange={onChange}
                              error={placeNameError.length > 0}
@@ -258,12 +258,12 @@ export default function Register() {
                              }/>
                 </div>
                 <div className="mb-3">
-                  <TextField label={t('Address')} size="small" fullWidth
+                  <TextField label={t('Restaurant Address')} size="small" fullWidth
                              type="text" id="address" name="address"
                              onChange={onChange}/>
                 </div>
                 <div className="mb-3">
-                  <TextField label={t('City')} size="small" fullWidth
+                  <TextField label={t('Restaurant City')} size="small" fullWidth
                              type="text" id="city" name="city"
                              onChange={onChange}/>
                 </div>
@@ -283,15 +283,15 @@ export default function Register() {
                     renderInput={(params) =>
                       <TextField
                         {...params}
-                        label={t('Country')}
-                        placeholder={t('Country')}
+                        label={t('Restaurant Country')}
+                        placeholder={t('Restaurant Country')}
                       />
                     }
                     value={currentCountryLabel()}
                   />
                 </div>
                 <div className="mb-3">
-                  <TextField label={t('Zip code')} size="small" fullWidth
+                  <TextField label={t('Restaurant Zip code')} size="small" fullWidth
                              type="text" id="zip_code" name="zip_code"
                              onChange={onChange}/>
                 </div>
@@ -304,20 +304,20 @@ export default function Register() {
                   />
                 </div>
                 <div className="mb-3">
-                  <TextField label={t('Email address')} size="small" fullWidth
+                  <TextField label={t('Restaurant Email address')} size="small" fullWidth
                              type="email" id="place_email" name="place_email"
                              onChange={onChange}/>
                 </div>
                 <div className="mb-3">
-                  <TextField label={t('Tax number')} size="small" fullWidth
+                  <TextField label={t('Restaurant Tax number')} size="small" fullWidth
                              type="text" id="tax_number" name="tax_number"
                              required={true}
                              onChange={onChange}/>
                 </div>
                 <div className="mb-3">
                   <FormControl size="small" fullWidth>
-                    <InputLabel id="label_language">{t('Language')}</InputLabel>
-                    <Select label={t('Language')}
+                    <InputLabel id="label_language">{t('Restaurant Language')}</InputLabel>
+                    <Select label={t('Restaurant Language')}
                             labelId="label_language" id="language" name="language"
                             onChange={onChange}>
                       {window.langs.map((lang,key) => {
@@ -327,7 +327,7 @@ export default function Register() {
                   </FormControl>
                 </div>
                 <div className="mb-3">
-                  <TextField label={t('Home page')} size="small" fullWidth
+                  <TextField label={t('Restaurant Home page')} size="small" fullWidth
                              type="text" id="home_page" name="home_page"
                              onChange={onChange}/>
                 </div>

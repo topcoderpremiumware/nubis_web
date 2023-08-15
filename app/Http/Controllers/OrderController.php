@@ -631,7 +631,7 @@ class OrderController extends Controller
             'message' => 'Non-working day'
         ], 400);
 
-        $free_tables = $this->getFreeTables([], $working_hours, $request->seats, false);
+        $free_tables = $this->getFreeTables([], $working_hours, $request->seats, false,$request->has('admin'));
         $work_time = [];
         foreach($working_hours as $working_hour){
             $time = Carbon::parse($request->date.' '.$working_hour['from']);

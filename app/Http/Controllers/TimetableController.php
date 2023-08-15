@@ -354,4 +354,53 @@ class TimetableController extends Controller
         }
         return array_unique($w_h,SORT_REGULAR);
     }
+
+    public function stop_booking(Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'area_id' => 'required|exists:areas,id',
+            'date' => 'date_format:Y-m-d',
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $timetable = Timetable::where('place_id',$request->place_id)
+            ->where('area_id',$request->area_id)
+            ->where('start_date',$request->date)
+            ->where('end_date',$request->date)
+            ->where('status','non-working')
+            ->first();
+
+        if(!$timetable){
+            $timetable = Timetable::create([
+                'place_id' => $request->place_id,
+                'area_id' => $request->area_id,
+                'start_date' => $request->date,
+                'end_date' => $request->date,
+                'start_time' => '00:00:00',
+                'end_time' => '00:00:00',
+                'status' => 'non-working',
+                'length' => 0,
+                'max' => 999,
+                'min' => 0,
+                'booking_limits' => [],
+                'min_time_before' => 120
+            ]);
+
+            Log::add($request,'stop-booking','Created timetable #'.$timetable->id);
+
+            return response()->json($timetable);
+        }else{
+            return response()->json(['result' => 'ok']);
+        }
+    }
 }

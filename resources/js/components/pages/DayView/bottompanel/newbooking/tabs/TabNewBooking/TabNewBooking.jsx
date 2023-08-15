@@ -95,7 +95,8 @@ export default function TabNewBooking(props) {
         place_id: localStorage.getItem('place_id'),
         area_id: order.area_id,
         seats: order.seats,
-        date: Moment.utc(order.reservation_time).utc().format('YYYY-MM-DD')
+        date: Moment.utc(order.reservation_time).utc().format('YYYY-MM-DD'),
+        admin: true
       }
     }).then(response => {
       let data = response.data

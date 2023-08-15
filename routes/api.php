@@ -208,6 +208,8 @@ Route::middleware('auth:user_api')->group(function(){
 
     Route::get('get_bulk_count',[MessageTemplateController::class, 'getBulkCount']);
     Route::post('send_bulk_sms',[MessageTemplateController::class, 'sendBulkSms']);
+
+    Route::post('stop_booking',[TimetableController::class, 'stop_booking']);
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);

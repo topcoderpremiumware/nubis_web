@@ -377,6 +377,8 @@ class TimetableController extends Controller
             ->where('area_id',$request->area_id)
             ->where('start_date',$request->date)
             ->where('end_date',$request->date)
+            ->where('start_time','00:00:00')
+            ->where('end_time','00:00:00')
             ->where('status','non-working')
             ->first();
 
@@ -401,6 +403,74 @@ class TimetableController extends Controller
             return response()->json($timetable);
         }else{
             return response()->json(['result' => 'ok']);
+        }
+    }
+
+    public function unblock_booking(Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'area_id' => 'required|exists:areas,id',
+            'date' => 'date_format:Y-m-d',
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $timetable = Timetable::where('place_id',$request->place_id)
+            ->where('area_id',$request->area_id)
+            ->where('start_date',$request->date)
+            ->where('end_date',$request->date)
+            ->where('start_time','00:00:00')
+            ->where('end_time','00:00:00')
+            ->where('status','non-working')
+            ->first();
+
+        if($timetable) {
+            Log::add($request, 'unblock-booking', 'Deleted tableplan #' . $timetable->id);
+            $timetable->delete();
+        }
+        return response()->json(['result' => 'ok']);
+    }
+
+    public function is_booking_stopped(Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'area_id' => 'required|exists:areas,id',
+            'date' => 'date_format:Y-m-d',
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $timetable = Timetable::where('place_id',$request->place_id)
+            ->where('area_id',$request->area_id)
+            ->where('start_date',$request->date)
+            ->where('end_date',$request->date)
+            ->where('start_time','00:00:00')
+            ->where('end_time','00:00:00')
+            ->where('status','non-working')
+            ->first();
+
+        if(!$timetable){
+            return response()->json(['result' => false]);
+        }else{
+            return response()->json(['result' => true]);
         }
     }
 }

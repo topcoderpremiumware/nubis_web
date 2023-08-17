@@ -210,6 +210,8 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('send_bulk_sms',[MessageTemplateController::class, 'sendBulkSms']);
 
     Route::post('stop_booking',[TimetableController::class, 'stop_booking']);
+    Route::post('unblock_booking',[TimetableController::class, 'unblock_booking']);
+    Route::get('is_booking_stopped',[TimetableController::class, 'is_booking_stopped']);
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);

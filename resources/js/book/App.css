@@ -65,3 +65,6 @@
 .phone-input .special-label {
   font-size: 10px !important;
 }
+body .Calendar__day.-weekend:not(.-selected):not(.-blank):not(.-selectedStart):not(.-selectedEnd):not(.-selectedBetween) {
+  color: rgba(0,0,0,0.8);
+}

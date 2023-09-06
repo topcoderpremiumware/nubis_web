@@ -24,7 +24,7 @@ class AuthApiController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
+        $cred = $request->validate([
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:2',
             'email' => 'required|email|unique:users',
@@ -41,6 +41,12 @@ class AuthApiController extends Controller
             'password' => bcrypt($request->password),
             'language' => $request->language ?? 'en'
         ]);
+
+        if(!Auth::attempt($cred)){
+            return response()->json([
+                'message' => 'Unauthorized.'
+            ], 401);
+        }
 
         return $this->response($user);
     }

@@ -75,10 +75,10 @@ export default function Register() {
           }
         }).then(response => {
           localStorage.setItem('place_id',response.data.id)
-          window.location.href="/admin/login"
+          window.location.href="/admin/DayView"
         }).catch(error => {})
       }else{
-        window.location.href="/admin/login"
+        window.location.href="/admin/DayView"
       }
     }).catch(error => {
       setFirstNameError([])

@@ -37,12 +37,15 @@ export default function Pictures() {
       }).then(response => {
         setPictures(prev => ({...prev, [response.data.purpose]: response.data}))
       }).catch(error => {
+        console.log('error',error.response.status)
         if (error.response && error.response.data && error.response.data.errors) {
           for (const [key, value] of Object.entries(error.response.data.errors)) {
             eventBus.dispatch("notification", {type: 'error', message: value});
           }
         } else if (error.response.status === 401) {
           eventBus.dispatch("notification", {type: 'error', message: 'Authorization error'});
+        } else if (error.response.status === 413) {
+          eventBus.dispatch("notification", {type: 'error', message: 'The file failed to upload.'});
         } else {
           eventBus.dispatch("notification", {type: 'error', message: error.message});
           console.log('Error', error.message)

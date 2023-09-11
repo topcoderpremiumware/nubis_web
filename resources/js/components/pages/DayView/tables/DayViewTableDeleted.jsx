@@ -2,11 +2,13 @@ import React, {useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
 
 import {
-  CircularProgress,
+  CircularProgress, IconButton,
 } from "@mui/material";
 import Moment from "moment";
 import {DataGrid} from "@mui/x-data-grid";
 import eventBus from "../../../../eventBus";
+import RestoreIcon from "@mui/icons-material/Restore";
+import axios from "axios";
 
 export default function DayViewTableWaiting() {
   const {t} = useTranslation();
@@ -46,6 +48,8 @@ export default function DayViewTableWaiting() {
   }, [])
 
   const columns = [
+    { field: 'self', headerName: t('Actions'), flex: 1, renderCell: (params) =>
+        <IconButton onClick={e => {restoreOrder(params.id)}} size="small"><RestoreIcon fontSize="small"/></IconButton>, },
     { field: 'id', headerName: t('Booking id'), width: 100 },
     { field: 'status', headerName: t('Status'), width: 100 },
     { field: 'from', headerName: t('From'), width: 70 },
@@ -87,6 +91,7 @@ export default function DayViewTableWaiting() {
           item.email = item.customer?.email || ''
           item.deleted_at = Moment.utc(item.deleted_at).local().format('YYYY-MM-DD HH:mm')
           item.area_name = item.area.name
+          item.self = item
           return item
         })
 
@@ -100,6 +105,30 @@ export default function DayViewTableWaiting() {
       eventBus.dispatch("dayViewOrdersLoaded",{orders: [], columns: columns, pdfTitle: t('Deleted bookings')});
       setLoading(false)
     }
+  }
+
+  const restoreOrder = (id) => {
+      setLoading(true);
+      axios.post(`${process.env.MIX_API_URL}/api/orders/${id}/restore`, {}, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      ).then(response => {
+        setLoading(false);
+        getOrders()
+        eventBus.dispatch("notification", {type: 'success', message: response.data.message});
+      }).catch(error => {
+        setLoading(false);
+        getOrders()
+        if (error.response && error.response.data && error.response.data.errors) {
+          for (const [key, value] of Object.entries(error.response.data.errors)) {
+            eventBus.dispatch("notification", {type: 'error', message: value});
+          }
+        } else {
+          eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
+        }
+      })
   }
 
   return (<>{loading ? <div><CircularProgress/></div> :

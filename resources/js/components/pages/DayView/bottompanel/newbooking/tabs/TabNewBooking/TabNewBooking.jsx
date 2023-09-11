@@ -258,14 +258,15 @@ export default function TabNewBooking(props) {
     let newCustomerId = ''
     if(!customer_id && !isWalkIn) {
       try {
+        let customer_response
         if(customer.email){
-          const customer_response = await axios.get(`${process.env.MIX_API_URL}/api/check_customer?email=${customer.email}`, {
+          customer_response = await axios.get(`${process.env.MIX_API_URL}/api/check_customer?email=${customer.email}`, {
             headers: {
               Authorization: 'Bearer ' + localStorage.getItem('token')
             }
           })
         }
-        if(customer.email && customer_response.data.hasOwnProperty('id')){
+        if(customer.email && customer_response.hasOwnProperty('data') && customer_response.data.hasOwnProperty('id')){
           newCustomerId = customer_response.data.id
         }else{
           const response = await axios.post(`${process.env.MIX_API_URL}/api/customers/register`, {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderCreated;
 use App\Events\OrderDeleted;
+use App\Events\OrderRestored;
 use App\Events\OrderUpdated;
 use App\Helpers\TemplateHelper;
 use App\Models\Customer;
@@ -284,6 +285,31 @@ class OrderController extends Controller
         $order->delete();
 
         return response()->json(['message' => 'Order is deleted']);
+    }
+
+    public function restore($id, Request $request): JsonResponse
+    {
+        $order = Order::withTrashed()->find($id);
+
+        if(!$order){
+            return response()->json([
+                'message' => 'Order is not exist'
+            ], 400);
+        }
+
+        if(!Auth::user()->places->contains($order->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        Log::add($request,'restore-order','Restored order #'.$order->id);
+
+
+        event(new OrderRestored($order));
+        $order->restore();
+
+        return response()->json(['message' => 'Order is restored']);
     }
 
     public function cancel($id, Request $request): JsonResponse

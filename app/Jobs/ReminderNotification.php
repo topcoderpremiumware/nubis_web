@@ -48,7 +48,7 @@ class ReminderNotification implements ShouldQueue
             $sms_hours_before = $sms_setting ? (int) $sms_setting->value : 6;
             $customer = $order->customer;
 
-            if($order->reservation_time->diffInHours(Carbon::now()) <= $sms_hours_before){
+            if($order->reservation_time->diffInHours($order->place->country->timeNow()) <= $sms_hours_before){
                 $reminder_template = MessageTemplate::where('place_id',$order->place_id)
                     ->where('purpose','sms-reminder')
                     ->where('language',$customer->language)
@@ -82,7 +82,7 @@ class ReminderNotification implements ShouldQueue
             $email_hours_before = $email_setting ? (int) $email_setting->value : 6;
             $customer = $order->customer;
 
-            if($order->reservation_time->diffInHours(Carbon::now()) <= $email_hours_before){
+            if($order->reservation_time->diffInHours($order->place->country->timeNow()) <= $email_hours_before){
                 $reminder_template = MessageTemplate::where('place_id',$order->place_id)
                     ->where('purpose','email-reminder')
                     ->where('language',$customer->language)

@@ -150,7 +150,7 @@ export default function TabNewBooking(props) {
     if(e.target.name === 'time') setOrder(prev => (
       {
         ...prev,
-        reservation_time: Moment.utc(prev.reservation_time).format('YYYY-MM-DD') + ' ' + Moment(e.target.value,'HH:mm').utc().format('HH:mm:00')
+        reservation_time: Moment.utc(prev.reservation_time).format('YYYY-MM-DD') + ' ' + Moment.utc(e.target.value,'HH:mm').format('HH:mm:00') // changed to utc
       }
     ))
     if(e.target.name === 'area_id') setOrder(prev => ({...prev, area_id: e.target.value}))
@@ -201,7 +201,7 @@ export default function TabNewBooking(props) {
 
   const timeOptions = () => {
     return times.map(el => {
-      return Moment.utc(el).local().format('HH:mm')
+      return Moment.utc(el).format('HH:mm') // removed local
     })
   }
 
@@ -387,10 +387,10 @@ export default function TabNewBooking(props) {
               dateFormat='LLLL dd yyyy'
               selected={ new Date(order.reservation_time || new Date()) } id="date"
               onSelect={e => {
-                onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
+                onChange({target: {name: 'date', value: Moment.utc(e).format('YYYY-MM-DD')}})
               }}
               onChange={e => {
-                onChange({target: {name: 'date', value: Moment(e).format('YYYY-MM-DD')}})
+                onChange({target: {name: 'date', value: Moment.utc(e).format('YYYY-MM-DD')}})
               }}
             />
           </FormControl>
@@ -434,7 +434,7 @@ export default function TabNewBooking(props) {
             <div className="col-6">
               <FormControl size="small" fullWidth sx={{mb:2}}>
                 <InputLabel id="label_time">{t('Time')}</InputLabel>
-                <Select label={t('Time')} value={Moment.utc(order.reservation_time).local().format('HH:mm') || ''} required
+                <Select label={t('Time')} value={Moment.utc(order.reservation_time).format('HH:mm') || ''} required
                         labelId="label_time" id="time" name="time"
                         onChange={onChange}>
                   {timeOptions().map((el, key) => {

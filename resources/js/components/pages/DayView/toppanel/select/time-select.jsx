@@ -67,9 +67,9 @@ export default function TimeSelect() {
           <MenuItem value="0"><em>All day</em></MenuItem>
           {times.map((el,key) => {
             return <MenuItem key={key} value={JSON.stringify(el)}>
-              {Moment.utc(el.from,'HH:mm:ss').local().format('HH:mm')}
+              {Moment.utc(el.from,'HH:mm:ss').format('HH:mm')}
               {' - '}
-              {Moment.utc(el.to,'HH:mm:ss').local().format('HH:mm')}
+              {Moment.utc(el.to,'HH:mm:ss').format('HH:mm')}
             </MenuItem>
           })}
         </Select>

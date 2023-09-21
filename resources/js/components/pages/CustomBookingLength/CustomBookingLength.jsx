@@ -207,10 +207,10 @@ export default function CustomBookingLength() {
                   return <StyledTableRow key={key}>
                     <TableCell size="small">{item.name}</TableCell>
                     <TableCell size="small">{item.priority}</TableCell>
-                    <TableCell size="small">{Moment(item.start_date).local().format('YYYY-MM-DD')}</TableCell>
-                    <TableCell size="small">{Moment(item.end_date).local().format('YYYY-MM-DD')}</TableCell>
-                    <TableCell size="small">{Moment(item.created_at).local().format('YYYY-MM-DD HH:mm')}</TableCell>
-                    <TableCell size="small">{Moment(item.updated_at).local().format('YYYY-MM-DD HH:mm')}</TableCell>
+                    <TableCell size="small">{Moment.utc(item.start_date).format('YYYY-MM-DD')}</TableCell>
+                    <TableCell size="small">{Moment.utc(item.end_date).format('YYYY-MM-DD')}</TableCell>
+                    <TableCell size="small">{Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm')}</TableCell>
+                    <TableCell size="small">{Moment.utc(item.updated_at).local().format('YYYY-MM-DD HH:mm')}</TableCell>
                     <TableCell size="small">{item.active ? t('Yes') : t('No')}</TableCell>
                     <TableCell size="small">
                       <IconButton onClick={e => {

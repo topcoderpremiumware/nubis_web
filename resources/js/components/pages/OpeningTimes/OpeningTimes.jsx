@@ -228,8 +228,8 @@ export default function OpeningTimes() {
                     <TableCell size="small">{time.status}</TableCell>
                     <TableCell size="small">{dateFromFormat(time.start_date)}</TableCell>
                     <TableCell size="small">{dateFromFormat(time.end_date)}</TableCell>
-                    <TableCell size="small">{Moment.utc(time.start_time,'HH:mm:ss').local().format('HH:mm:ss')}</TableCell>
-                    <TableCell size="small">{Moment.utc(time.end_time,'HH:mm:ss').local().format('HH:mm:ss')}</TableCell>
+                    <TableCell size="small">{Moment.utc(time.start_time,'HH:mm:ss').format('HH:mm:ss')}</TableCell>
+                    <TableCell size="small">{Moment.utc(time.end_time,'HH:mm:ss').format('HH:mm:ss')}</TableCell>
                     <TableCell size="small">{time.week_days.join()}</TableCell>
                     <TableCell size="small">{time.length}</TableCell>
                     <TableCell size="small">{time.max}</TableCell>

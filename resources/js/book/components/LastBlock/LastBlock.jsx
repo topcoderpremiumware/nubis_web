@@ -202,8 +202,7 @@ function LastBlock(props) {
                   <b>{props.guestValue}</b>
                   <br />
                   {t('Day/time')}: &nbsp;
-                  <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`,"YYYY-M-D HH:mm:ss")
-                    .local().format('DD-MM-YYYY HH:mm')}</b>
+                  <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`,"YYYY-M-D HH:mm:ss").format('DD-MM-YYYY HH:mm')}</b>
                 </div>
               </div>
               <div className="client-info">
@@ -326,8 +325,7 @@ function LastBlock(props) {
                     <b>{props.guestValue}</b>
                     <br />
                     {t('Day/time')}: &nbsp;
-                    <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`,"YYYY-M-D HH:mm:ss")
-                        .local().format('DD-MM-YYYY HH:mm')}</b>
+                    <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`,"YYYY-M-D HH:mm:ss").format('DD-MM-YYYY HH:mm')}</b>
                   </div>
                 </div>
                 <div>

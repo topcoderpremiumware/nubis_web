@@ -20,8 +20,8 @@ const ManageGiftCards = () => {
 
   const columns = [
     { field: 'code', headerName: t('Code'), flex: 1 },
-    { field: 'created_at', headerName: t('Created'), flex: 1, renderCell: (params) => moment(params.value).format('DD-MM-YYYY') },
-    { field: 'expired_at', headerName: t('Expiration date'), flex: 1, renderCell: (params) => moment(params.value).format('DD-MM-YYYY') },
+    { field: 'created_at', headerName: t('Created'), flex: 1, renderCell: (params) => moment.utc(params.value).local().format('DD-MM-YYYY') },
+    { field: 'expired_at', headerName: t('Expiration date'), flex: 1, renderCell: (params) => moment.utc(params.value).format('DD-MM-YYYY') },
     { field: 'status', headerName: t('Status'), flex: 1 },
     { field: 'spend_amount', headerName: t('Used amount'), flex: 1 },
     { field: 'unused_amount', headerName: t('Unused amount'), flex: 1 },

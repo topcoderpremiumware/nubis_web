@@ -138,7 +138,7 @@ export default function TimeLinePlan(props) {
     return (<div>
       {order.customer_id ? (order.customer.first_name+' '+order.customer.last_name) : 'Walk in'}
       <br/>
-      {order.from.local().format('HH:mm')+' - '+order.to.local().format('HH:mm')}
+      {order.from.format('HH:mm')+' - '+order.to.format('HH:mm')}
       <br/>
       {order.seats+' '+t('seats')}
       <br/>

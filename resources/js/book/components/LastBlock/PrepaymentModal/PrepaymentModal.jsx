@@ -69,8 +69,7 @@ const PrepaymentModal = (props) => {
 
         <div className="title prepayment-modal-title">{t('Prepayment')}</div>
 
-        <p>{t('In order to complete from reservation at')} <b>{restaurantInfo.name}</b> {t('the')} <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`)
-          .local().format('DD-MM-YYYY HH:mm')}</b> {t('the following must be paid:')}</p>
+        <p>{t('In order to complete from reservation at')} <b>{restaurantInfo.name}</b> {t('the')} <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`).format('DD-MM-YYYY HH:mm')}</b> {t('the following must be paid:')}</p>
 
         <div className="prepayment-form">
           {t('Amount for')} {guestValue} pers.

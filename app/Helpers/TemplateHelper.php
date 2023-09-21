@@ -14,7 +14,7 @@ class TemplateHelper
         $place = $order->place;
         $customer = $order->customer;
         $timezone_offset = array_key_exists('timezone_offset',$order->marks) ? $order->marks['timezone_offset'] : 0;
-        $reservation_time = $order->reservation_time->copy()->addMinutes($timezone_offset);
+        $reservation_time = $order->reservation_time->copy();//->addMinutes($timezone_offset);
         $end_reservation = $reservation_time->copy()->addMinutes($order->length);
         $place_photo_file = $place->files()->where('purpose','online_booking_picture')->first();
         $place_photo_url = '';

@@ -148,7 +148,7 @@ export default function CancelingModal(props) {
                   <b>{props.filteredOrder ? props.filteredOrder[0].seats : ''}</b>
                   <br />
                   {t('Day/time')}: &nbsp;
-                  <b>{props.filteredOrder ? moment.utc(props.filteredOrder[0].reservation_time).local().format('YYYY-MM-DD HH:mm') : ''}</b>
+                  <b>{props.filteredOrder ? moment.utc(props.filteredOrder[0].reservation_time).format('YYYY-MM-DD HH:mm') : ''}</b>
                 </div>
               </div>
             </div>

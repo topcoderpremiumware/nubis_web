@@ -28,7 +28,7 @@ class ForceOrderCompleted implements ShouldQueue
             ->get();
         foreach ($orders as $order) {
             $order_to = $order->reservation_time->copy()->addMinutes($order->length);
-            if($order_to->lt(Carbon::now())){
+            if($order_to->lt($order->place->country->timeNow())){
                 OrderController::setOrderStatus($order,'completed');
             }
         }

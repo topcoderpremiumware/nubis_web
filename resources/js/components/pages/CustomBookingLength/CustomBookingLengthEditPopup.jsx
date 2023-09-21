@@ -110,13 +110,13 @@ export default function CustomBookingLengthEditPopup(props) {
     if(e.target.name.startsWith('time_intervals_from[')){
       let index = parseInt(e.target.name.replace(/\D/g, ""))
       let time_intervals = lengths.time_intervals
-      time_intervals[index].from = Moment(e.target.value,'HH:mm:ss').utc().format('HH:mm:ss')
+      time_intervals[index].from = Moment.utc(e.target.value,'HH:mm:ss').format('HH:mm:ss')
       setLengths(prev => ({...prev, time_intervals: time_intervals}))
     }
     if(e.target.name.startsWith('time_intervals_to[')){
       let index = parseInt(e.target.name.replace(/\D/g, ""))
       let time_intervals = lengths.time_intervals
-      time_intervals[index].to = Moment(e.target.value,'HH:mm:ss').utc().format('HH:mm:ss')
+      time_intervals[index].to = Moment.utc(e.target.value,'HH:mm:ss').format('HH:mm:ss')
       setLengths(prev => ({...prev, time_intervals: time_intervals}))
     }
     if(e.target.name.startsWith('area_ids[')){
@@ -333,8 +333,8 @@ export default function CustomBookingLengthEditPopup(props) {
               <DatePicker
                 dateFormat='yyyy-MM-dd'
                 selected={new Date(lengths.start_date)} id="start_date"
-                onSelect={e => {onChange({target: {name:'start_date',value:Moment(e).utc().format('YYYY-MM-DD')}})}}
-                onChange={e => {onChange({target: {name:'start_date',value:Moment(e).utc().format('YYYY-MM-DD')}})}}
+                onSelect={e => {onChange({target: {name:'start_date',value:Moment.utc(e).format('YYYY-MM-DD')}})}}
+                onChange={e => {onChange({target: {name:'start_date',value:Moment.utc(e).format('YYYY-MM-DD')}})}}
               />
             </FormControl>
           </Grid>
@@ -344,8 +344,8 @@ export default function CustomBookingLengthEditPopup(props) {
               <DatePicker
                 dateFormat='yyyy-MM-dd'
                 selected={new Date(lengths.end_date)} id="end_date"
-                onSelect={e => {onChange({target: {name:'end_date',value:Moment(e).utc().format('YYYY-MM-DD')}})}}
-                onChange={e => {onChange({target: {name:'end_date',value:Moment(e).utc().format('YYYY-MM-DD')}})}}
+                onSelect={e => {onChange({target: {name:'end_date',value:Moment.utc(e).format('YYYY-MM-DD')}})}}
+                onChange={e => {onChange({target: {name:'end_date',value:Moment.utc(e).format('YYYY-MM-DD')}})}}
               />
             </FormControl>
           </Grid>
@@ -412,11 +412,11 @@ export default function CustomBookingLengthEditPopup(props) {
                   selected={new Date(item.date)} id={`spec_date_${key}`}
                   onSelect={e => {onChange({target: {
                     name:`spec_dates_date[${key}]`,
-                    value:Moment(e).utc().format('YYYY-MM-DD')
+                    value:Moment.utc(e).format('YYYY-MM-DD')
                   }})}}
                   onChange={e => {onChange({target: {
                     name:`spec_dates_date[${key}]`,
-                    value:Moment(e).utc().format('YYYY-MM-DD')
+                    value:Moment.utc(e).format('YYYY-MM-DD')
                   }})}}
                 />
               </FormControl>
@@ -453,7 +453,7 @@ export default function CustomBookingLengthEditPopup(props) {
           return <Grid container spacing={2} sx={{pb: 2}} key={key}>
             <Grid item xs={12} sm={3}>
               <FormControl size="small" fullWidth>
-                <Select value={Moment.utc(item.from,'HH:mm:ss').local().format('HH:mm:ss')} required
+                <Select value={Moment.utc(item.from,'HH:mm:ss').format('HH:mm:ss')} required
                         name={`time_intervals_from[${key}]`}
                         onChange={onChange}>
                   {timeOptions().map((el,k) => {
@@ -467,7 +467,7 @@ export default function CustomBookingLengthEditPopup(props) {
             </Grid>
             <Grid item xs={12} sm={3}>
               <FormControl size="small" fullWidth>
-                <Select value={Moment.utc(item.to,'HH:mm:ss').local().format('HH:mm:ss')} required
+                <Select value={Moment.utc(item.to,'HH:mm:ss').format('HH:mm:ss')} required
                         name={`time_intervals_to[${key}]`}
                         onChange={onChange}>
                   {timeOptions().map((el,k) => {

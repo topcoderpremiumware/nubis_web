@@ -87,11 +87,11 @@ export default function DayViewTableWaiting() {
       }).then(response => {
         let orders = response.data.map(item => {
           if(item.status !== 'waiting') return false
-          item.from = Moment.utc(item.reservation_time).local().format('HH:mm')
-          item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').local().format('HH:mm')
+          item.from = Moment.utc(item.reservation_time).format('HH:mm') // removed local
+          item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').format('HH:mm') // removed local
           item.first_name = !item?.customer_id ? 'Walk in' : item.customer.first_name
           item.last_name = item.customer?.last_name || ''
-          item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm')
+          item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm') // removed local
           item.area_name = item.area.name
           return item
         }).filter(x => x)

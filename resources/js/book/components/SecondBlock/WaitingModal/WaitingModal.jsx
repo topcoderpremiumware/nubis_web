@@ -49,7 +49,7 @@ export default function WaitingModal(props) {
       .then((response) => {
         const timesArray = response.data?.map((time) => ({
           time: moment.utc(time).format('HH:mm:ss'),
-          shortTime: moment.utc(time).local().format('HH:mm'),
+          shortTime: moment.utc(time).format('HH:mm'),
         }));
         console.log('timesArray',timesArray)
         setTimes(timesArray);
@@ -105,7 +105,7 @@ export default function WaitingModal(props) {
             }
             <div className="selected-date" style={{ marginBottom: "10px" }}>
               {t('You have chosen a date')}{" "}
-              <b>{`${selectedDay.day}-${selectedDay.month}-${selectedDay.year}`}</b>
+              <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day}`).format('DD-MM-YYYY')}</b>
             </div>
             <b>{t('Please select a time:')}</b>
             <div>
@@ -151,8 +151,7 @@ export default function WaitingModal(props) {
                   <b>{props.guestValue}</b>
                   <br />
                   {t('Day/time')}: &nbsp;
-                  <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`)
-                    .local().format('DD-MM-YYYY HH:mm')}</b>
+                  <b>{moment.utc(`${selectedDay.year}-${selectedDay.month}-${selectedDay.day} ${selectedTime}`).format('DD-MM-YYYY HH:mm')}</b>
                 </div>
               </div>
               <div className="client-info">

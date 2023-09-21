@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,5 +15,10 @@ class Country extends Model
     public function places()
     {
         return $this->hasMany(Place::class);
+    }
+
+    public function timeNow()
+    {
+        return Carbon::parse(Carbon::now($this->timezone)->format('Y-m-d H:i:s'));
     }
 }

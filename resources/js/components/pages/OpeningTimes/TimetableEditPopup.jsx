@@ -84,9 +84,9 @@ export default function TimetableEditPopup(props) {
     if(e.target.name === 'start_date') setTimetable(prev => ({...prev, start_date: normalizeYearOfDate(e.target.value)}))
     if(e.target.name === 'end_date') setTimetable(prev => ({...prev, end_date: normalizeYearOfDate(e.target.value)}))
     if(e.target.name === 'start_time') setTimetable(prev => ({...prev,
-      start_time: Moment(e.target.value,'HH:mm:ss').utc().format('HH:mm:ss')}))
+      start_time: Moment.utc(e.target.value,'HH:mm:ss').format('HH:mm:ss')}))
     if(e.target.name === 'end_time') setTimetable(prev => ({...prev,
-      end_time: Moment(e.target.value,'HH:mm:ss').utc().format('HH:mm:ss')}))
+      end_time: Moment.utc(e.target.value,'HH:mm:ss').format('HH:mm:ss')}))
     if(e.target.name === 'week_days') setTimetable(prev => ({...prev, week_days: e.target.value}))
     if(e.target.name === 'area_id') setTimetable(prev => ({...prev, area_id: e.target.value}))
     if(e.target.name === 'tableplan_id') setTimetable(prev => ({...prev, tableplan_id: e.target.value}))
@@ -141,7 +141,7 @@ export default function TimetableEditPopup(props) {
 
   const dateFormat = (date) => {
     let year = yearly ? '0004' : 'YYYY'
-    return Moment(date).utc().format(year+'-MM-DD')
+    return Moment.utc(date).format(year+'-MM-DD')
   }
 
   const dateFromFormat = (date) => {
@@ -252,7 +252,7 @@ export default function TimetableEditPopup(props) {
           <Grid item xs={12} sm={4}>
             <FormControl size="small" fullWidth>
               <InputLabel id="label_start_time">{t('From time')}</InputLabel>
-              <Select label={t('From time')} value={Moment.utc(timetable.start_time,'HH:mm:ss').local().format('HH:mm:ss')} required
+              <Select label={t('From time')} value={Moment.utc(timetable.start_time,'HH:mm:ss').format('HH:mm:ss')} required
                       labelId="label_start_time" id="start_time" name="start_time"
                       onChange={onChange}>
                 {timeOptions().map((el,key) => {
@@ -264,7 +264,7 @@ export default function TimetableEditPopup(props) {
           <Grid item xs={12} sm={4}>
             <FormControl size="small" fullWidth>
               <InputLabel id="label_end_time">{t('To time')}</InputLabel>
-              <Select label={t('To time')} value={Moment.utc(timetable.end_time,'HH:mm:ss').local().format('HH:mm:ss')} required
+              <Select label={t('To time')} value={Moment.utc(timetable.end_time,'HH:mm:ss').format('HH:mm:ss')} required
                       labelId="label_end_time" id="end_time" name="end_time"
                       onChange={onChange}>
                 {timeOptions().map((el,key) => {

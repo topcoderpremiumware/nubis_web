@@ -231,7 +231,7 @@ export const SidebarData = (data) => { return [
     icon: <BsCreditCard/>,
     iconClosed: <KeyboardArrowDown />,
     iconOpened: <KeyboardArrowUp />,
-    show: ['admin','manager'].includes(data.role),
+    show: ['admin','manager'].includes(data.role) && localStorage.getItem('place_id') != 37,
     subNav: [
       {
         title: 'Pricing',

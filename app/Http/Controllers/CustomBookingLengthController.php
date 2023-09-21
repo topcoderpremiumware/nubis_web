@@ -222,9 +222,10 @@ class CustomBookingLengthController extends Controller
             'language' => 'required',
             'seats' => 'required|integer'
         ]);
+        $place = \App\Models\Place::find($request->place_id);
 
         $request_date = Carbon::parse($request->reservation_date);
-        if($request_date->lt(Carbon::now()->setTime(0,0,0))) return response()->json([
+        if($request_date->lt($place->country->timeNow()->setTime(0,0,0))) return response()->json([
             'message' => 'Date must be today and later'
         ], 400);
 
@@ -283,7 +284,7 @@ class CustomBookingLengthController extends Controller
                 $time = Carbon::parse($request->reservation_date . ' ' . $time_interval['from']);
                 $end = Carbon::parse($request->reservation_date . ' ' . $time_interval['to']);
                 for ($time; $time->lt($end); $time->addMinutes(15)) {
-                    if($time->lt(Carbon::now()->addMinutes($custom_length->min_time_before))) continue;
+                    if($time->lt($place->country->timeNow()->addMinutes($custom_length->min_time_before))) continue;
                     $working_hour = array_values(array_filter($working_hours,function($item) use ($time) {
                         return $item['from'] <= $time->format('H:i:s') && $item['to'] >= $time->format('H:i:s');
                     }));

@@ -39,6 +39,11 @@ class Place extends Model
         return $this->hasMany(Area::class);
     }
 
+    public function custom_booking_lengths()
+    {
+        return $this->hasMany(CustomBookingLength::class);
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class);

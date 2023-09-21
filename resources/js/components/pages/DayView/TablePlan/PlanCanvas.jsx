@@ -265,7 +265,7 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
                   item.markColor = '#f59827'
                   item.booking_id = order?.id
                 }else if(now.isBefore(order.from)){
-                  item.order = order.from.local().format('HH:mm')
+                  item.order = order.from.format('HH:mm')
                   item.markColor = '#ffd744'
                   item.booking_id = order?.id
                 }else{
@@ -384,7 +384,7 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
         step={1}
         min={0}
         valueLabelFormat={value => {
-            return <div>{Moment.utc(timeMarks[value],'HH:mm').local().format('HH:mm')}</div>
+            return <div>{Moment.utc(timeMarks[value],'HH:mm').format('HH:mm')}</div>
         }}
         name="selectedTime"
         onChange={onChange}

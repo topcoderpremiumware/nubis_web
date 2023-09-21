@@ -83,13 +83,13 @@ export default function DayViewTableWaiting() {
         }
       }).then(response => {
         let orders = response.data.map(item => {
-          item.from = Moment.utc(item.reservation_time).local().format('HH:mm')
-          item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').local().format('HH:mm')
+          item.from = Moment.utc(item.reservation_time).format('HH:mm') // removed local
+          item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').format('HH:mm') // removed local
           item.first_name = !item?.customer_id ? 'Walk in' : item.customer.first_name
           item.last_name = item.customer?.last_name || ''
           item.phone = item.customer?.phone || ''
           item.email = item.customer?.email || ''
-          item.deleted_at = Moment.utc(item.deleted_at).local().format('YYYY-MM-DD HH:mm')
+          item.deleted_at = Moment.utc(item.deleted_at).local().format('YYYY-MM-DD HH:mm') // removed local
           item.area_name = item.area.name
           item.self = item
           return item

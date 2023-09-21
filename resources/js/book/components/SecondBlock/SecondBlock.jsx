@@ -80,7 +80,7 @@ function SecondBlock(props) {
         .time.map((time) => ({
           time: moment.utc(time).format('HH:mm:ss'),
           active: true,
-          shortTime: moment.utc(time).local().format('HH:mm'),
+          shortTime: moment.utc(time).format('HH:mm'),
         }));
     console.log("Times array Extra: ", extraTimesArray(type.length));
     // const setExtraTimes = ;
@@ -165,7 +165,7 @@ function SecondBlock(props) {
         if(response.data.free_time.length) {
           const timesArray = response.data?.free_time?.map((time) => ({
             time: moment.utc(time).format('HH:mm:ss'),
-            shortTime: moment.utc(time).local().format('HH:mm'),
+            shortTime: moment.utc(time).format('HH:mm'),
           }));
           console.log('timesArray', timesArray)
           setTimes(timesArray);
@@ -280,7 +280,7 @@ function SecondBlock(props) {
               {extraTimeReq.length > 0 ? extraTimeReq.map((blockTime, key) => {
                 const freeTime = blockTime.time.map((time) => ({
                   time: moment.utc(time).format('HH:mm:ss'),
-                  shortTime: moment.utc(time).local().format('HH:mm'),
+                  shortTime: moment.utc(time).format('HH:mm'),
                 }))
 
                 return (

@@ -372,14 +372,14 @@ class OrderController extends Controller
         if($order->marks && array_key_exists('method',$order->marks)){
             if($order->marks['method'] == 'deduct'){
                 if(array_key_exists('payment_intent_id',$order->marks)){
-                    if(Carbon::now()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']){
+                    if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']){
                         $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
                         $order->refundGiftcard();
                     }
                 }
             }elseif($order->marks['method'] == 'reserve'){
                 if(array_key_exists('payment_intent_id',$order->marks)){
-                    if(Carbon::now()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']){
+                    if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']){
                         $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
                         if($payment_intent->status == 'succeeded'){
                             $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
@@ -391,7 +391,7 @@ class OrderController extends Controller
                 }
             }elseif($order->marks['method'] == 'no_show'){
                 if(array_key_exists('payment_method_id',$order->marks)){
-                    if(Carbon::now()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
+                    if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
                         $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
                         $payment_intent->capture();
                     }
@@ -470,11 +470,11 @@ class OrderController extends Controller
             'from' => 'required|date_format:Y-m-d',
             'to' => 'required|date_format:Y-m-d',
         ]);
-
+        $place = Place::find($request->place_id);
         $period = CarbonPeriod::create($request->from, $request->to);
         $result = [];
         foreach ($period as $date) {
-            if($date->lt(Carbon::now()->setTime(0,0,0))) continue;
+            if($date->lt($place->country->timeNow()->setTime(0,0,0))) continue;
             $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"));
             if(empty($working_hours)) continue;
             $time_from = $date->copy();
@@ -508,15 +508,15 @@ class OrderController extends Controller
             ->where('is_take_away',0)
             ->whereIn('status',['confirmed','arrived','pending'])
             ->get();
-
+        $place = Place::find($place_id);
         $free_tables = (new OrderController())->getFreeTables($orders, $working_hours, $request_seats, false);
 
         $free_time = [];
         foreach($working_hours as $working_hour){
             $time = Carbon::parse($request_date->format('Y-m-d').' '.$working_hour['from']);
-            if($time->lt(Carbon::now()->addMinutes($working_hour['min_time_before']))) continue;
             $end = Carbon::parse($request_date->format('Y-m-d').' '.$working_hour['to']);
             for($time;$time->lt($end);$time->addMinutes(15)){
+                if($time->lt($place->country->timeNow()->addMinutes($working_hour['min_time_before']))) continue;
                 $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
                 if(array_key_exists($working_hour['tableplan_id'],$free_tables)) {
 
@@ -601,11 +601,11 @@ class OrderController extends Controller
             'from' => 'required|date_format:Y-m-d',
             'to' => 'required|date_format:Y-m-d',
         ]);
-
+        $place = Place::find($request->place_id);
         $period = CarbonPeriod::create($request->from, $request->to);
         $result = [];
         foreach ($period as $date) {
-            if($date->lt(Carbon::now()->setTime(0,0,0))) continue;
+            if($date->lt($place->country->timeNow()->setTime(0,0,0))) continue;
             $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"));
             if(empty($working_hours)) continue;
             if($this->getFreeTables([], $working_hours, $request->seats)){
@@ -623,8 +623,9 @@ class OrderController extends Controller
             'seats' => 'required|integer',
             'date' => 'required|date_format:Y-m-d',
         ]);
+        $place = Place::find($request->place_id);
         $request_date = Carbon::parse($request->date);
-        if($request_date->lt(Carbon::now()->setTime(0,0,0))) return response()->json([
+        if($request_date->lt($place->country->timeNow()->setTime(0,0,0))) return response()->json([
             'message' => 'Date must be today and later'
         ], 400);
 
@@ -647,8 +648,9 @@ class OrderController extends Controller
             'seats' => 'required|integer',
             'date' => 'required|date_format:Y-m-d',
         ]);
+        $place = Place::find($request->place_id);
         $request_date = Carbon::parse($request->date);
-        if($request_date->lt(Carbon::now()->setTime(0,0,0))) return response()->json([
+        if($request_date->lt($place->country->timeNow()->setTime(0,0,0))) return response()->json([
             'message' => 'Date must be today and later'
         ], 400);
 
@@ -659,6 +661,7 @@ class OrderController extends Controller
 
         $free_tables = $this->getFreeTables([], $working_hours, $request->seats, false,$request->has('admin'));
         $work_time = [];
+
         foreach($working_hours as $working_hour){
             $time = Carbon::parse($request->date.' '.$working_hour['from']);
             $end = Carbon::parse($request->date.' '.$working_hour['to']);
@@ -667,7 +670,7 @@ class OrderController extends Controller
                 if(array_key_exists($working_hour['tableplan_id'],$free_tables)){
                     foreach ($free_tables[$working_hour['tableplan_id']] as $table){
                         if(!array_key_exists('ordered',$table['time'][$indexFrom])){
-                            if(!$time->lt(Carbon::now()->addMinutes($working_hour['min_time_before']))){
+                            if(!$time->lt($place->country->timeNow()->addMinutes($working_hour['min_time_before']))){
                                 array_push($work_time,$time->copy());
                                 break;
                             }
@@ -764,8 +767,9 @@ class OrderController extends Controller
             'is_take_away' => 'required|boolean',
         ]);
 
+        $place = Place::find($request->place_id);
         $reservation_time = Carbon::parse($request->reservation_time);
-        if($reservation_time->lt(Carbon::now())) return response()->json([
+        if($reservation_time->lt($place->country->timeNow())) return response()->json([
             'message' => 'Time must be in the future'
         ], 400);
 
@@ -774,7 +778,6 @@ class OrderController extends Controller
             'message' => 'Non-working day'
         ], 400);
 
-        $place = Place::find($request->place_id);
         if(!$place->is_bill_paid()) return response()->json([
             'message' => 'Your place\'s bill has not been paid'
         ], 401);
@@ -1013,7 +1016,7 @@ class OrderController extends Controller
             $order->status = 'pending';
             $order->timestamps = false;
             $order->save();
-            if(Carbon::now()->diff($request->reservation_time)->days > 6){
+            if($place->country->timeNow()->diff($request->reservation_time)->days > 6){
                 // Якщо замовлення раніше ніж 6 днів тоді запланувати відсилання через крон посилання на оплату як в першому методі
                 $marks['need_send_payment_link'] = true;
             }else{

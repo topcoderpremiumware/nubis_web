@@ -24,14 +24,14 @@ import { CgCalendarToday } from "react-icons/cg";
 
    const onChange = (date) => {
      setStartDate(date)
-     localStorage.setItem('date', Moment(date).utc().format('YYYY-MM-DD'))
+     localStorage.setItem('date', Moment.utc(date).format('YYYY-MM-DD')) //changed to utc
      eventBus.dispatch("dateChanged")
    };
 
    const setDate = (days) => {
      let date = new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000)
      setStartDate(date)
-     localStorage.setItem('date',Moment(date).utc().format('YYYY-MM-DD'))
+     localStorage.setItem('date',Moment.utc(date).format('YYYY-MM-DD')) // changed to utc
      eventBus.dispatch("dateChanged")
    };
 
@@ -103,6 +103,7 @@ import { CgCalendarToday } from "react-icons/cg";
         selected={startDate}
         onChange={(date) => onChange(date)}
         monthsShown={2}
+        dateFormat="dd-MM-yyyy"
       />
 
       <button

@@ -39,7 +39,8 @@ class ReserveAmountPayment implements ShouldQueue
     {
         $orders = Order::where('marks','like','%need_send_payment_link%')->get();
         foreach ($orders as $order){
-            if(Carbon::now()->lt($order->reservation_time) && Carbon::now()->diffInDays($order->reservation_time,false) <= 6){
+            if($order->place->country->timeNow()->lt($order->reservation_time) &&
+                $order->place->country->timeNow()->diffInDays($order->reservation_time,false) <= 6){
                 $place = Place::find($order->place_id);
 
                 $online_payment_amount = $order->marks['amount'];
@@ -104,7 +105,8 @@ class ReserveAmountPayment implements ShouldQueue
     {
         $orders = Order::where('marks','like','%need_capture%')->get();
         foreach ($orders as $order){
-            if(Carbon::now()->lt($order->reservation_time) && Carbon::now()->diffInHours($order->reservation_time,false) <= 6) {
+            if($order->place->country->timeNow()->lt($order->reservation_time) &&
+                $order->place->country->timeNow()->diffInHours($order->reservation_time,false) <= 6) {
                 $place = Place::find($order->place_id);
                 $payment_intent_id = $order->marks['payment_intent_id'];
                 $stripe_secret = $place->setting('stripe-secret');

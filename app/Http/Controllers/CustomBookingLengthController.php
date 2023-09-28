@@ -280,6 +280,9 @@ class CustomBookingLengthController extends Controller
 
             $times = [];
             $logs = [];
+            $logs['free_tables'] = $free_tables;
+            $logs['orders'] = $orders;
+            $logs['tables'] = [];
             foreach ($custom_length->time_intervals as $time_interval) {
                 $time = Carbon::parse($request->reservation_date . ' ' . $time_interval['from']);
                 $end = Carbon::parse($request->reservation_date . ' ' . $time_interval['to']);
@@ -329,6 +332,7 @@ class CustomBookingLengthController extends Controller
                                     }
                                 }
                                 $logs[$time->copy()->toString()] = $table['number'];
+                                $logs['tables'][$table['number']] = $table;
                                 array_push($times,$time->copy());
                                 break 2;
                             }

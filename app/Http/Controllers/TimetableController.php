@@ -241,7 +241,8 @@ class TimetableController extends Controller
                     'tableplan_id' => $item->tableplan_id ?? $default_tableplan->id,
                     'booking_limits' => $item->booking_limits,
                     'length' => $item->length,
-                    'min_time_before' => $item->min_time_before
+                    'min_time_before' => $item->min_time_before,
+                    'max' => $item->max
                 ];
             }
         }
@@ -274,32 +275,24 @@ class TimetableController extends Controller
             if($hours['from'] >= $item->start_time && $hours['to'] <= $item->end_time){
 //                nothing
             }elseif($hours['from'] > $item->start_time && $hours['to'] > $item->end_time){
-                $w_h[] = [
+                $w_h[] = array_merge($hours,[
                     'from' => $item->end_time,
-                    'to' => $hours['to'],
-                    'tableplan_id' => $hours['tableplan_id'],
-                    'booking_limits' => $hours['booking_limits']
-                ];
+                    'to' => $hours['to']
+                ]);
             }elseif($hours['from'] < $item->start_time && $hours['to'] < $item->end_time){
-                $w_h[] = [
+                $w_h[] = array_merge($hours,[
                     'from' => $hours['from'],
-                    'to' => $item->start_time,
-                    'tableplan_id' => $hours['tableplan_id'],
-                    'booking_limits' => $hours['booking_limits']
-                ];
+                    'to' => $item->start_time
+                ]);
             }elseif($hours['from'] < $item->start_time && $hours['to'] > $item->end_time){
-                $w_h[] = [
+                $w_h[] = array_merge($hours,[
                     'from' => $hours['from'],
-                    'to' => $item->start_time,
-                    'tableplan_id' => $hours['tableplan_id'],
-                    'booking_limits' => $hours['booking_limits']
-                ];
-                $w_h[] = [
+                    'to' => $item->start_time
+                ]);
+                $w_h[] = array_merge($hours,[
                     'from' => $item->end_time,
-                    'to' => $hours['to'],
-                    'tableplan_id' => $hours['tableplan_id'],
-                    'booking_limits' => $hours['booking_limits']
-                ];
+                    'to' => $hours['to']
+                ]);
             }else{
                 $w_h[] = $hours;
             }

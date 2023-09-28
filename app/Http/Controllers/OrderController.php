@@ -711,7 +711,7 @@ class OrderController extends Controller
             if(array_key_exists($order->tableplan_id,$free_tables)){
                 $reservTo = $order->reservation_time->copy();
                 $reservTo = $reservTo->addMinutes($order->length);
-                $diff = $reservTo->format('d') - $order->reservation_time->format('d'); // get diff days if order finished next day
+                $diff = $order->reservation_time->copy()->setTime(0,0,0)->diff($reservTo->copy()->setTime(0,0,0))->days; // get diff days if order finished next day
                 $indexFrom = intval($order->reservation_time->format('H'))*4 + floor(intval($order->reservation_time->format('i'))/15);
                 $indexTo = intval($reservTo->format('H'))*4 + floor(intval($reservTo->format('i'))/15) + $diff*96;
                 foreach ($order->table_ids as $table_id){

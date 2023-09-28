@@ -717,7 +717,7 @@ class OrderController extends Controller
                 foreach ($order->table_ids as $table_id){
                     $free_tables[$order->tableplan_id][$table_id]['logs'][] = 'Початок циклу перевірки';
                     if(array_key_exists($table_id,$free_tables[$order->tableplan_id])) {
-                        $free_tables[$order->tableplan_id][$table_id]['logs'][] = 'Пройшов перевірку чи є стіл у вільних';
+                        $free_tables[$order->tableplan_id][$table_id]['logs'][] = 'Пройшов перевірку чи є стіл у вільних '.$indexFrom.' > '.$indexTo;
                         for($i = $indexFrom;$i<$indexTo;$i++){ // $i<$indexTo - allow to order in same time when prev order is finished
                             $free_tables[$order->tableplan_id][$table_id]['logs'][] = $i.' відмічений зайнятим';
                             $free_tables[$order->tableplan_id][$table_id]['time'][$i]['ordered'] = true;

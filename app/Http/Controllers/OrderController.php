@@ -715,7 +715,7 @@ class OrderController extends Controller
                 $indexFrom = intval($order->reservation_time->format('H'))*4 + floor(intval($order->reservation_time->format('i'))/15);
                 $indexTo = intval($reservTo->format('H'))*4 + floor(intval($reservTo->format('i'))/15) + $diff*96;
                 foreach ($order->table_ids as $table_id){
-                    $free_tables[$order->tableplan_id][$table_id]['logs'][] = 'Початок циклу перевірки '.$order->reservation_time->format('Y-m-d H:i').' '.$order->length.' '.$reservTo->foramt('Y-m-d H:i');
+                    $free_tables[$order->tableplan_id][$table_id]['logs'][] = 'Початок циклу перевірки '.$order->reservation_time->format('Y-m-d H:i').' '.$order->length.' '.$reservTo->format('Y-m-d H:i');
                     if(array_key_exists($table_id,$free_tables[$order->tableplan_id])) {
                         $free_tables[$order->tableplan_id][$table_id]['logs'][] = 'Пройшов перевірку чи є стіл у вільних '.$indexFrom.' > '.$indexTo;
                         for($i = $indexFrom;$i<$indexTo;$i++){ // $i<$indexTo - allow to order in same time when prev order is finished

@@ -380,6 +380,10 @@ class CustomBookingLengthController extends Controller
                     'time' => $times,
                     'logs' => $logs
                 ]);
+            }else{
+                array_push($lengths_data,[
+                    'logs' => $logs
+                ]);
             }
         }
 

@@ -609,7 +609,7 @@ class OrderController extends Controller
             if($date->lt($place->country->timeNow()->setTime(0,0,0))) continue;
             $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"));
             if(empty($working_hours)) continue;
-            if($this->getFreeTables([], $working_hours, $request->seats)){
+            if($this->getFreeTables(collect([]), $working_hours, $request->seats)){
                 array_push($result,$date);
             }
         }
@@ -660,7 +660,7 @@ class OrderController extends Controller
             'message' => 'Non-working day'
         ], 400);
 
-        $free_tables = $this->getFreeTables([], $working_hours, $request->seats, false,$request->has('admin'));
+        $free_tables = $this->getFreeTables(collect([]), $working_hours, $request->seats, false,$request->has('admin'));
         $work_time = [];
 
         foreach($working_hours as $working_hour){
@@ -687,7 +687,7 @@ class OrderController extends Controller
     {
         $free_tables = [];
         //Отримується список всіх столів, які фізично доступні для замовлення, тобто підходять за кількістю місць. Сюди ще додаються столи які можуть бути згруповані в групи, і при цьому підходять за кількістю місць.
-        $orders_seats = array_reduce($orders->toArray(),function($sum,$order){
+        $orders_seats = array_reduce($orders,function($sum,$order){
             return $sum + $order['seats'];
         });
         foreach ($working_hours as $working_hour){

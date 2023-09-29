@@ -281,6 +281,7 @@ class CustomBookingLengthController extends Controller
             $times = [];
             $logs = [];
             $logs['free_tables'] = $free_tables;
+            $logs['working_hours'] = $working_hours;
             $logs['orders'] = $orders;
             $logs['tables'] = [];
             foreach ($custom_length->time_intervals as $time_interval) {
@@ -378,6 +379,10 @@ class CustomBookingLengthController extends Controller
                     'image' => $custom_length->image ? Storage::disk('public')->url($custom_length->image) : '',
                     'length' => intval($custom_length->length)+intval($custom_length->preparation_length),
                     'time' => $times,
+                    'logs' => $logs
+                ]);
+            }else{
+                array_push($lengths_data,[
                     'logs' => $logs
                 ]);
             }

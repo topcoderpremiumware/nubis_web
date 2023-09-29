@@ -687,10 +687,14 @@ class OrderController extends Controller
     {
         $free_tables = [];
         //Отримується список всіх столів, які фізично доступні для замовлення, тобто підходять за кількістю місць. Сюди ще додаються столи які можуть бути згруповані в групи, і при цьому підходять за кількістю місць.
+        $orders_seats = array_reduce($orders->toArray(),function($sum,$order){
+            return $sum + $order['seats'];
+        });
         foreach ($working_hours as $working_hour){
             if(!$working_hour || !array_key_exists('tableplan_id',$working_hour) || !$working_hour['tableplan_id']) continue;
             $tableplan = Tableplan::find($working_hour['tableplan_id']);
             if(!$tableplan) continue;
+            if($orders_seats >= $working_hour['max']) continue;
             $tables = $tableplan->getTables();
             foreach ($tables as $tab){
                 if(!$for_admin && $tab['seats'] < $seats) continue;

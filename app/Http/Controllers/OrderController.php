@@ -541,6 +541,7 @@ class OrderController extends Controller
                     }
 
                     foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
+                        if(!array_key_exists('seats',$table)) continue;
                         if($table['seats'] < $request_seats) continue;
                         if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                             $reserv_to = $time->copy()->addMinutes($working_hour['length']);

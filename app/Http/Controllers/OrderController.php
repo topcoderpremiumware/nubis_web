@@ -687,7 +687,7 @@ class OrderController extends Controller
     {
         $free_tables = [];
         //Отримується список всіх столів, які фізично доступні для замовлення, тобто підходять за кількістю місць. Сюди ще додаються столи які можуть бути згруповані в групи, і при цьому підходять за кількістю місць.
-        $orders_seats = array_reduce($orders,function($sum,$order){
+        $orders_seats = array_reduce($orders->toArray(),function($sum,$order){
             return $sum + $order['seats'];
         });
         foreach ($working_hours as $working_hour){

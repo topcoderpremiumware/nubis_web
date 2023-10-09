@@ -192,6 +192,7 @@ class PlaceController extends Controller
         }else{
             $sms_limit_count = 0;
         }
+        $sms_limit_count = 10000; // temporary
         return response()->json(['count' => $sms_limit_count]);
     }
 
@@ -212,6 +213,7 @@ class PlaceController extends Controller
                 $status = 'expired';
             }
         }
+        $status = 'paid'; // temporary
         return response()->json(['status' => $status]);
     }
 

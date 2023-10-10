@@ -791,6 +791,16 @@ class OrderController extends Controller
             'message' => 'Your place\'s bill has not been paid'
         ], 401);
 
+        $last_order = Order::where('customer_id',Auth::user()->id)
+            ->where('place_id',$request->place_id)
+            ->where('area_id',$request->area_id)
+            ->where('reservation_time',$request->reservation_time)
+            ->where('created_at','>',Carbon::now()->addMinutes(-2))
+            ->first();
+        if($last_order) return response()->json([
+            'message' => 'Too many orders in a short time'
+        ], 400);
+
         $tableplan_id = null;
         $table_ids = [];
         $length = 120;

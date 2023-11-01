@@ -50,6 +50,15 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
           getOrders()
         })
     });
+    eventBus.on("timeChanged",  () => {
+      redrawComponent()
+    });
+    eventBus.on("areaChanged",  () => {
+      redrawComponent()
+    });
+    eventBus.on("dateChanged",  () => {
+      redrawComponent()
+    });
     eventBus.on("orderEdited",  () => {
       getOrders()
     });
@@ -68,6 +77,12 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
         getOrders()
       })
   },[])
+
+  const redrawComponent = () => {
+    getPlan()
+    getOrders()
+    getTimesList()
+  }
 
   useEffect(() => {
     if(!loading){
@@ -90,8 +105,8 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
   const getTimesList = () => {
     let timesArray = []
     let time = JSON.parse(localStorage.getItem('time'))
-    let from = Moment.utc('1970-01-01 '+(time['from'] || '00:00:00'))
-    let to = Moment.utc('1970-01-01 '+(time['to'] || '23:59:59'))
+    let from = Moment.utc('1970-01-01 '+(time['from'] || '00:00:00')).utc()
+    let to = Moment.utc('1970-01-01 '+(time['to'] || '23:59:59')).utc()
     while(from <= to) {
       timesArray.push(from.clone().format('HH:mm'))
       from.add(15, 'minutes')
@@ -100,10 +115,10 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
     setTimeMarks(timesArray)
 
     let lessTime = 0
-    const now = Moment.utc('1970-01-01 ' + Moment.utc().format('HH:mm'))
+    const now = Moment.utc('1970-01-01 ' + Moment().format('HH:mm'))
     timesArray.forEach(i => {
-      const fullLessTime = Moment.utc('1970-01-01 ' + lessTime).valueOf()
-      const time = Moment.utc('1970-01-01 ' + i)
+      const fullLessTime = Moment.utc('1970-01-01 ' + lessTime).utc().valueOf()
+      const time = Moment.utc('1970-01-01 ' + i).utc()
       const diff = now.diff(time)
       if (lessTime === 0 || (fullLessTime > diff && diff > 0)) {
         lessTime = i

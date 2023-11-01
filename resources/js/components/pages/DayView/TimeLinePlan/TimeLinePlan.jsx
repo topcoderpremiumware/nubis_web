@@ -54,6 +54,15 @@ export default function TimeLinePlan(props) {
           getOrders()
         })
     });
+    eventBus.on("timeChanged",  () => {
+      redrawComponent()
+    });
+    eventBus.on("areaChanged",  () => {
+      redrawComponent()
+    });
+    eventBus.on("dateChanged",  () => {
+      redrawComponent()
+    });
     eventBus.on("orderEdited",  () => {
       getOrders()
     });
@@ -72,6 +81,11 @@ export default function TimeLinePlan(props) {
         getOrders()
       })
   },[])
+
+  const redrawComponent = () => {
+    getPlan()
+    getOrders()
+  }
 
   const getPlan = () => {
     axios.get(`${process.env.MIX_API_URL}/api/tableplans/${selectedTime['tableplan_id']}`, {
@@ -124,8 +138,8 @@ export default function TimeLinePlan(props) {
             tip: tableTip(item),
             canMove: false,
             canResize: false,
-            start_time: item.from,
-            end_time: item.to
+            start_time: Moment(item.from.format('YYYY-MM-DD HH:mm:ss')),
+            end_time: Moment(item.to.format('YYYY-MM-DD HH:mm:ss'))
           })
         })
       })

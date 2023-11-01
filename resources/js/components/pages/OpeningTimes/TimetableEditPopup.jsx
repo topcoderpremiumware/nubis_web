@@ -163,6 +163,16 @@ export default function TimetableEditPopup(props) {
     return (tt.getHours()<10?'0':'')+tt.getHours()+':'+(tt.getMinutes()<10?'0':'')+tt.getMinutes()
   }
 
+  const makeRange = (months) => {
+    let today = Moment.utc().format('YYYY-MM-DD')
+    let to = Moment.utc().add(months,'months').format('YYYY-MM-DD')
+    setTimetable(prev => ({
+      ...prev,
+      start_date: normalizeYearOfDate(today),
+      end_date: normalizeYearOfDate(to)
+    }))
+  }
+
   return (<>
     {timetable.hasOwnProperty('start_date') &&
     <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="md"
@@ -220,6 +230,13 @@ export default function TimetableEditPopup(props) {
               </Select>
             </FormControl>
           </Grid>
+          {[1,2,3,4,5,6,12].map((i,key) => {
+            return <Grid item xs={6} sm={3} md={12/7} key={key}>
+                      <Button size="small"
+                        variant="contained"
+                        onClick={() => {makeRange(i)}}>{i} {i === 1 ? t('month') : t('months')}</Button>
+                  </Grid>
+            })}
           <Grid item xs={12} sm={4}>
             <FormControl size="small" fullWidth className="datePickerFullWidth">
               <InputLabel htmlFor="start_date" shrink>{t('Start date')}</InputLabel>

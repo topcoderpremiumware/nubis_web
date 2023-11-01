@@ -24,15 +24,22 @@ export default function TimeSelect() {
     });
     eventBus.on("areaChanged", async () => {
       await getTime()
-      setTime('0')
-      localStorage.removeItem('time')
     });
     eventBus.on("dateChanged", async () => {
       await getTime()
-      setTime('0')
-      localStorage.removeItem('time')
     });
   }, [])
+
+  useEffect(async () => {
+    if(times.length === 1){
+      setTime(JSON.stringify(times[0]))
+      localStorage.setItem('time', JSON.stringify(times[0]))
+    }else{
+      setTime('0')
+      localStorage.removeItem('time')
+    }
+    eventBus.dispatch("timeChanged")
+  }, [times])
 
   const getTime = async () => {
     if(localStorage.getItem('area_id')){

@@ -29,7 +29,7 @@
         <li class="lang-dropdown-desktop">
           @include('partials/language_switcher')
         </li>
-        <li><a href="/admin/register" class="header-action-link">{{ __('Sign up') }}</a></li>
+        <li><a href="/admin/register" class="header-action-link show_desktop">{{ __('Sign up') }}</a></li>
         <li><a href="/admin/login" class="header-action-link header-action-link-accent">{{ __('Login In') }}</a></li>
       </ul>
     </div>

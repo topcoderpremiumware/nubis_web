@@ -1585,3 +1585,8 @@ body {
     background-color: #d1e7dd;
     border-color: #badbcc;
 }
+@media screen and (max-width: 1200px) {
+  .show_desktop {
+    display: none;
+  }
+}

@@ -86,7 +86,7 @@ export default function Login() {
             </form>
             <hr/>
             <Stack spacing={2} sx={{mt: 2}} direction="row">
-              <Button variant="contained" href="/admin/register">{t('Create profile')}</Button>
+              <Button sx={{ display: { xl: 'block', xs: 'none' } }} variant="contained" href="/admin/register">{t('Create profile')}</Button>
               <Button variant="contained" href="/admin/forgot">{t('Forgot password?')}</Button>
             </Stack>
           </div>

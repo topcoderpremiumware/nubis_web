@@ -33,6 +33,7 @@ function SecondBlock(props) {
   const [alternativeRestaurants, setAlternativeRestaurants] = useState([])
   const [extraTimeReq, setExtraTimeReq] = useState([]);
   const [times, setTimes] = useState([]);
+  const [queryNumber, setQueryNumber] = useState(0)
 
   useEffect(async () => {
     if(!selectedDay){
@@ -162,6 +163,7 @@ function SecondBlock(props) {
       },
     })
       .then((response) => {
+        setQueryNumber(queryNumber + 1)
         if(response.data.free_time.length) {
           const timesArray = response.data?.free_time?.map((time) => ({
             time: moment.utc(time).format('HH:mm:ss'),
@@ -170,8 +172,10 @@ function SecondBlock(props) {
           console.log('timesArray', timesArray)
           setTimes(timesArray);
         } else {
-          props.setDefaultModal("noTime");
-          setModalActive(true)
+          if(queryNumber !== 0){
+            props.setDefaultModal("noTime");
+            setModalActive(true)
+          }
         }
       })
       .catch((error) => {

@@ -79,6 +79,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     { field: 'menu', headerName: t('Menu'), width: 100},
     { field: 'order_date', headerName: t('Order date'), width: 140 },
     { field: 'area_name', headerName: t('Area'), width: 160 },
+    { field: 'author_name', headerName: t('Admin'), width: 160 },
   ];
 
   const getOrders = () => {
@@ -113,6 +114,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
           item.menu = item.custom_booking_length_id ? item.custom_booking_length.name : ''
           item.amount = item.marks.hasOwnProperty('amount') ? item.marks['amount'] : ''
           item.code = item.marks.hasOwnProperty('giftcard_code') ? item.marks['giftcard_code'] : ''
+          item.author_name = item.user_id ? item.author.name : ''
           return item
         }).filter(x => x)
 

@@ -128,7 +128,7 @@ class TemplateHelper
             env('MIX_APP_URL').'/book/'.$place->id, //#CANCEL_BOOKING_PAGE#
             '', //#ALTERNATIVE_RESTAURANTS_PAGE#
             '', //#UNSUBSCRIBE_LINK#
-            env('MIX_APP_URL').'/feedback/'.$order->id //#FEEDBACK_LINK#
+            env('MIX_APP_URL').'/feedback/'.$order->id, //#FEEDBACK_LINK#
         ];
 
         $output = str_replace($vars, $values, $text);

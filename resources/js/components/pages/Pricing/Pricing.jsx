@@ -89,41 +89,41 @@ const Pricing = () => {
       <div className="price-wrapper">
         <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
           <div className="price-card-top">
-            <span>€30</span>/{t('month')}
+            <span>€55</span>/{t('month')}
           </div>
           <p className="price-card-title">{t('Monthly')}</p>
           <button
             type="button"
             className="price-card-btn"
-            onClick={() => getPaymentLink('price_1MZylgCVi0riU70PLpxaYmTW')}
+            onClick={() => getPaymentLink('price_1O9QVcCVi0riU70P36CBHovc')}
           >{t('Choose plan')}</button>
         </div>
 
         <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
           <div className="price-card-badge">{t('Save')} 15%</div>
           <div className="price-card-top">
-            <span>€175</span>/{t('semiannual')}
+            <span>€294</span>/{t('semiannual')}
           </div>
-          <div className="price-card-per-month"><span>€25</span>/{t('month')}</div>
+          <div className="price-card-per-month"><span>€49</span>/{t('month')}</div>
           <p className="price-card-title">{t('semiannual')}</p>
           <button
             type="button"
             className="price-card-btn"
-            onClick={() => getPaymentLink('price_1MZynBCVi0riU70PAo5AnE8A')}
+            onClick={() => getPaymentLink('price_1O9QT9CVi0riU70PGcLhPeGU')}
           >{t('Choose plan')}</button>
         </div>
 
         <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
           <div className="price-card-badge">{t('Save')} 30%</div>
           <div className="price-card-top">
-            <span>€240</span>/{t('yearly')}
+            <span>€468</span>/{t('yearly')}
           </div>
-          <div className="price-card-per-month"><span>€20</span>/{t('month')}</div>
+          <div className="price-card-per-month"><span>€39</span>/{t('month')}</div>
           <p className="price-card-title">{t('yearly')}</p>
           <button
             type="button"
             className="price-card-btn"
-            onClick={() => getPaymentLink('price_1MZyovCVi0riU70PlUHycyvz')}
+            onClick={() => getPaymentLink('price_1O9QRACVi0riU70PvZCNBcq6')}
           >{t('Choose plan')}</button>
         </div>
       </div>

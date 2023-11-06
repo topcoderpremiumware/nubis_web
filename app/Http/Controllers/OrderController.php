@@ -65,7 +65,8 @@ class OrderController extends Controller
             'is_take_away' => $request->is_take_away,
             'source' => $request->source,
             'marks' => ['timezone_offset' => $request->timezone_offset],
-            'custom_booking_length_id' => $request->custom_booking_length_id
+            'custom_booking_length_id' => $request->custom_booking_length_id,
+            'user_id' => Auth::user()->id
         ]);
 
         Log::add($request,'create-order','Created order #'.$order->id);
@@ -214,7 +215,7 @@ class OrderController extends Controller
         if($request->area_id != 'all') {
             $orders = $orders->where('area_id', $request->area_id);
         }
-        $orders = $orders->with(['customer', 'custom_booking_length', 'area'])
+        $orders = $orders->with(['customer', 'custom_booking_length', 'area', 'author'])
             ->whereBetween('reservation_time', [$request->reservation_from, $request->reservation_to]);
         if($request->has('deleted')){
             $orders = $orders->onlyTrashed();

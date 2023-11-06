@@ -6,35 +6,58 @@ import eventBus from "../../../eventBus";
 import {Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack, Switch, TextField} from "@mui/material";
 
 const options = [
+  "#ADDRESS#",
   "#AREA_NAME#",
   "#BOOK_DAY#",
   "#BOOK_DAY_NAME#",
+  "#BOOK_TIME#",
+  "#BOOK_TIME_AMPM#",
   "#BOOK_HOUR#",
   "#BOOK_HOUR_END#",
   "#BOOK_ID#",
   "#BOOK_LENGTH#",
   "#BOOK_MIN#",
+  "#BOOK_ENDTIME#",
+  "#BOOK_ENDTIME_AMPM#",
   "#BOOK_MIN_END#",
   "#BOOK_MONTH#",
   "#BOOK_MONTH_NAME#",
   "#BOOK_YEAR#",
+  "#BOOK_COMMENT#",
+  "#CALENDAR_LINK#",
   "#CANCEL_LINK#",
+  "#RECONFIRM_LINK#",
+  "#CHECK_CREDIT_CARD_LINK#",
+  "#CITY#",
+  "#COMPANY#",
   "#CONTACT_PERSON#",
   "#CONTACT_PHONE#",
+  "#CUSTOM_BOOK_LENGTH_NAME#",
   "#EMAIL#",
   "#FIRST_NAME#",
   "#LAST_NAME#",
+  "#FULL_NAME#",
+  "#MAP_LINK#",
   "#NUMBER_OF_GUESTS#",
+  "#PAY_BOOKING_LINK#",
   "#PHONE#",
   "#RESTAURANT_ADDRESS#",
   "#RESTAURANT_CITY#",
+  "#RESTAURANT_VAT#",
   "#RESTAURANT_COUNTRY#",
   "#RESTAURANT_EMAIL#",
   "#RESTAURANT_HOMEPAGE#",
   "#RESTAURANT_NAME#",
   "#RESTAURANT_PHONE#",
+  "#RESTAURANT_PHOTO#",
   "#RESTAURANT_ZIPCODE#",
   "#ZIPCODE#",
+  "#LANDING_PAGE#",
+  "#MAX_PAX_PAGE#",
+  "#CANCEL_BOOKING_PAGE#",
+  "#ALTERNATIVE_RESTAURANTS_PAGE#",
+  "#UNSUBSCRIBE_LINK#",
+  "#FEEDBACK_LINK#"
 ]
 export default function SmsTemplate() {
   const { t } = useTranslation();
@@ -160,8 +183,8 @@ export default function SmsTemplate() {
     <div className='pages__container'>
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
         <h2>{t('SMS Templates')} - {t(pageTitle)}</h2>
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           size="sm"
           type="button"
           onClick={() => navigate('/VideoGuides')}

@@ -22,7 +22,7 @@
           <div class="price-wrapper">
             <div class="price-card">
               <div class="price-card-top">
-                <span>€30</span>/{{__('month')}}
+                <span>€55</span>/{{__('month')}}
               </div>
               <p class="price-card-title">{{__('Monthly')}}</p>
               <a
@@ -38,9 +38,9 @@
             <div class="price-card">
               <div class="price-card-badge">{{__('Save')}} 15%</div>
               <div class="price-card-top">
-                <span>€175</span>/{{__('semiannual')}}
+                <span>€294</span>/{{__('semiannual')}}
               </div>
-              <div class="price-card-per-month"><span>€25</span>/{{__('month')}}</div>
+              <div class="price-card-per-month"><span>€49</span>/{{__('month')}}</div>
               <p class="price-card-title">{{__('semiannual')}}</p>
               <a
                 href="/admin/register"
@@ -55,9 +55,9 @@
             <div class="price-card">
               <div class="price-card-badge">{{__('Save')}} 30%</div>
               <div class="price-card-top">
-                <span>€240</span>/{{__('yearly')}}
+                <span>€468</span>/{{__('yearly')}}
               </div>
-              <div class="price-card-per-month"><span>€20</span>/{{__('month')}}</div>
+              <div class="price-card-per-month"><span>€39</span>/{{__('month')}}</div>
               <p class="price-card-title">{{__('yearly')}}</p>
               <a
                 href="/admin/register"

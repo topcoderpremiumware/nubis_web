@@ -6,13 +6,23 @@ import eventBus from "../../../eventBus";
 const Pricing = () => {
   const { t } = useTranslation();
   const [billDisabled, setBillDisabled] = useState(true)
+  const [place, setPlace] = useState({})
 
   useEffect(() => {
     getIsBillPaid()
+    getPlace()
     eventBus.on("placeChanged", () => {
       getIsBillPaid()
+      getPlace()
     })
   }, [])
+
+  const getPlace = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}`).then(response => {
+      setPlace(response.data)
+    }).catch(error => {
+    })
+  }
 
   const getIsBillPaid = () => {
     axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/is_bill_paid`, {
@@ -86,6 +96,49 @@ const Pricing = () => {
   return (
     <div className='price'>
       <h2 className="price-title price-top-title">{t('The right pricing plans for you')}</h2>
+      {place.country_id === 57 ?
+        <div className="price-wrapper">
+          <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
+            <div className="price-card-top">
+              <span>399 DKK</span>/{t('month')}
+            </div>
+            <p className="price-card-title">{t('Monthly')}</p>
+            <button
+              type="button"
+              className="price-card-btn"
+              onClick={() => getPaymentLink('price_1N0loUCVi0riU70Pod2y0QEX')}
+            >{t('Choose plan')}</button>
+          </div>
+
+          <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
+            <div className="price-card-badge">{t('Save')} 15%</div>
+            <div className="price-card-top">
+              <span>2 094 DKK</span>/{t('semiannual')}
+            </div>
+            <div className="price-card-per-month"><span>349 DKK</span>/{t('month')}</div>
+            <p className="price-card-title">{t('semiannual')}</p>
+            <button
+              type="button"
+              className="price-card-btn"
+              onClick={() => getPaymentLink('price_1N0lrUCVi0riU70PJRFD7RyV')}
+            >{t('Choose plan')}</button>
+          </div>
+
+          <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
+            <div className="price-card-badge">{t('Save')} 30%</div>
+            <div className="price-card-top">
+              <span>3 588 DKK</span>/{t('yearly')}
+            </div>
+            <div className="price-card-per-month"><span>299 DKK</span>/{t('month')}</div>
+            <p className="price-card-title">{t('yearly')}</p>
+            <button
+              type="button"
+              className="price-card-btn"
+              onClick={() => getPaymentLink('price_1O9Q8GCVi0riU70PS5T7onnK')}
+            >{t('Choose plan')}</button>
+          </div>
+        </div>
+        :
       <div className="price-wrapper">
         <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
           <div className="price-card-top">
@@ -126,7 +179,7 @@ const Pricing = () => {
             onClick={() => getPaymentLink('price_1O9QRACVi0riU70PvZCNBcq6')}
           >{t('Choose plan')}</button>
         </div>
-      </div>
+      </div>}
       {window.is_superadmin === 1 && <div style={{marginBottom: '15px', display: 'flex', justifyContent: 'center'}}>
         <button
           type="button"

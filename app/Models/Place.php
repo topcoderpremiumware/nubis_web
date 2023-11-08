@@ -111,7 +111,6 @@ class Place extends Model
 
     public function is_bill_paid()
     {
-        return true; // temporary
         $bill = $this->paid_bills()->orderByDesc('expired_at')->first();
         if(!$bill) return false;
         return $bill->expired_at > \Carbon\Carbon::now();
@@ -142,8 +141,7 @@ class Place extends Model
     public function allow_send_sms(): bool
     {
         $sms_limit_count = $this->setting('sms_limit_count') ?? 0;
-//        return $sms_limit_count > 0;
-        return true; // temporary
+        return $sms_limit_count > 0;
     }
 
     public function increase_sms_limit($number = 1)

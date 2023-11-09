@@ -45,16 +45,13 @@ const MonthView = () => {
       params: {
         place_id: localStorage.getItem('place_id'),
         area_id: localStorage.getItem('area_id'),
-        reservation_from: moment.utc({
-          year: moment.utc(reservationDate).year(),
-          month: moment.utc(reservationDate).month(),
-          day: 1
-        }).format('YYYY-MM-DD HH:mm:ss'),
-        reservation_to: moment.utc({
-          year: moment.utc(reservationDate).year(),
-          month: moment.utc(reservationDate).month() + 1,
-          day: 1
-        }).format('YYYY-MM-DD HH:mm:ss')
+        reservation_from: moment.utc(reservationDate)
+          .set('date', 1)
+          .format('YYYY-MM-DD HH:mm:ss'),
+        reservation_to: moment.utc(reservationDate)
+          .set('date', 1)
+          .add(1,'months')
+          .format('YYYY-MM-DD HH:mm:ss')
       }
     }).then(response => {
       let totals = {}

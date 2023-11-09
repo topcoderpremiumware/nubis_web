@@ -94,6 +94,7 @@ export default function TimetableEditPopup(props) {
     if(e.target.name === 'max') setTimetable(prev => ({...prev, max: intWrapper(e.target.value)}))
     if(e.target.name === 'status') setTimetable(prev => ({...prev, status: e.target.value}))
     if(e.target.name === 'min_time_before') setTimetable(prev => ({...prev, min_time_before: e.target.value}))
+    if(e.target.name === 'future_booking_limit') setTimetable(prev => ({...prev, future_booking_limit: e.target.value}))
   }
 
   const normalizeYearOfDate = (date) => {
@@ -163,16 +164,6 @@ export default function TimetableEditPopup(props) {
     return (tt.getHours()<10?'0':'')+tt.getHours()+':'+(tt.getMinutes()<10?'0':'')+tt.getMinutes()
   }
 
-  const makeRange = (months) => {
-    let today = Moment.utc().format('YYYY-MM-DD')
-    let to = Moment.utc().add(months,'months').format('YYYY-MM-DD')
-    setTimetable(prev => ({
-      ...prev,
-      start_date: normalizeYearOfDate(today),
-      end_date: normalizeYearOfDate(to)
-    }))
-  }
-
   return (<>
     {timetable.hasOwnProperty('start_date') &&
     <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="md"
@@ -230,13 +221,6 @@ export default function TimetableEditPopup(props) {
               </Select>
             </FormControl>
           </Grid>
-          {[1,2,3,4,5,6,12].map((i,key) => {
-            return <Grid item xs={6} sm={3} md={12/7} key={key}>
-                      <Button size="small"
-                        variant="contained"
-                        onClick={() => {makeRange(i)}}>{i} {i === 1 ? t('month') : t('months')}</Button>
-                  </Grid>
-            })}
           <Grid item xs={12} sm={4}>
             <FormControl size="small" fullWidth className="datePickerFullWidth">
               <InputLabel htmlFor="start_date" shrink>{t('Start date')}</InputLabel>
@@ -328,6 +312,18 @@ export default function TimetableEditPopup(props) {
                       onChange={onChange}>
                 {minBeforeTimes.map((el,key) => {
                   return <MenuItem key={key} value={el.value}>{el.title}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_length">{t('Future booking limit')}</InputLabel>
+              <Select label={t('Future booking limit')} value={timetable.future_booking_limit}
+                      labelId="label_future_booking_limit" id="future_booking_limit" name="future_booking_limit"
+                      onChange={onChange}>
+                {[0,1,2,3,4,5,6,12].map((el,key) => {
+                  return <MenuItem key={key} value={Math.floor(el*30.5)}>{el === 0 ? t('Unlimited') : <>{el} {el === 1 ? t('month') : t('months')}</>}</MenuItem>
                 })}
               </Select>
             </FormControl>

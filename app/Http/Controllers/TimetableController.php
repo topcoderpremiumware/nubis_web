@@ -6,6 +6,7 @@ use App\Models\Area;
 use App\Models\Log;
 use App\Models\Tableplan;
 use App\Models\Timetable;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,7 @@ class TimetableController extends Controller
             'min' => 'required|integer',
             'week_days' => 'array',
             'status' => 'required',
-            'min_time_before' => 'required|integer',
+            'min_time_before' => 'required|integer'
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)){
@@ -54,7 +55,8 @@ class TimetableController extends Controller
             'week_days' => $request->has('week_days') ? $request->week_days : [],
             'status' => $request->status,
             'booking_limits' => $request->booking_limits,
-            'min_time_before' => $request->min_time_before
+            'min_time_before' => $request->min_time_before,
+            'future_booking_limit' => $request->future_booking_limit,
         ]);
 
         Log::add($request,'create-timetable','Created timetable #'.$timetable->id);
@@ -107,7 +109,8 @@ class TimetableController extends Controller
             'week_days' => $request->has('week_days') ? $request->week_days : [],
             'status' => $request->status,
             'booking_limits' => $request->booking_limits,
-            'min_time_before' => $request->min_time_before
+            'min_time_before' => $request->min_time_before,
+            'future_booking_limit' => $request->future_booking_limit,
         ]);
 
         Log::add($request,'change-timetable','Changed timetable #'.$id);
@@ -233,6 +236,7 @@ class TimetableController extends Controller
         $working_hours = [];
 
         foreach ($working as $item){
+            if($item->future_booking_limit && Carbon::now()->addDays($item->future_booking_limit)->lt(Carbon::parse($date))) return [];
             if(empty($item->week_days) || in_array($week_day,$item->week_days)){
                 $working_hours[] = [
                     'date' => $date,

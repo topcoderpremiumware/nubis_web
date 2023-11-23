@@ -27,8 +27,8 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
     mouseY: null
   })
 
-  const width = 840*2
-  const height = 840*2
+  const width = window.innerWidth > 1000 ? 840*2 : 400
+  const height = window.innerWidth > 1000 ? 840*2 : 840
   const grid = 20
   const backgroundColor = '#ffffff'
   const lineStroke = '#ebebeb'

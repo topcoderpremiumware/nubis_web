@@ -13,6 +13,11 @@
     flex-direction: column;
     height: 100%;
 }
+@media  (max-width: 1024px) {
+  .DayView__container{
+    height: auto;
+  }
+}
 .DayView__container > .MuiBox-root{
     overflow: hidden;
     display: flex;

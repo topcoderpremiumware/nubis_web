@@ -61,6 +61,7 @@ export default function DayViewContent() {
   useEffect(() => {
     eventBus.on("openTableSidebar",(data) => {
       if(!data.type) setIsFullWidth(false)
+      if(window.innerWidth <= 1024) setIsFullWidth(true)
       setTableSidebar(data.type)
     })
     eventBus.on("placeChanged",(data) => {
@@ -98,7 +99,7 @@ export default function DayViewContent() {
   return (
     <div className='pages__container DayView__container'>
       <DayViewTop />
-      <div style={{display:'flex',height:'100%',overflow:'hidden'}}>
+      <div style={{display:'flex',height:(window.innerWidth > 1024 ? '100%' : '100vh'),overflow:'hidden'}}>
         <Box sx={{ width: '100%', flex: 1, display: isFullWidth ? 'none' : 'flex',flexDirection:'column' }} >
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='DayView__Boxbuttons'>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >

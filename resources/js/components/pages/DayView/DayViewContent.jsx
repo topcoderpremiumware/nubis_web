@@ -61,7 +61,7 @@ export default function DayViewContent() {
   useEffect(() => {
     eventBus.on("openTableSidebar",(data) => {
       if(!data.type) setIsFullWidth(false)
-      if(window.innerWidth <= 1024) setIsFullWidth(true)
+      if(window.innerWidth <= 1024 && data.type) setIsFullWidth(true)
       setTableSidebar(data.type)
     })
     eventBus.on("placeChanged",(data) => {

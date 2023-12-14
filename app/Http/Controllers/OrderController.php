@@ -1124,6 +1124,7 @@ class OrderController extends Controller
 
         $sms_notification_template = MessageTemplate::where('place_id',$order->place_id)
             ->where('purpose','sms-notification')
+            ->where('language',$place->language)
             ->where('active',1)
             ->first();
         if($sms_notification_template){

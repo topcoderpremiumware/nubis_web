@@ -34,6 +34,8 @@ export default function WaitingModal(props) {
       props.getUserInfoReq();
     } else if (defaultModal === "agreements") {
       setDefaultModal("emailWait");
+    }else if(defaultModal === "noTime"){
+      props.setDefaultModal("waiting");
     }
   };
 

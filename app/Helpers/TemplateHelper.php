@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Storage;
 
 class TemplateHelper
 {
-    public static function setVariables(Order $order, string $text): string
+    public static function setVariables(Order $order, string $text, string $lang = 'en'): string
     {
+        \Carbon\Carbon::setLocale($lang);
         $area = $order->area;
         $place = $order->place;
         $customer = $order->customer;
@@ -80,7 +81,7 @@ class TemplateHelper
             '', //#ADDRESS#
             $area->name,
             $reservation_time->format("d"),
-            $reservation_time->format("l"),
+            $reservation_time->translatedFormat("l"),
             $reservation_time->format("H:i"),
             $reservation_time->format("A"), //#BOOK_TIME_AMPM#
             $reservation_time->format("H"),
@@ -92,7 +93,7 @@ class TemplateHelper
             $end_reservation->format("A"), //#BOOK_ENDTIME_AMPM#
             $end_reservation->format("i"), //#BOOK_MIN_END#
             $reservation_time->format("m"), //#BOOK_MONTH#
-            $reservation_time->format("F"), //#BOOK_MONTH_NAME#
+            $reservation_time->translatedFormat("F"), //#BOOK_MONTH_NAME#
             $reservation_time->format("Y"), //#BOOK_YEAR#
             $order->comment, //#BOOK_COMMENT#
             '', //#CALENDAR_LINK#

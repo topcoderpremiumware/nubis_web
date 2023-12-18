@@ -79,7 +79,7 @@ class ReserveAmountPayment implements ShouldQueue
                         ->first();
                     if($sms_template) {
                         $place->decrease_sms_limit();
-                        $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order_data,$sms_template->text), env('APP_SHORT_NAME'));
+                        $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order_data,$sms_template->text,$order->customer->language), env('APP_SHORT_NAME'));
                     }
                 }
                 $email_template = MessageTemplate::where('place_id',$order->place_id)
@@ -88,7 +88,7 @@ class ReserveAmountPayment implements ShouldQueue
                     ->where('active',1)
                     ->first();
                 if($email_template && $order->customer->email) {
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order_data,$email_template->text), function ($msg) use ($email_template, $order) {
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order_data,$email_template->text,$order->customer->language), function ($msg) use ($email_template, $order) {
                         $msg->to($order->customer->email)->subject($email_template->subject);
                     });
 

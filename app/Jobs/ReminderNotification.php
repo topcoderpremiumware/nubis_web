@@ -58,7 +58,7 @@ class ReminderNotification implements ShouldQueue
 
                 if($reminder_template && $place->allow_send_sms()){
                     $place->decrease_sms_limit();
-                    $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$reminder_template->text), env('APP_SHORT_NAME'));
+                    $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$reminder_template->text,$customer->language), env('APP_SHORT_NAME'));
                 }
                 $marks = $order->marks;
                 if(!$marks) $marks = [];
@@ -90,7 +90,7 @@ class ReminderNotification implements ShouldQueue
                     ->first();
                 if($reminder_template && $customer->email){
                     try{
-                        \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$reminder_template->text), function($msg) use ($reminder_template, $customer) {
+                        \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$reminder_template->text,$customer->language), function($msg) use ($reminder_template, $customer) {
                             $msg->to($customer->email)->subject($reminder_template->subject);
                         });
                     }catch (\Exception $e){

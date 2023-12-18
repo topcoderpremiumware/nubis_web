@@ -81,7 +81,7 @@ class OrderController extends Controller
 
             if($sms_confirmation_template && $place->allow_send_sms()){
                 $place->decrease_sms_limit();
-                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_SHORT_NAME'));
+                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text,$customer->language), env('APP_SHORT_NAME'));
             }
             $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
                 ->where('purpose','email-confirmation')
@@ -89,7 +89,7 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_confirmation_template && $customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($email_confirmation_template, $customer) {
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer->language), function($msg) use ($email_confirmation_template, $customer) {
                     $msg->to($customer->email)->subject($email_confirmation_template->subject);
                 });
             }
@@ -160,7 +160,7 @@ class OrderController extends Controller
 
             if($sms_change_template && $place->allow_send_sms()){
                 $place->decrease_sms_limit();
-                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_change_template->text), env('APP_SHORT_NAME'));
+                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_change_template->text,$customer->language), env('APP_SHORT_NAME'));
             }
             $email_change_template = MessageTemplate::where('place_id',$request->place_id)
                 ->where('purpose','email-change')
@@ -168,7 +168,7 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_change_template && $customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text), function($msg) use ($email_change_template, $customer) {
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text,$customer->language), function($msg) use ($email_change_template, $customer) {
                     $msg->to($customer->email)->subject($email_change_template->subject);
                 });
             }
@@ -267,7 +267,7 @@ class OrderController extends Controller
 
             if($sms_delete_template && $place->allow_send_sms()){
                 $place->decrease_sms_limit();
-                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_SHORT_NAME'));
+                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text,$customer->language), env('APP_SHORT_NAME'));
             }
             $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
                 ->where('purpose','email-delete')
@@ -275,7 +275,7 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_delete_template && $customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text), function($msg) use ($email_delete_template, $customer) {
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($email_delete_template, $customer) {
                     $msg->to($customer->email)->subject($email_delete_template->subject);
                 });
             }
@@ -339,7 +339,7 @@ class OrderController extends Controller
         $smsApiToken = $place->setting('sms-api-token');
         if($sms_delete_template && $place->allow_send_sms()){
             $place->decrease_sms_limit();
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text), env('APP_SHORT_NAME'));
+            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text,$customer->language), env('APP_SHORT_NAME'));
         }
         $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','email-delete')
@@ -347,7 +347,7 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
         if($email_delete_template && $customer->email){
-            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text), function($msg) use ($email_delete_template, $customer) {
+            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($email_delete_template, $customer) {
                 $msg->to($customer->email)->subject($email_delete_template->subject);
             });
         }
@@ -455,7 +455,7 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_template && $order->customer->email) {
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text), function ($msg) use ($email_template, $order) {
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text,$order->customer->language), function ($msg) use ($email_template, $order) {
                     $msg->to($order->customer->email)->subject($email_template->subject);
                 });
             }
@@ -1108,7 +1108,7 @@ class OrderController extends Controller
 
             if($sms_confirmation_template && $place->allow_send_sms()){
                 $place->decrease_sms_limit();
-                $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text), env('APP_SHORT_NAME'));
+                $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text,$order->customer->language), env('APP_SHORT_NAME'));
             }
             $email_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
                 ->where('purpose','email-confirmation')
@@ -1116,7 +1116,7 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_confirmation_template && $order->customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text), function($msg) use ($order, $email_confirmation_template) {
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$order->customer->language), function($msg) use ($order, $email_confirmation_template) {
                     $msg->to($order->customer->email)->subject($email_confirmation_template->subject);
                 });
             }
@@ -1136,7 +1136,7 @@ class OrderController extends Controller
             foreach ($sms_notification_numbers as $number) {
                 if($place->allow_send_sms()){
                     $place->decrease_sms_limit();
-                    $result = SMS::send([$number], TemplateHelper::setVariables($order, $sms_notification_template->text), env('APP_SHORT_NAME'));
+                    $result = SMS::send([$number], TemplateHelper::setVariables($order, $sms_notification_template->text,$place->language), env('APP_SHORT_NAME'));
                 }
             }
         }

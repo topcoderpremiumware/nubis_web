@@ -5,6 +5,7 @@ import {fabric} from 'fabric';
 import {circTable, landscape, rectTable} from "./tableTypes";
 import {Menu, MenuItem} from "@mui/material";
 import TablePropertiesPopup from "./TablePropertiesPopup";
+import {isMobile} from "../../../helper";
 
 export default function PlanCanvas(props) {
   const { t } = useTranslation();
@@ -16,8 +17,8 @@ export default function PlanCanvas(props) {
     mouseY: null
   })
   const [propertiesOpen, setPropertiesOpen] = useState(false)
-  const width = /*window.innerWidth > 1024 ? 840*2 :*/ 460
-  const height = /*window.innerWidth > 1024 ? 840*2 :*/ 460
+  const width = isMobile ? 460 : 840*2
+  const height = isMobile ? 460 : 840*2
   const grid = 20
   const backgroundColor = '#ffffff'
   const lineStroke = '#ebebeb'

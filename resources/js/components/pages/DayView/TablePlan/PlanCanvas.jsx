@@ -10,7 +10,7 @@ import axios from "axios";
 import eventBus from "../../../../eventBus";
 import moment from "moment";
 import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
-import {isMobile} from "../../../../helper";
+import {isIPad, isMobile} from "../../../../helper";
 // import TablePropertiesPopup from "./TablePropertiesPopup";
 
 export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth }) {
@@ -28,8 +28,8 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
     mouseY: null
   })
 
-  const width = isMobile ? 460 : 840*2
-  const height = isMobile ? 460 : 840*2
+  const width = isMobile() ? 460 : (isIPad() ? 460*2 : 840*2)
+  const height = isMobile() ? 460 : (isIPad() ? 460*2 : 840*2)
   const grid = 20
   const backgroundColor = '#ffffff'
   const lineStroke = '#ebebeb'

@@ -120,7 +120,8 @@ export default function TabNewBooking(props) {
         area_id: order.area_id,
         seats: order.seats,
         reservation_time: Moment.utc(order.reservation_time).utc().format('YYYY-MM-DD HH:mm:ss'),
-        length: order.length
+        length: order.length,
+        admin: true
       }
     }).then(response => {
       let data = []

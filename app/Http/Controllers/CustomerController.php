@@ -28,6 +28,7 @@ class CustomerController extends Controller
         $request->validate([
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:2',
+            'phone' => 'required',
 //            'email' => 'email|unique:customers',
             'password' => 'min:4|confirmed',
         ]);

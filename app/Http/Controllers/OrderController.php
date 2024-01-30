@@ -656,7 +656,7 @@ class OrderController extends Controller
             'message' => 'Date must be today and later'
         ], 400);
 
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"));
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),$request->has('admin'));
         if(empty($working_hours)) return response()->json([
             'message' => 'Non-working day'
         ], 400);
@@ -1154,7 +1154,7 @@ class OrderController extends Controller
 
         $reservation_time = Carbon::parse($request->reservation_time);
 
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$reservation_time->format("Y-m-d"));
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$reservation_time->format("Y-m-d"),$request->has('admin'));
         if(empty($working_hours)) return response()->json([
             'message' => 'Non-working day'
         ], 400);

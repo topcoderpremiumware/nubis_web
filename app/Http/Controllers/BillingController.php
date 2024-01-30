@@ -243,7 +243,7 @@ class BillingController extends Controller
                     'duration' => $duration,
                     'expired_at' => \Carbon\Carbon::now()->addMonths($duration),
                     'payment_intent_id' => $object->id,
-                    'receipt_url' => $object->hosted_invoice_url
+                    'receipt_url' => $object->invoice_pdf
                 ]);
             }
         }

@@ -180,11 +180,11 @@ class TimetableController extends Controller
         return response()->json($working_hours);
     }
 
-    public static function get_working_by_area_and_date($area_id, $date)
+    public static function get_working_by_area_and_date($area_id, $date, $for_admin = false)
     {
         $area = Area::find($area_id);
         if(!$area) return [];
-        $default_tableplan = $area->place->timetables()->first();
+        $default_tableplan = $area->place->tableplans()->first();
         $date_arr = explode('-',$date);
         $without_year = $date_arr[1].'-'.$date_arr[2];
         $week_day = date('w',strtotime($date));
@@ -261,6 +261,20 @@ class TimetableController extends Controller
                 }
             }
         }
+
+        if(empty($working_hours) && $for_admin){
+            $working_hours[] = [
+                'date' => $date,
+                'from' => '00:00:00',
+                'to' => '23:59:59',
+                'tableplan_id' => $default_tableplan->id,
+                'booking_limits' => [],
+                'length' => 0,
+                'min_time_before' => 0,
+                'max' => 999
+            ];
+        }
+
 
 //        TODO: згрупувати діапазони, якщо в них однакові плани і час пересікається
 //         Якщо час не накладається то нічого не робити

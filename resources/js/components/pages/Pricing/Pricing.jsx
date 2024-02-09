@@ -100,41 +100,41 @@ const Pricing = () => {
         <div className="price-wrapper">
           <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
             <div className="price-card-top">
-              <span>399 DKK</span>/{t('month')}
+              <span>412 DKK</span>/{t('month')}
             </div>
             <p className="price-card-title">{t('Monthly')}</p>
             <button
               type="button"
               className="price-card-btn"
-              onClick={() => getPaymentLink('price_1N0loUCVi0riU70Pod2y0QEX')}
+              onClick={() => getPaymentLink('price_1OhXHMCVi0riU70PfraO6sX5')}
             >{t('Choose plan')}</button>
           </div>
 
           <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
             <div className="price-card-badge">{t('Save')} 15%</div>
             <div className="price-card-top">
-              <span>2 094 DKK</span>/{t('semiannual')}
+              <span>2 205 DKK</span>/{t('semiannual')}
             </div>
-            <div className="price-card-per-month"><span>349 DKK</span>/{t('month')}</div>
+            <div className="price-card-per-month"><span>367.50 DKK</span>/{t('month')}</div>
             <p className="price-card-title">{t('semiannual')}</p>
             <button
               type="button"
               className="price-card-btn"
-              onClick={() => getPaymentLink('price_1N0lrUCVi0riU70PJRFD7RyV')}
+              onClick={() => getPaymentLink('price_1OhXQ8CVi0riU70PNiFV9ke5')}
             >{t('Choose plan')}</button>
           </div>
 
           <div className={`price-card ${billDisabled ? 'disabled' : ''}`}>
             <div className="price-card-badge">{t('Save')} 30%</div>
             <div className="price-card-top">
-              <span>3 588 DKK</span>/{t('yearly')}
+              <span>3 510 DKK</span>/{t('yearly')}
             </div>
-            <div className="price-card-per-month"><span>299 DKK</span>/{t('month')}</div>
+            <div className="price-card-per-month"><span>292.50 DKK</span>/{t('month')}</div>
             <p className="price-card-title">{t('yearly')}</p>
             <button
               type="button"
               className="price-card-btn"
-              onClick={() => getPaymentLink('price_1O9Q8GCVi0riU70PS5T7onnK')}
+              onClick={() => getPaymentLink('price_1OhXSHCVi0riU70PqoAlAtdI')}
             >{t('Choose plan')}</button>
           </div>
         </div>

@@ -47,7 +47,11 @@ function App() {
   const [sidebarIsVisible, setSidebarIsVisible] = useState(true)
 
   if(localStorage.getItem('token')){
-    axios.get(`${process.env.MIX_API_URL}/api/user`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/user`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
       window.is_superadmin = response.data.is_superadmin
       console.log('is_superadmin',window.is_superadmin)
     }).catch(error => {
@@ -72,6 +76,9 @@ function App() {
     axios.get(`${process.env.MIX_API_URL}/api/user/role`,{
       params: {
         place_id: localStorage.getItem('place_id')
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
       if(response.data.length > 0){

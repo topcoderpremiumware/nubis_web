@@ -20,6 +20,10 @@ const PaymentGateway = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'stripe-key',
       value: stripeKey
+    },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Stripe Key saved'});
     }).catch(error => {})
@@ -28,6 +32,10 @@ const PaymentGateway = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'stripe-secret',
       value: stripeSecret
+    },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Stripe Secret saved'});
     }).catch(error => {})
@@ -36,6 +44,10 @@ const PaymentGateway = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'stripe-webhook-secret',
       value: stripeWebhookSecret
+    },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Stripe Webhook Secret saved'});
     }).catch(error => {})

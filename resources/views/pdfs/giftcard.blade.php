@@ -60,7 +60,6 @@
         /* @var $giftcard */
         $place = $giftcard->place;
         $file = $place->files()->where('purpose','online_booking_picture')->first();
-        $img = $file->filename;
     @endphp
     <h2>{{$place->name}}</h2>
     <h3>{{__('Giftcard')}}</h3>
@@ -70,5 +69,7 @@
     <p><b>{{__('Code')}}:</b> {{$giftcard->code}}</p>
     <p><b>{{__('Valid until')}}:</b> {{\Carbon\Carbon::parse($giftcard->expired_at)->format('d.m.Y')}}</p>
     <div class="contact">{{$place->name}} | {{$place->address}} - {{$place->zip_code}} {{$place->city}}, {{$place->country->name}} | {{$place->phone}} | {{$place->home_page}}</div>
-    <img class="bottom_img" src="{{asset('storage/'.$img)}}">
+    @if($file)
+        <img class="bottom_img" src="{{asset('storage/'.$file->filename)}}">
+    @endif
 </body>

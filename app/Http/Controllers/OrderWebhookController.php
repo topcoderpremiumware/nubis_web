@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Giftcard;
 use App\Models\Order;
 use App\Models\Place;
+use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Stripe\StripeClient;
 use Stripe\Webhook;
 
@@ -99,6 +101,12 @@ class OrderWebhookController extends Controller
                         $dompdf->loadHtml($html);
                         $dompdf->setPaper('A4');
                         $dompdf->render();
+
+                        $filename = 'giftcards/'.$giftcard->id.'_'.Carbon::now()->timestamp.'.pdf';
+                        Storage::disk('public')->put($filename, $dompdf->output());
+
+                        $giftcard->filename = $filename;
+                        $giftcard->save();
 
                         \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($dompdf, $giftcard) {
                             $msg->to($giftcard->email)->subject('Giftcard');

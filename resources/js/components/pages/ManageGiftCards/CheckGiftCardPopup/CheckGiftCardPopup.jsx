@@ -31,13 +31,22 @@ export default function CheckGiftCardPopup({ open, handleClose }) {
   const [amount, setAmount] = useState(1)
   const [error, setError] = useState('')
   const [currency, setCurrency] = useState('DDK')
+  const [autoOpen, setAutoOpen] = useState(false)
 
   useEffect(() => {
     getCurrency()
     eventBus.on("placeChanged", () => {
       getCurrency()
     })
+    eventBus.on('openCheckGiftCardPopup',(data) => {
+      setCode(data.code)
+      setAutoOpen(true)
+    })
   },[])
+
+  useEffect(() => {
+    if(autoOpen && code) checkCard()
+  },[code])
 
   const onClose = () => {
     setCode('')

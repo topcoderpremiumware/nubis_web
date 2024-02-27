@@ -5,12 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class Giftcard extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $appends = [
+        'url'
+    ];
 
     public function place(): BelongsTo
     {
@@ -68,5 +73,10 @@ class Giftcard extends Model
         }else{
             return false;
         }
+    }
+
+    public function getUrlAttribute(): string|null
+    {
+        return $this->filename ? Storage::disk('public')->url($this->filename) : null;
     }
 }

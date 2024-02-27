@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Giftcard;
 use App\Models\Log;
 use App\Models\Place;
+use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Stripe\StripeClient;
 
 class GiftcardController extends Controller
@@ -135,6 +137,12 @@ class GiftcardController extends Controller
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4');
         $dompdf->render();
+
+        $filename = 'giftcards/'.$giftcard->id.'_'.Carbon::now()->timestamp.'.pdf';
+        Storage::disk('public')->put($filename, $dompdf->output());
+
+        $giftcard->filename = $filename;
+        $giftcard->save();
 
         \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($dompdf, $request) {
             $msg->to($request->email)->subject('Giftcard');

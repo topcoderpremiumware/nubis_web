@@ -89,8 +89,9 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_confirmation_template && $customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer->language), function($msg) use ($email_confirmation_template, $customer) {
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer->language), function($msg) use ($place,$email_confirmation_template, $customer) {
                     $msg->to($customer->email)->subject($email_confirmation_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                 });
             }
         }
@@ -168,8 +169,9 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_change_template && $customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text,$customer->language), function($msg) use ($email_change_template, $customer) {
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text,$customer->language), function($msg) use ($place,$email_change_template, $customer) {
                     $msg->to($customer->email)->subject($email_change_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                 });
             }
         }
@@ -275,8 +277,9 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_delete_template && $customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($email_delete_template, $customer) {
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($place,$email_delete_template, $customer) {
                     $msg->to($customer->email)->subject($email_delete_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                 });
             }
         }
@@ -347,8 +350,9 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
         if($email_delete_template && $customer->email){
-            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($email_delete_template, $customer) {
+            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($place,$email_delete_template, $customer) {
                 $msg->to($customer->email)->subject($email_delete_template->subject);
+                $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
             });
         }
 
@@ -455,8 +459,10 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_template && $order->customer->email) {
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text,$order->customer->language), function ($msg) use ($email_template, $order) {
+                $place = Place::find($order->place_id);
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text,$order->customer->language), function ($msg) use ($place,$email_template, $order) {
                     $msg->to($order->customer->email)->subject($email_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                 });
             }
         }
@@ -1115,9 +1121,11 @@ class OrderController extends Controller
                 ->where('language',$order->customer->language)
                 ->where('active',1)
                 ->first();
+            $place = Place::find($order->place_id);
             if($email_confirmation_template && $order->customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$order->customer->language), function($msg) use ($order, $email_confirmation_template) {
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$order->customer->language), function($msg) use ($place,$order, $email_confirmation_template) {
                     $msg->to($order->customer->email)->subject($email_confirmation_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                 });
             }
         }

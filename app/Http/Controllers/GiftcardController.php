@@ -144,13 +144,15 @@ class GiftcardController extends Controller
         $giftcard->filename = $filename;
         $giftcard->save();
 
-        \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($dompdf, $request) {
+        \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($place, $dompdf, $request) {
             $msg->to($request->email)->subject('Giftcard');
+            $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
             $msg->attachData($dompdf->output(), 'giftcard.pdf');
         });
         if($request->has('receiver_email') && $request->receiver_email){
-            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($dompdf, $request) {
+            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($place, $dompdf, $request) {
                 $msg->to($request->receiver_email)->subject('Giftcard');
+                $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                 $msg->attachData($dompdf->output(), 'giftcard.pdf');
             });
         }

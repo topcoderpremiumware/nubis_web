@@ -90,8 +90,10 @@ class ReminderNotification implements ShouldQueue
                     ->first();
                 if($reminder_template && $customer->email){
                     try{
-                        \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$reminder_template->text,$customer->language), function($msg) use ($reminder_template, $customer) {
+                        $place = Place::find($order->place_id);
+                        \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$reminder_template->text,$customer->language), function($msg) use ($place,$reminder_template, $customer) {
                             $msg->to($customer->email)->subject($reminder_template->subject);
+                            $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                         });
                     }catch (\Exception $e){
                         Log::error($e->getMessage());

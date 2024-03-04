@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\TemplateHelper;
 use App\Models\Feedback;
+use App\Models\Place;
 use App\Models\Log;
 use App\Models\Order;
 use App\SMS\SMS;
@@ -203,8 +204,11 @@ class FeedbackController extends Controller
                 $result = SMS::send([$customer->phone], $request->reply, env('APP_SHORT_NAME'));
             }
 
-            \Illuminate\Support\Facades\Mail::html($request->reply, function ($msg) use ($customer) {
+            $place = Place::find($feedback->place_id);
+
+            \Illuminate\Support\Facades\Mail::html($request->reply, function ($msg) use ($place, $customer) {
                 $msg->to($customer->email)->subject('Reply to feedback');
+                $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
             });
         }
 

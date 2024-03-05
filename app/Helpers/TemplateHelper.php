@@ -11,18 +11,21 @@ class TemplateHelper
     public static function setVariables(Order $order, string $text, string $lang = 'en'): string
     {
         \Carbon\Carbon::setLocale($lang);
+
+        $custom_booking_length = $order->custom_booking_length;
+        $order_length = $custom_booking_length ? $order->length - $custom_booking_length->preparation_length : $order->length;
         $area = $order->area;
         $place = $order->place;
         $customer = $order->customer;
         $timezone_offset = array_key_exists('timezone_offset',$order->marks) ? $order->marks['timezone_offset'] : 0;
         $reservation_time = $order->reservation_time->copy();//->addMinutes($timezone_offset);
-        $end_reservation = $reservation_time->copy()->addMinutes($order->length);
+        $end_reservation = $reservation_time->copy()->addMinutes($order_length);
         $place_photo_file = $place->files()->where('purpose','online_booking_picture')->first();
         $place_photo_url = '';
         if($place_photo_file){
             $place_photo_url = Storage::disk('public')->url($place_photo_file->filename);
         }
-        $custom_booking_length = $order->custom_booking_length;
+
 
         $vars = [
             "#ADDRESS#",
@@ -88,7 +91,7 @@ class TemplateHelper
             $reservation_time->format("H"),
             $end_reservation->format("H"),
             $order->id,
-            $custom_booking_length ? $order->length - $custom_booking_length->preparation_length : $order->length,
+            $order_length,
             $reservation_time->format("i"), //#BOOK_MIN#
             $end_reservation->format("H:i"),
             $end_reservation->format("A"), //#BOOK_ENDTIME_AMPM#

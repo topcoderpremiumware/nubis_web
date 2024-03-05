@@ -22,6 +22,7 @@ class TemplateHelper
         if($place_photo_file){
             $place_photo_url = Storage::disk('public')->url($place_photo_file->filename);
         }
+        $custom_booking_length = $order->custom_booking_length;
 
         $vars = [
             "#ADDRESS#",
@@ -87,7 +88,7 @@ class TemplateHelper
             $reservation_time->format("H"),
             $end_reservation->format("H"),
             $order->id,
-            $order->length,
+            $custom_booking_length ? $order->length - $custom_booking_length->preparation_length : $order->length,
             $reservation_time->format("i"), //#BOOK_MIN#
             $end_reservation->format("H:i"),
             $end_reservation->format("A"), //#BOOK_ENDTIME_AMPM#
@@ -104,7 +105,7 @@ class TemplateHelper
             '', //#COMPANY#
             $customer ? $customer->first_name.' '.$customer->last_name : '', //#CONTACT_PERSON#
             $customer ? $customer->phone : '', //#CONTACT_PHONE#
-            $order->custom_booking_length ? $order->custom_booking_length->name : '', //#CUSTOM_BOOK_LENGTH_NAME#
+            $custom_booking_length ? $custom_booking_length->name : '', //#CUSTOM_BOOK_LENGTH_NAME#
             $customer ? $customer->email : '', //#EMAIL#
             $customer ? $customer->first_name : '',
             $customer ? $customer->last_name : '',

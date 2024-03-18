@@ -205,11 +205,12 @@ class FeedbackController extends Controller
             }
 
             $place = Place::find($feedback->place_id);
-
-            \Illuminate\Support\Facades\Mail::html($request->reply, function ($msg) use ($place, $customer) {
-                $msg->to($customer->email)->subject('Reply to feedback');
-                $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-            });
+            try{
+                \Illuminate\Support\Facades\Mail::html($request->reply, function ($msg) use ($place, $customer) {
+                    $msg->to($customer->email)->subject('Reply to feedback');
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                });
+            }catch (\Exception $e){}
         }
 
         Log::add($request,'change-feedback-reply','Changed feedback #'.$feedback->id);

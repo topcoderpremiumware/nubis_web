@@ -73,6 +73,7 @@ const App = () => {
   const [paymentMethod, setPaymentMethod] = useState({})
   const [giftCardCode, setGiftCardCode] = useState('')
   const [comment, setComment] = useState('')
+  const [customerDenyRegister, setCustomerDenyRegister] = useState(false);
 
   const myAxios = axios.create({
     baseURL: process.env.MIX_API_URL,
@@ -85,7 +86,21 @@ const App = () => {
     getPlaceData()
     getDatesTimeInfo(utils().getToday());
     getPaymentMethod()
+    getCustomerDenyRegister()
   }, []);
+
+  const getCustomerDenyRegister = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
+      params: {
+        place_id: getPlaceId(),
+        name: 'customer-deny-register'
+      }
+    }).then(response => {
+      setCustomerDenyRegister(Boolean(parseInt(response.data.value)))
+    }).catch(error => {
+      setCustomerDenyRegister(false)
+    })
+  }
 
   const handleChangeItem = () => {
     if(blockType === 'mainblock' && !showSelectAreas) {
@@ -126,6 +141,11 @@ const App = () => {
   // New state
 
   const postRequest = (data, url, type) => {
+    if(customerDenyRegister && type === "register"){
+      handleChangeItem();
+      return;
+    }
+
     const config =
       type === "logout" || type === "edit"
         ? {
@@ -308,7 +328,7 @@ const App = () => {
           is_take_away: false,
           ...(giftCardCode && {giftcard_code: giftCardCode}),
           custom_booking_length_id: timelineId,
-
+          ...(customerDenyRegister && {first_name: userData.first_name, last_name: userData.last_name, phone: userData.phone, email: userData.email}),
           ...(setupIntentId && {setup_intent_id: setupIntentId})
         },
         {

@@ -25,8 +25,8 @@ export const SidebarData = (data) => { return [
         path: '/TablePlanSetup',
       },
       {
-        title: 'Pictures',
-        path: '/Pictures',
+        title: 'Booking Settings',
+        path: '/BookingSettings',
       },
       {
         title: 'Areas',

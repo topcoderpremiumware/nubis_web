@@ -1,4 +1,4 @@
-import Reac from "react";
+import React from "react";
 import Image from "../FirstBlock/img/Image";
 import "../SecondBlock/SecondBlock.css";
 import SelectLang from "../FirstBlock/SelectLang/SelectLang";

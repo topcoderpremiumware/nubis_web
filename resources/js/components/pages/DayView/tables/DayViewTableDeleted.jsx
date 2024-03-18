@@ -54,11 +54,11 @@ export default function DayViewTableWaiting() {
     { field: 'status', headerName: t('Status'), width: 100 },
     { field: 'from', headerName: t('From'), width: 70 },
     { field: 'to', headerName: t('To'), width: 70 },
-    { field: 'first_name', headerName: t('First name'), width: 130 },
-    { field: 'last_name', headerName: t('Last name'), width: 130 },
+    { field: 'table_first_name', headerName: t('First name'), width: 130 },
+    { field: 'table_last_name', headerName: t('Last name'), width: 130 },
     { field: 'seats', headerName: t('Seats'), width: 10 },
-    { field: 'phone', headerName: t('Phone'), width: 140 },
-    { field: 'email', headerName: t('Email'), width: 150 },
+    { field: 'table_phone', headerName: t('Phone'), width: 140 },
+    { field: 'table_email', headerName: t('Email'), width: 150 },
     { field: 'deleted_at', headerName: t('Deleted date'), width: 140 },
     { field: 'area_name', headerName: t('Area'), width: 160 },
   ];
@@ -85,10 +85,10 @@ export default function DayViewTableWaiting() {
         let orders = response.data.map(item => {
           item.from = Moment.utc(item.reservation_time).format('HH:mm') // removed local
           item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').format('HH:mm') // removed local
-          item.first_name = !item?.customer_id ? 'Walk in' : item.customer.first_name
-          item.last_name = item.customer?.last_name || ''
-          item.phone = item.customer?.phone || ''
-          item.email = item.customer?.email || ''
+          item.table_first_name = item?.customer_id ? item.customer.first_name : item?.first_name || 'Walk in'
+          item.table_last_name = item?.customer_id ? item.customer.last_name : item?.last_name || ''
+          item.table_phone = item?.customer_id ? item.customer.phone : item?.phone || ''
+          item.table_email = item?.customer_id ? item.customer.email : item?.email || ''
           item.deleted_at = Moment.utc(item.deleted_at).local().format('YYYY-MM-DD HH:mm') // removed local
           item.area_name = item.area.name
           item.self = item

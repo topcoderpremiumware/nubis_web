@@ -21,7 +21,7 @@ import ListSubheader from "@mui/material/ListSubheader";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import PictureUploadButton from "../GeneralSettings/Pictures/PictureUploadButton";
+import PictureUploadButton from "../GeneralSettings/BookingSettings/PictureUploadButton";
 import Box from '@mui/material/Box';
 import EditIcon from "@mui/icons-material/Edit";
 

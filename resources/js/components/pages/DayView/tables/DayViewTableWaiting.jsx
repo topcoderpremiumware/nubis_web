@@ -58,8 +58,8 @@ export default function DayViewTableWaiting() {
     { field: 'status', headerName: t('Status'), width: 100 },
     { field: 'from', headerName: t('From'), width: 70 },
     { field: 'to', headerName: t('To'), width: 70 },
-    { field: 'first_name', headerName: t('First name'), width: 130 },
-    { field: 'last_name', headerName: t('Last name'), width: 130 },
+    { field: 'table_first_name', headerName: t('First name'), width: 130 },
+    { field: 'table_last_name', headerName: t('Last name'), width: 130 },
     { field: 'seats', headerName: t('Seats'), width: 10 },
     { field: 'comment', headerName: t('Note'), width: 200},
     { field: 'order_date', headerName: t('Order date'), width: 140 },
@@ -89,8 +89,8 @@ export default function DayViewTableWaiting() {
           if(item.status !== 'waiting') return false
           item.from = Moment.utc(item.reservation_time).format('HH:mm') // removed local
           item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes').format('HH:mm') // removed local
-          item.first_name = !item?.customer_id ? 'Walk in' : item.customer.first_name
-          item.last_name = item.customer?.last_name || ''
+          item.table_first_name = item?.customer_id ? item.customer.first_name : item?.first_name || 'Walk in'
+          item.table_last_name = item?.customer_id ? item.customer.last_name : item?.last_name || ''
           item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm') // removed local
           item.area_name = item.area.name
           return item

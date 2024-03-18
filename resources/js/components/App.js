@@ -20,7 +20,7 @@ const ManageFeedback = React.lazy(() => import('./pages/ManageFeedback/ManageFee
 const OpeningTimes = React.lazy(() => import('./pages/OpeningTimes/OpeningTimes'))
 const CustomBookingLength = React.lazy(() => import('./pages/CustomBookingLength/CustomBookingLength'))
 const BasicInformation = React.lazy(() => import('./pages/GeneralSettings/BasicInformation/BasicInformation'))
-const Pictures = React.lazy(() => import('./pages/GeneralSettings/Pictures/Pictures'))
+const BookingSettings = React.lazy(() => import('./pages/GeneralSettings/BookingSettings/BookingSettings'))
 const Pricing = React.lazy(() => import('./pages/Pricing/Pricing'))
 const RestaurantNew = React.lazy(() => import('./pages/RestaurantNew/RestaurantNew'))
 const ThankYou = React.lazy(() => import('./pages/ThankYou/ThankYou'))
@@ -136,8 +136,8 @@ function App() {
                 <Route path='/BasicInformation' exact element={<Suspense fallback={<LoadingPage/>}>
                   <BasicInformation/>
                 </Suspense>} />
-                <Route path='/Pictures' exact element={<Suspense fallback={<LoadingPage/>}>
-                  <Pictures/>
+                <Route path='/BookingSettings' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <BookingSettings/>
                 </Suspense>} />
                 <Route path='/SmsKeys' exact element={<Suspense fallback={<LoadingPage/>}>
                   <SmsApiKeys/>

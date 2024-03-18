@@ -196,9 +196,11 @@ class AuthApiController extends Controller
         $user = User::where('email',$request->email)->first();
         if(!$user){
             $text = 'You have been invited to register on the website '.env('APP_NAME').'. To register, you can follow the link '.env('APP_URL').'/admin/register?invitation=1';
-            \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($request) {
-                $msg->to($request->email)->subject('Invitation to registration');
-            });
+            try{
+                \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($request) {
+                    $msg->to($request->email)->subject('Invitation to registration');
+                });
+            }catch (\Exception $e){}
             return response()->json([
                 'message' => 'This email is not registered, so a letter was sent to register.'
             ], 400);

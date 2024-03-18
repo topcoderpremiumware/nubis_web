@@ -237,9 +237,11 @@ class PlaceController extends Controller
 //        if(count($superadmins) > 0){
 //            foreach ($superadmins as $superadmin){
 //                if($superadmin->id !== Auth::user()->id){
-                    \Illuminate\Support\Facades\Mail::html($request->message, function($msg) use ($request) {
-                        $msg->to('support@nubisreservation.com')->subject('Place ID: '.$request->place_id.' '.$request->subject);
-                    });
+                    try{
+                        \Illuminate\Support\Facades\Mail::html($request->message, function($msg) use ($request) {
+                            $msg->to('support@nubisreservation.com')->subject('Place ID: '.$request->place_id.' '.$request->subject);
+                        });
+                    }catch (\Exception $e){}
 //                }
 //            }
 //        }
@@ -287,10 +289,11 @@ class PlaceController extends Controller
             'phone' => 'required',
             'message' => 'required'
         ]);
-
-        \Illuminate\Support\Facades\Mail::html($request->message.'<br><br>First name: '.$request->first_name.'<br>Last name: '.$request->last_name.'<br>Phone: '.$request->phone.'<br>Email: '.$request->email, function($msg) use ($request) {
-            $msg->to(env('MAIL_FROM_ADDRESS'))->subject('Contact Message: '.$request->first_name.' '.$request->last_name);
-        });
+        try{
+            \Illuminate\Support\Facades\Mail::html($request->message.'<br><br>First name: '.$request->first_name.'<br>Last name: '.$request->last_name.'<br>Phone: '.$request->phone.'<br>Email: '.$request->email, function($msg) use ($request) {
+                $msg->to(env('MAIL_FROM_ADDRESS'))->subject('Contact Message: '.$request->first_name.' '.$request->last_name);
+            });
+        }catch (\Exception $e){}
         return back()->with('status', 'The message was sent successfully');
     }
 
@@ -342,9 +345,11 @@ class PlaceController extends Controller
         Log::add($request,'delete-place','Deleted place #'.$id);
 
         if($place->is_bill_paid()){
-            \Illuminate\Support\Facades\Mail::html('The place #'.$id.' '.$place->name.' was deleted by admin. Maybe you need to unsubscribe this place from the Stripe.', function($msg) use ($id) {
-                $msg->to(env('MAIL_FROM_ADDRESS'))->subject('Place was deleted #'.$id);
-            });
+            try{
+                \Illuminate\Support\Facades\Mail::html('The place #'.$id.' '.$place->name.' was deleted by admin. Maybe you need to unsubscribe this place from the Stripe.', function($msg) use ($id) {
+                    $msg->to(env('MAIL_FROM_ADDRESS'))->subject('Place was deleted #'.$id);
+                });
+            }catch (\Exception $e){}
         }
 
         $place->delete();

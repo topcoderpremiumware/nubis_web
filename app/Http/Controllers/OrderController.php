@@ -7,6 +7,7 @@ use App\Events\OrderDeleted;
 use App\Events\OrderRestored;
 use App\Events\OrderUpdated;
 use App\Helpers\TemplateHelper;
+use App\Models\BlackList;
 use App\Models\Customer;
 use App\Models\Giftcard;
 use App\Models\Log;
@@ -66,7 +67,11 @@ class OrderController extends Controller
             'source' => $request->source,
             'marks' => ['timezone_offset' => $request->timezone_offset],
             'custom_booking_length_id' => $request->custom_booking_length_id,
-            'user_id' => Auth::user()->id
+            'user_id' => Auth::user()->id,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'phone' => $request->phone
         ]);
 
         Log::add($request,'create-order','Created order #'.$order->id);
@@ -89,10 +94,12 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_confirmation_template && $customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer->language), function($msg) use ($place,$email_confirmation_template, $customer) {
-                    $msg->to($customer->email)->subject($email_confirmation_template->subject);
-                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                });
+                try{
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer->language), function($msg) use ($place,$email_confirmation_template, $customer) {
+                        $msg->to($customer->email)->subject($email_confirmation_template->subject);
+                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                    });
+                }catch (\Exception $e){}
             }
         }
         event(new OrderCreated($order));
@@ -146,7 +153,11 @@ class OrderController extends Controller
             'is_take_away' => $request->is_take_away,
             'source' => $request->source,
             'marks' => $request->marks ?? [],
-            'custom_booking_length_id' => $request->custom_booking_length_id
+            'custom_booking_length_id' => $request->custom_booking_length_id,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'phone' => $request->phone
         ]);
 
         Log::add($request,'change-order','Changed order #'.$order->id);
@@ -169,10 +180,12 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_change_template && $customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text,$customer->language), function($msg) use ($place,$email_change_template, $customer) {
-                    $msg->to($customer->email)->subject($email_change_template->subject);
-                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                });
+                try{
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text,$customer->language), function($msg) use ($place,$email_change_template, $customer) {
+                        $msg->to($customer->email)->subject($email_change_template->subject);
+                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                    });
+                }catch (\Exception $e){}
             }
         }
 
@@ -277,10 +290,12 @@ class OrderController extends Controller
                 ->where('active',1)
                 ->first();
             if($email_delete_template && $customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($place,$email_delete_template, $customer) {
-                    $msg->to($customer->email)->subject($email_delete_template->subject);
-                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                });
+                try{
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($place,$email_delete_template, $customer) {
+                        $msg->to($customer->email)->subject($email_delete_template->subject);
+                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                    });
+                }catch (\Exception $e){}
             }
         }
 
@@ -350,10 +365,12 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
         if($email_delete_template && $customer->email){
-            \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($place,$email_delete_template, $customer) {
-                $msg->to($customer->email)->subject($email_delete_template->subject);
-                $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-            });
+            try{
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($place,$email_delete_template, $customer) {
+                    $msg->to($customer->email)->subject($email_delete_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                });
+            }catch (\Exception $e){}
         }
 
         $this->paymentAfterOrderCancel($order);
@@ -460,10 +477,12 @@ class OrderController extends Controller
                 ->first();
             if($email_template && $order->customer->email) {
                 $place = Place::find($order->place_id);
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text,$order->customer->language), function ($msg) use ($place,$email_template, $order) {
-                    $msg->to($order->customer->email)->subject($email_template->subject);
-                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                });
+                try{
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text,$order->customer->language), function ($msg) use ($place,$email_template, $order) {
+                        $msg->to($order->customer->email)->subject($email_template->subject);
+                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                    });
+                }catch (\Exception $e){}
             }
         }
     }
@@ -785,6 +804,16 @@ class OrderController extends Controller
         ]);
 
         $place = Place::find($request->place_id);
+        $customer_deny_register = (bool)$place->setting('customer-deny-register');
+
+        if(!$customer_deny_register){
+            $black_list = BlackList::where('customer_id',Auth::user()->id)
+                ->where('place_id',$request->place_id)
+                ->get();
+
+            if($black_list) abort(403, 'The customer is on the blacklist of this place.');
+        }
+
         $reservation_time = Carbon::parse($request->reservation_time);
         if($reservation_time->lt($place->country->timeNow())) return response()->json([
             'message' => 'Time must be in the future'
@@ -799,15 +828,17 @@ class OrderController extends Controller
             'message' => 'Your place\'s bill has not been paid'
         ], 401);
 
-        $last_order = Order::where('customer_id',Auth::user()->id)
-            ->where('place_id',$request->place_id)
-            ->where('area_id',$request->area_id)
-            ->where('reservation_time',$request->reservation_time)
-            ->where('created_at','>',Carbon::now()->addMinutes(-2))
-            ->first();
-        if($last_order) return response()->json([
-            'message' => 'Too many orders in a short time'
-        ], 400);
+        if(!$customer_deny_register) {
+            $last_order = Order::where('customer_id', Auth::user()->id)
+                ->where('place_id', $request->place_id)
+                ->where('area_id', $request->area_id)
+                ->where('reservation_time', $request->reservation_time)
+                ->where('created_at', '>', Carbon::now()->addMinutes(-2))
+                ->first();
+            if ($last_order) return response()->json([
+                'message' => 'Too many orders in a short time'
+            ], 400);
+        }
 
         $tableplan_id = null;
         $table_ids = [];
@@ -901,7 +932,7 @@ class OrderController extends Controller
         }
 
         $order = Order::create([
-            'customer_id' => Auth::user()->id,
+            'customer_id' => $customer_deny_register ? null : Auth::user()->id,
             'place_id' => $request->place_id,
             'tableplan_id' => $tableplan_id,
             'area_id' => $request->area_id,
@@ -914,7 +945,11 @@ class OrderController extends Controller
             'is_take_away' => $request->is_take_away,
             'source' => 'online',
             'marks' => ['timezone_offset' => $request->timezone_offset],
-            'custom_booking_length_id' => $request->custom_booking_length_id
+            'custom_booking_length_id' => $request->custom_booking_length_id,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'phone' => $request->phone
         ]);
 
         if(intval($place->setting('is-online-payment')) === 1) {
@@ -1123,10 +1158,12 @@ class OrderController extends Controller
                 ->first();
             $place = Place::find($order->place_id);
             if($email_confirmation_template && $order->customer->email){
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$order->customer->language), function($msg) use ($place,$order, $email_confirmation_template) {
-                    $msg->to($order->customer->email)->subject($email_confirmation_template->subject);
-                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                });
+                try{
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$order->customer->language), function($msg) use ($place,$order, $email_confirmation_template) {
+                        $msg->to($order->customer->email)->subject($email_confirmation_template->subject);
+                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                    });
+                }catch (\Exception $e){}
             }
         }
 

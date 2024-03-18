@@ -107,18 +107,21 @@ class OrderWebhookController extends Controller
 
                         $giftcard->filename = $filename;
                         $giftcard->save();
-
-                        \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($place, $dompdf, $giftcard) {
-                            $msg->to($giftcard->email)->subject('Giftcard');
-                            $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                            $msg->attachData($dompdf->output(), 'giftcard.pdf');
-                        });
-                        if ($giftcard->receiver_email) {
-                            \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($place,$dompdf, $giftcard) {
-                                $msg->to($giftcard->receiver_email)->subject('Giftcard');
+                        try{
+                            \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($place, $dompdf, $giftcard) {
+                                $msg->to($giftcard->email)->subject('Giftcard');
                                 $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                                 $msg->attachData($dompdf->output(), 'giftcard.pdf');
                             });
+                        }catch (\Exception $e){}
+                        if ($giftcard->receiver_email) {
+                            try{
+                                \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($place,$dompdf, $giftcard) {
+                                    $msg->to($giftcard->receiver_email)->subject('Giftcard');
+                                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                                    $msg->attachData($dompdf->output(), 'giftcard.pdf');
+                                });
+                            }catch (\Exception $e){}
                         }
                     } catch (\Exception $e) {
 

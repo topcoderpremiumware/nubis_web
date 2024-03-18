@@ -18,6 +18,8 @@ class Customer extends Authenticatable
         'remember_token'
     ];
 
+    protected $with = ['black_lists'];
+
     public function orders()
     {
         return $this->hasMany(Order::class);
@@ -26,5 +28,10 @@ class Customer extends Authenticatable
     public function feedbacks()
     {
         return $this->hasMany(Feedback::class);
+    }
+
+    public function black_lists()
+    {
+        return $this->hasMany(BlackList::class);
     }
 }

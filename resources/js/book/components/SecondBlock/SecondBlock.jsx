@@ -13,6 +13,8 @@ import eventBus from "../../../eventBus";
 import { Trans, useTranslation } from "react-i18next";
 import SelectRestaurantModal from "./SelectRestaurantModal/SelectRestaurantModal";
 import moment from "moment";
+import CalendarTooltip from "./Calendar/CalendarTooltip";
+import axios from "axios";
 
 function SecondBlock(props) {
   const { t } = useTranslation();
@@ -34,6 +36,7 @@ function SecondBlock(props) {
   const [extraTimeReq, setExtraTimeReq] = useState([]);
   const [times, setTimes] = useState([]);
   const [queryNumber, setQueryNumber] = useState(0)
+  const [nonWorkingDayReason, setNonWorkingDayReason] = useState('')
 
   useEffect(async () => {
     if(!selectedDay){
@@ -46,6 +49,7 @@ function SecondBlock(props) {
     }
     if(props.blockType === 'secondblock') {
       getExtraTime(selectedDay)
+      getNonWorkingDayReason()
       getAlternativeRestaurants()
       eventBus.on("langChanged", () => {
         getExtraTime(selectedDay)
@@ -97,7 +101,7 @@ function SecondBlock(props) {
         disabledDates.push({
           year: selectedDay.year,
           month: selectedDay.month,
-          day: i,
+          day: i
         });
       }
     }
@@ -115,6 +119,14 @@ function SecondBlock(props) {
           day: i,
           className: 'soldDay'
         })
+      }
+      if (!newDateArray?.includes(i)) {
+        soldDates.push({
+          year: selectedDay.year,
+          month: selectedDay.month,
+          day: i,
+          className: new Date(selectedDay.year+'-'+selectedDay.month+'-'+i).getTime() > Date.now() ? 'non_working' : ''
+        });
       }
     }
     return soldDates
@@ -176,11 +188,25 @@ function SecondBlock(props) {
             props.setDefaultModal("noTime");
             setModalActive(true)
           }
+          setTimes([]);
         }
       })
       .catch((error) => {
         console.log("Error: ", error);
       });
+  }
+
+  const getNonWorkingDayReason = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
+      params: {
+        place_id: props.getPlaceId(),
+        name: 'non-working-day-reason'
+      }
+    }).then(response => {
+      setNonWorkingDayReason(response.data.value)
+    }).catch(error => {
+      setNonWorkingDayReason('')
+    })
   }
 
   const setCalendarValue = (date) => {
@@ -278,6 +304,7 @@ function SecondBlock(props) {
               disabledDays={getDisabledDays()}
               customDaysClassName={getSoldDays()}
             />
+            <CalendarTooltip findSelector=".non_working" content={nonWorkingDayReason}/>
           </div>
           {/*{props.blockType === "secondblock" && (*/}
             <div>

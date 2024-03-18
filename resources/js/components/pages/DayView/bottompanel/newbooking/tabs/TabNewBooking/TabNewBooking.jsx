@@ -49,26 +49,24 @@ export default function TabNewBooking(props) {
         await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
           setAreas(response.data)
         })
-        // get customers
-        await axios.get(`${process.env.MIX_API_URL}/api/customers/all`, {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('token')
-          }
-        }).then(response => {
-          setCustomers(response.data)
-        })
+
+        await getCustomers()
+
       } catch (err) {
         console.log('err', err)
       } finally {
         setLoading(false)
       }
     })()
+    eventBus.on('customersChanged',() => {
+      getCustomers()
+    })
   }, [])
 
   useEffect(() => {
     if (Object.keys(props.order).length){
       setOrder(props.order)
-      if(!props.order.customer_id) {
+      if(!props.order.customer_id && !props.order.first_name) {
         setIsWalkIn(true)
       }
     }
@@ -88,6 +86,19 @@ export default function TabNewBooking(props) {
       getTables()
     }
   }, [order.area_id, order.seats, order.reservation_time])
+
+  const getCustomers = async () => {
+    await axios.get(`${process.env.MIX_API_URL}/api/customers/all`, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setCustomers(response.data.map(item => {
+        item.self = item
+        return item
+      }))
+    })
+  }
 
   const getTimes = () => {
     axios.get(`${process.env.MIX_API_URL}/api/work_time`,{
@@ -161,15 +172,27 @@ export default function TabNewBooking(props) {
     if(e.target.name === 'comment') setOrder(prev => ({...prev, comment: e.target.value}))
     if(e.target.name === 'status') setOrder(prev => ({...prev, status: e.target.value}))
     if(e.target.name === 'is_take_away') setOrder(prev => ({...prev, is_take_away: e.target.checked}))
-    if(e.target.name === 'customer_first_name') setOrder(prev => ({...prev, customer: {
-      ...prev.customer, first_name: e.target.value
-    }}))
-    if(e.target.name === 'customer_last_name') setOrder(prev => ({...prev, customer: {
-      ...prev.customer, last_name: e.target.value
-    }}))
-    if(e.target.name === 'customer_email') setOrder(prev => ({...prev, customer: {
-      ...prev.customer, email: e.target.value
-    }}))
+
+    if(isNotRegister()){
+      if(e.target.name === 'customer_first_name') setOrder(prev => ({...prev, first_name: e.target.value}))
+      if(e.target.name === 'customer_last_name') setOrder(prev => ({...prev, last_name: e.target.value}))
+      if(e.target.name === 'customer_email') setOrder(prev => ({...prev, email: e.target.value}))
+      if(e.target.name === 'customer_phone') setOrder(prev => ({...prev, phone: e.target.value}))
+    }else{
+      if(e.target.name === 'customer_first_name') setOrder(prev => ({...prev, customer: {
+          ...prev.customer, first_name: e.target.value
+        }}))
+      if(e.target.name === 'customer_last_name') setOrder(prev => ({...prev, customer: {
+          ...prev.customer, last_name: e.target.value
+        }}))
+      if(e.target.name === 'customer_email') setOrder(prev => ({...prev, customer: {
+          ...prev.customer, email: e.target.value
+        }}))
+      if(e.target.name === 'customer_phone') setOrder(prev => ({...prev, customer: {
+          ...prev.customer, phone: e.target.value
+        }}))
+    }
+
     if(e.target.name === 'customer_zip_code') setOrder(prev => ({...prev, customer: {
       ...prev.customer, zip_code: e.target.value
     }}))
@@ -257,7 +280,7 @@ export default function TabNewBooking(props) {
   const createOrder = async () => {
     const { customer, customer_id, ...rest } = order
     let newCustomerId = ''
-    if(!customer_id && !isWalkIn) {
+    if(!customer_id && !isWalkIn && !isNotRegister()) {
       try {
         let customer_response
         if(customer.email){
@@ -286,7 +309,7 @@ export default function TabNewBooking(props) {
       let order_request = order?.id ? `${process.env.MIX_API_URL}/api/orders/${order.id}` : `${process.env.MIX_API_URL}/api/orders`
       await axios.post(order_request, {
           ...rest,
-          ...(!isWalkIn && {customer, customer_id: customer_id || newCustomerId}),
+          ...((!isWalkIn && !isNotRegister()) && {customer, customer_id: customer_id || newCustomerId}),
           reservation_time: moment.utc(order.reservation_time).utc().format('YYYY-MM-DD HH:mm:ss'),
           timezone_offset: new Date().getTimezoneOffset()*-1
         }, {
@@ -376,6 +399,14 @@ export default function TabNewBooking(props) {
         console.log('Error', error)
       })
     }
+  }
+
+  const isNotRegister = () => {
+    return !!order.first_name
+  }
+
+  const getOrderData = (name) => {
+    return isNotRegister() ? order[name] : (order.customer ? order.customer[name] : '')
   }
 
   return (
@@ -505,36 +536,31 @@ export default function TabNewBooking(props) {
             <div className="col-md-6">
               <PhoneInput
                 country={'dk'}
-                value={order?.customer?.phone}
+                value={getOrderData('phone')}
                 disabled={isWalkIn}
-                onChange={phone => setOrder(prev => ({
-                  ...prev, customer: {
-                    ...prev.customer,
-                    phone: '+'+phone
-                  }
-                }))}
+                onChange={phone => {onChange({target: {name: 'customer_phone', value: '+'+phone}})}}
                 containerClass="phone-input"
               />
             </div>
             <div className="col-md-6">
               <TextField label={t('First name')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_first_name" name="customer_first_name"
-                        InputLabelProps={{ shrink: !!order?.customer?.first_name || isWalkIn }}
-                        value={isWalkIn ? 'Walk in' : order?.customer?.first_name} disabled={isWalkIn}
+                        InputLabelProps={{ shrink: !!getOrderData('first_name') || isWalkIn }}
+                        value={isWalkIn ? 'Walk in' : getOrderData('first_name')} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Last name')} size="small" fullWidth sx={{mb:2}}
                         type="text" id="customer_last_name" name="customer_last_name"
-                        InputLabelProps={{ shrink: !!order?.customer?.last_name }}
-                        value={order?.customer?.last_name} disabled={isWalkIn}
+                        InputLabelProps={{ shrink: !!getOrderData('last_name') }}
+                        value={getOrderData('last_name')} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
               <TextField label={t('Email address')} size="small" fullWidth sx={{mb:2}}
                         type="email" id="customer_email" name="customer_email"
-                        InputLabelProps={{ shrink: !!order?.customer?.email }}
-                        value={order?.customer?.email} disabled={isWalkIn}
+                        InputLabelProps={{ shrink: !!getOrderData('email') }}
+                        value={getOrderData('email')} disabled={isWalkIn}
                         onChange={onChange}/>
             </div>
             <div className="col-md-6">

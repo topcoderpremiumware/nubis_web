@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlackList;
 use App\Models\Customer;
+use App\Models\Log;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\PasswordResetNotification;
@@ -237,5 +239,56 @@ class CustomerController extends Controller
         DB::table('password_resets')->where('email',$request->email)->delete();
 
         return $this->response($user);
+    }
+
+    public function addBlackList($id, Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'place_id' => 'required|exists:places,id'
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $black_list = BlackList::create([
+            'customer_id' => $id,
+            'place_id' => $request->place_id,
+        ]);
+
+        Log::add($request,'added-customer-black_list','Added customer #'.$id.' to the black list of the place #'.$request->place_id);
+
+        return response()->json(['message' => 'Customer added to the black list']);
+    }
+
+    public function removeBlackList($id, Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'place_id' => 'required|exists:places,id'
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        Log::add($request,'removed-customer-black_list','Removed customer #'.$id.' to the black list of the place #'.$request->place_id);
+
+        BlackList::where('customer_id',$id)
+            ->where('place_id',$request->place_id)
+            ->delete();
+
+        return response()->json(['message' => 'Customer removed from the black list']);
     }
 }

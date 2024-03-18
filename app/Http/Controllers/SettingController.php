@@ -46,12 +46,6 @@ class SettingController extends Controller
             'name' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
-        }
-
         $setting = Setting::where('place_id',$request->place_id)
             ->where('name',$request->name)
             ->first();
@@ -63,5 +57,53 @@ class SettingController extends Controller
         }
 
         return response()->json($setting);
+    }
+
+    public function saveMany(Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'place_id' => 'required|integer|exists:places,id',
+            'data' => 'required|array',
+            'data.*.name' => 'required',
+            'data.*.value' => 'nullable'
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $settings = [];
+        foreach ($request->data as $datum) {
+            $settings[] = Setting::updateOrCreate([
+                'place_id' => $request->place_id,
+                'name' => $datum['name']
+            ],[
+                'value' => $datum['value'] ?? ''
+            ]);
+        }
+
+        Log::add($request,'change-settings','Changed place settings');
+
+        return response()->json($settings);
+    }
+
+    public function getMany(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|integer|exists:places,id',
+            'names' => 'required|array'
+        ]);
+
+        $settings = Setting::where('place_id',$request->place_id)
+            ->whereIn('name',$request->names)
+            ->get();
+
+        return response()->json($settings);
     }
 }

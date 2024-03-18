@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import "./MainModal.css";
@@ -15,6 +15,29 @@ export default function MainModal(props) {
     setActive,
     orderResponse,
   } = props;
+  const [customerDenyRegister, setCustomerDenyRegister] = useState(false);
+
+  const getPlaceId = () => {
+    let pathArray = window.location.pathname.split('/')
+    return pathArray.length === 3 ? pathArray[2] : 0
+  };
+
+  useEffect(() => {
+    getSettings()
+  },[])
+
+  const getSettings = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
+      params: {
+        place_id: getPlaceId(),
+        name: 'customer-deny-register'
+      }
+    }).then(response => {
+      setCustomerDenyRegister(Boolean(parseInt(response.data.value)))
+    }).catch(error => {
+      setCustomerDenyRegister(false)
+    })
+  }
 
   const setInput = (name, value) => {
     setUserData((prev) => ({ ...prev, [name]: value }));
@@ -74,16 +97,17 @@ export default function MainModal(props) {
               )}
             </div>
             <div className="form__wrapper">
-              {(defaultModal === "register" ||
-                defaultModal === "edit" ||
-                defaultModal === "login" ||
-                defaultModal === "email" ||
-                defaultModal === "loginWait" ||
-                defaultModal === "emailWait" ||
-                defaultModal === "emailCancel" ||
-                defaultModal === "loginCancel" ||
-                defaultModal === "emailMore" ||
-                defaultModal === "loginMore") && (
+              {[
+                "register",
+                "edit",
+                "login",
+                "email",
+                "loginWait",
+                "emailWait",
+                "emailCancel",
+                "loginCancel",
+                "emailMore",
+                "loginMore"].includes(defaultModal) && (
                 <input
                   type="email"
                   className="form-name__email"
@@ -94,7 +118,7 @@ export default function MainModal(props) {
               )}
             </div>
             <div className="form-mobile-zip">
-              {(defaultModal === "register" || defaultModal === "edit") && (
+              {["register","edit"].includes(defaultModal) && (
                 <>
                   <PhoneInput
                     country={'dk'}
@@ -104,6 +128,7 @@ export default function MainModal(props) {
                     buttonClass="phone-input-btn"
                     dropdownStyle={{ textAlign: 'left' }}
                   />
+                  {!customerDenyRegister &&
                   <input
                     type="text"
                     className="form-name__zip"
@@ -113,15 +138,12 @@ export default function MainModal(props) {
                       setInput("zip_code", event.target.value)
                     }
                   />
+                  }
                 </>
               )}
             </div>
             <div className="form-password">
-              {(defaultModal === "login" ||
-                defaultModal === "loginWait" ||
-                defaultModal === "register" ||
-                defaultModal === "loginCancel" ||
-                defaultModal === "loginMore") && (
+              {(["login","loginWait","register","loginCancel","loginMore"].includes(defaultModal) && !customerDenyRegister) && (
                   <>
                     <input
                       type="password"
@@ -133,7 +155,7 @@ export default function MainModal(props) {
                     {defaultModal !== "register" && <a href="/admin/forgot?type=customer">{t('Forgot password?')}</a>}
                   </>
               )}
-              {defaultModal === "register" && (
+              {(defaultModal === "register" && !customerDenyRegister) && (
                 <input
                   type="password"
                   className="form-name__confirm-password"
@@ -147,16 +169,17 @@ export default function MainModal(props) {
             </div>
           </form>
         )}
-        {(defaultModal === "register" ||
-          defaultModal === "edit" ||
-          defaultModal === "login" ||
-          defaultModal === "email" ||
-          defaultModal === "loginWait" ||
-          defaultModal === "emailWait" ||
-          defaultModal === "emailCancel" ||
-          defaultModal === "loginCancel" ||
-          defaultModal === "emailMore" ||
-          defaultModal === "loginMore") && (
+        {[
+          "register",
+          "edit",
+          "login",
+          "email",
+          "loginWait",
+          "emailWait",
+          "emailCancel",
+          "loginCancel",
+          "emailMore",
+          "loginMore"].includes(defaultModal) && (
           <div className="modal-button">
             <button
               className="button-main"
@@ -169,10 +192,7 @@ export default function MainModal(props) {
           </div>
         )}
 
-        {(defaultModal === "register" ||
-          defaultModal === "edit" ||
-          defaultModal === "login" ||
-          defaultModal === "email") && (
+        {["register","edit","login","email"].includes(defaultModal) && (
           <div className="error-response">
             {dispErrors?.title}
             <br />

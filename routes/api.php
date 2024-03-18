@@ -75,6 +75,11 @@ Route::post('feedbacks',[FeedbackController::class, 'create']);
 Route::post('feedbacks/is_exist',[FeedbackController::class, 'isFeedbackExist']);
 Route::post('send_admin_contact',[PlaceController::class, 'sendtoAdmin']);
 
+Route::post('make_order',[OrderController::class, 'makeOrder']);
+
+Route::get('settings',[SettingController::class, 'get']);
+Route::get('settings/many',[SettingController::class, 'getMany']);
+
 Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/logout',[CustomerController::class, 'logout']);
     Route::get('customers',function(Request $request){
@@ -87,9 +92,6 @@ Route::middleware('auth:customer_api')->group(function(){
     Route::get('customers/client_secret',[OrderController::class, 'getStripeClientSecret']);
     Route::get('customers/all',[CustomerController::class, 'allCustomers']);
 
-
-
-    Route::post('make_order',[OrderController::class, 'makeOrder']);
     Route::delete('cancel_order/{id}',[OrderController::class, 'cancel']);
 });
 Route::middleware('auth:user_api')->group(function(){
@@ -105,7 +107,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::delete('user/role',[AuthApiController::class, 'deleteRole']);
 
     Route::post('settings',[SettingController::class, 'save']);
-    Route::get('settings',[SettingController::class, 'get']);
+    Route::post('settings/many',[SettingController::class, 'saveMany']);
 
     Route::post('places',[PlaceController::class, 'create']);
     Route::get('places/mine',[PlaceController::class, 'getAllMine']);
@@ -213,6 +215,9 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('stop_booking',[TimetableController::class, 'stop_booking']);
     Route::post('unblock_booking',[TimetableController::class, 'unblock_booking']);
     Route::get('is_booking_stopped',[TimetableController::class, 'is_booking_stopped']);
+
+    Route::post('customers/{id}/black_list',[CustomerController::class, 'addBlackList']);
+    Route::delete('customers/{id}/black_list',[CustomerController::class, 'removeBlackList']);
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);

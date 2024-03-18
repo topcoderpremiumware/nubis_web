@@ -265,10 +265,11 @@ class BillingController extends Controller
                 $place_id = $metadata->place_id;
 
                 $place = Place::find($place_id);
-
-                \Illuminate\Support\Facades\Mail::html('The Place '.$place->name.' #'.$place_id.' paid you to help him', function ($msg) {
-                    $msg->to('support@nubisreservation.com')->subject('Paid for help');
-                });
+                try{
+                    \Illuminate\Support\Facades\Mail::html('The Place '.$place->name.' #'.$place_id.' paid you to help him', function ($msg) {
+                        $msg->to('support@nubisreservation.com')->subject('Paid for help');
+                    });
+                }catch (\Exception $e){}
             }
 
             if(array_key_exists('quantity',$metadata->toArray())){

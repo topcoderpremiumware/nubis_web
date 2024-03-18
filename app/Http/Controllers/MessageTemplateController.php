@@ -241,8 +241,9 @@ class MessageTemplateController extends Controller
                 'message' => 'It\'s not your place'
             ], 400);
         }
-
-        \Illuminate\Support\Facades\Mail::html($request->text, function($msg) use ($request) {$msg->to($request->mail)->subject($request->subject); });
+        try{
+            \Illuminate\Support\Facades\Mail::html($request->text, function($msg) use ($request) {$msg->to($request->mail)->subject($request->subject); });
+        }catch (\Exception $e){}
 
         return response()->json(['message' => 'The message has been sent']);
     }

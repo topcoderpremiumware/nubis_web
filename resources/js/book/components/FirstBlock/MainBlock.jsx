@@ -4,15 +4,11 @@ import "./MainBlock.css";
 import SelectLang from "./SelectLang/SelectLang.jsx";
 import Title from "./Title/Title.jsx";
 import Counter from "./Counter/Counter.jsx";
-import Info from "./Info/Info.jsx";
-import Cancel from "./Cancel/Cancel.jsx";
-import Copyrigth from "./Copyrigth/Copyrigth.jsx";
 import CancelingModal from "./CancelingModal/CancelingModal.jsx";
 import MainModal from "../MainModal/MainModal.jsx";
 import {Trans, useTranslation} from "react-i18next";
 import {utils} from "react-modern-calendar-datepicker";
 import axios from "axios";
-import eventBus from "../../../eventBus";
 
 function MainBlock(props) {
   const { t } = useTranslation();

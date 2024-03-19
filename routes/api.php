@@ -23,6 +23,7 @@ use App\Http\Controllers\TableplanController;
 use App\Http\Controllers\TimetableController;
 use App\Http\Controllers\VideoGuideController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -75,10 +76,14 @@ Route::post('feedbacks',[FeedbackController::class, 'create']);
 Route::post('feedbacks/is_exist',[FeedbackController::class, 'isFeedbackExist']);
 Route::post('send_admin_contact',[PlaceController::class, 'sendtoAdmin']);
 
-Route::post('make_order',[OrderController::class, 'makeOrder']);
+
 
 Route::get('settings',[SettingController::class, 'get']);
 Route::get('settings/many',[SettingController::class, 'getMany']);
+
+Route::middleware(['optional_auth:customer_api'])->group(function() {
+    Route::post('make_order',[OrderController::class, 'makeOrder']);
+});
 
 Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/logout',[CustomerController::class, 'logout']);

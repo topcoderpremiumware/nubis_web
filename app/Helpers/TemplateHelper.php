@@ -106,13 +106,13 @@ class TemplateHelper
             '', //#CHECK_CREDIT_CARD_LINK#
             '', //#CITY#
             '', //#COMPANY#
-            $customer ? $customer->first_name.' '.$customer->last_name : '', //#CONTACT_PERSON#
-            $customer ? $customer->phone : '', //#CONTACT_PHONE#
+            $customer ? $customer->first_name.' '.$customer->last_name : ($order->first_name ? $order->first_name.' '.$order->last_name : ''), //#CONTACT_PERSON#
+            $customer ? $customer->phone : ($order->first_name ? $order->phone : ''), //#CONTACT_PHONE#
             $custom_booking_length ? $custom_booking_length->name : '', //#CUSTOM_BOOK_LENGTH_NAME#
-            $customer ? $customer->email : '', //#EMAIL#
-            $customer ? $customer->first_name : '',
-            $customer ? $customer->last_name : '',
-            $customer ? $customer->first_name.' '.$customer->last_name : '', //#FULL_NAME#
+            $customer ? $customer->email : ($order->first_name ? $order->email : ''), //#EMAIL#
+            $customer ? $customer->first_name : ($order->first_name ? $order->first_name : ''),
+            $customer ? $customer->last_name : ($order->first_name ? $order->last_name : ''),
+            $customer ? $customer->first_name.' '.$customer->last_name : ($order->first_name ? $order->first_name.' '.$order->last_name : ''), //#FULL_NAME#
             '', //#MAP_LINK#
             $order->seats, //#NUMBER_OF_GUESTS#
             $order->payment_link ?? '', //#PAY_BOOKING_LINK#

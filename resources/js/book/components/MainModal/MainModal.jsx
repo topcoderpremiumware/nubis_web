@@ -128,7 +128,7 @@ export default function MainModal(props) {
                     buttonClass="phone-input-btn"
                     dropdownStyle={{ textAlign: 'left' }}
                   />
-                  {!customerDenyRegister &&
+                  {((defaultModal == "register" && !customerDenyRegister) || defaultModal == "edit") &&
                   <input
                     type="text"
                     className="form-name__zip"

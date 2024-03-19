@@ -46,19 +46,29 @@ class ReminderNotification implements ShouldQueue
                 ->first();
 
             $sms_hours_before = $sms_setting ? (int) $sms_setting->value : 6;
-            $customer = $order->customer;
+            $place = Place::find($order->place_id);
+            if($order->customer_id) {
+                $customer = $order->customer;
+                $customer_language = $customer->language;
+                $customer_phone = $customer->phone;
+                $customer_email = $customer->email;
+            }else {
+                $customer_language = $place->language;
+                $customer_phone = $order->phone;
+                $customer_email = $order->email;
+            }
 
-            if($order->reservation_time->diffInHours($order->place->country->timeNow()) <= $sms_hours_before){
+            if($order->reservation_time->diffInHours($place->country->timeNow()) <= $sms_hours_before){
                 $reminder_template = MessageTemplate::where('place_id',$order->place_id)
                     ->where('purpose','sms-reminder')
-                    ->where('language',$customer->language)
+                    ->where('language',$customer_language)
                     ->where('active',1)
                     ->first();
-                $place = Place::find($order->place_id);
 
-                if($reminder_template && $place->allow_send_sms()){
+
+                if($reminder_template && $place->allow_send_sms() && $customer_phone){
                     $place->decrease_sms_limit();
-                    $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$reminder_template->text,$customer->language), env('APP_SHORT_NAME'));
+                    $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order,$reminder_template->text,$customer_language), env('APP_SHORT_NAME'));
                 }
                 $marks = $order->marks;
                 if(!$marks) $marks = [];
@@ -74,25 +84,34 @@ class ReminderNotification implements ShouldQueue
             ->whereNotNull('customer_id')
             ->get();
         foreach ($orders as $order){
-            if(!$order->customer) continue;
+            if(!$order->customer || !$order->first_name) continue;
             $email_setting = Setting::where('place_id',$order->place_id)
                 ->where('name','email-remind-hours-before')
                 ->first();
 
             $email_hours_before = $email_setting ? (int) $email_setting->value : 6;
-            $customer = $order->customer;
+            if($order->customer_id) {
+                $customer = $order->customer;
+                $customer_language = $customer->language;
+                $customer_phone = $customer->phone;
+                $customer_email = $customer->email;
+            }else {
+                $customer_language = $order->place->language;
+                $customer_phone = $order->phone;
+                $customer_email = $order->email;
+            }
 
             if($order->reservation_time->diffInHours($order->place->country->timeNow()) <= $email_hours_before){
                 $reminder_template = MessageTemplate::where('place_id',$order->place_id)
                     ->where('purpose','email-reminder')
-                    ->where('language',$customer->language)
+                    ->where('language',$customer_language)
                     ->where('active',1)
                     ->first();
-                if($reminder_template && $customer->email){
+                if($reminder_template && $customer_email){
                     try{
                         $place = Place::find($order->place_id);
-                        \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$reminder_template->text,$customer->language), function($msg) use ($place,$reminder_template, $customer) {
-                            $msg->to($customer->email)->subject($reminder_template->subject);
+                        \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$reminder_template->text,$customer_language), function($msg) use ($place,$reminder_template, $customer_email) {
+                            $msg->to($customer_email)->subject($reminder_template->subject);
                             $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                         });
                     }catch (\Exception $e){

@@ -76,31 +76,38 @@ class OrderController extends Controller
 
         Log::add($request,'create-order','Created order #'.$order->id);
 
-        if($request->customer_id){
+        if($request->customer_id) {
             $customer = Customer::find($request->customer_id);
-            $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
-                ->where('purpose','sms-confirmation')
-                ->where('language',$customer->language)
-                ->where('active',1)
-                ->first();
+            $customer_language = $customer->language;
+            $customer_phone = $customer->phone;
+            $customer_email = $customer->email;
+        }else {
+            $customer_language = $place->language;
+            $customer_phone = $order->phone;
+            $customer_email = $order->email;
+        }
+        $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','sms-confirmation')
+            ->where('language',$customer_language)
+            ->where('active',1)
+            ->first();
 
-            if($sms_confirmation_template && $place->allow_send_sms()){
-                $place->decrease_sms_limit();
-                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text,$customer->language), env('APP_SHORT_NAME'));
-            }
-            $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
-                ->where('purpose','email-confirmation')
-                ->where('language',$customer->language)
-                ->where('active',1)
-                ->first();
-            if($email_confirmation_template && $customer->email){
-                try{
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer->language), function($msg) use ($place,$email_confirmation_template, $customer) {
-                        $msg->to($customer->email)->subject($email_confirmation_template->subject);
-                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                    });
-                }catch (\Exception $e){}
-            }
+        if($sms_confirmation_template && $place->allow_send_sms() && $customer_phone){
+            $place->decrease_sms_limit();
+            $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text,$customer_language), env('APP_SHORT_NAME'));
+        }
+        $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','email-confirmation')
+            ->where('language',$customer_language)
+            ->where('active',1)
+            ->first();
+        if($email_confirmation_template && $customer_email){
+            try{
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer_language), function($msg) use ($place,$email_confirmation_template, $customer_email) {
+                    $msg->to($customer_email)->subject($email_confirmation_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                });
+            }catch (\Exception $e){}
         }
         event(new OrderCreated($order));
         return response()->json($order);
@@ -161,33 +168,43 @@ class OrderController extends Controller
         ]);
 
         Log::add($request,'change-order','Changed order #'.$order->id);
-        if($request->customer_id){
-            $customer = Customer::find($request->customer_id);
-            $sms_change_template = MessageTemplate::where('place_id',$request->place_id)
-                ->where('purpose','sms-change')
-                ->where('language',$customer->language)
-                ->where('active',1)
-                ->first();
-            $place = Place::find($request->place_id);
+        $place = Place::find($request->place_id);
 
-            if($sms_change_template && $place->allow_send_sms()){
-                $place->decrease_sms_limit();
-                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_change_template->text,$customer->language), env('APP_SHORT_NAME'));
-            }
-            $email_change_template = MessageTemplate::where('place_id',$request->place_id)
-                ->where('purpose','email-change')
-                ->where('language',$customer->language)
-                ->where('active',1)
-                ->first();
-            if($email_change_template && $customer->email){
-                try{
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text,$customer->language), function($msg) use ($place,$email_change_template, $customer) {
-                        $msg->to($customer->email)->subject($email_change_template->subject);
-                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                    });
-                }catch (\Exception $e){}
-            }
+        if($request->customer_id) {
+            $customer = Customer::find($request->customer_id);
+            $customer_language = $customer->language;
+            $customer_phone = $customer->phone;
+            $customer_email = $customer->email;
+        }else {
+            $customer_language = $place->language;
+            $customer_phone = $order->phone;
+            $customer_email = $order->email;
         }
+
+        $sms_change_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','sms-change')
+            ->where('language',$customer_language)
+            ->where('active',1)
+            ->first();
+
+        if($sms_change_template && $place->allow_send_sms() && $customer_phone){
+            $place->decrease_sms_limit();
+            $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order,$sms_change_template->text,$customer_language), env('APP_SHORT_NAME'));
+        }
+        $email_change_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','email-change')
+            ->where('language',$customer_language)
+            ->where('active',1)
+            ->first();
+        if($email_change_template && $customer_email){
+            try{
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_change_template->text,$customer_language), function($msg) use ($place,$email_change_template, $customer_email) {
+                    $msg->to($customer_email)->subject($email_change_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                });
+            }catch (\Exception $e){}
+        }
+
 
         if($res){
             $order = Order::find($id);
@@ -270,33 +287,41 @@ class OrderController extends Controller
         }
 
         Log::add($request,'delete-order','Deleted order #'.$order->id);
-
-        if($order->customer_id){
+        $place = $order->place;
+        if($order->customer_id) {
             $customer = $order->customer;
-            $sms_delete_template = MessageTemplate::where('place_id',$order->place_id)
-                ->where('purpose','sms-delete')
-                ->where('language',$customer->language)
-                ->where('active',1)
-                ->first();
-            $place = $order->place;
+            $customer_language = $customer->language;
+            $customer_phone = $customer->phone;
+            $customer_email = $customer->email;
+        }else {
+            $customer_language = $place->language;
+            $customer_phone = $order->phone;
+            $customer_email = $order->email;
+        }
 
-            if($sms_delete_template && $place->allow_send_sms()){
-                $place->decrease_sms_limit();
-                $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text,$customer->language), env('APP_SHORT_NAME'));
-            }
-            $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
-                ->where('purpose','email-delete')
-                ->where('language',$customer->language)
-                ->where('active',1)
-                ->first();
-            if($email_delete_template && $customer->email){
-                try{
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($place,$email_delete_template, $customer) {
-                        $msg->to($customer->email)->subject($email_delete_template->subject);
-                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                    });
-                }catch (\Exception $e){}
-            }
+        $sms_delete_template = MessageTemplate::where('place_id',$order->place_id)
+            ->where('purpose','sms-delete')
+            ->where('language',$customer_language)
+            ->where('active',1)
+            ->first();
+
+
+        if($sms_delete_template && $place->allow_send_sms() && $customer_phone){
+            $place->decrease_sms_limit();
+            $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order,$sms_delete_template->text,$customer_language), env('APP_SHORT_NAME'));
+        }
+        $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','email-delete')
+            ->where('language',$customer_language)
+            ->where('active',1)
+            ->first();
+        if($email_delete_template && $customer_email){
+            try{
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer_language), function($msg) use ($place,$email_delete_template, $customer_email) {
+                    $msg->to($customer_email)->subject($email_delete_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                });
+            }catch (\Exception $e){}
         }
 
         $this->paymentAfterOrderCancel($order);
@@ -346,28 +371,38 @@ class OrderController extends Controller
                 'message' => 'It\'s not your order'
             ], 400);
         }
+        $place = $order->place;
+        if($order->customer_id) {
+            $customer = $order->customer;
+            $customer_language = $customer->language;
+            $customer_phone = $customer->phone;
+            $customer_email = $customer->email;
+        }else {
+            $customer_language = $place->language;
+            $customer_phone = $order->phone;
+            $customer_email = $order->email;
+        }
 
-        $customer = $order->customer;
         $sms_delete_template = MessageTemplate::where('place_id',$order->place_id)
             ->where('purpose','sms-delete')
-            ->where('language',$customer->language)
+            ->where('language',$customer_language)
             ->where('active',1)
             ->first();
-        $place = $order->place;
+
         $smsApiToken = $place->setting('sms-api-token');
-        if($sms_delete_template && $place->allow_send_sms()){
+        if($sms_delete_template && $place->allow_send_sms() && $customer_phone){
             $place->decrease_sms_limit();
-            $result = SMS::send([$customer->phone], TemplateHelper::setVariables($order,$sms_delete_template->text,$customer->language), env('APP_SHORT_NAME'));
+            $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order,$sms_delete_template->text,$customer_language), env('APP_SHORT_NAME'));
         }
         $email_delete_template = MessageTemplate::where('place_id',$request->place_id)
             ->where('purpose','email-delete')
-            ->where('language',$customer->language)
+            ->where('language',$customer_language)
             ->where('active',1)
             ->first();
-        if($email_delete_template && $customer->email){
+        if($email_delete_template && $customer_email){
             try{
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer->language), function($msg) use ($place,$email_delete_template, $customer) {
-                    $msg->to($customer->email)->subject($email_delete_template->subject);
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_delete_template->text,$customer_language), function($msg) use ($place,$email_delete_template, $customer_email) {
+                    $msg->to($customer_email)->subject($email_delete_template->subject);
                     $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                 });
             }catch (\Exception $e){}
@@ -465,21 +500,32 @@ class OrderController extends Controller
             $payment_intent->capture();
         }
 
-        if($status == 'completed' && $order->customer_id){
-            if($order->place->allow_send_sms()){
-                $order->place->decrease_sms_limit();
-                $result = SMS::send([$order->customer->phone], env('MIX_APP_URL').'/feedback/'.$order->id, env('APP_SHORT_NAME'));
+        if($status == 'completed'){
+            $place = $order->place;
+            if($order->customer_id) {
+                $customer = $order->customer;
+                $customer_language = $customer->language;
+                $customer_phone = $customer->phone;
+                $customer_email = $customer->email;
+            }else {
+                $customer_language = $place->language;
+                $customer_phone = $order->phone;
+                $customer_email = $order->email;
+            }
+            if($place->allow_send_sms() && $customer_phone){
+                $place->decrease_sms_limit();
+                $result = SMS::send([$customer_phone], env('MIX_APP_URL').'/feedback/'.$order->id, env('APP_SHORT_NAME'));
             }
             $email_template = MessageTemplate::where('place_id',$order->place_id)
                 ->where('purpose','email-feedback-request')
-                ->where('language',$order->customer->language)
+                ->where('language',$customer_language)
                 ->where('active',1)
                 ->first();
-            if($email_template && $order->customer->email) {
+            if($email_template && $customer_email) {
                 $place = Place::find($order->place_id);
                 try{
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text,$order->customer->language), function ($msg) use ($place,$email_template, $order) {
-                        $msg->to($order->customer->email)->subject($email_template->subject);
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_template->text,$customer_language), function ($msg) use ($place,$email_template, $customer_email) {
+                        $msg->to($customer_email)->subject($email_template->subject);
                         $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                     });
                 }catch (\Exception $e){}
@@ -1140,31 +1186,38 @@ class OrderController extends Controller
 
     public static function sendNewOrderNotification($order,$place)
     {
-        if($order->customer_id){
-            $sms_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
-                ->where('purpose','sms-confirmation')
-                ->where('language',$order->customer->language)
-                ->where('active',1)
-                ->first();
+        if($order->customer_id) {
+            $customer = $order->customer;
+            $customer_language = $customer->language;
+            $customer_phone = $customer->phone;
+            $customer_email = $customer->email;
+        }else {
+            $customer_language = $place->language;
+            $customer_phone = $order->phone;
+            $customer_email = $order->email;
+        }
+        $sms_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
+            ->where('purpose','sms-confirmation')
+            ->where('language',$customer_language)
+            ->where('active',1)
+            ->first();
 
-            if($sms_confirmation_template && $place->allow_send_sms()){
-                $place->decrease_sms_limit();
-                $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text,$order->customer->language), env('APP_SHORT_NAME'));
-            }
-            $email_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
-                ->where('purpose','email-confirmation')
-                ->where('language',$order->customer->language)
-                ->where('active',1)
-                ->first();
-            $place = Place::find($order->place_id);
-            if($email_confirmation_template && $order->customer->email){
-                try{
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$order->customer->language), function($msg) use ($place,$order, $email_confirmation_template) {
-                        $msg->to($order->customer->email)->subject($email_confirmation_template->subject);
-                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                    });
-                }catch (\Exception $e){}
-            }
+        if($sms_confirmation_template && $place->allow_send_sms() && $customer_phone){
+            $place->decrease_sms_limit();
+            $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text,$customer_language), env('APP_SHORT_NAME'));
+        }
+        $email_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
+            ->where('purpose','email-confirmation')
+            ->where('language',$customer_language)
+            ->where('active',1)
+            ->first();
+        if($email_confirmation_template && $customer_email){
+            try{
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer_language), function($msg) use ($place,$customer_email, $email_confirmation_template) {
+                    $msg->to($customer_email)->subject($email_confirmation_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                });
+            }catch (\Exception $e){}
         }
 
         $sms_notification_template = MessageTemplate::where('place_id',$order->place_id)

@@ -323,9 +323,7 @@ function SecondBlock(props) {
                         {blockTime.description}
                       </div>
                     </div>
-                    {(timelineId === blockTime.id && timeline === blockTime.length) &&
-                      <Time setSelectedTime={props.setSelectedTime} times={freeTime} setTimelineType={() => setTimelineType(blockTime)}/>
-                    }
+                    <Time indentif={key} setSelectedTime={props.setSelectedTime} times={freeTime} setTimelineType={() => setTimelineType(blockTime)}/>
                   </div>
                 )
               }) :

@@ -71,25 +71,36 @@ class ReserveAmountPayment implements ShouldQueue
                 $order_data = clone $order;
                 $order_data->payment_link = $link->url;
 
-                if($place->allow_send_sms()){
+                if($order->customer_id) {
+                    $customer = $order->customer;
+                    $customer_language = $customer->language;
+                    $customer_phone = $customer->phone;
+                    $customer_email = $customer->email;
+                }else {
+                    $customer_language = $place->language;
+                    $customer_phone = $order->phone;
+                    $customer_email = $order->email;
+                }
+
+                if($place->allow_send_sms() && $customer_phone){
                     $sms_template = MessageTemplate::where('place_id',$order->place_id)
                         ->where('purpose','sms-payment-request')
-                        ->where('language',$order->customer->language)
+                        ->where('language',$customer_language)
                         ->where('active',1)
                         ->first();
                     if($sms_template) {
                         $place->decrease_sms_limit();
-                        $result = SMS::send([$order->customer->phone], TemplateHelper::setVariables($order_data,$sms_template->text,$order->customer->language), env('APP_SHORT_NAME'));
+                        $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order_data,$sms_template->text,$customer_language), env('APP_SHORT_NAME'));
                     }
                 }
                 $email_template = MessageTemplate::where('place_id',$order->place_id)
                     ->where('purpose','email-payment-request')
-                    ->where('language',$order->customer->language)
+                    ->where('language',$customer_language)
                     ->where('active',1)
                     ->first();
-                if($email_template && $order->customer->email) {
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order_data,$email_template->text,$order->customer->language), function ($msg) use ($place,$email_template, $order) {
-                        $msg->to($order->customer->email)->subject($email_template->subject);
+                if($email_template && $customer_email) {
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order_data,$email_template->text,$customer_language), function ($msg) use ($place,$email_template, $customer_email) {
+                        $msg->to($customer_email)->subject($email_template->subject);
                         $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                     });
 

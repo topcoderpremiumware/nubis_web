@@ -1,14 +1,21 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./Time.css";
 import Arrow from "../Calendar/vector.jpg";
 import ArrowLeft from "../Calendar/vectorleft.png";
 import { useState } from "react";
 import { Children } from "react";
+import eventBus from "../../../../eventBus";
 
 function Time(props) {
   const [activeButton, setActiveButton] = useState(null);
 
   const sliderRef = React.createRef();
+
+  useEffect(() => {
+    eventBus.on("changeTimeButton",function({indentif}){
+      if(indentif !== props.indentif) setActiveButton(null)
+    })
+  },[])
 
   const buttonRight = () => {
     sliderRef.current.scrollLeft += 200
@@ -16,6 +23,13 @@ function Time(props) {
   const buttonLeft = () => {
     sliderRef.current.scrollLeft -= 200
   };
+
+  const changeActiveButton = (i) => {
+    if(props.hasOwnProperty('indentif')){
+      eventBus.dispatch("changeTimeButton",{indentif: props.indentif})
+    }
+    setActiveButton(i)
+  }
 
   console.log("Times: ", props.times);
 
@@ -32,7 +46,7 @@ function Time(props) {
                 <div
                   onClick={() => {
                     return (
-                      setActiveButton(i), props.setSelectedTime(oneTime.time), (props.hasOwnProperty('setTimelineType') && props.setTimelineType())
+                      changeActiveButton(i), props.setSelectedTime(oneTime.time), (props.hasOwnProperty('setTimelineType') && props.setTimelineType())
                     );
                   }}
                 >

@@ -316,7 +316,7 @@ function SecondBlock(props) {
 
                 return (
                   <div className="select-time" key={key}>
-                    <div className="select-time-wrapper" onClick={() => setTimelineType(blockTime)}>
+                    <div className="select-time-wrapper">
                       {blockTime?.image && <img src={blockTime.image} alt="" />}
                       <div>
                         <p className="select-time-title">{blockTime.name}</p>
@@ -324,7 +324,7 @@ function SecondBlock(props) {
                       </div>
                     </div>
                     {(timelineId === blockTime.id && timeline === blockTime.length) &&
-                      <Time setSelectedTime={props.setSelectedTime} times={freeTime} />
+                      <Time setSelectedTime={props.setSelectedTime} times={freeTime} setTimelineType={() => setTimelineType(blockTime)}/>
                     }
                   </div>
                 )

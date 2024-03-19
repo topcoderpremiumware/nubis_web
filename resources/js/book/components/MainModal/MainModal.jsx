@@ -143,7 +143,8 @@ export default function MainModal(props) {
               )}
             </div>
             <div className="form-password">
-              {(["login","loginWait","register","loginCancel","loginMore"].includes(defaultModal) && !customerDenyRegister) && (
+              {((["register"].includes(defaultModal) && !customerDenyRegister) ||
+                ["login","loginWait","loginCancel","loginMore"].includes(defaultModal)) && (
                   <>
                     <input
                       type="password"

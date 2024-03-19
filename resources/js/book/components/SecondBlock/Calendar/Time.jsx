@@ -32,7 +32,7 @@ function Time(props) {
                 <div
                   onClick={() => {
                     return (
-                      setActiveButton(i), props.setSelectedTime(oneTime.time)
+                      setActiveButton(i), props.setSelectedTime(oneTime.time), (props.hasOwnProperty('setTimelineType') && props.setTimelineType())
                     );
                   }}
                 >

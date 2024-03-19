@@ -809,9 +809,9 @@ class OrderController extends Controller
         if(!$customer_deny_register){
             $black_list = BlackList::where('customer_id',Auth::user()->id)
                 ->where('place_id',$request->place_id)
-                ->get();
+                ->count();
 
-            if($black_list) abort(403, 'The customer is on the blacklist of this place.');
+            if($black_list > 0) abort(403, 'The customer is on the blacklist of this place.');
         }
 
         $reservation_time = Carbon::parse($request->reservation_time);

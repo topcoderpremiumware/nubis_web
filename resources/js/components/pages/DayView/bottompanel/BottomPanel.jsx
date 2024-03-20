@@ -37,7 +37,7 @@ export default function BottomPanel({ selectedOrder, setSelectedOrder }) {
           document={
             <DayViewPdf
               title={pdfTitle}
-              columns={columns.map(i => i.headerName)}
+              columns={columns}
               data={orders}
             />
           }

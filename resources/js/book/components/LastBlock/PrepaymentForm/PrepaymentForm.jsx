@@ -8,6 +8,7 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal, setOrderRespo
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [termsChecked, setTermsChecked] = useState(false)
 
   const stripe = useStripe()
   const elements = useElements()
@@ -79,20 +80,34 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal, setOrderRespo
 
   return (
     <form onSubmit={handleSubmit}>
-      <PaymentElement />
+      <PaymentElement/>
 
       {method === 'no_show' &&
-        <p className="prepayment-text"><Trans>Saves credit card information and charges a fee of <b>{{amount: paymentInfo?.['online-payment-amount']}}</b> per person in case of no-show or late cancellation. The fee will only be deducted from the guest, if the booking is marked as a "No show/Not arrived"</Trans></p>
+        <p className="prepayment-text"><Trans>Saves credit card information and charges a fee
+          of <b>{{amount: paymentInfo?.['online-payment-amount']}}</b> per person in case of no-show or late
+          cancellation. The fee will only be deducted from the guest, if the booking is marked as a "No show/Not
+          arrived"</Trans></p>
       }
       {error && <p className="prepayment-error">{error}</p>}
+      <label>
+        <input
+          type="checkbox"
+          checked={termsChecked}
+          onChange={(e) => {
+            setTermsChecked(e.target.checked)
+          }}
+        />
+        &nbsp;
+        <Trans>By checking the box below, you acknowledge that you have read and agree to the terms and conditions of NubisReservation.</Trans>
+      </label>
       <button
         className="button-main prepayment-button"
-        disabled={isLoading}
+        disabled={isLoading && !termsChecked}
       >
         {isLoading
           ? t('Processing...')
           : method === 'no_show'
-            ? t('Save' )
+            ? t('Save')
             : t('Pay now')
         }
       </button>

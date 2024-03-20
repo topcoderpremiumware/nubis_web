@@ -21,130 +21,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     margin: '0px 5px 0 5px',
   },
-  td1: {
+  th: {
+    fontSize: 10,
+    padding: '5px',
+    textAlign: 'center',
+    borderBottom: '1px solid #ccc',
+    borderLeft: '1px solid #ccc',
+    width: '100px',
+    fontWeight: 'bold',
+  },
+  td: {
     fontSize: 10,
     padding: '5px',
     textAlign: 'center',
     borderBottom: '1px solid #ccc',
     borderLeft: '1px solid #ccc',
     width: '100px'
-  },
-  td2: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '70px'
-  },
-  td3: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '70px'
-  },
-  td4: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '130px'
-  },
-  td5: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '130px'
-  },
-  td6: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '65px'
-  },
-  td7: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '90px'
-  },
-  td8: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '80px'
-  },
-  td9: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '100px'
-  },
-  td10: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '75px'
-  },
-  td11: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '120px'
-  },
-  td12: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '90px'
-  },
-  td13: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '140px'
-  },
-  td14: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    width: '100px'
-  },
-  td15: {
-    fontSize: 10,
-    padding: '5px',
-    textAlign: 'center',
-    borderBottom: '1px solid #ccc',
-    borderLeft: '1px solid #ccc',
-    borderRight: '1px solid #ccc',
-    width: '150px'
   },
 });
 
+
 const DayViewPdf = ({ title, columns, data }) => {
+  columns = columns.filter(e => !['drag','self'].includes(e.field))
   return (
     <Document>
       <Page size="A4" orientation='landscape'>
@@ -153,28 +51,14 @@ const DayViewPdf = ({ title, columns, data }) => {
         </View>
         <View style={styles.thead}>
           {columns.map((i, index) => (
-            <Text style={styles[`td${index + 1}`]} key={index}>{i}</Text>
+            <Text style={(styles[i.field], styles['th'])} key={index}>{i.headerName}</Text>
           ))}
         </View>
-        {data.map((i,index) => (
-          <View style={styles.tbody} key={index}>
-            <Text style={styles.td1}>{i.id}</Text>
-            <Text style={styles.td2}>{i.from}</Text>
-            <Text style={styles.td3}>{i.to}</Text>
-            <Text style={styles.td4}>{i.first_name}</Text>
-            <Text style={styles.td5}>{i.last_name}</Text>
-            <Text style={styles.td6}>{i.seats}</Text>
-            <Text style={styles.td7}>{i.take_away}</Text>
-            <Text style={styles.td8}>{i.tables}</Text>
-            <Text style={styles.td9}>{i.length}</Text>
-            <Text style={styles.td10}>{i.source}</Text>
-            <Text style={styles.td11}>{i.comment}</Text>
-            <Text style={styles.td1}>{i.amount}</Text>
-            <Text style={styles.td1}>{i.code}</Text>
-            <Text style={styles.td12}>{i.menu}</Text>
-            <Text style={styles.td13}>{i.order_date}</Text>
-            <Text style={styles.td14}>{i.status}</Text>
-            <Text style={styles.td15}>{i.area_name}</Text>
+        {data.map((datum, row_index) => (
+          <View style={styles.tbody} key={row_index}>
+            {columns.map((column, column_index) => (
+              <Text key={column_index} style={(styles[column.field], styles['td'])}>{datum[column.field]}</Text>
+            ))}
           </View>
         ))}
       </Page>

@@ -189,6 +189,7 @@ const App = () => {
         }
       })
       .catch((error) => {
+        if(url === '/api/customers/verify') return
         if (error.response && error.response.data && error.response.data.errors) {
           for (const [key, value] of Object.entries(error.response.data.errors)) {
             value.forEach(v => {

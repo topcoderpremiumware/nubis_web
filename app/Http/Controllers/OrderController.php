@@ -143,7 +143,7 @@ class OrderController extends Controller
         }
 
         if($order->status != 'no_show' && $request->status == 'no_show'){
-            $this->paymentAfterOrderCancel($order);
+            $this->paymentAfterOrderCancel($order,'no_show');
         }
 
         $res = $order->update([
@@ -324,7 +324,7 @@ class OrderController extends Controller
             }catch (\Exception $e){}
         }
 
-        $this->paymentAfterOrderCancel($order);
+        $this->paymentAfterOrderCancel($order,'delete');
         event(new OrderDeleted($order));
         $order->delete();
 
@@ -408,14 +408,14 @@ class OrderController extends Controller
             }catch (\Exception $e){}
         }
 
-        $this->paymentAfterOrderCancel($order);
+        $this->paymentAfterOrderCancel($order,'cancel');
         event(new OrderDeleted($order));
         $order->delete();
 
         return response()->json(['message' => 'Order is canceled']);
     }
 
-    private function paymentAfterOrderCancel($order)
+    private function paymentAfterOrderCancel($order,$status)
     {
         $place = $order->place;
         $stripe_secret = $place->setting('stripe-secret');
@@ -427,16 +427,16 @@ class OrderController extends Controller
         }
 
         if($order->marks && array_key_exists('method',$order->marks)){
-            if($order->marks['method'] == 'deduct'){
+            if($order->marks['method'] == 'deduct' && in_array($status,['delete','cancel'])){
                 if(array_key_exists('payment_intent_id',$order->marks)){
-                    if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']){
+                    if(($status === 'cancel' && $place->country->timeNow()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']) || $status === 'delete'){
                         $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
                         $order->refundGiftcard();
                     }
                 }
-            }elseif($order->marks['method'] == 'reserve'){
+            }elseif($order->marks['method'] == 'reserve' && in_array($status,['delete','cancel'])){
                 if(array_key_exists('payment_intent_id',$order->marks)){
-                    if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']){
+                    if(($status === 'cancel' && $place->country->timeNow()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']) || $status === 'delete'){
                         $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
                         if($payment_intent->status == 'succeeded'){
                             $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
@@ -446,7 +446,7 @@ class OrderController extends Controller
                         }
                     }
                 }
-            }elseif($order->marks['method'] == 'no_show'){
+            }elseif($order->marks['method'] == 'no_show' && $status == 'no_show'){
                 if(array_key_exists('payment_method_id',$order->marks)){
                     if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
                         $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
@@ -485,7 +485,7 @@ class OrderController extends Controller
     public static function setOrderStatus($order,$status)
     {
         if($status == 'deleted'){
-            (new OrderController)->paymentAfterOrderCancel($order);
+            (new OrderController)->paymentAfterOrderCancel($order,'delete');
             $order->delete();
         }else{
             $res = $order->update([

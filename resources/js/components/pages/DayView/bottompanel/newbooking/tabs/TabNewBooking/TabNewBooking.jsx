@@ -87,8 +87,19 @@ export default function TabNewBooking(props) {
     }
   }, [order.area_id, order.seats, order.reservation_time])
 
+  useEffect(async () => {
+    getCustomers()
+  }, [order?.customer?.first_name, order?.customer?.last_name, order?.customer?.email, order?.customer?.phone])
+
   const getCustomers = async () => {
     await axios.get(`${process.env.MIX_API_URL}/api/customers/all`, {
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        first_name: order?.customer?.first_name,
+        last_name: order?.customer?.last_name,
+        email: order?.customer?.email,
+        phone: order?.customer?.phone
+      },
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -224,9 +235,16 @@ export default function TabNewBooking(props) {
   }
 
   const timeOptions = () => {
-    return times.map(el => {
-      return Moment.utc(el).format('HH:mm') // removed local
-    })
+    // return times.map(el => {
+    //   return Moment.utc(el).format('HH:mm') // removed local
+    // })
+    let time = []
+    for(let i=0;i<=24*4;i++){
+      let tt = new Date(0);
+      tt = new Date(tt.getTime() + i*15*60000)
+      time.push((tt.getUTCHours()<10?'0':'')+tt.getUTCHours()+':'+(tt.getMinutes()<10?'0':'')+tt.getMinutes())
+    }
+    return time
   }
 
   const tablesOptions = () => {
@@ -539,7 +557,7 @@ export default function TabNewBooking(props) {
                 value={getOrderData('phone')}
                 disabled={isWalkIn}
                 onChange={phone => {onChange({target: {name: 'customer_phone', value: '+'+phone}})}}
-                containerClass="phone-input"
+                containerClass="phone-input mb-3"
               />
             </div>
             <div className="col-md-6">

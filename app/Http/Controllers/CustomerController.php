@@ -170,7 +170,35 @@ class CustomerController extends Controller
 
     public function allCustomers(Request $request)
     {
-        $customers = Customer::all();
+        $request->validate([
+            'place_id' => 'required|exists:places,id'
+        ]);
+
+        $order_customers = Order::select('customer_id')
+            ->where('place_id',$request->place_id)
+            ->whereNotNull('customer_id')
+            ->groupBy('customer_id')
+            ->pluck('customer_id');
+
+        $customers = Customer::whereIn('id',$order_customers);
+
+        if($request->has('first_name') && $request->first_name){
+            $customers = $customers->where('first_name','like','%'.$request->first_name.'%');
+        }
+
+        if($request->has('last_name') && $request->last_name){
+            $customers = $customers->where('last_name','like','%'.$request->last_name.'%');
+        }
+
+        if($request->has('email') && $request->email){
+            $customers = $customers->where('email','like','%'.$request->email.'%');
+        }
+
+        if($request->has('phone') && $request->phone){
+            $customers = $customers->where('phone','like','%'.$request->phone.'%');
+        }
+
+        $customers = $customers->get();
 
         return response()->json($customers);
     }

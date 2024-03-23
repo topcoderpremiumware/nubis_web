@@ -189,17 +189,19 @@ const App = () => {
         }
       })
       .catch((error) => {
-        if(url === '/api/customers/verify') return
-        if (error.response && error.response.data && error.response.data.errors) {
-          for (const [key, value] of Object.entries(error.response.data.errors)) {
-            value.forEach(v => {
-              eventBus.dispatch("notification", {type: 'error', message: v});
-            })
+        if(url !== '/api/customers/verify'){
+          if (error.response && error.response.data && error.response.data.errors) {
+            for (const [key, value] of Object.entries(error.response.data.errors)) {
+              value.forEach(v => {
+                eventBus.dispatch("notification", {type: 'error', message: v});
+              })
+            }
+          } else {
+            eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
+            console.error('Error', error.message,error.response.data.message)
           }
-        } else {
-          eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
-          console.error('Error', error.message,error.response.data.message)
         }
+
         if (type === "register" || type === "edit") {
           setErrorsResp({
             title: "Please go back and fix the errors:",

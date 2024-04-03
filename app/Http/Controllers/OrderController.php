@@ -446,11 +446,16 @@ class OrderController extends Controller
                         }
                     }
                 }
-            }elseif($order->marks['method'] == 'no_show' && $status == 'no_show'){
+            }elseif($order->marks['method'] == 'no_show' && in_array($status,['delete','no_show'])){
                 if(array_key_exists('payment_method_id',$order->marks)){
-                    if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
-                        $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
-                        $payment_intent->capture();
+                    if($status == 'no_show'){
+                        if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
+                            $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
+                            $payment_intent->capture();
+                        }
+                    }
+                    if($status == 'delete'){
+                        $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'order_deleted']);
                     }
                 }
             }

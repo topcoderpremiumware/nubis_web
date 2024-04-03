@@ -376,6 +376,8 @@ class TimetableController extends Controller
             'place_id' => 'required|exists:places,id',
             'area_id' => 'required|exists:areas,id',
             'date' => 'date_format:Y-m-d',
+            'start_time' => 'date_format:H:i:s',
+            'end_time' => 'date_format:H:i:s'
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)){
@@ -388,8 +390,8 @@ class TimetableController extends Controller
             ->where('area_id',$request->area_id)
             ->where('start_date',$request->date)
             ->where('end_date',$request->date)
-            ->where('start_time','00:00:00')
-            ->where('end_time','00:00:00')
+            ->where('start_time',$request->start_time)
+            ->where('end_time',$request->end_time)
             ->where('status','non-working')
             ->first();
 
@@ -399,8 +401,8 @@ class TimetableController extends Controller
                 'area_id' => $request->area_id,
                 'start_date' => $request->date,
                 'end_date' => $request->date,
-                'start_time' => '00:00:00',
-                'end_time' => '00:00:00',
+                'start_time' => $request->start_time,
+                'end_time' => $request->end_time,
                 'status' => 'non-working',
                 'length' => 0,
                 'max' => 999,
@@ -427,6 +429,8 @@ class TimetableController extends Controller
             'place_id' => 'required|exists:places,id',
             'area_id' => 'required|exists:areas,id',
             'date' => 'date_format:Y-m-d',
+            'start_time' => 'date_format:H:i:s',
+            'end_time' => 'date_format:H:i:s'
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)){
@@ -439,8 +443,8 @@ class TimetableController extends Controller
             ->where('area_id',$request->area_id)
             ->where('start_date',$request->date)
             ->where('end_date',$request->date)
-            ->where('start_time','00:00:00')
-            ->where('end_time','00:00:00')
+            ->where('start_time',$request->start_time)
+            ->where('end_time',$request->end_time)
             ->where('status','non-working')
             ->first();
 
@@ -461,6 +465,8 @@ class TimetableController extends Controller
             'place_id' => 'required|exists:places,id',
             'area_id' => 'required|exists:areas,id',
             'date' => 'date_format:Y-m-d',
+            'start_time' => 'date_format:H:i:s',
+            'end_time' => 'date_format:H:i:s'
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)){
@@ -473,8 +479,8 @@ class TimetableController extends Controller
             ->where('area_id',$request->area_id)
             ->where('start_date',$request->date)
             ->where('end_date',$request->date)
-            ->where('start_time','00:00:00')
-            ->where('end_time','00:00:00')
+            ->where('start_time',$request->start_time) // 00:00:00
+            ->where('end_time',$request->end_time) // 00:00:00
             ->where('status','non-working')
             ->first();
 

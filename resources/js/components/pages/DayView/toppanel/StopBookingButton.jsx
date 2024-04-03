@@ -2,23 +2,27 @@ import React, {useEffect, useState} from 'react'
 import eventBus from "../../../../eventBus";
 import {useTranslation} from "react-i18next";
 import {Button} from "@mui/material";
+import Moment from "moment/moment";
 
 
 export default function StopBookingButton() {
   const { t } = useTranslation();
   const [isBookingStopped, setIsBookingStopped] = useState(false)
 
-  useEffect(async () => {
-    await getIsBookingStopped()
+  useEffect( () => {
+    getIsBookingStopped()
 
-    eventBus.on("placeChanged", async () => {
-      await getIsBookingStopped()
+    eventBus.on("placeChanged",  () => {
+      getIsBookingStopped()
     });
-    eventBus.on("areaChanged", async () => {
-      await getIsBookingStopped()
+    eventBus.on("areaChanged",  () => {
+      getIsBookingStopped()
     });
-    eventBus.on("dateChanged", async () => {
-      await getIsBookingStopped()
+    eventBus.on("dateChanged",  () => {
+      getIsBookingStopped()
+    });
+    eventBus.on("timeChanged",  () => {
+      getIsBookingStopped()
     });
   }, [])
 
@@ -28,11 +32,14 @@ export default function StopBookingButton() {
 
   const getIsBookingStopped = async () => {
     if(isAllData()){
+      let time = JSON.parse(localStorage.getItem('time'))
       await axios.get(`${process.env.MIX_API_URL}/api/is_booking_stopped`, {
         params: {
           area_id: localStorage.getItem('area_id'),
           place_id: localStorage.getItem('place_id'),
-          date: localStorage.getItem('date')
+          date: localStorage.getItem('date'),
+          start_time: time['from'] || '00:00:00',
+          end_time: time['to'] || '00:00:00'
         },
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -46,10 +53,13 @@ export default function StopBookingButton() {
 
   const stopBooking = () => {
     if(window.role === 'admin' && isAllData()){
+      let time = JSON.parse(localStorage.getItem('time'))
       axios.post(`${process.env.MIX_API_URL}/api/stop_booking`,{
         area_id: localStorage.getItem('area_id'),
         place_id: localStorage.getItem('place_id'),
-        date: localStorage.getItem('date')
+        date: localStorage.getItem('date'),
+        start_time: time['from'] || '00:00:00',
+        end_time: time['to'] || '00:00:00'
       },{
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -65,10 +75,13 @@ export default function StopBookingButton() {
   }
   const unblockBooking = () => {
     if(window.role === 'admin' && isAllData()) {
+      let time = JSON.parse(localStorage.getItem('time'))
       axios.post(`${process.env.MIX_API_URL}/api/unblock_booking`, {
         area_id: localStorage.getItem('area_id'),
         place_id: localStorage.getItem('place_id'),
-        date: localStorage.getItem('date')
+        date: localStorage.getItem('date'),
+        start_time: time['from'] || '00:00:00',
+        end_time: time['to'] || '00:00:00'
       }, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')

@@ -24,6 +24,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Stripe\StripeClient;
+use Illuminate\Support\Facades\Log as SysLog;
 
 class OrderController extends Controller
 {
@@ -426,44 +427,48 @@ class OrderController extends Controller
             return;
         }
 
-        if($order->marks && array_key_exists('method',$order->marks)){
-            if($order->marks['method'] == 'deduct' && in_array($status,['delete','cancel'])){
-                if(array_key_exists('payment_intent_id',$order->marks)){
-                    if(($status === 'cancel' && $place->country->timeNow()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']) || $status === 'delete'){
-                        $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
-                        $order->refundGiftcard();
-                    }
-                }
-            }elseif($order->marks['method'] == 'reserve' && in_array($status,['delete','cancel'])){
-                if(array_key_exists('payment_intent_id',$order->marks)){
-                    if(($status === 'cancel' && $place->country->timeNow()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']) || $status === 'delete'){
-                        $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
-                        if($payment_intent->status == 'succeeded'){
+        try{
+            if($order->marks && array_key_exists('method',$order->marks)){
+                if($order->marks['method'] == 'deduct' && in_array($status,['delete','cancel'])){
+                    if(array_key_exists('payment_intent_id',$order->marks)){
+                        if(($status === 'cancel' && $place->country->timeNow()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']) || $status === 'delete'){
                             $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
                             $order->refundGiftcard();
-                        }else{
-                            $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'requested_by_customer']);
                         }
                     }
-                }
-            }elseif($order->marks['method'] == 'no_show' && in_array($status,['delete','no_show','cancel'])){
-                if(array_key_exists('payment_method_id',$order->marks)){
-                    if($status == 'cancel'){
-                        if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
-                            $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'requested_by_customer']);
-                        }
-                    }
-                    if($status == 'no_show'){
-                        if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
+                }elseif($order->marks['method'] == 'reserve' && in_array($status,['delete','cancel'])){
+                    if(array_key_exists('payment_intent_id',$order->marks)){
+                        if(($status === 'cancel' && $place->country->timeNow()->diffInMinutes($order->reservation_time,false) > $order->marks['cancel_deadline']) || $status === 'delete'){
                             $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
-                            $payment_intent->capture();
+                            if($payment_intent->status == 'succeeded'){
+                                $stripe->refunds->create(['payment_intent' => $order->marks['payment_intent_id']]);
+                                $order->refundGiftcard();
+                            }else{
+                                $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'requested_by_customer']);
+                            }
                         }
                     }
-                    if($status == 'delete'){
-                        $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'requested_by_customer']);
+                }elseif($order->marks['method'] == 'no_show' && in_array($status,['delete','no_show','cancel'])){
+                    if(array_key_exists('payment_method_id',$order->marks)){
+                        if($status == 'cancel'){
+                            if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
+                                $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'requested_by_customer']);
+                            }
+                        }
+                        if($status == 'no_show'){
+                            if($place->country->timeNow()->diffInMinutes($order->reservation_time,false) < $order->marks['cancel_deadline']){
+                                $payment_intent = $stripe->paymentIntents->retrieve($order->marks['payment_intent_id']);
+                                $payment_intent->capture();
+                            }
+                        }
+                        if($status == 'delete'){
+                            $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'requested_by_customer']);
+                        }
                     }
                 }
             }
+        }catch (\Exception $e){
+            SysLog::error($e->getMessage());
         }
     }
 

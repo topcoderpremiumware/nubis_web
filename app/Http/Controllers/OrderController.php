@@ -455,7 +455,7 @@ class OrderController extends Controller
                         }
                     }
                     if($status == 'delete'){
-                        $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'order_deleted']);
+                        $stripe->paymentIntents->cancel($order->marks['payment_intent_id'],['cancellation_reason' => 'requested_by_customer']);
                     }
                 }
             }

@@ -290,7 +290,7 @@ class CustomBookingLengthController extends Controller
                 for ($time; $time->lt($end); $time->addMinutes(15)) {
                     if($time->lt($place->country->timeNow()->addMinutes($custom_length->min_time_before))) continue;
                     $working_hour = array_values(array_filter($working_hours,function($item) use ($time) {
-                        return $item['from'] <= $time->format('H:i:s') && $item['to'] >= $time->format('H:i:s');
+                        return $item['from'] <= $time->format('H:i:s') && $item['to'] > $time->format('H:i:s');
                     }));
                     if(count($working_hour) > 0){
                         $working_hour = $working_hour[0];

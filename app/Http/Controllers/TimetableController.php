@@ -176,7 +176,7 @@ class TimetableController extends Controller
             'date' => 'date_format:Y-m-d',
         ]);
 
-        $working_hours = self::get_working_by_area_and_date($area_id, $request->date);
+        $working_hours = self::get_working_by_area_and_date($area_id, $request->date, true);
         return response()->json($working_hours);
     }
 
@@ -251,13 +251,15 @@ class TimetableController extends Controller
             }
         }
 
-        foreach ($non_working as $item) {
-            if(empty($item->week_days) || in_array($week_day,$item->week_days)){
-                if ($item->start_time == '00:00:00' && $item->end_time == '00:00:00') {
-                    $working_hours = [];
-                    break;
-                }else{
-                    $working_hours = self::divideTimePeriod($working_hours,$item);
+        if(!$for_admin){
+            foreach ($non_working as $item) {
+                if(empty($item->week_days) || in_array($week_day,$item->week_days)){
+                    if ($item->start_time == '00:00:00' && $item->end_time == '00:00:00') {
+                        $working_hours = [];
+                        break;
+                    }else{
+                        $working_hours = self::divideTimePeriod($working_hours,$item);
+                    }
                 }
             }
         }
@@ -292,12 +294,12 @@ class TimetableController extends Controller
         foreach ($working_hours as $index => $hours){
             if($hours['from'] >= $item->start_time && $hours['to'] <= $item->end_time){
 //                nothing
-            }elseif($hours['from'] > $item->start_time && $hours['to'] > $item->end_time){
+            }elseif($hours['from'] > $item->start_time && $hours['to'] > $item->end_time && $item->end_time > $hours['from']){
                 $w_h[] = array_merge($hours,[
                     'from' => $item->end_time,
                     'to' => $hours['to']
                 ]);
-            }elseif($hours['from'] < $item->start_time && $hours['to'] < $item->end_time){
+            }elseif($hours['from'] < $item->start_time && $hours['to'] < $item->end_time && $item->start_time < $hours['to']){
                 $w_h[] = array_merge($hours,[
                     'from' => $hours['from'],
                     'to' => $item->start_time

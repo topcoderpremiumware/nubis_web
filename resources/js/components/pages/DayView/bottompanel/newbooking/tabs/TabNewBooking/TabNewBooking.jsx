@@ -82,7 +82,7 @@ export default function TabNewBooking(props) {
 
   useEffect(async () => {
     if(Object.keys(order).length) {
-      getTimes()
+      // getTimes()
       getTables()
     }
   }, [order.area_id, order.seats, order.reservation_time])

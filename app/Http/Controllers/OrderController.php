@@ -896,10 +896,18 @@ class OrderController extends Controller
                 ->where('reservation_time', $request->reservation_time)
                 ->where('created_at', '>', Carbon::now()->addMinutes(-2))
                 ->first();
-            if ($last_order) return response()->json([
-                'message' => 'Too many orders in a short time'
-            ], 400);
+        }else{
+            $last_order = Order::where('email', $request->email)
+                ->where('place_id', $request->place_id)
+                ->where('area_id', $request->area_id)
+                ->where('reservation_time', $request->reservation_time)
+                ->where('created_at', '>', Carbon::now()->addMinutes(-2))
+                ->first();
         }
+        if ($last_order) return response()->json([
+            'message' => 'Too many orders in a short time'
+        ], 400);
+
 
         $tableplan_id = null;
         $table_ids = [];

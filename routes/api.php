@@ -81,6 +81,8 @@ Route::post('send_admin_contact',[PlaceController::class, 'sendtoAdmin']);
 Route::get('settings',[SettingController::class, 'get']);
 Route::get('settings/many',[SettingController::class, 'getMany']);
 
+Route::delete('cancel_order/{id}',[OrderController::class, 'cancel']);
+
 Route::middleware(['optional_auth:customer_api'])->group(function() {
     Route::post('make_order',[OrderController::class, 'makeOrder']);
 });
@@ -96,8 +98,6 @@ Route::middleware('auth:customer_api')->group(function(){
     Route::get('customers/orders',[OrderController::class, 'getAllByCustomer']);
     Route::get('customers/client_secret',[OrderController::class, 'getStripeClientSecret']);
     Route::get('customers/all',[CustomerController::class, 'allCustomers']);
-
-    Route::delete('cancel_order/{id}',[OrderController::class, 'cancel']);
 });
 Route::middleware('auth:user_api')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);

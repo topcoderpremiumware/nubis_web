@@ -31,9 +31,10 @@ function MainBlock(props) {
 
   const showModalWindow = (e) => {
     e.preventDefault();
-    localStorage.getItem("token")
-      ? props.setDefaultModal("canceling")
-      : props.setDefaultModal("emailCancel");
+    // localStorage.getItem("token")
+    //   ? props.setDefaultModal("canceling")
+    //   : props.setDefaultModal("emailCancel");
+    props.setDefaultModal("canceling")
     props.setModalActive(true);
   };
 

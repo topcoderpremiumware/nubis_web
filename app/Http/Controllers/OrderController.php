@@ -361,13 +361,23 @@ class OrderController extends Controller
     {
         $order = Order::find($id);
 
+        $request->validate([
+            'email' => 'required'
+        ]);
+
         if(!$order){
             return response()->json([
                 'message' => 'Order is not exist'
             ], 400);
         }
 
-        if(Auth::user()->id !== $order->customer_id){
+        if($order->customer_id){
+            $customer_email = $order->customer->email;
+        }else{
+            $customer_email = $order->email;
+        }
+
+        if($customer_email !== $request->email){
             return response()->json([
                 'message' => 'It\'s not your order'
             ], 400);

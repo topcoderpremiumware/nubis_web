@@ -381,11 +381,23 @@ const App = () => {
   console.log("Orders Error: ", ordersError);
 
   const cancelOrder = () => {
-    myAxios.delete(`/api/cancel_order/${userData?.bookingid || ""}`, {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    });
+    if(!userData.bookingid){
+      setOrdersErrorString('Booking id not set');
+      setOrdersError(false);
+    }else{
+      myAxios.delete(`/api/cancel_order/${userData?.bookingid}`, {
+        params: {
+          email: userData.bookingEmail
+        },
+      }).then((response) => {
+        setModalActive(true);
+        setDefaultModal("canceled");
+        setOrdersError(true);
+      }).catch((error) => {
+        setOrdersErrorString(error.response.data.message);
+        setOrdersError(false);
+      });
+    }
   };
 
   const getOrders = () => {

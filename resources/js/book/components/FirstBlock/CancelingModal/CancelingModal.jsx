@@ -55,28 +55,16 @@ export default function CancelingModal(props) {
   }
 
   const setCancelType = async () => {
-    if (defaultModal === "canceling" && localStorage.getItem("token")) {
-      await props.getOrders();
-    } else if (defaultModal === "canceling") {
-      props.setDefaultModal("confirmation");
-    }
-  };
-
-  const setMoreType = () => {
-    if (defaultModal === "canceling" && localStorage.getItem("token")) {
-      props.getOrders();
-    } else if (defaultModal === "canceling") {
-      props.setDefaultModal("confirmation");
-    }
+    // if (localStorage.getItem("token")) {
+    //   await props.getOrders();
+    // } else {
+    //   props.setDefaultModal("confirmation");
+    // }
+    makeOrderDone();
   };
 
   const makeOrderDone = () => {
     props.callback();
-    props.setModalActive(true);
-    // setTimeout(() => {
-    //   window.location.href = "/";
-    // }, 4000);
-    setDefaultModal("canceled");
   };
 
   const setInput = (name, value) => {
@@ -112,6 +100,12 @@ export default function CancelingModal(props) {
               </Trans>
             </p>
             <div className="cancel-inputs">
+              <input
+                type="email"
+                className="form-name__email"
+                placeholder={t('Email address')}
+                onChange={(event) => setInput("bookingEmail", event.target.value)}
+              />
               <input
                 type="text"
                 placeholder={t('Booking ID')}

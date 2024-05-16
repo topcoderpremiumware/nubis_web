@@ -56,7 +56,7 @@ export default function ManageFeedback() {
     }).then(response => {
       let feeds = response.data.map(item => {
         item.public = item.status === 'public' ? t('Yes') : t('No')
-        item.customer_name = item.customer.first_name+' '+item.customer.last_name
+        item.customer_name = item.customer_id ? item.customer.first_name+' '+item.customer.last_name : item.order.first_name+' '+item.order.last_name
         item.booking_date = Moment.utc(item.order.reservation_time).format('YYYY-MM-DD HH:mm')
         item.comment_short = item.comment.substring(0,20) + (item.comment.length > 20 ? '...' : '')
         item.self = item

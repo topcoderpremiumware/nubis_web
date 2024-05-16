@@ -74,7 +74,6 @@ class FeedbackController extends Controller
         ], 401);
 
         $request->validate([
-            'customer_id' => 'required|exists:customers,id',
             'place_id' => 'required|exists:places,id',
             'order_id' => 'required|exists:orders,id',
             'comment' => 'required',
@@ -198,16 +197,22 @@ class FeedbackController extends Controller
         $res = $feedback->update($data);
 
         if($feedback->reply !== $request->reply) {
-            $customer = $feedback->customer;
+            if($feedback->customer_id){
+                $phone = $feedback->customer->phone;
+                $email = $feedback->customer->email;
+            }else{
+                $phone = $feedback->order->phone;
+                $email = $feedback->order->email;
+            }
             if($feedback->place->allow_send_sms()){
                 $feedback->place->decrease_sms_limit();
-                $result = SMS::send([$customer->phone], $request->reply, env('APP_SHORT_NAME'));
+                $result = SMS::send([$phone], $request->reply, env('APP_SHORT_NAME'));
             }
 
             $place = Place::find($feedback->place_id);
             try{
-                \Illuminate\Support\Facades\Mail::html($request->reply, function ($msg) use ($place, $customer) {
-                    $msg->to($customer->email)->subject('Reply to feedback');
+                \Illuminate\Support\Facades\Mail::html($request->reply, function ($msg) use ($place, $email) {
+                    $msg->to($email)->subject('Reply to feedback');
                     $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                 });
             }catch (\Exception $e){}

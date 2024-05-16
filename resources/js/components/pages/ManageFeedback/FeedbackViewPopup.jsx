@@ -61,7 +61,7 @@ export default function FeedbackViewPopup(props) {
   }
 
   return (<>
-    {feedback.customer &&
+    {feedback.order &&
     <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="xl"
             scroll="paper"
             PaperProps={{
@@ -93,8 +93,8 @@ export default function FeedbackViewPopup(props) {
           <Grid item xs={12} sm={6}>
             <h2>{t('Customer Information')}</h2>
             <p>{t('Name')}: <strong>{feedback.customer_name}</strong></p>
-            <p>{t('Phone')}: <strong>{feedback.customer.phone}</strong></p>
-            <p>{t('Email')}: <strong>{feedback.customer.email}</strong></p>
+            <p>{t('Phone')}: <strong>{feedback.customer_id ? feedback.customer.phone : feedback.order.phone}</strong></p>
+            <p>{t('Email')}: <strong>{feedback.customer_id ? feedback.customer.email : feedback.order.email}</strong></p>
           </Grid>
         </Grid>
         <Grid container spacing={2} sx={{pb: 2}}>

@@ -178,6 +178,47 @@ class BillingController extends Controller
         return response()->json(['result'=> 'OK']);
     }
 
+    public function getLastActiveTrial($place_id, Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        if(!Auth::user()->is_superadmin) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        if(!Auth::user()->places->contains($place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $place = Place::find($place_id);
+        $trial_bill = $place->paid_bills()
+            ->where('product_name','Trial')
+            ->orderByDesc('expired_at')
+            ->first();
+        if(!$trial_bill || $trial_bill->expired_at < \Carbon\Carbon::now()) return response()->json(null);
+
+        return response()->json($trial_bill);
+    }
+
+    public function delete($id, Request $request)
+    {
+        if(!Auth::user()->is_superadmin) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $bill = PaidBill::find($id);
+
+        Log::add($request,'delete-bill','Deleted bill #'.$bill->id);
+
+        $bill->delete();
+
+        return response()->json(['message' => 'Bill is deleted']);
+    }
+
     public function webhook(Request $request)
     {
         try {

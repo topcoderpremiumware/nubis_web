@@ -7,13 +7,16 @@ const Pricing = () => {
   const { t } = useTranslation();
   const [billDisabled, setBillDisabled] = useState(true)
   const [place, setPlace] = useState({})
+  const [trialBill, setTrialBill] = useState({})
 
   useEffect(() => {
     getIsBillPaid()
     getPlace()
+    getTrialBill()
     eventBus.on("placeChanged", () => {
       getIsBillPaid()
       getPlace()
+      getTrialBill()
     })
   }, [])
 
@@ -30,8 +33,17 @@ const Pricing = () => {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      console.log('getIsBillPaid',response.data)
       setBillDisabled(response.data)
+    }).catch(error => { })
+  }
+
+  const getTrialBill = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/get_last_active_trial`, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setTrialBill(response.data)
     }).catch(error => { })
   }
 
@@ -78,6 +90,8 @@ const Pricing = () => {
 
   const payTrial = () => {
     axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`).then(response => {
+      getIsBillPaid()
+      getTrialBill()
       eventBus.dispatch("notification", {type: 'success', message: 'Paid Trial successfully'});
     }).catch(error => {
       if (error.response && error.response.data && error.response.data.errors) {
@@ -91,6 +105,23 @@ const Pricing = () => {
         console.log('Error', error.message)
       }
     })
+  }
+
+  const deleteTrial = () => {
+    if (window.confirm(t('Are you sure you want to delete this trial?'))) {
+      axios.delete(`${process.env.MIX_API_URL}/api/billings/${trialBill.id}`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        getIsBillPaid()
+        getTrialBill()
+        eventBus.dispatch("notification", {type: 'success', message: 'Trial deleted successfully'});
+      }).catch(error => {
+        eventBus.dispatch("notification", {type: 'error', message: error.message});
+        console.log('Error', error)
+      })
+    }
   }
 
   return (
@@ -181,13 +212,20 @@ const Pricing = () => {
         </div>
       </div>}
       {window.is_superadmin === 1 && <div style={{marginBottom: '15px', display: 'flex', justifyContent: 'center'}}>
-        <button
-          type="button"
-          className="price-card-btn"
-          onClick={() => payTrial()}
-        >{t('Pay trial (for superadmin only)')}</button>
-      </div>}
-      <p className="price-text">{t('Tied into another solution? If you have a notice period on your current booking system, you will receive Nubis reservation for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system for free using our Nubis Academy videos or let us set it up for you for')} € 149</p>
+        {trialBill.hasOwnProperty('id') ? <button
+            type="button"
+            className="price-card-btn"
+            onClick={() => deleteTrial()}
+          >{t('Delete trial #{{id}} (for superadmin only)',{id: trialBill.id})}</button>
+          :
+          <button
+            type="button"
+            className="price-card-btn"
+            onClick={() => payTrial()}
+          >{t('Pay trial (for superadmin only)')}</button>}
+          </div>}
+        <p
+          className="price-text">{t('Tied into another solution? If you have a notice period on your current booking system, you will receive Nubis reservation for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system for free using our Nubis Academy videos or let us set it up for you for')} € 149</p>
       <div style={{marginTop: '15px', display: 'flex', justifyContent: 'center'}}>
         <button
           type="button"

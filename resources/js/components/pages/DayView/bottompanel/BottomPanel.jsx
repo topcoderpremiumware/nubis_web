@@ -25,6 +25,9 @@ export default function BottomPanel({ selectedOrder, setSelectedOrder }) {
       setOrders(data.orders)
       setColumns(data.columns)
       setPdfTitle(data.pdfTitle)
+      if(data.orders.length > 0 && window.ReactNativeWebView){
+        window.ReactNativeWebView.postMessage('button_aiailable');
+      }
     });
   }, [])
 

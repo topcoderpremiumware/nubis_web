@@ -22,6 +22,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
 
   useEffect(() => {
     function placeChanged(){
+      console.log('useEffect','placeChanged')
       getOrders()
       Echo.leave(channelName)
       channelName = `place-${localStorage.getItem('place_id')}`
@@ -40,6 +41,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
         })
     }
     function handleOrdersChange(){
+      console.log('useEffect','handleOrdersChange')
       getOrders()
     }
     eventBus.on("placeChanged", placeChanged);
@@ -49,6 +51,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     eventBus.on("orderEdited",  handleOrdersChange);
     placeChanged()
     return () => {
+      console.log('useEffect','return')
       eventBus.remove('placeChanged',placeChanged)
       eventBus.remove('areaChanged',handleOrdersChange)
       eventBus.remove('timeChanged',handleOrdersChange)

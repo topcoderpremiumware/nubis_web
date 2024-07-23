@@ -25,11 +25,14 @@ export default function BottomPanel({ selectedOrder, setSelectedOrder }) {
       setOrders(data.orders)
       setColumns(data.columns)
       setPdfTitle(data.pdfTitle)
-      if(data.orders.length > 0 && window.ReactNativeWebView){
-        window.ReactNativeWebView.postMessage('button_aiailable');
-      }
     });
   }, [])
+
+  const exportPdf = () => {
+    if(window.ReactNativeWebView){
+      window.ReactNativeWebView.postMessage('button_aiailable');
+    }
+  }
 
   return (
     <Stack mt={2} spacing={1} direction="row">
@@ -46,7 +49,7 @@ export default function BottomPanel({ selectedOrder, setSelectedOrder }) {
           }
           fileName={pdfTitle.replace(/ /g,"_") + new Date().getTime() + ".pdf"}
         >
-          <Button variant="contained">{t('Export to PDF')}</Button>
+          <Button variant="contained" onClick={() => exportPdf()}>{t('Export to PDF')}</Button>
         </PDFDownloadLink>
       )}
     </Stack>

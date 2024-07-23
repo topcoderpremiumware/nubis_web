@@ -13,6 +13,7 @@ export default function Alert() {
       let temp = errors
       temp.push(data)
       setErrors([...temp])
+      console.log('notification',temp)
       setTimeout(()=>{
         removeMessage(temp.length-1)
       },3000)

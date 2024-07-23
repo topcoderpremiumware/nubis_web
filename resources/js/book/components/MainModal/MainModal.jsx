@@ -3,6 +3,7 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import "./MainModal.css";
 import {useTranslation} from "react-i18next";
+import eventBus from "../../../eventBus";
 
 export default function MainModal(props) {
   const { t } = useTranslation();
@@ -55,6 +56,16 @@ export default function MainModal(props) {
     loginMore: "/api/customers/login",
     edit: "/api/customers",
   };
+
+  const runContinue = () => {
+    if(defaultModal === 'register' && (!userData.first_name || !userData.last_name ||
+      !userData.email || !userData.phone)){
+      console.log('runContinue')
+      eventBus.dispatch("notification", {type: 'error', message: 'All fields are mandatory'});
+    }else{
+      props.callback(userData, getUrl[defaultModal], defaultModal)
+    }
+  }
 
   return (
     <div
@@ -184,8 +195,7 @@ export default function MainModal(props) {
           <div className="modal-button">
             <button
               className="button-main"
-              onClick={() =>
-                props.callback(userData, getUrl[defaultModal], defaultModal)
+              onClick={() => runContinue()
               }
             >
               {t('Continue')} →

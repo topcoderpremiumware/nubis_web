@@ -336,7 +336,7 @@ export default function TabNewBooking(props) {
           }
         }
       )
-
+      console.log('dispatch','orderEdited','createOrder')
       eventBus.dispatch('orderEdited')
       props.handleClose()
     } catch (err) {
@@ -351,6 +351,7 @@ export default function TabNewBooking(props) {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
       }).then(() => {
+        console.log('dispatch','orderEdited','deleteOrder')
         eventBus.dispatch('orderEdited')
         props.handleClose()
       })

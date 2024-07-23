@@ -41,6 +41,7 @@ export default function AreasSelect() {
     if(e.target.name === 'area'){
       setArea(e.target.value)
       localStorage.setItem('area_id',e.target.value)
+      console.log('dispatch','areaChanged')
       eventBus.dispatch("areaChanged")
     }
   };

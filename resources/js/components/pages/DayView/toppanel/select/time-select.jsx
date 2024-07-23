@@ -38,6 +38,7 @@ export default function TimeSelect() {
       setTime('0')
       localStorage.removeItem('time')
     }
+    console.log('dispatch','timeChanged','useEffect')
     eventBus.dispatch("timeChanged")
   }, [times])
 
@@ -61,6 +62,7 @@ export default function TimeSelect() {
     if(e.target.name === 'time'){
       setTime(e.target.value)
       localStorage.setItem('time',e.target.value)
+      console.log('dispatch','timeChanged')
       eventBus.dispatch("timeChanged")
     }
   };

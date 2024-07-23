@@ -25,6 +25,7 @@ import { CgCalendarToday } from "react-icons/cg";
    const onChange = (date) => {
      setStartDate(date)
      localStorage.setItem('date', Moment.utc(date).format('YYYY-MM-DD')) //changed to utc
+     console.log('dispatch','dateChanged','onChange')
      eventBus.dispatch("dateChanged")
    };
 
@@ -32,6 +33,7 @@ import { CgCalendarToday } from "react-icons/cg";
      let date = new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000)
      setStartDate(date)
      localStorage.setItem('date',Moment.utc(date).format('YYYY-MM-DD')) // changed to utc
+     console.log('dispatch','dateChanged','setDate')
      eventBus.dispatch("dateChanged")
    };
 

@@ -21,7 +21,6 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
   let channelName
 
   useEffect(() => {
-    getOrders()
     function placeChanged(){
       getOrders()
       Echo.leave(channelName)

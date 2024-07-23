@@ -22,42 +22,40 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
 
   useEffect(() => {
     getOrders()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getOrders()
       Echo.leave(channelName)
       channelName = `place-${localStorage.getItem('place_id')}`
       Echo.channel(channelName)
+        .listen('.order-created', function(data) {
+          console.log('echo order-created',data)
+          getOrders()
+        })
+        .listen('.order-updated', function(data) {
+          console.log('echo order-updated',data)
+          getOrders()
+        })
         .listen('.order-deleted', function(data) {
           console.log('echo order-deleted',data)
           getOrders()
         })
-    });
-    eventBus.on("areaChanged",  () => {
+    }
+    function handleOrdersChange(){
       getOrders()
-    });
-    eventBus.on("timeChanged",  () => {
-      getOrders()
-    });
-    eventBus.on("dateChanged",  () => {
-      getOrders()
-    });
-    eventBus.on("orderEdited",  () => {
-      getOrders()
-    });
-    channelName = `place-${localStorage.getItem('place_id')}`
-    Echo.channel(channelName)
-      .listen('.order-created', function(data) {
-        console.log('echo order-created',data)
-        getOrders()
-      })
-      .listen('.order-updated', function(data) {
-        console.log('echo order-updated',data)
-        getOrders()
-      })
-      .listen('.order-deleted', function(data) {
-        console.log('echo order-deleted',data)
-        getOrders()
-      })
+    }
+    eventBus.on("placeChanged", placeChanged);
+    eventBus.on("areaChanged",  handleOrdersChange);
+    eventBus.on("timeChanged",  handleOrdersChange);
+    eventBus.on("dateChanged",  handleOrdersChange);
+    eventBus.on("orderEdited",  handleOrdersChange);
+    placeChanged()
+    return () => {
+      eventBus.remove('placeChanged',placeChanged)
+      eventBus.remove('areaChanged',handleOrdersChange)
+      eventBus.remove('timeChanged',handleOrdersChange)
+      eventBus.remove('dateChanged',handleOrdersChange)
+      eventBus.remove('orderEdited',handleOrdersChange)
+    }
   }, [])
 
   const columns = [

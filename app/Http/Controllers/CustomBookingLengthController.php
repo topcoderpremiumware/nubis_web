@@ -323,6 +323,7 @@ class CustomBookingLengthController extends Controller
                         foreach ($tables as $table) {
                             if(!array_key_exists('seats',$table)) continue;
                             if($table['seats'] < $request->seats) continue;
+                            if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request->seats) continue;
                             if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                                 $reserv_to = $time->copy()->addMinutes($custom_length->length);
                                 $reserv_from = $time->copy();

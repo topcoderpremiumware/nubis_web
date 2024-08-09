@@ -952,6 +952,7 @@ class OrderController extends Controller
             foreach ($free_tables as $plan_id => $tables){
                 foreach ($tables as $table) {
                     if($table['seats'] < $request->seats) continue;
+                    if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request->seats) continue;
                     if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                         $reserv_to = $reservation_time->copy()->addMinutes($length);
                         $reserv_from = $reservation_time->copy();

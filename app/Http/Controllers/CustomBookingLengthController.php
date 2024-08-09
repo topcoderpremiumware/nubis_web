@@ -343,6 +343,7 @@ class CustomBookingLengthController extends Controller
                         $groups_table_seats = [];
                         $groups_tables = [];
                         foreach ($tables as $table) {
+                            if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request->seats) continue;
                             if(!array_key_exists('grouped',$table)) continue;
                             if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
                                 $group_id = $table['time'][0]['group'];

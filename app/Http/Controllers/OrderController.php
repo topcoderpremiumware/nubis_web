@@ -803,6 +803,7 @@ class OrderController extends Controller
             $groups = $tableplan->getTableGroups();
             foreach ($groups as $group) {
                 if(!$for_admin && $group['seats'] < $seats) continue;
+                if(!$for_admin && $tab['time'][0]['is_online'] && $tab['time'][0]['min_seats'] > $seats) continue;
                 if(!$group['is_online']) continue;
                 foreach ($group['tables'] as $tab) {
                     $free_tables[$tableplan->id][$tab['number']] = $tab;

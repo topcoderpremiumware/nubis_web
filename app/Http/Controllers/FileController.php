@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\File;
 use App\Models\Log;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -56,7 +58,44 @@ class FileController extends Controller
         }
 
         Log::add($request,'change-file','Changed file #'.$file->id);
-        $file->url = Storage::disk('public')->url($file->filename);
+
+        return response()->json($file);
+    }
+
+    public function setMany($purpose, Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'files.*' => 'required|mimes:jpg,png|max:1024'
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        if(!$request->files->get('files')){
+            abort(400, 'Files field is empty');
+        }
+
+        /** @var UploadedFile $file */
+        foreach($request->files->get('files') as $index => $file) {
+            $filename = $request->place_id.'/'.Carbon::now()->timestamp.'_'.$index.'.'.$file->getClientOriginalExtension();
+            Storage::disk('public')->put($filename, $file->getContent());
+
+            $file = File::create([
+                'place_id' => $request->place_id,
+                'purpose' => $request->purpose,
+                'filename' => $filename
+            ]);
+        }
+
+        Log::add($request,'change-file','Changed file #'.$file->id);
 
         return response()->json($file);
     }
@@ -78,11 +117,6 @@ class FileController extends Controller
 
         if($files->count() == 0){
             return response()->json(['message' => 'Files not found'], 400);
-        }else{
-            $files->map(function ($file) {
-                $file->url = Storage::disk('public')->url($file->filename);
-                return $file;
-            });
         }
 
         return response()->json($files);
@@ -101,8 +135,6 @@ class FileController extends Controller
 
         if($file === null){
             return response()->json(['message' => 'File not exist'], 400);
-        }else{
-            $file->url = Storage::disk('public')->url($file->filename);
         }
 
         return response()->json($file);
@@ -121,11 +153,6 @@ class FileController extends Controller
 
         if($files->count() == 0){
             return response()->json(['message' => 'Files not found'], 400);
-        }else{
-            $files->map(function ($file) {
-                $file->url = Storage::disk('public')->url($file->filename);
-                return $file;
-            });
         }
 
         return response()->json($files);
@@ -149,5 +176,23 @@ class FileController extends Controller
         $file->delete();
 
         return response()->json(['message' => 'File removed successfully']);
+    }
+
+    public function getManyByPurpose(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|integer|exists:places,id',
+            'purposes' => 'required|array'
+        ]);
+
+        $files = File::where('place_id',$request->place_id)
+            ->where(function($q) use ($request) {
+                foreach ($request->purposes as $purpose){
+                    $q->orWhere('purpose','like',$purpose.'%');
+                }
+            })
+            ->get();
+
+        return response()->json($files);
     }
 }

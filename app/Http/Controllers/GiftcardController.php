@@ -25,6 +25,26 @@ class GiftcardController extends Controller
             'email' => 'required|email',
         ]);
 
+        if($request->has('receiver_name')){
+            if(is_array($request->receiver_name)){
+                $receiver_name = implode(',',$request->receiver_name);
+            }else{
+                $receiver_name = $request->receiver_name;
+            }
+        }else{
+            $receiver_name = '';
+        }
+
+        if($request->has('receiver_email')){
+            if(is_array($request->receiver_email)) {
+                $receiver_email = implode(',', $request->receiver_email);
+            }else{
+                $receiver_email = $request->receiver_email;
+            }
+        }else{
+            $receiver_email = '';
+        }
+
         $giftcard = Giftcard::create([
             'place_id' => $request->place_id,
             'name' => $request->name,
@@ -33,16 +53,29 @@ class GiftcardController extends Controller
             'spend_amount' => $request->spend_amount ?? 0,
             'code' => Giftcard::generateUniqueCode(),
             'email' => $request->email,
-            'receiver_name' => $request->receiver_name ?? '',
-            'receiver_email' => $request->receiver_email ?? '',
+            'receiver_name' => $receiver_name,
+            'receiver_email' => $receiver_email,
             'company_name' => $request->company_name,
             'company_address' => $request->company_address,
             'post_code' => $request->post_code,
             'company_city' => $request->company_city,
             'vat_number' => $request->vat_number,
             'country_id' => $request->country_id,
-            'status' => 'pending'
+            'status' => 'pending',
+            'giftcard_menu_id' => $request->experience_id,
+            'greetings' => $request->greetings
         ]);
+
+        if($request->has('background_image')){
+            $bg_parts = explode(',',$request->background_image);
+            preg_match('/^data:image\/(\w+);base64/', $bg_parts[0], $matches);
+            $bg_ext = $matches[1];
+            $background_image = 'giftcards/'.$giftcard->id.'_'.Carbon::now()->timestamp.'.'.$bg_ext;
+            Storage::disk('public')->put($background_image, base64_decode($bg_parts[1]));
+
+            $giftcard->background_image = $background_image;
+            $giftcard->save();
+        }
 
         $place = Place::find($request->place_id);
 
@@ -86,7 +119,7 @@ class GiftcardController extends Controller
             $giftcard->payment_url = $link->url;
         }
 
-        //Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
+        Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
 
         return response()->json($giftcard);
     }
@@ -308,5 +341,33 @@ class GiftcardController extends Controller
         $giftcard = Giftcard::find($giftcard->id);
 
         return response()->json($giftcard);
+    }
+
+    public function pdfPreview(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id'
+        ]);
+
+        $giftcard = new Giftcard();
+        $giftcard->place_id = $request->place_id;
+        $giftcard->name = $request->name;
+        $giftcard->expired_at = $request->expired_at;
+        $giftcard->initial_amount = $request->initial_amount;
+        $giftcard->receiver_name = $request->receiver_name ? implode(',',$request->receiver_name) : '';
+        $giftcard->giftcard_menu_id = $request->experience_id;
+        $giftcard->greetings = $request->greetings;
+        $giftcard->bg_url = $request->background_image;
+        $giftcard->examle = true;
+
+        $html = view('pdfs.new_giftcard', compact('giftcard'))->render();
+        $options = new Options();
+        $options->set('enable_remote', TRUE);
+        $options->set('enable_html5_parser', FALSE);
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4');
+        $dompdf->render();
+        $dompdf->stream('giftcard.pdf', array("Attachment" => false,'compress' => false));
     }
 }

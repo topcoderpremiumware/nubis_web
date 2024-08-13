@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import PictureUploadButton from './PictureUploadButton';
+import PictureUploadButton from '../../../components/PictureUploadButton';
 import {useTranslation} from "react-i18next";
 import ListSubheader from "@mui/material/ListSubheader";
 import './BookingSettings.scss'

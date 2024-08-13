@@ -11,6 +11,7 @@ use App\Http\Controllers\DishController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\GiftcardController;
+use App\Http\Controllers\GiftcardMenuController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MessageTemplateController;
 use App\Http\Controllers\OrderController;
@@ -68,9 +69,11 @@ Route::get('places/{place_id}/online_booking_title',[OrderController::class, 'ge
 Route::post('places/{place_id}/send_contact',[PlaceController::class, 'sendContact']);
 
 Route::get('files_purpose',[FileController::class, 'getByPurpose']);
+Route::get('files_many_purposes',[FileController::class, 'getManyByPurpose']);
 Route::get('countries',[CountryController::class, 'getAll']);
 
 Route::get('custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByParams']);
+Route::get('giftcard_menus',[GiftcardMenuController::class, 'getAllByParams']);
 
 Route::post('feedbacks',[FeedbackController::class, 'create']);
 Route::post('feedbacks/is_exist',[FeedbackController::class, 'isFeedbackExist']);
@@ -199,6 +202,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('feedbacks/{id}/reply',[FeedbackController::class, 'makeReply']);
 
     Route::post('files/{purpose}',[FileController::class, 'set']);
+    Route::post('files_many/{purpose}',[FileController::class, 'setMany']);
     Route::get('files',[FileController::class, 'getAllByPlace']);
     Route::get('files_find',[FileController::class, 'findByPurpose']);
     Route::delete('files/{id}',[FileController::class, 'delete']);
@@ -225,11 +229,18 @@ Route::middleware('auth:user_api')->group(function(){
 
     Route::post('customers/{id}/black_list',[CustomerController::class, 'addBlackList']);
     Route::delete('customers/{id}/black_list',[CustomerController::class, 'removeBlackList']);
+
+    Route::post('giftcard_menus',[GiftcardMenuController::class, 'create']);
+    Route::post('giftcard_menus/{id}',[GiftcardMenuController::class, 'save']);
+    Route::get('giftcard_menus/{id}',[GiftcardMenuController::class, 'getId']);
+    Route::get('places/{place_id}/giftcard_menus',[GiftcardMenuController::class, 'getAllByPlace']);
+    Route::delete('giftcard_menus/{id}',[GiftcardMenuController::class, 'delete']);
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);
 Route::get('giftcards_check',[GiftcardController::class, 'getByCode']);
 Route::post('giftcards_spend',[GiftcardController::class, 'spend']);
+Route::post('giftcard_pdf_preview',[GiftcardController::class, 'pdfPreview']);
 
 Route::get('places/{id}',[PlaceController::class, 'getId']);
 Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);

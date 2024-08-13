@@ -36,6 +36,7 @@ Route::get('/change_lang/{locale}', function ($locale = null) {
     return redirect()->back();
 });
 Route::view('/giftcard/{place_id}', 'giftcard')->name('giftcard');
+Route::view('/new_giftcard/{place_id}', 'new_giftcard')->name('new_giftcard');
 Route::view('/feedback/{order_id}', 'feedback')->name('feedback');
 Route::view('/feedbacks/{place_id}', 'feedbacks')->name('feedbacks');
 Route::view('/terms', 'terms')->name('terms');

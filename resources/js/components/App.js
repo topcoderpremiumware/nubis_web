@@ -40,6 +40,8 @@ const Welcome = React.lazy(() => import('./pages/Welcome/Welcome'))
 const SmsPricing = React.lazy(() => import('./pages/SmsPricing/SmsPricing'))
 const Forgot = React.lazy(() => import('./pages/Forgot/Forgot'))
 const PasswordReset = React.lazy(() => import('./pages/PasswordReset/PasswordReset'))
+const GeneralSettings = React.lazy(() => import('./pages/GiftcardSettings/GeneralSettings/GeneralSettings'))
+const ExperienceSettings = React.lazy(() => import('./pages/GiftcardSettings/ExperienceSettings/ExperienceSettings'))
 
 import eventBus from '../eventBus';
 
@@ -138,6 +140,12 @@ function App() {
                 </Suspense>} />
                 <Route path='/BookingSettings' exact element={<Suspense fallback={<LoadingPage/>}>
                   <BookingSettings/>
+                </Suspense>} />
+                <Route path='/GiftcardSettings' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <GeneralSettings/>
+                </Suspense>} />
+                <Route path='/ExperienceSettings' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <ExperienceSettings/>
                 </Suspense>} />
                 <Route path='/SmsKeys' exact element={<Suspense fallback={<LoadingPage/>}>
                   <SmsApiKeys/>

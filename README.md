@@ -62,3 +62,6 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+1) Додати до таблиці giftcards необовʼязковий giftcard_menu_id, також додати json поле налаштування experience pdf, щоб потім webhook знав як створювати кастомний PDF.

@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import '../../App.css'
 import './Form.css'
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { Autocomplete, Checkbox, FormControlLabel, TextField } from '@mui/material';
-import countries from './countries'
 
 const schema = yup.object({
   name: yup.string().required('This field is required'),
@@ -22,6 +21,11 @@ const receiverSchema = yup.object({
 const GiftForm = ({isReceiver, onSubmit, onBack}) => {
   const [isCompany, setIsCompany] = useState(false)
   const [companyId, setCompanyId] = useState('')
+  const [countries, setCountries] = useState([])
+
+  useEffect(() => {
+    getCountries()
+  },[])
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(isReceiver ? receiverSchema : schema)
@@ -31,12 +35,21 @@ const GiftForm = ({isReceiver, onSubmit, onBack}) => {
     onSubmit({...data, isCompany, companyId})
   };
 
+  const getCountries = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/countries`).then(response => {
+      setCountries(response.data.map(el => {
+        return {...el, label: el.name }
+      }))
+    }).catch(error => {
+    })
+  }
+
   return (
     <form onSubmit={handleSubmit(handleSubmitForm)}>
       <div className="gift-form-wrapper">
         <div>
           <h3 className="gift-form-title">Your details</h3>
-          <FormControlLabel 
+          <FormControlLabel
             control={
               <Checkbox
                 color="default"
@@ -44,13 +57,13 @@ const GiftForm = ({isReceiver, onSubmit, onBack}) => {
                 checked={isCompany}
                 onChange={ev => setIsCompany(ev.target.checked)}
               />
-            } 
-            label="Company" 
+            }
+            label="Company"
             className="gift-form-check"
           />
           <label className="gift-form-label">
             <span>Name</span>
-            <input 
+            <input
               type="text"
               placeholder="Name"
               {...register("name")}
@@ -59,7 +72,7 @@ const GiftForm = ({isReceiver, onSubmit, onBack}) => {
           </label>
           <label className="gift-form-label">
             <span>Email</span>
-            <input 
+            <input
               type="text"
               placeholder="Email"
               {...register("email")}

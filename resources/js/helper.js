@@ -1,3 +1,5 @@
+import eventBus from "./eventBus";
+
 export const normalizeNumber = (number) => (number < 10 ? `0${number}` : number);
 
 export const generateFormData = data => {
@@ -52,4 +54,46 @@ export function isIPad() {
   return toMatch.some((toMatchItem) => {
     return navigator.userAgent.match(toMatchItem);
   });
+}
+
+export const simpleCatchError = (error) => {
+  console.log('error',error.response.data.message)
+  if (error.response && error.response.data && error.response.data.errors) {
+    for (const [key, value] of Object.entries(error.response.data.errors)) {
+      eventBus.dispatch("notification", {type: 'error', message: value});
+    }
+  } else if (error.response && error.response.data && error.response.data.message) {
+    eventBus.dispatch("notification", {type: 'error', message: error.response.data.message});
+  } else {
+    eventBus.dispatch("notification", {type: 'error', message: error.message});
+    console.log('Error', error.message)
+  }
+}
+
+export const getBase64FromUrl = (url) => {
+  return new Promise((resolve, reject) => {
+    if(!url) resolve('')
+    let img = document.createElement('img');
+    img.src = url;
+    img.onload = function () {
+      let canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      let ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      let dataURL = canvas.toDataURL("image/png");
+      // resolve(dataURL.replace(/^data:image\/?[A-z]*;base64,/,''))
+      resolve(dataURL)
+    }
+  })
+}
+
+export const getBase64FromFile = (file) => {
+  return new Promise((resolve, reject) => {
+    if(!file) resolve('')
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  })
 }

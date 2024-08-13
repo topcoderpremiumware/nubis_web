@@ -12,15 +12,17 @@ require('laravel-mix-compress');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-  .sass('resources/sass/app.scss', 'public/css')
-  .js('resources/js/book.js', 'public/js')
-  .sass('resources/sass/book.scss', 'public/css')
-  .js('resources/js/giftcard.js', 'public/js')
-  .js('resources/js/feedback.js', 'public/js')
-  .js('resources/js/feedbacks.js', 'public/js')
-  .js('resources/js/home.js', 'public/js')
-  .sass('resources/sass/home.scss', 'public/css')
-  .js('resources/js/terms.js', 'public/js')
+mix
+  // .js('resources/js/app.js', 'public/js')
+  // .sass('resources/sass/app.scss', 'public/css')
+  // .js('resources/js/book.js', 'public/js')
+  // .sass('resources/sass/book.scss', 'public/css')
+  // .js('resources/js/giftcard.js', 'public/js')
+  .js('resources/js/new_giftcard.js', 'public/js')
+  // .js('resources/js/feedback.js', 'public/js')
+  // .js('resources/js/feedbacks.js', 'public/js')
+  // .js('resources/js/home.js', 'public/js')
+  // .sass('resources/sass/home.scss', 'public/css')
+  // .js('resources/js/terms.js', 'public/js')
   .react()
   .compress()

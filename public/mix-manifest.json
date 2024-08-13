@@ -1,12 +1,3 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/js/book.js": "/js/book.js",
-    "/js/giftcard.js": "/js/giftcard.js",
-    "/js/feedback.js": "/js/feedback.js",
-    "/js/feedbacks.js": "/js/feedbacks.js",
-    "/js/home.js": "/js/home.js",
-    "/js/terms.js": "/js/terms.js",
-    "/css/app.css": "/css/app.css",
-    "/css/home.css": "/css/home.css",
-    "/css/book.css": "/css/book.css"
+    "/js/new_giftcard.js": "/js/new_giftcard.js"
 }

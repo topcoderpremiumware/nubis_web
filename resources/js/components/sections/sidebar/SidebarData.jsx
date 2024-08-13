@@ -1,7 +1,6 @@
 import React from 'react';
 import { KeyboardArrowDown, KeyboardArrowUp }from '@mui/icons-material';
-import { FeaturedPlayListOutlined, SettingsOutlined, CalendarMonthOutlined, EmailOutlined} from '@mui/icons-material';
-
+import { FeaturedPlayListOutlined, SettingsOutlined, CalendarMonthOutlined, EmailOutlined, Redeem} from '@mui/icons-material';
 import { TiMessages} from 'react-icons/ti';
 import { IoIosStats} from 'react-icons/io';
 import { BsCreditCard } from 'react-icons/bs';
@@ -122,6 +121,24 @@ export const SidebarData = (data) => { return [
       {
         title: 'Booking Link Guide',
         path: '/BookingLinkGuide'
+      },
+    ]
+  },
+  {
+    title: 'Giftcard Settings',
+    path: '#',
+    icon: <Redeem />,
+    iconClosed: <KeyboardArrowDown />,
+    iconOpened: <KeyboardArrowUp />,
+    show: ['admin','manager'].includes(data.role),
+    subNav: [
+      {
+        title: 'General Settings',
+        path: '/GiftcardSettings'
+      },
+      {
+        title: 'Experience Settings',
+        path: '/ExperienceSettings'
       },
     ]
   },

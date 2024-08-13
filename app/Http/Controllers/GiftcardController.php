@@ -99,6 +99,7 @@ class GiftcardController extends Controller
             $price = $stripe->prices->create([
                 'unit_amount' => $request->initial_amount * 100,
                 'currency' => $online_payment_currency,
+                'tax_behavior' => 'inclusive',
                 'product_data' => [
                     'name' => 'Giftcard'
                 ]
@@ -110,6 +111,9 @@ class GiftcardController extends Controller
                     'automatic_tax' => ['enabled' => true],
                     'metadata' => [
                         'giftcard_id' => $giftcard->id
+                    ],
+                    'tax_id_collection' => [
+                        'enabled' => true
                     ],
                     'after_completion' => [
                         'type' => 'redirect',

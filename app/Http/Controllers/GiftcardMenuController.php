@@ -41,6 +41,8 @@ class GiftcardMenuController extends Controller
             $filename = 'giftcard_menu/'.$request->place_id.'/'.Carbon::now()->timestamp.'.'.$file_upload->getClientOriginalExtension();
             $content = $file_upload->getContent();
             Storage::disk('public')->put($filename,$content);
+        }else{
+            abort(400,'Image is ton set');
         }
 
         $giftcard_menu = GiftcardMenu::create([

@@ -119,8 +119,6 @@ class GiftcardController extends Controller
             $giftcard->payment_url = $link->url;
         }
 
-        Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
-
         return response()->json($giftcard);
     }
 

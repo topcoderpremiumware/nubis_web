@@ -107,6 +107,7 @@ class GiftcardController extends Controller
             $link = $stripe->paymentLinks->create(
                 [
                     'line_items' => [['price' => $price->id, 'quantity' => 1]],
+                    'automatic_tax' => ['enabled' => true],
                     'metadata' => [
                         'giftcard_id' => $giftcard->id
                     ],

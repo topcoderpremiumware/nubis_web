@@ -53,7 +53,7 @@ export default function NewGiftCardPopup({ open, handleClose }) {
     try {
       const data = {
         place_id: localStorage.getItem('place_id'),
-        count,
+        quantity: count,
         name,
         email,
         initial_amount: amount,

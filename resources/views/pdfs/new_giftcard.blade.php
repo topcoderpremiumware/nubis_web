@@ -6,10 +6,11 @@
     body{
         font-family: "Poppins", sans-serif;
         margin:0;
-        background-repeat: no-repeat;
         position: relative;
         padding: 100px 50px;
         text-align: center;
+        background-image: url('data:image/png;base64,{{base64_encode(file_get_contents(public_path('images/new_giftcard_bg.png')))}}');
+        background-size: cover;
     }
     h2{
         font-size: 37px;
@@ -90,7 +91,7 @@
     <h3>{{__('Gift card')}}</h3>
     <h2>{{$place->name}}</h2>
     @if($image)
-        <div class="img" style="background-image: url('{{$image}}')" alt="image"></div>
+        <div class="img" style="background-image: url('{{$image}}')"></div>
     @endif
     <div class="content_wrapper">
         <div class="text"><b>{{__('Greetings To')}} {{$name}}</b><br>{{$giftcard->greetings}}</div>

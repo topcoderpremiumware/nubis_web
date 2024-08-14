@@ -76,25 +76,22 @@ function App() {
         ...prev,
         experience: e.target.value,
         experience_id: e.target.value.id,
-        amount: e.target.value.price
+        amount: e.target.value.price,
+        initial_amount: e.target.value.price
       }))
       goTo(3)
     }
     if(e.target.name === 'amount' && (parseFloat(e.target.value) > 0 || e.target.value === '')){
       setGiftcard(prev => ({...prev,
         amount: parseFloat(e.target.value),
-        initial_amount: parseFloat(e.target.value) * (prev.quantity || 1)
+        initial_amount: parseFloat(e.target.value)
       }))
     }
     if(e.target.name === 'quantity' && (parseFloat(e.target.value) > 0 || e.target.value === '')){
-      setGiftcard(prev => ({...prev,
-        quantity: parseFloat(e.target.value),
-        initial_amount: prev.amount * parseFloat(e.target.value)
-      }))
+      setGiftcard(prev => ({...prev, quantity: parseFloat(e.target.value)}))
     }
     if(e.target.name === 'amount_finish'){
       if(giftcard.amount && giftcard.quantity){
-        setGiftcard(prev => ({...prev, initial_amount: prev.amount * prev.quantity}))
         goTo(4)
       }else{
         eventBus.dispatch("notification", {type: 'error', message: 'Amount and quantity are not set'});
@@ -102,7 +99,6 @@ function App() {
     }
     if(e.target.name === 'experience_finish'){
       if(giftcard.quantity){
-        setGiftcard(prev => ({...prev, initial_amount: prev.amount * prev.quantity}))
         goTo(4)
       }else{
         eventBus.dispatch("notification", {type: 'error', message: 'Quantity is not set'});

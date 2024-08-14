@@ -82,51 +82,51 @@ class OrderWebhookController extends Controller
                     }
                 }
 
-                if (array_key_exists('giftcard_id', $metadata->toArray())) {
-                    $giftcard_id = $metadata->giftcard_id;
-                    $giftcard = Giftcard::find($giftcard_id);
-                    $giftcard->status = 'confirmed';
-                    $giftcard->save();
-
-                    $place = Place::find($giftcard->place_id);
-                    $currency = $place->setting('online-payment-currency');
-                    try {
-                        $text = 'The ' . $giftcard->initial_amount . ' ' . $currency . ' giftcard of ' . $place->name . ' was created. It can be used by specifying the code: ' . $giftcard->code . '. The restaurant is located at ' . $place->address . ', ' . $place->city . ', ' . $place->country->name . '. ' . $place->home_page;
-
-                        $html = view('pdfs.new_giftcard', compact('giftcard'))->render();
-                        $options = new Options();
-                        $options->set('enable_remote', TRUE);
-                        $options->set('enable_html5_parser', FALSE);
-                        $dompdf = new Dompdf($options);
-                        $dompdf->loadHtml($html);
-                        $dompdf->setPaper('A4');
-                        $dompdf->render();
-
-                        $filename = 'giftcards/'.$giftcard->id.'_'.Carbon::now()->timestamp.'.pdf';
-                        Storage::disk('public')->put($filename, $dompdf->output());
-
-                        $giftcard->filename = $filename;
+                if (array_key_exists('giftcard_ids', $metadata->toArray())) {
+                    $giftcard_ids = $metadata->giftcard_ids;
+                    $giftcards = Giftcard::whereIn($giftcard_ids)->get();
+                    foreach ($giftcards as $giftcard) {
+                        $giftcard->status = 'confirmed';
                         $giftcard->save();
-                        try{
-                            \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($place, $dompdf, $giftcard) {
-                                $msg->to($giftcard->email)->subject('Giftcard');
-                                $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                                $msg->attachData($dompdf->output(), 'giftcard.pdf');
-                            });
-                        }catch (\Exception $e){}
-                        if ($giftcard->receiver_email) {
-                            foreach (explode(',',$giftcard->receiver_email) as $email) {
+
+                        $place = Place::find($giftcard->place_id);
+                        $currency = $place->setting('online-payment-currency');
+                        try {
+                            $text = 'The ' . $giftcard->initial_amount . ' ' . $currency . ' giftcard of ' . $place->name . ' was created. It can be used by specifying the code: ' . $giftcard->code . '. The restaurant is located at ' . $place->address . ', ' . $place->city . ', ' . $place->country->name . '. ' . $place->home_page;
+
+                            $html = view('pdfs.new_giftcard', compact('giftcard'))->render();
+                            $options = new Options();
+                            $options->set('enable_remote', TRUE);
+                            $options->set('enable_html5_parser', FALSE);
+                            $dompdf = new Dompdf($options);
+                            $dompdf->loadHtml($html);
+                            $dompdf->setPaper('A4');
+                            $dompdf->render();
+
+                            $filename = 'giftcards/'.$giftcard->id.'_'.Carbon::now()->timestamp.'.pdf';
+                            Storage::disk('public')->put($filename, $dompdf->output());
+
+                            $giftcard->filename = $filename;
+                            $giftcard->save();
+                            try{
+                                \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($place, $dompdf, $giftcard) {
+                                    $msg->to($giftcard->email)->subject('Giftcard');
+                                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                                    $msg->attachData($dompdf->output(), 'giftcard.pdf');
+                                });
+                            }catch (\Exception $e){}
+                            if ($giftcard->receiver_email) {
                                 try{
-                                    \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($place,$dompdf, $email) {
-                                        $msg->to($email)->subject('Giftcard');
+                                    \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($giftcard, $place,$dompdf) {
+                                        $msg->to($giftcard->receiver_email)->subject('Giftcard');
                                         $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                                         $msg->attachData($dompdf->output(), 'giftcard.pdf');
                                     });
                                 }catch (\Exception $e){}
                             }
-                        }
-                    } catch (\Exception $e) {
+                        } catch (\Exception $e) {
 
+                        }
                     }
                 }
             }

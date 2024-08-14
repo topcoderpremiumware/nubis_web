@@ -25,57 +25,42 @@ class GiftcardController extends Controller
             'email' => 'required|email',
         ]);
 
-        if($request->has('receiver_name')){
-            if(is_array($request->receiver_name)){
-                $receiver_name = implode(',',$request->receiver_name);
-            }else{
-                $receiver_name = $request->receiver_name;
+        $giftcard_ids = [];
+        for ($i=0;$i<$request->quantity;$i++) {
+            $giftcard = Giftcard::create([
+                'place_id' => $request->place_id,
+                'name' => $request->name,
+                'expired_at' => $request->expired_at,
+                'initial_amount' => $request->initial_amount,
+                'spend_amount' => $request->spend_amount ?? 0,
+                'code' => Giftcard::generateUniqueCode(),
+                'email' => $request->email,
+                'receiver_name' => ($request->receiver_name && count($request->receiver_name) > 0) ? $request->receiver_name[$i] : '',
+                'receiver_email' => ($request->receiver_email && count($request->receiver_email) > 0) ? $request->receiver_email[$i] : '',
+                'company_name' => $request->company_name,
+                'company_address' => $request->company_address,
+                'post_code' => $request->post_code,
+                'company_city' => $request->company_city,
+                'vat_number' => $request->vat_number,
+                'country_id' => $request->country_id,
+                'status' => 'pending',
+                'giftcard_menu_id' => $request->experience_id,
+                'greetings' => $request->greetings
+            ]);
+
+            if($request->has('background_image')){
+                $bg_parts = explode(',',$request->background_image);
+                preg_match('/^data:image\/(\w+);base64/', $bg_parts[0], $matches);
+                $bg_ext = $matches[1];
+                $background_image = 'giftcards/'.$giftcard->id.'_'.Carbon::now()->timestamp.'.'.$bg_ext;
+                Storage::disk('public')->put($background_image, base64_decode($bg_parts[1]));
+
+                $giftcard->background_image = $background_image;
+                $giftcard->save();
             }
-        }else{
-            $receiver_name = '';
+            $giftcard_ids[] = $giftcard->id;
         }
 
-        if($request->has('receiver_email')){
-            if(is_array($request->receiver_email)) {
-                $receiver_email = implode(',', $request->receiver_email);
-            }else{
-                $receiver_email = $request->receiver_email;
-            }
-        }else{
-            $receiver_email = '';
-        }
-
-        $giftcard = Giftcard::create([
-            'place_id' => $request->place_id,
-            'name' => $request->name,
-            'expired_at' => $request->expired_at,
-            'initial_amount' => $request->initial_amount,
-            'spend_amount' => $request->spend_amount ?? 0,
-            'code' => Giftcard::generateUniqueCode(),
-            'email' => $request->email,
-            'receiver_name' => $receiver_name,
-            'receiver_email' => $receiver_email,
-            'company_name' => $request->company_name,
-            'company_address' => $request->company_address,
-            'post_code' => $request->post_code,
-            'company_city' => $request->company_city,
-            'vat_number' => $request->vat_number,
-            'country_id' => $request->country_id,
-            'status' => 'pending',
-            'giftcard_menu_id' => $request->experience_id,
-            'greetings' => $request->greetings
-        ]);
-
-        if($request->has('background_image')){
-            $bg_parts = explode(',',$request->background_image);
-            preg_match('/^data:image\/(\w+);base64/', $bg_parts[0], $matches);
-            $bg_ext = $matches[1];
-            $background_image = 'giftcards/'.$giftcard->id.'_'.Carbon::now()->timestamp.'.'.$bg_ext;
-            Storage::disk('public')->put($background_image, base64_decode($bg_parts[1]));
-
-            $giftcard->background_image = $background_image;
-            $giftcard->save();
-        }
 
         $place = Place::find($request->place_id);
 
@@ -107,10 +92,10 @@ class GiftcardController extends Controller
 
             $link = $stripe->paymentLinks->create(
                 [
-                    'line_items' => [['price' => $price->id, 'quantity' => 1]],
+                    'line_items' => [['price' => $price->id, 'quantity' => $request->quantity]],
                     'automatic_tax' => ['enabled' => true],
                     'metadata' => [
-                        'giftcard_id' => $giftcard->id
+                        'giftcard_ids' => $giftcard_ids
                     ],
                     'tax_id_collection' => [
                         'enabled' => true
@@ -141,64 +126,70 @@ class GiftcardController extends Controller
             'email' => 'required|email',
         ]);
 
-        $giftcard = Giftcard::create([
-            'place_id' => $request->place_id,
-            'name' => $request->name,
-            'expired_at' => $request->expired_at,
-            'initial_amount' => $request->initial_amount,
-            'spend_amount' => $request->spend_amount ?? 0,
-            'code' => Giftcard::generateUniqueCode(),
-            'email' => $request->email,
-            'receiver_name' => $request->receiver_name ?? '',
-            'receiver_email' => $request->receiver_email ?? '',
-            'company_name' => $request->company_name,
-            'company_address' => $request->company_address,
-            'post_code' => $request->post_code,
-            'company_city' => $request->company_city,
-            'vat_number' => $request->vat_number,
-            'country_id' => $request->country_id,
-            'status' => 'confirmed'
-        ]);
-
         $place = Place::find($request->place_id);
         $currency = $place->setting('online-payment-currency');
 
-        $text = 'The '.$request->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
+        for ($i=0;$i<$request->quantity;$i++) {
+            $giftcard = Giftcard::create([
+                'place_id' => $request->place_id,
+                'name' => $request->name,
+                'expired_at' => $request->expired_at,
+                'initial_amount' => $request->initial_amount,
+                'spend_amount' => $request->spend_amount ?? 0,
+                'code' => Giftcard::generateUniqueCode(),
+                'email' => $request->email,
+                'receiver_name' => ($request->receiver_name && count($request->receiver_name) > 0) ? $request->receiver_name[$i] : '',
+                'receiver_email' => ($request->receiver_email && count($request->receiver_email) > 0) ? $request->receiver_email[$i] : '',
+                'company_name' => $request->company_name,
+                'company_address' => $request->company_address,
+                'post_code' => $request->post_code,
+                'company_city' => $request->company_city,
+                'vat_number' => $request->vat_number,
+                'country_id' => $request->country_id,
+                'status' => 'confirmed'
+            ]);
 
-        $html = view('pdfs.giftcard', compact('giftcard'))->render();
-        $options = new Options();
-        $options->set('enable_remote', TRUE);
-        $options->set('enable_html5_parser', FALSE);
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4');
-        $dompdf->render();
+            $text = 'The '.$request->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
 
-        $filename = 'giftcards/'.$giftcard->id.'_'.Carbon::now()->timestamp.'.pdf';
-        Storage::disk('public')->put($filename, $dompdf->output());
+            $html = view('pdfs.new_giftcard', compact('giftcard'))->render();
+            $options = new Options();
+            $options->set('enable_remote', TRUE);
+            $options->set('enable_html5_parser', FALSE);
+            $dompdf = new Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4');
+            $dompdf->render();
 
-        $giftcard->filename = $filename;
-        $giftcard->save();
-        try {
-            \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($place, $dompdf, $request) {
-                $msg->to($request->email)->subject('Giftcard');
-                $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                $msg->attachData($dompdf->output(), 'giftcard.pdf');
-            });
-        }catch (\Exception $e){}
-        if($request->has('receiver_email') && $request->receiver_email){
-            try{
-                \Illuminate\Support\Facades\Mail::html($text, function($msg) use ($place, $dompdf, $request) {
-                    $msg->to($request->receiver_email)->subject('Giftcard');
+            $filename = 'giftcards/'.$giftcard->id.'_'.Carbon::now()->timestamp.'.pdf';
+            Storage::disk('public')->put($filename, $dompdf->output());
+
+            $giftcard->filename = $filename;
+            $giftcard->save();
+
+            try {
+                \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($dompdf, $place, $request) {
+                    $msg->to($request->email)->subject('Giftcard');
                     $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                     $msg->attachData($dompdf->output(), 'giftcard.pdf');
                 });
             }catch (\Exception $e){}
+            if($giftcard->receiver_email){
+                try {
+                    \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($dompdf, $giftcard, $place, $request) {
+                        $msg->to($giftcard->receiver_email)->subject('Giftcard');
+                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                        $msg->attachData($dompdf->output(), 'giftcard.pdf');
+                    });
+                } catch (\Exception $e) {
+                }
+            }
+
+            Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
         }
 
-        Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
 
-        return response()->json($giftcard);
+
+        return response()->json();
     }
 
     public function save($id, Request $request)

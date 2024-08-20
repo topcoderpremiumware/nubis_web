@@ -86,7 +86,8 @@
         /* @var \App\Models\Giftcard $giftcard */
         $place = $giftcard->place;
         $name = $giftcard->receiver_name ? $giftcard->receiver_name : $giftcard->name;
-        $image = $giftcard->bg_url ? $giftcard->bg_url : 'data:image/'.pathinfo($giftcard->background_image, PATHINFO_EXTENSION).';base64,'.base64_encode(Storage::disk('public')->get($giftcard->background_image));
+        $image_file_base64 = $giftcard->background_image ? 'data:image/'.pathinfo($giftcard->background_image, PATHINFO_EXTENSION).';base64,'.base64_encode(Storage::disk('public')->get($giftcard->background_image)) : '';
+        $image = $giftcard->bg_url ? $giftcard->bg_url : $image_file_base64;
     @endphp
     @if($giftcard->examle)<div class="water_mark">Example</div>@endif
     <h3>{{__('Gift card')}}</h3>

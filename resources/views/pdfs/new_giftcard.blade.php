@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Storage; @endphp
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 <style>
     /*@page{
@@ -85,7 +86,7 @@
         /* @var \App\Models\Giftcard $giftcard */
         $place = $giftcard->place;
         $name = $giftcard->receiver_name ? $giftcard->receiver_name : $giftcard->name;
-        $image = $giftcard->bg_url ? $giftcard->bg_url : $giftcard->background_image_url;
+        $image = $giftcard->bg_url ? $giftcard->bg_url : 'data:image/'.pathinfo($giftcard->background_image, PATHINFO_EXTENSION).';base64,'.base64_encode(Storage::disk('public')->get($giftcard->background_image));
     @endphp
     @if($giftcard->examle)<div class="water_mark">Example</div>@endif
     <h3>{{__('Gift card')}}</h3>

@@ -35,8 +35,12 @@ class GiftcardController extends Controller
                 'spend_amount' => $request->spend_amount ?? 0,
                 'code' => Giftcard::generateUniqueCode(),
                 'email' => $request->email,
-                'receiver_name' => ($request->receiver_name && count($request->receiver_name) > 0) ? $request->receiver_name[$i] : '',
-                'receiver_email' => ($request->receiver_email && count($request->receiver_email) > 0) ? $request->receiver_email[$i] : '',
+                'receiver_name' => ($request->receiver_name && count($request->receiver_name) > 0) ? (
+                    array_key_exists($i,$request->receiver_name) ? $request->receiver_name[$i] : $request->receiver_name[0]
+                ) : '',
+                'receiver_email' => ($request->receiver_email && count($request->receiver_email) > 0) ? (
+                array_key_exists($i,$request->receiver_email) ? $request->receiver_email[$i] : $request->receiver_email[0]
+                ) : '',
                 'company_name' => $request->company_name,
                 'company_address' => $request->company_address,
                 'post_code' => $request->post_code,
@@ -138,8 +142,12 @@ class GiftcardController extends Controller
                 'spend_amount' => $request->spend_amount ?? 0,
                 'code' => Giftcard::generateUniqueCode(),
                 'email' => $request->email,
-                'receiver_name' => ($request->receiver_name && count($request->receiver_name) > 0) ? $request->receiver_name[$i] : '',
-                'receiver_email' => ($request->receiver_email && count($request->receiver_email) > 0) ? $request->receiver_email[$i] : '',
+                'receiver_name' => ($request->receiver_name && count($request->receiver_name) > 0) ? (
+                array_key_exists($i,$request->receiver_name) ? $request->receiver_name[$i] : $request->receiver_name[0]
+                ) : '',
+                'receiver_email' => ($request->receiver_email && count($request->receiver_email) > 0) ? (
+                array_key_exists($i,$request->receiver_email) ? $request->receiver_email[$i] : $request->receiver_email[0]
+                ) : '',
                 'company_name' => $request->company_name,
                 'company_address' => $request->company_address,
                 'post_code' => $request->post_code,

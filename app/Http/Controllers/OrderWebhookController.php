@@ -83,7 +83,7 @@ class OrderWebhookController extends Controller
                 }
 
                 if (array_key_exists('giftcard_ids', $metadata->toArray())) {
-                    $giftcard_ids = $metadata->giftcard_ids;
+                    $giftcard_ids = explode(',',$metadata->giftcard_ids);
                     $giftcards = Giftcard::whereIn($giftcard_ids)->get();
                     foreach ($giftcards as $giftcard) {
                         $giftcard->status = 'confirmed';

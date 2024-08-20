@@ -95,7 +95,7 @@ class GiftcardController extends Controller
                     'line_items' => [['price' => $price->id, 'quantity' => $request->quantity]],
                     'automatic_tax' => ['enabled' => true],
                     'metadata' => [
-                        'giftcard_ids' => $giftcard_ids
+                        'giftcard_ids' => implode(',',$giftcard_ids)
                     ],
                     'tax_id_collection' => [
                         'enabled' => true

@@ -24,7 +24,7 @@ export default function GalleryPicker(props) {
   }
 
   return (<Grid container spacing={2}>
-    {getPicture('giftcard_gallery',true).map((item,key) => {
+    {getPicture('giftcard_gallery',true).length > 0 && getPicture('giftcard_gallery',true).map((item,key) => {
       return <Grid item xs={6} className="gallery_picker_item" key={key} onClick={() => onChange(key)}>
         <div className="gallery_picker_image" style={{"--image-background": `url('${item.url}')`}}></div>
         <div className={`gallery_picker_checked ${selected === key ? 'active' : ''}`}>{selected === key ? <CheckCircleOutlineIcon/> : <RadioButtonUncheckedIcon/>}</div>

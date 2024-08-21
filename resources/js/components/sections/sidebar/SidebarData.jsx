@@ -77,11 +77,6 @@ export const SidebarData = (data) => { return [
         show: ['admin','manager'].includes(data.role),
       },
       {
-        title: 'Manage Gift Cards',
-        path: '/ManageGiftCards',
-        show: ['admin','manager'].includes(data.role),
-      },
-      {
         title: 'Send Bulk SMS',
         path: '/SendBulkSMS',
         show: ['admin','manager'].includes(data.role),
@@ -125,7 +120,7 @@ export const SidebarData = (data) => { return [
     ]
   },
   {
-    title: 'Giftcard Settings',
+    title: 'Gift card Settings',
     path: '#',
     icon: <Redeem />,
     iconClosed: <KeyboardArrowDown />,
@@ -139,6 +134,11 @@ export const SidebarData = (data) => { return [
       {
         title: 'Experience Settings',
         path: '/ExperienceSettings'
+      },
+      {
+        title: 'Manage Gift Cards',
+        path: '/ManageGiftCards',
+        show: ['admin','manager'].includes(data.role),
       },
     ]
   },

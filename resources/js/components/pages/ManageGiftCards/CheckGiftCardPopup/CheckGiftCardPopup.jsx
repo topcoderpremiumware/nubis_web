@@ -143,6 +143,9 @@ export default function CheckGiftCardPopup({ open, handleClose }) {
                 <p><b>{t('Name')}:</b> {cardInfo.name || '-'}</p>
                 <p><b>{t('Email')}:</b> {cardInfo.email || '-'}</p>
                 <p><b>{t('Initail Amount')}:</b> {cardInfo.initial_amount} {currency}</p>
+                {cardInfo.giftcard_menu_id && <>
+                  <p><b>{t('Experience')}:</b> {cardInfo.giftcard_menu.name}</p>
+                </>}
               </div>
               <div className="col-md-6">
                 <p><b>{t('Receiver Name')}:</b> {cardInfo.receiver_name || '-'}</p>

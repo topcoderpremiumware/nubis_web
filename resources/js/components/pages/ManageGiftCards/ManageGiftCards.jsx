@@ -31,6 +31,7 @@ const ManageGiftCards = () => {
 
   const columns = [
     { field: 'code', headerName: t('Code'), flex: 1 },
+    { field: 'giftcard_menu', headerName: t('Experience'), minWidth: 200, flex: 1, renderCell: (params) => params.value?.name },
     { field: 'created_at', headerName: t('Created'), flex: 1, renderCell: (params) => moment.utc(params.value).local().format('DD-MM-YYYY') },
     { field: 'expired_at', headerName: t('Expiration date'), flex: 1, renderCell: (params) => moment.utc(params.value).format('DD-MM-YYYY') },
     { field: 'status', headerName: t('Status'), flex: 1 },

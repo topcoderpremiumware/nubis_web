@@ -154,8 +154,21 @@ class GiftcardController extends Controller
                 'company_city' => $request->company_city,
                 'vat_number' => $request->vat_number,
                 'country_id' => $request->country_id,
-                'status' => 'confirmed'
+                'status' => 'confirmed',
+                'giftcard_menu_id' => $request->experience_id,
+                'greetings' => $request->greetings
             ]);
+
+            if($request->has('background_image')){
+                $bg_parts = explode(',',$request->background_image);
+                preg_match('/^data:image\/(\w+);base64/', $bg_parts[0], $matches);
+                $bg_ext = $matches[1];
+                $background_image = 'giftcards/'.$giftcard->id.'_'.Carbon::now()->timestamp.'.'.$bg_ext;
+                Storage::disk('public')->put($background_image, base64_decode($bg_parts[1]));
+
+                $giftcard->background_image = $background_image;
+                $giftcard->save();
+            }
 
             $text = 'The '.$request->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
 
@@ -285,6 +298,7 @@ class GiftcardController extends Controller
         }
 
         $giftcards = Giftcard::where('place_id',$request->place_id)
+            ->with('giftcard_menu')
             ->orderBy('created_at','DESC')
             ->get();
 
@@ -300,6 +314,7 @@ class GiftcardController extends Controller
 
         $giftcard = Giftcard::where('code',$request->code)
             ->where('place_id',$request->place_id)
+            ->with('giftcard_menu')
             ->first();
 
         if($giftcard === null){

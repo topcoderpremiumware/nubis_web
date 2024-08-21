@@ -34,6 +34,7 @@
         height: 243px;
         width: 522px;
         background-size: cover;
+        background-position: center;
         border-radius: 20px;
         margin-bottom: 11px;
         margin-left: auto;

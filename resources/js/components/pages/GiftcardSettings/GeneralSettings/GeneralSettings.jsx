@@ -102,7 +102,7 @@ export default function GeneralSettings() {
   return (
     <div className='pages__container'>
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
-        <h2>{t('Giftcard Settings')}</h2>
+        <h2>{t('Gift card Settings')}</h2>
       </Stack>
       <ListSubheader className="my-3" component="div">{t('Picture for giftcard on amount')}</ListSubheader>
       <PictureUploadButtonPreview

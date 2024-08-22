@@ -48,7 +48,6 @@
         font-size: 22px;
         line-height: 27.65px;
         text-align: center;
-        min-height: 350px;
     }
     .amount{
         font-size: 24px;
@@ -93,11 +92,15 @@
     @if($giftcard->examle)<div class="water_mark">Example</div>@endif
     <h3>{{__('Gift card')}}</h3>
     <h2>{{$place->name}}</h2>
+    @if($giftcard->giftcard_menu_id && array_key_exists($place->language,$giftcard->giftcard_menu->labels))
+        <div class="text"><b>{{$giftcard->giftcard_menu->labels[$place->language]['name']}}</b>
+            <br>{{$giftcard->giftcard_menu->labels[$place->language]['description']}}</div>
+    @endif
     @if($image)
         <div class="img" style="background-image: url('{{$image}}')"></div>
     @endif
     <div class="content_wrapper">
-        <div class="text"><b>{{__('Greetings To')}} {{$name}}</b><br>{{$giftcard->greetings}}</div>
+        <div class="text">{{$giftcard->greetings}}</div>
         <table>
             <tr>
                 <td style="text-align: left;"><b>{{__('Code')}}</b><br>{{$giftcard->code ? $giftcard->code : 'XXXXX'}}</td>

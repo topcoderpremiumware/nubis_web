@@ -2,10 +2,41 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
+/**
+ * @property integer $id
+ * @property string $name
+ * @property string $address
+ * @property string $city
+ * @property string $zip_code
+ * @property string $phone
+ * @property string $email
+ * @property string $home_page
+ * @property integer $country_id
+ * @property string $tax_number
+ * @property integer $organization_id
+ * @property string $language
+ * @property Carbon $deleted_at
+ *
+ * @property Organization $organization
+ * @property Collection<User> $users
+ * @property Collection<Tableplan> $tableplans
+ * @property Collection<Timetable> $timetables
+ * @property Collection<Area> $areas
+ * @property Collection<CustomBookingLength> $custom_booking_lengths
+ * @property Collection<Order> $orders
+ * @property Collection<Menu> $menus
+ * @property Collection<MessageTemplate> $message_templates
+ * @property Collection<Giftcard> $giftcards
+ * @property Collection<Coupon> $coupons
+ * @property Collection<Setting> $settings
+ * @property Country $country
+ */
 class Place extends Model
 {
     use HasFactory, SoftDeletes;

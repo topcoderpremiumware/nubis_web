@@ -106,7 +106,7 @@ class GiftcardController extends Controller
                     ],
                     'after_completion' => [
                         'type' => 'redirect',
-                        'redirect' => ['url' => env('APP_URL').'/thank-you/giftcard/'.$giftcard->code],
+                        'redirect' => ['url' => env('APP_URL').'/thank-you/giftcard/'.base64_encode(implode(',',$giftcard_ids))],
                     ],
                 ]
             );
@@ -170,7 +170,8 @@ class GiftcardController extends Controller
                 $giftcard->save();
             }
 
-            $text = 'The '.$request->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
+//            $text = 'The '.$request->initial_amount.' '.$currency.' giftcard of '.$place->name.' was created. It can be used by specifying the code: '.$giftcard->code.'. The restaurant is located at '.$place->address.', '.$place->city.', '.$place->country->name.'. '.$place->home_page;
+            $text = view('emails.giftcard', compact('giftcard'))->render();
 
             $html = view('pdfs.new_giftcard', compact('giftcard'))->render();
             $options = new Options();

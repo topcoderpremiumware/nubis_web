@@ -92,8 +92,8 @@ class OrderWebhookController extends Controller
                         $place = Place::find($giftcard->place_id);
                         $currency = $place->setting('online-payment-currency');
                         try {
-                            $text = 'The ' . $giftcard->initial_amount . ' ' . $currency . ' giftcard of ' . $place->name . ' was created. It can be used by specifying the code: ' . $giftcard->code . '. The restaurant is located at ' . $place->address . ', ' . $place->city . ', ' . $place->country->name . '. ' . $place->home_page;
-
+//                            $text = 'The ' . $giftcard->initial_amount . ' ' . $currency . ' giftcard of ' . $place->name . ' was created. It can be used by specifying the code: ' . $giftcard->code . '. The restaurant is located at ' . $place->address . ', ' . $place->city . ', ' . $place->country->name . '. ' . $place->home_page;
+                            $text = view('emails.giftcard', compact('giftcard'))->render();
                             $html = view('pdfs.new_giftcard', compact('giftcard'))->render();
                             $options = new Options();
                             $options->set('enable_remote', TRUE);

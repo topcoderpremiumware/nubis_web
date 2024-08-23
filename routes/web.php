@@ -46,8 +46,8 @@ Route::view('/features', 'features')->name('features');
 Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
 Route::get('/thank-you/giftcard/{code}', function($code){
-    $giftcard = Giftcard::where('code',$code)->firstOrFail();
-    return view('thankyou-giftcard', ['giftcard' => $giftcard]);
+    $giftcards = Giftcard::whereIn('id',explode(',',base64_decode($code)))->get();
+    return view('thankyou-giftcard', ['giftcards' => $giftcards]);
 });
 Route::get('/thank-you/order/{order_id}', function($order_id){
     $order = Order::findOrFail($order_id);

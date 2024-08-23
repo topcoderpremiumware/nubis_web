@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './../../i18nextConf';
 import "./../App.scss";
-import {Button, Grid, TextField} from "@mui/material";
+import {Button, FormControlLabel, Grid, Switch, TextField} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import Box from "@mui/material/Box";
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -60,6 +60,13 @@ export default function ExperienceQtySlide(props) {
                          type="text" id="quantity" name="quantity" required
                          onChange={props.onChange} value={props.giftcard.quantity || ''}
               />
+              {props.giftcard.quantity > 1 && <FormControlLabel
+                label={t('Quantity in one gift card')} labelPlacement="end" sx={{mb:2}}
+                control={
+                  <Switch onChange={props.onChange}
+                          name="qty_together"
+                          checked={props.giftcard.qty_together || false} />
+                }/>}
               <Button className="giftcard_button blue" variant="contained" type="button" fullWidth
                       onClick={e => props.onChange({target:{name:'experience_finish'}})}>{t('Next')}</Button>
             </Grid>

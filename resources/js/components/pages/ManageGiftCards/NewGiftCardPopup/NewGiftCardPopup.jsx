@@ -20,11 +20,12 @@ import {
   IconButton,
   InputLabel,
   MenuItem,
-  Select
+  Select, Switch
 } from "@mui/material";
 import ImageUploader from "../../../../new_giftcard/components/ImageUploader";
 import GalleryPicker from "../../../../new_giftcard/components/GalleryPicker";
 import {getBase64FromFile, getBase64FromUrl} from "../../../../helper";
+import moment from "moment/moment";
 
 const style = {
   position: 'absolute',
@@ -54,6 +55,7 @@ export default function NewGiftCardPopup({ open, handleClose }) {
   const [experience, setExperience] = useState(null)
   const [greetings, setGreetings] = useState('')
   const [backgroundImage, setBackgroundImage] = useState('')
+  const [qtyTogether, setQtyTogether] = useState(false)
   const [uploadImage,setUploadImage] = useState(false)
   const [pictures, setPictures] =  useState([])
   const [loading, setLoading] = useState(false)
@@ -78,6 +80,7 @@ export default function NewGiftCardPopup({ open, handleClose }) {
     setGreetings('')
     setIsReceiver(false)
     setBackgroundImage('')
+    setQtyTogether(false)
     setError('')
     handleClose()
   }
@@ -88,10 +91,11 @@ export default function NewGiftCardPopup({ open, handleClose }) {
       const data = {
         place_id: localStorage.getItem('place_id'),
         quantity: count,
+        qty_together: qtyTogether,
         name,
         email,
         initial_amount: amount,
-        expired_at: '2037-12-31 22:00:00',
+        expired_at: moment().add(3,'years').format('YYYY-MM-DD HH:mm:00'),
         ...(isReceiver && {
           receiver_name: receiverName,
           receiver_email: receiverEmail
@@ -227,7 +231,11 @@ export default function NewGiftCardPopup({ open, handleClose }) {
                   <InputLabel id="label_experience">{t('Experience')}</InputLabel>
                   <Select label={t('Experience')}
                           labelId="label_experience" id="experience" name="experience"
-                          onChange={ev => setExperience(ev.target.value)}>
+                          onChange={ev => {
+                            setAmount(experiences.find(el => el.id === ev.target.value).price)
+                            setExperience(ev.target.value)
+                            }
+                          }>
                     {experiences.map((exp,key) => {
                       return <MenuItem key={key} value={exp.id}>{exp.name}</MenuItem>
                     })}
@@ -239,6 +247,13 @@ export default function NewGiftCardPopup({ open, handleClose }) {
                          InputProps={{inputProps: {min: 1, max: 100}}}
                          value={count}
                          onChange={ev => setCount(ev.target.value)}/>
+
+              {(count > 1 && type === 'experience') && <FormControlLabel
+                label={t('Quantity in one gift card')} labelPlacement="end" sx={{mb:2}}
+                control={
+                  <Switch onChange={ev => setQtyTogether(ev.target.checked)}
+                          checked={qtyTogether || false} />
+                }/>}
 
               {type === 'amount' &&
                 <TextField label={t('Amount')} size="small" fullWidth sx={{mb: 2}}

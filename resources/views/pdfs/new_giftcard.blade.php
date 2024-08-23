@@ -88,12 +88,13 @@
         $name = $giftcard->receiver_name ? $giftcard->receiver_name : $giftcard->name;
         $image_file_base64 = $giftcard->background_image ? 'data:image/'.pathinfo($giftcard->background_image, PATHINFO_EXTENSION).';base64,'.base64_encode(Storage::disk('public')->get($giftcard->background_image)) : '';
         $image = $giftcard->bg_url ? $giftcard->bg_url : $image_file_base64;
+        $qty_text = $giftcard->qty_together ? 'x '.$giftcard->quantity : '';
     @endphp
     @if($giftcard->examle)<div class="water_mark">Example</div>@endif
     <h3>{{__('Gift card')}}</h3>
     <h2>{{$place->name}}</h2>
     @if($giftcard->giftcard_menu_id && array_key_exists($place->language,$giftcard->giftcard_menu->labels))
-        <div class="text"><b>{{$giftcard->giftcard_menu->labels[$place->language]['name']}}</b>
+        <div class="text"><b>{{$giftcard->giftcard_menu->labels[$place->language]['name']}} {{$qty_text}}</b>
             <br>{{$giftcard->giftcard_menu->labels[$place->language]['description']}}</div>
     @endif
     @if($image)
@@ -104,7 +105,11 @@
         <table>
             <tr>
                 <td style="text-align: left;"><b>{{__('Code')}}</b><br>{{$giftcard->code ? $giftcard->code : 'XXXXX'}}</td>
-                <td style="text-align: center;"><b>{{__('Value')}}</b><br><span class="amount">{{$giftcard->initial_amount}} {{$place->setting('online-payment-currency')}}</span></td>
+                <td style="text-align: center;">
+                    @if(!$giftcard->giftcard_menu_id)
+                        <b>{{__('Value')}}</b><br><span class="amount">{{$giftcard->initial_amount}} {{$place->setting('online-payment-currency')}}</span>
+                    @endif
+                </td>
                 <td style="text-align: right;"><b>{{__('Valid until')}}</b><br>{{\Carbon\Carbon::parse($giftcard->expired_at)->format('d.m.Y')}}</td>
             </tr>
         </table>

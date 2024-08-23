@@ -116,13 +116,16 @@ class OrderWebhookController extends Controller
                                 });
                             }catch (\Exception $e){}
                             if ($giftcard->receiver_email) {
-                                try{
-                                    \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($giftcard, $place,$dompdf) {
-                                        $msg->to($giftcard->receiver_email)->subject('Giftcard');
-                                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                                        $msg->attachData($dompdf->output(), 'giftcard.pdf');
-                                    });
-                                }catch (\Exception $e){}
+                                foreach (explode(',',$giftcard->receiver_email) as $email) {
+                                    try {
+                                        \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($email, $place, $dompdf) {
+                                            $msg->to($email)->subject('Giftcard');
+                                            $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                                            $msg->attachData($dompdf->output(), 'giftcard.pdf');
+                                        });
+                                    } catch (\Exception $e) {
+                                    }
+                                }
                             }
                         } catch (\Exception $e) {
 

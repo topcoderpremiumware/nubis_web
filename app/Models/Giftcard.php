@@ -30,6 +30,8 @@ use Illuminate\Support\Facades\Storage;
  * @property integer $giftcard_menu_id
  * @property string $background_image
  * @property string $greetings
+ * @property bool $qty_together
+ * @property integer $quantity
  *
  * @property Place $place
  * @property Country $country

@@ -39,7 +39,7 @@ $place = $giftcard->place;
                     </td>
                 </tr>
                 <tr>
-                    <td style="font-size: 16px; text-align: left;">
+                    <td style="font-size: 16px; text-align: center;">
                         {{$giftcard->giftcard_menu->labels[$place->language]['description']}}
                     </td>
                 </tr>

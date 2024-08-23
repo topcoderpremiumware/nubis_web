@@ -19,11 +19,12 @@ import GreetingsSlide from "./pages/GreetingsSlide";
 import DeliverySlide from "./pages/DeliverySlide";
 import DeliveryFormSlide from "./pages/DeliveryFormSlide";
 import SelectLang from "./components/SelectLang/SelectLang";
+import moment from "moment";
 
 function App() {
   const {t} = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [giftcard, setGiftcard] = useState({expired_at: '2037-12-31 22:00:00'})
+  const [giftcard, setGiftcard] = useState({expired_at: moment().add(3,'years').format('YYYY-MM-DD HH:mm:00')})
   const [place, setPlace] = useState({})
   const [pictures, setPictures] = useState([]);
   const [slideHistory, setSlideHistory] = useState([currentSlide]);
@@ -89,6 +90,9 @@ function App() {
     }
     if(e.target.name === 'quantity' && (parseFloat(e.target.value) > 0 || e.target.value === '')){
       setGiftcard(prev => ({...prev, quantity: parseFloat(e.target.value)}))
+    }
+    if(e.target.name === 'qty_together'){
+      setGiftcard(prev => ({...prev, qty_together: e.target.checked}))
     }
     if(e.target.name === 'amount_finish'){
       if(giftcard.amount && giftcard.quantity){

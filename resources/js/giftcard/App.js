@@ -49,7 +49,7 @@ function App() {
         email,
         initial_amount: amount * count,
         // expired_at: moment('01/01/2050').format('YYYY-MM-DD HH:mm:ss'),
-        expired_at: '2037-12-31 22:00:00',
+        expired_at: moment().add(3,'years').format('YYYY-MM-DD HH:mm:00'),
         ...(emailType === 'receivers' && {receiver_name, receiver_email}),
         ...(isCompany && companyRest)
       }

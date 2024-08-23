@@ -26,20 +26,20 @@ class GiftcardController extends Controller
         ]);
 
         $giftcard_ids = [];
-        for ($i=0;$i<$request->quantity;$i++) {
+        for ($i=0;$i<($request->qty_together ? 1 : $request->quantity);$i++) {
             $giftcard = Giftcard::create([
                 'place_id' => $request->place_id,
                 'name' => $request->name,
                 'expired_at' => $request->expired_at,
-                'initial_amount' => $request->initial_amount,
+                'initial_amount' => $request->qty_together ? $request->initial_amount * $request->quantity : $request->initial_amount,
                 'spend_amount' => $request->spend_amount ?? 0,
                 'code' => Giftcard::generateUniqueCode(),
                 'email' => $request->email,
                 'receiver_name' => ($request->receiver_name && count($request->receiver_name) > 0) ? (
-                    array_key_exists($i,$request->receiver_name) ? $request->receiver_name[$i] : $request->receiver_name[0]
+                $request->qty_together ? implode(',',$request->receiver_name) : ($request->receiver_name[$i] ?? $request->receiver_name[0])
                 ) : '',
                 'receiver_email' => ($request->receiver_email && count($request->receiver_email) > 0) ? (
-                array_key_exists($i,$request->receiver_email) ? $request->receiver_email[$i] : $request->receiver_email[0]
+                $request->qty_together ? implode(',',$request->receiver_email) : ($request->receiver_name[$i] ?? $request->receiver_name[0])
                 ) : '',
                 'company_name' => $request->company_name,
                 'company_address' => $request->company_address,
@@ -49,7 +49,9 @@ class GiftcardController extends Controller
                 'country_id' => $request->country_id,
                 'status' => 'pending',
                 'giftcard_menu_id' => $request->experience_id,
-                'greetings' => $request->greetings
+                'greetings' => $request->greetings,
+                'qty_together' => $request->qty_together,
+                'quantity' => $request->quantity
             ]);
 
             if($request->has('background_image')){
@@ -96,7 +98,7 @@ class GiftcardController extends Controller
 
             $link = $stripe->paymentLinks->create(
                 [
-                    'line_items' => [['price' => $price->id, 'quantity' => $request->quantity]],
+                    'line_items' => [['price' => $price->id, 'quantity' => $request->qty_together ? 1 : $request->quantity]],
                     'automatic_tax' => ['enabled' => true],
                     'metadata' => [
                         'giftcard_ids' => implode(',',$giftcard_ids)
@@ -133,20 +135,20 @@ class GiftcardController extends Controller
         $place = Place::find($request->place_id);
         $currency = $place->setting('online-payment-currency');
 
-        for ($i=0;$i<$request->quantity;$i++) {
+        for ($i=0;$i<($request->qty_together ? 1 : $request->quantity);$i++) {
             $giftcard = Giftcard::create([
                 'place_id' => $request->place_id,
                 'name' => $request->name,
                 'expired_at' => $request->expired_at,
-                'initial_amount' => $request->initial_amount,
+                'initial_amount' => $request->qty_together ? $request->initial_amount * $request->quantity : $request->initial_amount,
                 'spend_amount' => $request->spend_amount ?? 0,
                 'code' => Giftcard::generateUniqueCode(),
                 'email' => $request->email,
                 'receiver_name' => ($request->receiver_name && count($request->receiver_name) > 0) ? (
-                array_key_exists($i,$request->receiver_name) ? $request->receiver_name[$i] : $request->receiver_name[0]
+                $request->qty_together ? implode(',',$request->receiver_name) : ($request->receiver_name[$i] ?? $request->receiver_name[0])
                 ) : '',
                 'receiver_email' => ($request->receiver_email && count($request->receiver_email) > 0) ? (
-                array_key_exists($i,$request->receiver_email) ? $request->receiver_email[$i] : $request->receiver_email[0]
+                $request->qty_together ? implode(',',$request->receiver_email) : ($request->receiver_name[$i] ?? $request->receiver_name[0])
                 ) : '',
                 'company_name' => $request->company_name,
                 'company_address' => $request->company_address,
@@ -156,7 +158,9 @@ class GiftcardController extends Controller
                 'country_id' => $request->country_id,
                 'status' => 'confirmed',
                 'giftcard_menu_id' => $request->experience_id,
-                'greetings' => $request->greetings
+                'greetings' => $request->greetings,
+                'qty_together' => $request->qty_together,
+                'quantity' => $request->quantity
             ]);
 
             if($request->has('background_image')){
@@ -196,20 +200,20 @@ class GiftcardController extends Controller
                 });
             }catch (\Exception $e){}
             if($giftcard->receiver_email){
-                try {
-                    \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($dompdf, $giftcard, $place, $request) {
-                        $msg->to($giftcard->receiver_email)->subject('Giftcard');
-                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                        $msg->attachData($dompdf->output(), 'giftcard.pdf');
-                    });
-                } catch (\Exception $e) {
+                foreach (explode(',',$giftcard->receiver_email) as $email) {
+                    try {
+                        \Illuminate\Support\Facades\Mail::html($text, function ($msg) use ($dompdf, $email, $place, $request) {
+                            $msg->to($email)->subject('Giftcard');
+                            $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                            $msg->attachData($dompdf->output(), 'giftcard.pdf');
+                        });
+                    } catch (\Exception $e) {
+                    }
                 }
             }
 
             Log::add($request,'create-giftcard','Created giftcard #'.$giftcard->id);
         }
-
-
 
         return response()->json();
     }
@@ -371,9 +375,11 @@ class GiftcardController extends Controller
         $giftcard->place_id = $request->place_id;
         $giftcard->name = $request->name;
         $giftcard->expired_at = $request->expired_at;
-        $giftcard->initial_amount = $request->initial_amount;
+        $giftcard->initial_amount = $request->qty_together ? $request->initial_amount * $request->quantity : $request->initial_amount;
         $giftcard->receiver_name = $request->receiver_name ? implode(',',$request->receiver_name) : '';
         $giftcard->giftcard_menu_id = $request->experience_id;
+        $giftcard->qty_together = $request->qty_together;
+        $giftcard->quantity = $request->quantity;
         $giftcard->greetings = $request->greetings;
         $giftcard->bg_url = $request->background_image;
         $giftcard->examle = true;

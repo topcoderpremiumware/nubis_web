@@ -4,15 +4,20 @@ import "./../App.scss";
 import {Autocomplete, Button, Checkbox, FormControlLabel, Grid, TextField} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import Box from "@mui/material/Box";
+import eventBus from "../../eventBus";
 
 export default function DeliveryFormSlide(props) {
   const {t} = useTranslation();
   const [type,setType] = useState('private')
   const [separately,setSeparately] = useState(false)
   const [countries, setCountries] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     getCountries()
+    eventBus.on('notification',function(){
+      setLoading(false)
+    })
   },[])
 
   const getCountries = () => {
@@ -152,7 +157,11 @@ export default function DeliveryFormSlide(props) {
           />
         </>}
         <Button className="giftcard_button blue" variant="contained" type="button" fullWidth
-                onClick={e => props.onChange({target: {name: 'delivery_form_finish'}})}>{t('Next')}</Button>
+                disabled={loading}
+                onClick={e => {
+                  props.onChange({target: {name: 'delivery_form_finish'}})
+                  setLoading(true)
+                }}>{t('Next')}</Button>
       </Grid>
       <Grid item xs={12} md={3}></Grid>
     </Grid>

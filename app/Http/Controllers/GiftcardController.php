@@ -88,7 +88,7 @@ class GiftcardController extends Controller
         if($stripe_secret && $stripe_webhook_secret && $online_payment_currency){
             $stripe = new StripeClient($stripe_secret);
             $price = $stripe->prices->create([
-                'unit_amount' => $request->qty_together ? $request->initial_amount * $request->quantity : $request->initial_amount * 100,
+                'unit_amount' => ($request->qty_together ? $request->initial_amount * $request->quantity : $request->initial_amount) * 100,
                 'currency' => $online_payment_currency,
                 'tax_behavior' => 'inclusive',
                 'product_data' => [

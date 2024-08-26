@@ -61,7 +61,7 @@ export default function ExperienceQtySlide(props) {
                          onChange={props.onChange} value={props.giftcard.quantity || ''}
               />
               {props.giftcard.quantity > 1 && <FormControlLabel
-                label={t('Quantity in one gift card')} labelPlacement="end" sx={{mb:2}}
+                label={t('One gift card for all amount')} labelPlacement="end" sx={{mb:2}}
                 control={
                   <Switch onChange={props.onChange}
                           name="qty_together"

@@ -161,7 +161,7 @@ export default function DeliveryFormSlide(props) {
                 onClick={e => {
                   props.onChange({target: {name: 'delivery_form_finish'}})
                   setLoading(true)
-                }}>{t('Next')}</Button>
+                }}>{t('Proceed to payment')}</Button>
       </Grid>
       <Grid item xs={12} md={3}></Grid>
     </Grid>

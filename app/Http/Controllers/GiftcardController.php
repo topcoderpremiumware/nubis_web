@@ -50,7 +50,7 @@ class GiftcardController extends Controller
                 'status' => 'pending',
                 'giftcard_menu_id' => $request->experience_id,
                 'greetings' => $request->greetings,
-                'qty_together' => $request->qty_together,
+                'qty_together' => $request->qty_together ?? false,
                 'quantity' => $request->quantity
             ]);
 
@@ -159,7 +159,7 @@ class GiftcardController extends Controller
                 'status' => 'confirmed',
                 'giftcard_menu_id' => $request->experience_id,
                 'greetings' => $request->greetings,
-                'qty_together' => $request->qty_together,
+                'qty_together' => $request->qty_together ?? false,
                 'quantity' => $request->quantity
             ]);
 

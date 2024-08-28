@@ -65,13 +65,15 @@ function App() {
 
   const onChange = (e) => {
     if(e.target.name === 'type'){
-      setGiftcard(prev => ({...prev, type: e.target.value}))
+      setGiftcard(prev => ({
+        ...prev,
+        type: e.target.value,
+        experience: null,
+        experience_id: null,
+        background_image: null,
+        background_image_index: null
+      }))
       if(e.target.value === 'amount'){
-        setGiftcard(prev => ({
-          ...prev,
-          experience: null,
-          experience_id: null,
-        }))
         goTo(1)
       }else{
         goTo(2)
@@ -113,7 +115,7 @@ function App() {
         eventBus.dispatch("notification", {type: 'error', message: 'Quantity is not set'});
       }
     }
-    if(e.target.name === 'background_image') setGiftcard(prev => ({...prev, background_image: e.target.value}))
+    if(e.target.name === 'background_image') setGiftcard(prev => ({...prev, background_image: e.target.value,background_image_index: e.target.index}))
     if(e.target.name === 'greetings') setGiftcard(prev => ({...prev, greetings: e.target.value}))
     if(e.target.name === 'greetings_finish'){
       if(giftcard.background_image){

@@ -139,7 +139,7 @@ export default function NewGiftCardPopup({ open, handleClose }) {
     }
   }
 
-  const onGalleryPicked = async (url) => {
+  const onGalleryPicked = async ({url}) => {
     let base64 = await getBase64FromUrl(url)
     setBackgroundImage(base64)
   }

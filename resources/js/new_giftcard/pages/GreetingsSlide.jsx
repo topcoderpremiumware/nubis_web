@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './../../i18nextConf';
 import "./../App.scss";
 import {Button, Grid, TextField} from "@mui/material";
@@ -14,14 +14,32 @@ export default function GreetingsSlide(props) {
   const {t} = useTranslation();
   const [uploadImage,setUploadImage] = useState(false)
 
-  const onGalleryPicked = async (url) => {
-    let base64 = await getBase64FromUrl(url)
-    props.onChange({target:{name: 'background_image',value: base64}})
+  useEffect( () => {
+    if(!props.giftcard.background_image){
+      let pics = pictures().filter(el => el.purpose === 'giftcard_gallery')
+      if(pics.length > 0) onGalleryPicked({url:pics[0].url,index:0})
+    }
+  }, [props])
+
+  const onGalleryPicked = async (data) => {
+    let base64 = await getBase64FromUrl(data.url)
+    props.onChange({target:{name: 'background_image',value: base64,index: data.index}})
   }
 
   const onImageUploaded = async (file) => {
     let base64 = await getBase64FromFile(file)
     props.onChange({target:{name: 'background_image',value: base64}})
+  }
+
+  const pictures = () => {
+    if(props.giftcard.experience){
+      return [{purpose: 'giftcard_gallery',url: props.giftcard.experience.image_url},...props.pictures]
+    }else{
+      let pictures = props.pictures.filter(el => el.purpose === 'giftcard_on_amount')
+      if(pictures.length > 0){
+        return [{purpose: 'giftcard_gallery',url: pictures[0].url},...props.pictures]
+      }
+    }
   }
 
   return (<>
@@ -53,7 +71,7 @@ export default function GreetingsSlide(props) {
             <ImageUploader onChange={onImageUploaded}/>
           </div>
           :
-          <GalleryPicker pictures={props.pictures} onChange={onGalleryPicked}/>
+          <GalleryPicker pictures={pictures()} onChange={onGalleryPicked} selectedIndex={props.giftcard.background_image_index}/>
         }
       </Grid>
       <Grid item xs={12} md={6} mt={8}>

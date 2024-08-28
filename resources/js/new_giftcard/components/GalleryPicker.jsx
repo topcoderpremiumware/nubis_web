@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import "./Gallery.scss";
 import {Grid} from "@mui/material";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -6,6 +6,10 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 export default function GalleryPicker(props) {
   const [selected, setSelected] = useState('')
+
+  useEffect( () => {
+    setSelected(props.selectedIndex)
+  }, [props.selectedIndex])
 
   const getPicture = (purpose, is_array= false) => {
     let picture = props.pictures.filter(el => el.purpose === purpose)
@@ -20,7 +24,7 @@ export default function GalleryPicker(props) {
   const onChange = (key) => {
     setSelected(key)
     let file = getPicture('giftcard_gallery',true)[key]
-    props.onChange(file.url)
+    props.onChange({url:file.url,index:key})
   }
 
   return (<Grid container spacing={2}>

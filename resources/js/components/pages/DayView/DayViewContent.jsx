@@ -58,7 +58,7 @@ export default function DayViewContent() {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [isFullWidth, setIsFullWidth] = useState(false)
   const [orders, setOrders] = useState([])
-  const [posOpen, setPosOpen] = useState(true)
+  const [posOpen, setPosOpen] = useState(false)
 
   useEffect(() => {
     eventBus.on("openTableSidebar",(data) => {

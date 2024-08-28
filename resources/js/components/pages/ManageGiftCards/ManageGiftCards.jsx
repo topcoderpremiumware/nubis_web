@@ -3,10 +3,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import {
   DataGrid,
-  GridFooter,
   GridFooterContainer,
   GridPagination,
-  GridSelectedRowCount,
   GridSeparatorIcon
 } from '@mui/x-data-grid';
 import axios from 'axios';

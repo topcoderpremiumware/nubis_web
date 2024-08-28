@@ -8,6 +8,7 @@ import eventBus from "../../eventBus";
 export default function PictureUploadButtonPreview(props) {
   const { t } = useTranslation();
   const [image, setImage] = useState('');
+  const [preview, setPreview] = useState('');
 
   useEffect(() => {
     setImage(props.src)
@@ -15,12 +16,12 @@ export default function PictureUploadButtonPreview(props) {
 
   return (
     <Stack spacing={1} direction="column">
-      <img src={image} alt="" style={{width:'200px'}}/>
+      <img src={preview ? preview : image} alt="" style={{width:'200px'}}/>
       <Stack spacing={1} direction="row" alignItems="center">
         <Button variant="contained" component="label">
           {t('Upload')}
           <input hidden accept="image/*" name={props.name} onChange={e => {
-            if(e.target.files.length > 0) setImage(URL.createObjectURL(e.target.files[0]))
+            if(e.target.files.length > 0) setPreview(URL.createObjectURL(e.target.files[0]))
             props.onChange(e)
           }} type="file" />
         </Button>

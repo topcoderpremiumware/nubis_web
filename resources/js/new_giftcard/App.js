@@ -67,6 +67,11 @@ function App() {
     if(e.target.name === 'type'){
       setGiftcard(prev => ({...prev, type: e.target.value}))
       if(e.target.value === 'amount'){
+        setGiftcard(prev => ({
+          ...prev,
+          experience: null,
+          experience_id: null,
+        }))
         goTo(1)
       }else{
         goTo(2)

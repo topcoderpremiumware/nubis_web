@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import  './TablePlanSetup.scss';
 import { useTranslation } from 'react-i18next';
-import eventBus from "../../../eventBus";
 import { fabric } from 'fabric';
 import {rectTable, circTable, tableTypes, landscape} from "./tableTypes";
 import {Box, Button, Grid} from "@mui/material";

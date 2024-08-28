@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
 import  './SendBulkSMS.scss';
 import { useTranslation } from 'react-i18next';
-import {useParams} from "react-router-dom";
 import eventBus from "../../../eventBus";
-import {Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField} from "@mui/material";
+import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 
 const options = [
   "#RESTAURANT_ADDRESS#",

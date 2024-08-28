@@ -9,7 +9,6 @@ import DateHeader from "react-calendar-timeline/lib/lib/headers/DateHeader";
 import Moment from "moment";
 import {BsFullscreen, BsFullscreenExit} from "react-icons/bs";
 import eventBus from "../../../../eventBus";
-import SidebarHeader from "react-calendar-timeline/lib/lib/headers/SidebarHeader";
 // https://www.npmjs.com/package/react-calendar-timeline
 
 export default function TimeLinePlan(props) {

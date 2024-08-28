@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import "./../App.scss";
+import "./Gallery.scss";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {useTranslation} from "react-i18next";
 

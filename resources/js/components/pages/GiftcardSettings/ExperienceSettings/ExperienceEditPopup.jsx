@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
-import Moment from 'moment';
 import 'moment/locale/da'
 import {
   Button,
@@ -10,16 +9,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle, FormControl,
-  FormControlLabel, FormGroup, FormLabel,
+  FormControlLabel,
   Grid,
   IconButton, InputLabel, MenuItem, Select, TextField,
 } from "@mui/material";
-import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import ListSubheader from "@mui/material/ListSubheader";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PictureUploadButton from "../../../components/PictureUploadButton";
 import Box from '@mui/material/Box';
 

@@ -2,24 +2,16 @@ import React, {useEffect, useState} from "react";
 import  './Roles.scss';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
-import Moment from 'moment';
 import 'moment/locale/da'
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle, FormControl,
-  FormControlLabel, FormGroup, FormLabel,
   Grid,
   IconButton, InputLabel, MenuItem, Select, TextField,
 } from "@mui/material";
-import DatePicker from "react-datepicker";
-import ListSubheader from "@mui/material/ListSubheader";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export default function RoleEditPopup(props) {
   const { t } = useTranslation();

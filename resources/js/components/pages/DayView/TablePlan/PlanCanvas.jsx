@@ -11,7 +11,6 @@ import eventBus from "../../../../eventBus";
 import moment from "moment";
 import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
 import {isIPad, isMobile} from "../../../../helper";
-// import TablePropertiesPopup from "./TablePropertiesPopup";
 
 export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth }) {
   const { t } = useTranslation();

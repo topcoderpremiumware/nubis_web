@@ -18,6 +18,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderWebhookController;
 use App\Http\Controllers\PaidMessageController;
 use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TableplanController;
@@ -235,6 +237,16 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('giftcard_menus/{id}',[GiftcardMenuController::class, 'getId']);
     Route::get('places/{place_id}/giftcard_menus',[GiftcardMenuController::class, 'getAllByPlace']);
     Route::delete('giftcard_menus/{id}',[GiftcardMenuController::class, 'delete']);
+
+    Route::post('product_categories',[ProductCategoryController::class, 'create']);
+    Route::post('product_categories/{id}',[ProductCategoryController::class, 'save']);
+    Route::delete('product_categories/{id}',[ProductCategoryController::class, 'delete']);
+    Route::get('places/{place_id}/product_categories',[ProductCategoryController::class, 'getAllByPlace']);
+
+    Route::post('products',[ProductController::class, 'create']);
+    Route::post('products/{id}',[ProductController::class, 'save']);
+    Route::delete('products/{id}',[ProductController::class, 'delete']);
+    Route::get('places/{place_id}/products',[ProductController::class, 'getAllByPlace']);
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);

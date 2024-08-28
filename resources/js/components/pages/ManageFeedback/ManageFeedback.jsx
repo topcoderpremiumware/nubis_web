@@ -3,15 +3,8 @@ import  './ManageFeedback.scss';
 import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
 import {
-  Button, CircularProgress,
-  IconButton, Rating, Stack,
-  styled,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  CircularProgress,
+  IconButton, Rating,
 } from "@mui/material";
 import ViewIcon from "@mui/icons-material/Visibility";
 import FeedbackViewPopup from "./FeedbackViewPopup"

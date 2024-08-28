@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom';
 import React, { useEffect, useState } from 'react'
 import './VideoGuides.scss'
 import axios from 'axios';
@@ -36,7 +35,7 @@ const VideoGuides = () => {
       <img src={plate1} alt="Picture" className="guide-img-1" />
       <img src={plate2} alt="Picture" className="guide-img-2" />
       <img src={plate3} alt="Picture" className="guide-img-3" />
-      
+
       <div className="guide-container">
         <h1 className="guide-title">{t('How to Use our System ?')}</h1>
 
@@ -47,13 +46,13 @@ const VideoGuides = () => {
               <p className="guide-item-text">{i.description}</p>
               <a href={i.page_url} target="_blank" className="guide-item-link">{t('Try it Now')}</a>
             </div>
-            <iframe 
-              width="606" 
-              height="339" 
+            <iframe
+              width="606"
+              height="339"
               src={`https://www.youtube.com/embed/${i.youtube_id}`}
-              title="YouTube video player" 
+              title="YouTube video player"
               frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
           </div>

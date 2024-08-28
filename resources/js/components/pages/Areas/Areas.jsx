@@ -16,7 +16,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AreaEditPopup from "./AreaEditPopup"
-import Moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 export default function Areas() {
@@ -118,7 +117,7 @@ export default function Areas() {
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
         <h2>{t('Areas')}</h2>
         <Button
-          variant="contained" 
+          variant="contained"
           size="sm"
           type="button"
           onClick={() => navigate('/VideoGuides')}

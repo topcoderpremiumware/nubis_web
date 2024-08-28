@@ -6,7 +6,7 @@ import SubMenu from './SubMenu';
 import SidebarSelect from './SidebarSelect';
 import Navbar from '../navbar/Navbar';
 import eventBus from "../../../eventBus";
-import {BsChevronCompactLeft, BsChevronCompactRight, BsFullscreen, BsFullscreenExit} from "react-icons/bs";
+import {BsChevronCompactLeft, BsChevronCompactRight} from "react-icons/bs";
 
 
 const Sidebar = (props) => {

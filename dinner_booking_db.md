@@ -220,3 +220,38 @@
 - expired_at
 - payment_intent_id
 - receipt_url
+
+### Product categories
+- id
+- place_id
+- name
+- image
+
+### Products
+- id
+- place_id
+- name
+- image
+- cost_price (float 8,2)
+- selling_price (float 8,2)
+- stock (integer)
+- tax (float 5,2)
+- deleted_at
+
+### Checks
+- id
+- place_id
+- order_id
+- status
+- total
+- discount (amount, float 8,2)
+- discount_type
+- discount_code
+- deleted_at
+
+### Check_Product
+- id
+- check_id
+- product_id
+- price
+- quantity

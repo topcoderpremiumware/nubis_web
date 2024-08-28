@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react'
 import eventBus from "../../../../eventBus";
 import {useTranslation} from "react-i18next";
 import {Button} from "@mui/material";
-import Moment from "moment/moment";
 
 
 export default function StopBookingButton() {

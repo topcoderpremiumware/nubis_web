@@ -13,8 +13,9 @@ import DayViewTableDeleted from "./tables/DayViewTableDeleted";
 import eventBus from "../../../eventBus";
 import PlanCanvas from "./TablePlan/PlanCanvas";
 import TimeLinePlan from "./TimeLinePlan/TimeLinePlan";
-import { Button, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Pos from "./Pos/Pos";
 
 
 function TabPanel(props) {
@@ -57,6 +58,7 @@ export default function DayViewContent() {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [isFullWidth, setIsFullWidth] = useState(false)
   const [orders, setOrders] = useState([])
+  const [posOpen, setPosOpen] = useState(false)
 
   useEffect(() => {
     eventBus.on("openTableSidebar",(data) => {
@@ -134,6 +136,7 @@ export default function DayViewContent() {
         </div>}
       </div>
       <BottomPanel selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
+      <Pos open={posOpen} onClose={() => setPosOpen(false)}/>
     </div>
   );
 }

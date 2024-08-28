@@ -1,5 +1,3 @@
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
 import './NewGiftCardPopup.scss';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -26,18 +24,6 @@ import ImageUploader from "../../../../new_giftcard/components/ImageUploader";
 import GalleryPicker from "../../../../new_giftcard/components/GalleryPicker";
 import {getBase64FromFile, getBase64FromUrl} from "../../../../helper";
 import moment from "moment/moment";
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '90%',
-  height: '87%',
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-};
 
 export default function NewGiftCardPopup({ open, handleClose }) {
   const { t } = useTranslation();

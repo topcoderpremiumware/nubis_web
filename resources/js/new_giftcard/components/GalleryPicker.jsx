@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import "./../App.scss";
+import "./Gallery.scss";
 import {Grid} from "@mui/material";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';

@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from "react";
 import  './TablePlanSetup.scss';
 import { useTranslation } from 'react-i18next';
-import eventBus from "../../../eventBus";
 import CloseIcon from '@mui/icons-material/Close';
 import { ColorPicker } from 'material-ui-color';
-import EditIcon from '@mui/icons-material/Edit'
 import {
   Button,
   Checkbox,

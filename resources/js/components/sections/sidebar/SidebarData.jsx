@@ -2,7 +2,6 @@ import React from 'react';
 import { KeyboardArrowDown, KeyboardArrowUp }from '@mui/icons-material';
 import { FeaturedPlayListOutlined, SettingsOutlined, CalendarMonthOutlined, EmailOutlined, Redeem} from '@mui/icons-material';
 import { TiMessages} from 'react-icons/ti';
-import { IoIosStats} from 'react-icons/io';
 import { BsCreditCard } from 'react-icons/bs';
 import { MdOutlineContactSupport } from "react-icons/md";
 

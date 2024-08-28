@@ -7,8 +7,6 @@ import Moment from "moment";
 import eventBus from "../../../../../eventBus";
 import { FaAngleDoubleRight, FaAngleRight, FaAngleDoubleLeft, FaAngleLeft } from "react-icons/fa";
 import { CgCalendarToday } from "react-icons/cg";
-// CSS Modules, react-datepicker-cssmodules.css
-// import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 
  const  DatePicker4 = () => {

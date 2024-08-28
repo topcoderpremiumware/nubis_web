@@ -3,7 +3,6 @@ import "./WaitingModal.css";
 import {Trans, useTranslation} from "react-i18next";
 import React, {useEffect, useState} from "react";
 import {normalizeNumber} from "../../../../helper";
-import eventBus from "../../../../eventBus";
 import moment from "moment/moment";
 
 export default function WaitingModal(props) {

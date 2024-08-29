@@ -31,8 +31,8 @@ export default function CategoryPopup(props){
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      props.onClose()
       eventBus.dispatch("updateCategories")
+      props.onClose()
     }).catch(error => {
       simpleCatchError(error)
     })

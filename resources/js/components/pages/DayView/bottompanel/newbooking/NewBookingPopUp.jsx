@@ -30,11 +30,20 @@ export default function NewBookingPopUp({selectedOrder, setSelectedOrder}) {
     setOpen(false);
     setSelectedOrder(null)
   }
+  useEffect( () => {
+    function handleOpenNewBookingPopUp (){
+      setOpen(true)
+    }
+    eventBus.on("openNewBookingPopUp",  handleOpenNewBookingPopUp)
+    return () => {
+      eventBus.remove("openNewBookingPopUp",  handleOpenNewBookingPopUp)
+    }
+  },[])
 
   useEffect(async () => {
     if(selectedOrder && Object.keys(selectedOrder).length) {
       setOrder(selectedOrder)
-      setOpen(true)
+      // setOpen(true)
       return
     }
 

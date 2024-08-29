@@ -85,6 +85,13 @@ export default function DayViewContent() {
     eventBus.on("loadedOrders",(data) => {
       setOrders(data)
     })
+    function handleOpenPosPopUp (){
+      setPosOpen(true)
+    }
+    eventBus.on("openPosPopUp",  handleOpenPosPopUp)
+    return () => {
+      eventBus.remove("openPosPopUp",  handleOpenPosPopUp)
+    }
   },[])
 
   const handleChange = (event, newValue) => {
@@ -136,7 +143,9 @@ export default function DayViewContent() {
         </div>}
       </div>
       <BottomPanel selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
-      <Pos open={posOpen} onClose={() => setPosOpen(false)}/>
+      {selectedOrder &&
+        <Pos orderId={selectedOrder.id} open={posOpen} onClose={() => setPosOpen(false)}/>
+      }
     </div>
   );
 }

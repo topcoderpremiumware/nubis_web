@@ -102,6 +102,10 @@ class ProductCategoryController extends Controller
 
         Log::add($request,'delete-product_category','Deleted product category #'.$category->id);
 
+        if($category->image){
+            Storage::disk('public')->delete($category->image);
+        }
+
         $category->delete();
 
         return response()->json(['message' => 'Product category is deleted']);

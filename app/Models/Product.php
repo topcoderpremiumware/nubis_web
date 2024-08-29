@@ -47,7 +47,8 @@ class Product extends Model
 
     public function checks()
     {
-        return $this->belongsToMany(Check::class);
+        return $this->belongsToMany(Check::class)
+            ->withPivot('price', 'quantity');
     }
 
     public function getImageUrlAttribute(): string

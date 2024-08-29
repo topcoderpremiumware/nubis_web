@@ -183,6 +183,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
 
   const doubleClickHandler = (params, event, details) => {
     setSelectedOrder(params.row)
+    eventBus.dispatch('openNewBookingPopUp')
   }
 
   const handleMouseDown = (event) => {

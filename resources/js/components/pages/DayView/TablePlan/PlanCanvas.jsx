@@ -339,6 +339,7 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
 
   const onEdit = () => {
     setSelectedOrder(orders.find(i => i.id === selectedTable.data.booking_id))
+    eventBus.dispatch('openNewBookingPopUp')
     menuClose()
   }
 
@@ -389,6 +390,13 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
       table_ids: [selectedTable.id],
       tableplan_id: 0,
     })
+    eventBus.dispatch('openNewBookingPopUp')
+  }
+
+  const handleOpenPosPopUp = () => {
+    setSelectedOrder(orders.find(i => i.id === selectedTable.data.booking_id))
+    eventBus.dispatch('openPosPopUp')
+    menuClose()
   }
 
   return (<>
@@ -428,6 +436,7 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
             <MenuItem onClick={() => setStatus('arrived')}>{t('Set arrived')}</MenuItem>
             <MenuItem onClick={() => setStatus('completed')}>{t('Set left table')}</MenuItem>
             <MenuItem onClick={() => setStatus('confirmed')}>{t('Set confirmed')}</MenuItem>
+            <MenuItem onClick={handleOpenPosPopUp}>{t('POS')}</MenuItem>
           </div>
         :
           <div>

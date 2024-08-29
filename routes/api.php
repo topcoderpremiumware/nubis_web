@@ -3,6 +3,7 @@
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthApiController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\CheckController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomBookingLengthController;
@@ -80,8 +81,6 @@ Route::get('giftcard_menus',[GiftcardMenuController::class, 'getAllByParams']);
 Route::post('feedbacks',[FeedbackController::class, 'create']);
 Route::post('feedbacks/is_exist',[FeedbackController::class, 'isFeedbackExist']);
 Route::post('send_admin_contact',[PlaceController::class, 'sendtoAdmin']);
-
-
 
 Route::get('settings',[SettingController::class, 'get']);
 Route::get('settings/many',[SettingController::class, 'getMany']);
@@ -197,7 +196,6 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('coupons_check',[CouponController::class, 'getByCode']);
     Route::delete('coupons',[CouponController::class, 'delete']);
 
-
     Route::get('feedbacks/{id}',[FeedbackController::class, 'getId']);
     Route::post('feedbacks/{id}',[FeedbackController::class, 'save']);
     Route::get('feedbacks',[FeedbackController::class, 'getAllByPlace']);
@@ -247,6 +245,10 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('products/{id}',[ProductController::class, 'save']);
     Route::delete('products/{id}',[ProductController::class, 'delete']);
     Route::get('places/{place_id}/products',[ProductController::class, 'getAllByPlace']);
+
+    Route::get('orders/{order_id}/checks',[CheckController::class, 'getAllByOrder']);
+    Route::post('checks',[CheckController::class, 'create']);
+    Route::post('checks/{id}',[CheckController::class, 'save']);
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);

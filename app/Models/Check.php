@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
  * @property integer $id
  * @property integer $place_id
  * @property integer $order_id
- * @property string $status
+ * @property string $status // open, closed
  * @property float $total
  * @property float $discount
  * @property string $discount_type
@@ -41,6 +41,7 @@ class Check extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class)
+            ->withPivot('price', 'quantity');
     }
 }

@@ -46,8 +46,8 @@ export default function ProductPopup(props){
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
+      eventBus.dispatch("updateProducts",product.product_category_id)
       props.onClose()
-      eventBus.dispatch("updateProducts")
     }).catch(error => {
       simpleCatchError(error)
     })

@@ -204,5 +204,9 @@
     "Value": "Value",
     "Code": "Code",
     "Valid until": "Valid until",
-    "Customer service phone": "Customer service phone"
+    "Customer service phone": "Customer service phone",
+    "Receipt": "Receipt",
+    "Discount": "Discount",
+    "VAT": "VAT",
+    "Total": "Total"
 }

@@ -21,17 +21,21 @@ class CheckController extends Controller
             'place_id' => 'required|exists:places,id',
             'order_id' => 'required|exists:orders,id',
             'status' => 'required',
+            'subtotal' => 'required',
             'total' => 'required'
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         $check = Check::create([
+            'name' => $request->name,
             'place_id' => $request->place_id,
             'order_id' => $request->order_id,
             'status' => $request->status,
+            'subtotal' => $request->subtotal,
             'total' => $request->total,
             'discount' => $request->discount,
+            'discount_name' => $request->discount_name,
             'discount_type' => $request->discount_type,
             'discount_code' => $request->discount_code
         ]);
@@ -58,6 +62,7 @@ class CheckController extends Controller
             'place_id' => 'required|exists:places,id',
             'order_id' => 'required|exists:orders,id',
             'status' => 'required',
+            'subtotal' => 'required',
             'total' => 'required'
         ]);
 
@@ -68,11 +73,14 @@ class CheckController extends Controller
             !Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
 
         $res = $check->update([
+            'name' => $request->name,
             'place_id' => $request->place_id,
             'order_id' => $request->order_id,
             'status' => $request->status,
+            'subtotal' => $request->subtotal,
             'total' => $request->total,
             'discount' => $request->discount,
+            'discount_name' => $request->discount_name,
             'discount_type' => $request->discount_type,
             'discount_code' => $request->discount_code
         ]);

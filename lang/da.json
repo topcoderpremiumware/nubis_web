@@ -204,5 +204,9 @@
     "Value": "Værdi",
     "Code": "Kode",
     "Valid until": "Gyldig indtil",
-    "Customer service phone": "Kundeservice telefon"
+    "Customer service phone": "Kundeservice telefon",
+    "Receipt": "Kvittering",
+    "Discount": "Rabat",
+    "VAT": "Moms",
+    "Total": "I alt"
 }

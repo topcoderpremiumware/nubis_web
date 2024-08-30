@@ -26,6 +26,13 @@ export default function DiscountPopup(props){
     props.onClose()
   }
 
+  const types = [
+    {id: 'our_code_amount', title: 'Our gift card'},
+    {id: 'code_amount', title: 'Other gift card'},
+    {id: 'custom_amount', title: 'Custom amount'},
+    {id: 'custom_percent', title: 'Custom percent'}
+  ]
+
   return (
     <Dialog onClose={props.onClose} open={props.open} fullWidth maxWidth="sm"
             scroll="paper"
@@ -52,8 +59,8 @@ export default function DiscountPopup(props){
           <Select label={t('Discount type')} value={props.check.discount_type}
                   labelId="label_discount_type" id="discount_type" name="discount_type"
                   onChange={props.onChange}>
-            {['our_code_amount','code_amount','custom_amount','custom_percent'].map((el,key) => {
-              return <MenuItem key={key} value={el}>{el.replaceAll('_',' ')}</MenuItem>
+            {types.map((el,key) => {
+              return <MenuItem key={key} value={el.id}>{el.title}</MenuItem>
             })}
           </Select>
         </FormControl>
@@ -81,6 +88,12 @@ export default function DiscountPopup(props){
                    onChange={props.onChange}
                    value={props.check.discount_code}
         />}
+        {['code_amount'].includes(props.check.discount_type) &&
+          <TextField label={t('Discount name')} size="small" fullWidth sx={{mb: 2}}
+                     type="text" id="discount_name" name="discount_name" required
+                     onChange={props.onChange}
+                     value={props.check.discount_name}
+          />}
       </DialogContent>
       <DialogActions sx={{p:2}}>
         <Button variant="contained" onClick={handleClose}>{t('Save')}</Button>

@@ -18,6 +18,9 @@ use Illuminate\Support\Collection;
  * @property string $discount_type
  * @property string $discount_code
  * @property Carbon $deleted_at
+ * @property string $name
+ * @property string discount_name
+ * @property float $subtotal
  *
  * @property Place $place
  * @property Order $order

@@ -5,7 +5,7 @@ import {
   AccordionDetails,
   AccordionSummary, Button,
   CircularProgress,
-  IconButton,
+  IconButton, InputAdornment,
   Stack,
   styled,
   Table,
@@ -13,7 +13,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
+  TableRow, TextField,
 } from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -86,7 +86,9 @@ export default function PosCart(props){
             }
           }
         }
-        tempChecks[selectedCheckIndexRef.current].total = calcCheckTotal(tempChecks[selectedCheckIndexRef.current])
+        let totals = calcCheckTotal(tempChecks[selectedCheckIndexRef.current])
+        tempChecks[selectedCheckIndexRef.current].total = totals['total']
+        tempChecks[selectedCheckIndexRef.current].subtotal = totals['subtotal']
       }
       setChecks(prev => ([...tempChecks]))
     }
@@ -109,7 +111,9 @@ export default function PosCart(props){
       }else{
         tempChecks[selectedCheckIndexRef.current].products.splice(index, 1)
       }
-      tempChecks[selectedCheckIndexRef.current].total = calcCheckTotal(tempChecks[selectedCheckIndexRef.current])
+      let totals = calcCheckTotal(tempChecks[selectedCheckIndexRef.current])
+      tempChecks[selectedCheckIndexRef.current].total = totals['total']
+      tempChecks[selectedCheckIndexRef.current].subtotal = totals['subtotal']
       setChecks(prev => ([...tempChecks]))
     }
     eventBus.on("addProductToCart", handleAddProductToCart)
@@ -131,10 +135,11 @@ export default function PosCart(props){
   },[selectedCheckIndex])
 
   const calcCheckTotal = (check) => {
-    let total = check.products.reduce(
+    let subtotal = check.products.reduce(
       (acc, product) => acc + product.pivot.quantity * product.pivot.price,
       0
     )
+    let total = subtotal
     if(check.discount_type){
       if(check.discount_type.includes('amount')){
         total -= check.discount
@@ -142,7 +147,7 @@ export default function PosCart(props){
         total -= total * check.discount / 100
       }
     }
-    return parseFloat(total.toFixed(2))
+    return {total: parseFloat(total.toFixed(2)),subtotal: parseFloat(subtotal.toFixed(2))}
   }
 
   const getChecks = () => {
@@ -191,10 +196,26 @@ export default function PosCart(props){
 
   const onChangeDiscount = (e) => {
     let tempChecks = checks
-    if(e.target.name === 'discount') tempChecks[selectedCheckIndex].discount = e.target.value
-    if(e.target.name === 'discount_type') tempChecks[selectedCheckIndex].discount_type = e.target.value
+    if(e.target.name === 'discount'){
+      if(tempChecks[selectedCheckIndex].discount_type.includes('percent') && e.target.value > 100){
+        return false
+      }else if(tempChecks[selectedCheckIndex].discount_type.includes('amount') && e.target.value > tempChecks[selectedCheckIndex].subtotal) {
+        return false
+      }
+      tempChecks[selectedCheckIndex].discount = e.target.value
+    }
+    if(e.target.name === 'discount_type'){
+      tempChecks[selectedCheckIndex].discount_type = e.target.value
+      tempChecks[selectedCheckIndex].discount_code = null
+      tempChecks[selectedCheckIndex].discount_name = null
+      tempChecks[selectedCheckIndex].discount = null
+    }
     if(e.target.name === 'discount_code') tempChecks[selectedCheckIndex].discount_code = e.target.value
-    tempChecks[selectedCheckIndex].total = calcCheckTotal(tempChecks[selectedCheckIndex])
+    if(e.target.name === 'discount_name') tempChecks[selectedCheckIndex].discount_name = e.target.value
+    if(e.target.name === 'name') tempChecks[selectedCheckIndex].name = e.target.value
+    let totals = calcCheckTotal(tempChecks[selectedCheckIndex])
+    tempChecks[selectedCheckIndex].total = totals['total']
+    tempChecks[selectedCheckIndex].subtotal = totals['subtotal']
     setChecks(prev => ([...tempChecks]))
   }
 
@@ -206,6 +227,10 @@ export default function PosCart(props){
       const pdfUrl = URL.createObjectURL(pdfBlob);
       window.open(pdfUrl, '_blank');
       URL.revokeObjectURL(pdfUrl);
+
+      let tempChecks = checks
+      tempChecks[selectedCheckIndex].status = 'closed'
+      setChecks(prev => ([...tempChecks]))
     }).catch(error => {
       simpleCatchError(error)
     })
@@ -228,7 +253,17 @@ export default function PosCart(props){
             <AccordionSummary
               expandIcon={<ExpandMoreIcon/>}
               aria-controls={`check${key}-content`}
-              id={`check${key}-header`}>{t('Cart #')}{key} {check.status === 'closed' ? `(${t('Closed')})` : ''}</AccordionSummary>
+              className={`check_${check.status}`}
+              id={`check${key}-header`}>
+              <Box style={{display: 'flex', alignItems: 'center'}}>{t('Cart')} #{key}
+                {(check.status !== 'closed' && selectedCheckIndex === key) ?
+                  <TextField label={t('Title')} size="small" sx={{ml: 1}}
+                             type="text" id="name" name="name"
+                             onChange={onChangeDiscount}
+                             value={check.name}
+                  /> : <> {check.name}</>}
+              </Box>
+            </AccordionSummary>
             <AccordionDetails sx={{p: 0}}>
               <TableContainer>
                 <Table>
@@ -243,6 +278,11 @@ export default function PosCart(props){
                         <TableCell size="small" align="right">{(product.pivot.price*product.pivot.quantity).toFixed(2)}</TableCell>
                       </StyledTableRow>
                     })}
+                    <StyledTableRow>
+                      <TableCell size="small"></TableCell>
+                      <TableCell size="small">{t('Subtotal')}</TableCell>
+                      <TableCell size="small" align="right">{check.subtotal.toFixed(2)}</TableCell>
+                    </StyledTableRow>
                     {check.discount &&
                     <StyledTableRow>
                       <TableCell size="small"></TableCell>
@@ -283,7 +323,7 @@ export default function PosCart(props){
     <DiscountPopup
       open={discountsOpen}
       onClose={() => setDiscountsOpen(false)}
-      onChange={(e) => onChangeDiscount(e)}
+      onChange={onChangeDiscount}
       check={checks[selectedCheckIndex]}
       currency={props.currency} />}
   </>);

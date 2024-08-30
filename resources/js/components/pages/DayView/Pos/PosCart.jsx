@@ -198,6 +198,19 @@ export default function PosCart(props){
     setChecks(prev => ([...tempChecks]))
   }
 
+  const openPDF = () => {
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${checks[selectedCheckIndex].id}/print`,{}, {
+      responseType: 'blob'
+    }).then(response => {
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, '_blank');
+      URL.revokeObjectURL(pdfUrl);
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+  }
+
   return (<>
     <Stack spacing={2} mb={2} direction="row" alignItems="center">
       <h5>{t('Shopping cart')}</h5>
@@ -252,6 +265,7 @@ export default function PosCart(props){
           <Stack spacing={2} sx={{mt: 2}} direction="row">
             <Button variant="contained" type="button" disabled={checks[selectedCheckIndex].status === 'closed'} onClick={e => setDiscountsOpen(true)}>{t('Discounts')}</Button>
             <Button variant="contained" type="button" disabled={loading} onClick={saveCheck}>{t('Save')}</Button>
+            <Button variant="contained" type="button" onClick={openPDF}>{t('Print')}</Button>
           </Stack>
         </>
         :

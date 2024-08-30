@@ -9,6 +9,7 @@
         padding: 0px 0px;
         font-size: 10pt;
         line-height: 1;
+        overflow-wrap: anywhere;
     }
     hr{
         border:0;

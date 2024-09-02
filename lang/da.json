@@ -208,5 +208,12 @@
     "Receipt": "Kvittering",
     "Discount": "Rabat",
     "VAT": "Moms",
-    "Total": "I alt"
+    "Total": "I alt",
+    "Subtotal": "Subtotal",
+    "VAT number": "momsnummer",
+    "Booking id": "Booking id",
+    "Time": "Tid",
+    "Seats": "Personer",
+    "Tables": "Borde",
+    "Cashier": "Kasserer"
 }

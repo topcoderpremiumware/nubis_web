@@ -20,6 +20,7 @@
     @php
         /* @var \App\Models\Check $check */
         $place = $check->place;
+        $order = $check->order;
         $currency = $place->setting('online-payment-currency');
         $vat = (float)$check->total - ((float)$check->total / 1.25);
     @endphp
@@ -28,10 +29,17 @@
     @if($place->phone)<div style="text-align: center">tel: {{$place->phone}}</div>@endif
     @if($place->home_page)<div style="text-align: center">{{$place->home_page}}</div>@endif
     @if($place->email)<div style="text-align: center">{{$place->email}}</div>@endif
+    @if($place->tax_number)<div style="text-align: center">{{__('VAT number',[],$place->language)}}: {{$place->tax_number}}</div>@endif
     <hr>
     <div style="font-size: 16pt;text-align: center">{{__('Receipt',[],$place->language)}}</div>
-    <div style="text-align: center">{{now()->format('d F Y H:i')}}</div>
+    <div style="text-align: center">{{now()->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
     <div style="text-align: center">{{__('Receipt',[],$place->language)}} #{{$check->id}}</div>
+    <div style="text-align: center">{{__('Cashier',[],$place->language)}}: {{Auth::user()->name}}</div>
+    <hr>
+    <div>{{__('Booking id',[],$place->language)}} # {{$order->id}}</div>
+    <div>{{__('Time',[],$place->language)}}: {{$order->reservation_time->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
+    <div>{{__('Seats',[],$place->language)}}: {{$order->seats}}</div>
+    <div>{{__('Tables',[],$place->language)}}: {{implode(',',$order->table_ids)}}</div>
     <hr>
     @foreach($check->products as $product)
         <div>{{$product->name}}</div>
@@ -45,4 +53,5 @@
     <div>{{__('VAT',[],$place->language)}} 25% <span style="float: right">{{number_format($vat,2)}} {{$currency}}</span></div>
     <div style="float:none;clear:both;"></div>
     <div>{{__('Total',[],$place->language)}} <span style="float: right;font-weight:bold;font-size: 16pt">{{number_format($check->total,2)}} {{$currency}}</span></div>
+    <div style="float:none;clear:both;"></div>
 </body>

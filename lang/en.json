@@ -208,5 +208,12 @@
     "Receipt": "Receipt",
     "Discount": "Discount",
     "VAT": "VAT",
-    "Total": "Total"
+    "Total": "Total",
+    "Subtotal": "Subtotal",
+    "VAT number": "VAT number",
+    "Booking id": "Booking id",
+    "Time": "Time",
+    "Seats": "Seats",
+    "Tables": "Tables",
+    "Cashier": "Cashier"
 }

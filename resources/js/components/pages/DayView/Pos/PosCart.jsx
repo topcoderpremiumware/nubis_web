@@ -26,7 +26,7 @@ import NumberButtons from "../../../components/NumberButtons";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import {simpleCatchError} from "../../../../helper";
-import ProductPopup from "./ProductPopup";
+import ProductCategoryPopup from "./ProductCategoryPopup";
 import DiscountPopup from "./DiscountPopup";
 
 export default function PosCart(props){
@@ -147,7 +147,7 @@ export default function PosCart(props){
         total -= total * check.discount / 100
       }
     }
-    return {total: parseFloat(total.toFixed(2)),subtotal: parseFloat(subtotal.toFixed(2))}
+    return {total: parseFloat(total?.toFixed(2)),subtotal: parseFloat(subtotal?.toFixed(2))}
   }
 
   const getChecks = () => {
@@ -275,26 +275,26 @@ export default function PosCart(props){
                           onAdd={e => eventBus.dispatch('addProductToCart',product)}
                           onRemove={e => eventBus.dispatch('removeProductToCart',product)}/></TableCell>
                         <TableCell size="small" style={{width: '100%'}}>{product.name}</TableCell>
-                        <TableCell size="small" align="right">{(product.pivot.price*product.pivot.quantity).toFixed(2)}</TableCell>
+                        <TableCell size="small" align="right">{(product.pivot.price*product.pivot.quantity)?.toFixed(2)}</TableCell>
                       </StyledTableRow>
                     })}
                     <StyledTableRow>
                       <TableCell size="small"></TableCell>
                       <TableCell size="small">{t('Subtotal')}</TableCell>
-                      <TableCell size="small" align="right">{check.subtotal.toFixed(2)}</TableCell>
+                      <TableCell size="small" align="right">{check.subtotal?.toFixed(2)}</TableCell>
                     </StyledTableRow>
                     {check.discount &&
                     <StyledTableRow>
                       <TableCell size="small"></TableCell>
                       <TableCell size="small">{t('Discount')}</TableCell>
                       <TableCell size="small" align="right">
-                        {parseFloat(check.discount).toFixed(2)}{check.discount_type.includes('percent') ? '%' : ''}
+                        {parseFloat(check.discount)?.toFixed(2)}{check.discount_type.includes('percent') ? '%' : ''}
                       </TableCell>
                     </StyledTableRow>}
                     <StyledTableRow>
                       <TableCell size="small"></TableCell>
                       <TableCell size="small"><b>{t('Total')}</b></TableCell>
-                      <TableCell size="small" align="right"><b>{check.total.toFixed(2)}</b></TableCell>
+                      <TableCell size="small" align="right"><b>{check.total?.toFixed(2)}</b></TableCell>
                     </StyledTableRow>
                   </TableBody>
                 </Table>
@@ -305,7 +305,7 @@ export default function PosCart(props){
           <Stack spacing={2} sx={{mt: 2}} direction="row">
             <Button variant="contained" type="button" disabled={checks[selectedCheckIndex].status === 'closed'} onClick={e => setDiscountsOpen(true)}>{t('Discounts')}</Button>
             <Button variant="contained" type="button" disabled={loading} onClick={saveCheck}>{t('Save')}</Button>
-            <Button variant="contained" type="button" onClick={openPDF}>{t('Print')}</Button>
+            <Button variant="contained" type="button" disabled={!checks[selectedCheckIndex].hasOwnProperty('id')} onClick={openPDF}>{t('Print')}</Button>
           </Stack>
         </>
         :

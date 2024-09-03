@@ -9,8 +9,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import eventBus from "../../../../eventBus";
-import CategoryPopup from "./CategoryPopup";
-import ProductPopup from "./ProductPopup";
+import ProductCategoryPopup from "./ProductCategoryPopup";
 import PosCart from "./PosCart";
 import Box from "@mui/material/Box";
 
@@ -18,36 +17,43 @@ export default function Pos(props){
   const {t} = useTranslation();
   const [editMode, setEditMode] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState(false)
+  const [allCategories, setAllCategories] = useState([])
   const [categories, setCategories] = useState([])
   const [products, setProducts] = useState([])
   const [paymentMethod, setPaymentMethod] = useState({})
   const [loading, setLoading] = useState(false)
-  const [categoryOpen, setCategoryOpen] = useState(false)
-  const [editCategory, setEditCategory] = useState({})
-  const [productOpen, setProductOpen] = useState(false)
-  const [editProduct, setEditProduct] = useState({})
+  const [loadingProducts, setLoadingProducts] = useState(false)
+  const [loadingCategories, setLoadingCategories] = useState(false)
+  const [productCategoryOpen, setProductCategoryOpen] = useState(false)
+  const [editItem, setEditItem] = useState({})
 
   useEffect( () => {
     function init(){
       getPaymentMethod()
       getCategories()
-      // getProducts()
+      getAllCategories()
+      getProducts()
     }
     init()
     eventBus.on("placeChanged", () => {
       init()
       setSelectedCategory(false)
     })
-    eventBus.on("updateCategories", () => {
-      getCategories()
+    eventBus.on("updateCategories", (categoryId) => {
+      getCategories(categoryId)
     })
-    eventBus.on("updateProducts", (category_id) => {
-      getProducts(category_id)
+    eventBus.on("updateProducts", (categoryId) => {
+      getProducts(categoryId)
     })
   }, [])
 
   useEffect( () => {
-      getProducts()
+    async function loadAll() {
+      await getCategories()
+      await getProducts()
+      setLoading(false)
+    }
+    loadAll()
   }, [selectedCategory])
 
   const getPaymentMethod = async () => {
@@ -55,55 +61,68 @@ export default function Pos(props){
     setPaymentMethod(res.data)
   }
 
-  const getCategories = () => {
+  const categoryParam = (name,categoryId = false) => {
+    let tempCategoryId = categoryId ? categoryId : selectedCategory?.id
+    if(tempCategoryId){
+      return `?${name}=${tempCategoryId}`
+    }else{
+      return ''
+    }
+  }
+
+  const getAllCategories = async () => {
     setLoading(true)
-    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/product_categories`).then(response => {
-      setCategories(prev => ([...response.data]))
+    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/product_categories?parent_id=all`).then(response => {
+      setAllCategories(prev => ([...response.data]))
       setLoading(false)
     }).catch(error => {
     })
   }
 
-  const getProducts = (category_id = false) => {
-    setLoading(true)
-    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/products?product_category_id=${category_id || selectedCategory}`).then(response => {
+  const getCategories = async (category_id = false) => {
+    setLoadingCategories(true)
+    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/product_categories${categoryParam('parent_id',category_id)}`).then(response => {
+      setCategories(prev => ([...response.data]))
+      setLoadingCategories(false)
+    }).catch(error => {
+    })
+  }
+
+  const getProducts = async (category_id = false) => {
+    setLoadingProducts(true)
+    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/products${categoryParam('product_category_id',category_id)}`).then(response => {
       setProducts(prev => ([...response.data]))
-      setLoading(false)
+      setLoadingProducts(false)
     }).catch(error => {
     })
   }
 
   const addNew = () => {
-    if(selectedCategory === false){
-      setCategoryOpen(true)
-      setEditCategory({})
-    }else{
-      setProductOpen(true)
-      setEditProduct({
-        product_category_id: selectedCategory.id
-      })
-    }
+    setProductCategoryOpen(true)
+    setEditItem({})
   }
 
   const categoryClick = (category) => {
-      if(editMode){
-        setCategoryOpen(true)
-        setEditCategory(category)
-      }else{
-        setSelectedCategory(category.id)
+    if(!category.id){
+      setLoading(true)
+      setSelectedCategory(selectedCategory.parent)
+    }else {
+      if (editMode) {
+        setProductCategoryOpen(true)
+        setEditItem(category)
+      } else {
+        setLoading(true)
+        setSelectedCategory(category)
       }
+    }
   }
 
   const productClick = (product) => {
-    if(!product.id){
-      setSelectedCategory(false)
+    if(editMode){
+      setProductCategoryOpen(true)
+      setEditItem(product)
     }else{
-      if(editMode){
-        setProductOpen(true)
-        setEditProduct(product)
-      }else{
-        eventBus.dispatch("addProductToCart", product)
-      }
+      eventBus.dispatch("addProductToCart", product)
     }
   }
 
@@ -184,33 +203,36 @@ export default function Pos(props){
             </Stack>
             <Box style={{height: 'calc(100svh - 155px)',overflowY: 'auto'}}>
               {loading ? <div><CircularProgress/></div> :
-              <div className="products_grid_wrapper">
-                {selectedCategory === false ?
-                  <>{categories.map((category,key) => {
-                    return <div className="products_item" key={key}
-                                onClick={(e) => categoryClick(category)}>
+                <>
+                  <div className="products_grid_wrapper">
+                    {loadingCategories ? <div><CircularProgress/></div> : <>
+                    {[{id: null, name: t('Back')}, ...categories].map((category,key) => {
+                      if(selectedCategory || category.id) return <div className="products_item" key={key}
+                                  onClick={(e) => categoryClick(category)}>
                         {editMode && <IconButton className="delete_button" onClick={e => {deleteCategory(e,category)}}><DeleteIcon/></IconButton>}
                         <div className="title" style={{"--product-image": `url('${category.image_url}')`}}>
                           {category.name}
                         </div>
                       </div>
-                    })}</>
-                  :
-                  <>{[{id: null, name: t('Back')}, ...products].map((product,key) => {
-                    return <div className="products_item" key={key}
-                                onClick={(e) => productClick(product)}>
-                      {(editMode && product.id) &&
-                        <IconButton className="delete_button"
-                                    onClick={e => {deleteProduct(e,product)}}><DeleteIcon/></IconButton>}
-                      <div className="title" style={{"--product-image": `url('${product.image_url}')`}}>
-                        {product.name}
+                    })}</>}
+                  </div>
+                  <div className="products_grid_wrapper">
+                    {loadingProducts ? <div><CircularProgress/></div> : <>
+                    {products.map((product,key) => {
+                      return <div className="products_item" key={key}
+                                  onClick={(e) => productClick(product)}>
+                        {(editMode && product.id) &&
+                          <IconButton className="delete_button"
+                                      onClick={e => {deleteProduct(e,product)}}><DeleteIcon/></IconButton>}
+                        <div className="title" style={{"--product-image": `url('${product.image_url}')`}}>
+                          {product.name}
+                        </div>
+                        {product.hasOwnProperty('selling_price') &&
+                          <div className="product_price">{paymentMethod['online-payment-currency']} {product.selling_price.toFixed(2)}</div>}
                       </div>
-                      {product.hasOwnProperty('selling_price') &&
-                        <div className="product_price">{paymentMethod['online-payment-currency']} {product.selling_price.toFixed(2)}</div>}
-                    </div>
-                  })}</>
-                }
-              </div>}
+                    })}</>}
+                  </div>
+                </>}
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={5} lg={4}>
@@ -219,15 +241,12 @@ export default function Pos(props){
         </Grid>
       </DialogContent>
     </Dialog>
-    <CategoryPopup
-      open={categoryOpen}
-      onClose={() => setCategoryOpen(false)}
-      category={editCategory}/>
-    <ProductPopup
-      open={productOpen}
-      onClose={() => setProductOpen(false)}
-      product={editProduct}
-      categories={categories}
+    <ProductCategoryPopup
+      open={productCategoryOpen}
+      onClose={() => setProductCategoryOpen(false)}
+      item={editItem}
+      categories={allCategories}
+      currentCategory={selectedCategory}
       currency={paymentMethod['online-payment-currency']} />
   </>);
 }

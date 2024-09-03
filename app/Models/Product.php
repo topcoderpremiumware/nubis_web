@@ -5,6 +5,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -12,7 +14,6 @@ use Illuminate\Support\Facades\Storage;
 /**
  * @property integer $id
  * @property integer $place_id
- * @property integer $product_category_id
  * @property string $name
  * @property string $image
  * @property float $cost_price
@@ -22,8 +23,9 @@ use Illuminate\Support\Facades\Storage;
  * @property Carbon $deleted_at
  *
  * @property Place $place
- * @property ProductCategory $product_category
+ * @property Collection<ProductCategory> $product_categories
  * @property Collection<Check> $checks
+ * @method static Product create(array $array)
  */
 class Product extends Model
 {
@@ -31,21 +33,23 @@ class Product extends Model
 
     protected $guarded = [];
 
+    protected $with = ['product_categories'];
+
     protected $appends = [
         'image_url'
     ];
 
-    public function place()
+    public function place(): BelongsTo
     {
         return $this->belongsTo(Place::class);
     }
 
-    public function product_category()
+    public function product_categories(): BelongsToMany
     {
-        return $this->belongsTo(ProductCategory::class);
+        return $this->belongsToMany(ProductCategory::class);
     }
 
-    public function checks()
+    public function checks(): BelongsToMany
     {
         return $this->belongsToMany(Check::class)
             ->withPivot('price', 'quantity');

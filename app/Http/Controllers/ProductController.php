@@ -24,8 +24,8 @@ class ProductController extends Controller
             'cost_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
             'stock' => 'required|numeric',
-            'tax' => 'required|numeric',
-            'product_category_id' => 'nullable|exists:product_categories,id',
+            'tax' => 'required|numeric'
+
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
@@ -46,8 +46,11 @@ class ProductController extends Controller
             'selling_price' => $request->selling_price,
             'stock' => $request->stock,
             'tax' => $request->tax,
-            'product_category_id' => $request->product_category_id
         ]);
+
+        if($request->has('product_category_ids')){
+            $product->product_categories()->sync(explode(',',$request->product_category_ids));
+        }
 
         Log::add($request,'create-product','Created product #'.$product->id);
 
@@ -65,8 +68,7 @@ class ProductController extends Controller
             'cost_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
             'stock' => 'required|numeric',
-            'tax' => 'required|numeric',
-            'product_category_id' => 'nullable|exists:product_categories,id',
+            'tax' => 'required|numeric'
         ]);
 
         $product = Product::find($id);
@@ -94,9 +96,12 @@ class ProductController extends Controller
             'cost_price' => $request->cost_price,
             'selling_price' => $request->selling_price,
             'stock' => $request->stock,
-            'tax' => $request->tax,
-            'product_category_id' => $request->product_category_id
+            'tax' => $request->tax
         ]);
+
+        if($request->has('product_category_ids')){
+            $product->product_categories()->sync(explode(',',$request->product_category_ids));
+        }
 
         Log::add($request,'change-product','Changed product #'.$id);
 
@@ -110,9 +115,15 @@ class ProductController extends Controller
 
     public function getAllByPlace($place_id,Request $request)
     {
-        $products = Product::where('place_id',$place_id)
-            ->where('product_category_id',$request->product_category_id)
-            ->get();
+        $products = Product::where('place_id',$place_id);
+        if($request->has('product_category_id')){
+            $products = $products->whereHas('product_categories',function($q) use ($request) {
+                return $q->where('product_categories.id',$request->product_category_id);
+            });
+        }else{
+            $products = $products->whereDoesntHave('product_categories');
+        }
+        $products = $products->get();
 
         return response()->json($products);
     }

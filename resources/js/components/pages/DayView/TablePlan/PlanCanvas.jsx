@@ -206,6 +206,7 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
       if (item.type.includes('circ')) table = circTable(key, item)
       if (item.type.includes('land')) table = await landscape(key, item)
       if((item.type.includes('rect') || item.type.includes('circ')) && item.hasOwnProperty('booking_id')){
+        table.on('mousedblclick',onDblclickObject)
         table.on('mouseup', onMoveObject)
       }else{
         table.lockMovementX = true
@@ -233,8 +234,19 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
       }
     })
     if(!isHit) {
-      getPlan()
-      getOrders()
+      setTimeout(function(){
+        getPlan()
+        getOrders()
+      },1000)
+    }
+  }
+
+  const onDblclickObject = (e) => {
+    let object = e.target
+    if (object.selectable) {
+      setSelectedTable(object)
+      setSelectedOrder(orders.find(i => i.id === object.data.booking_id))
+      eventBus.dispatch('openPosPopUp')
     }
   }
 

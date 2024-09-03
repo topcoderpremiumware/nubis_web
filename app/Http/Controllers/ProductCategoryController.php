@@ -20,6 +20,7 @@ class ProductCategoryController extends Controller
             'name' => 'required',
             'place_id' => 'required|exists:places,id',
             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:1024',
+            'parent_id' => 'nullable|exists:product_categories,id',
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
@@ -35,7 +36,8 @@ class ProductCategoryController extends Controller
         $category = ProductCategory::create([
             'name' => $request->name,
             'place_id' => $request->place_id,
-            'image' => $filename
+            'image' => $filename,
+            'parent_id' => $request->parent_id
         ]);
 
         Log::add($request,'create-product_category','Created product category #'.$category->id);
@@ -51,6 +53,7 @@ class ProductCategoryController extends Controller
             'name' => 'required',
             'place_id' => 'required|exists:places,id',
             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:1024',
+            'parent_id' => 'nullable|exists:product_categories,id',
         ]);
 
         $category = ProductCategory::find($id);
@@ -74,7 +77,8 @@ class ProductCategoryController extends Controller
         $res = $category->update([
             'name' => $request->name,
             'place_id' => $request->place_id,
-            'image' => $filename
+            'image' => $filename,
+            'parent_id' => $request->parent_id
         ]);
 
         Log::add($request,'change-product_category','Changed product category #'.$id);
@@ -89,7 +93,15 @@ class ProductCategoryController extends Controller
 
     public function getAllByPlace($place_id, Request $request)
     {
-        $categories = ProductCategory::where('place_id',$place_id)->get();
+        $categories = ProductCategory::where('place_id',$place_id);
+        if($request->has('parent_id')){
+            if($request->parent_id !== 'all'){
+                $categories = $categories->where('parent_id',$request->parent_id);
+            }
+        }else{
+            $categories = $categories->whereNull('parent_id');
+        }
+        $categories = $categories->get();
 
         return response()->json($categories);
     }

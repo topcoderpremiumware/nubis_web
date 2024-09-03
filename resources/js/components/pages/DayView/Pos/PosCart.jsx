@@ -5,28 +5,25 @@ import {
   AccordionDetails,
   AccordionSummary, Button,
   CircularProgress,
-  IconButton, InputAdornment,
+  IconButton, Menu, MenuItem,
   Stack,
   styled,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow, TextField,
 } from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import axios from "axios";
 import eventBus from "../../../../eventBus";
 import Box from "@mui/material/Box";
 import NumberButtons from "../../../components/NumberButtons";
-import RemoveIcon from "@mui/icons-material/Remove";
-import AddIcon from "@mui/icons-material/Add";
 import {simpleCatchError} from "../../../../helper";
-import ProductCategoryPopup from "./ProductCategoryPopup";
 import DiscountPopup from "./DiscountPopup";
 
 export default function PosCart(props){
@@ -35,6 +32,18 @@ export default function PosCart(props){
   const [checks, setChecks] = useState([])
   const [selectedCheckIndex, setSelectedCheckIndex] = useState(null)
   const [discountsOpen, setDiscountsOpen] = useState(false)
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const openMenu = Boolean(menuAnchorEl);
+  const [selectedMenuCheck, setSelectedMenuCheck] = useState(null)
+  const handleMenuClick = (event, check) => {
+    event.stopPropagation()
+    setSelectedMenuCheck(check)
+    setMenuAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = (event) => {
+    event.stopPropagation()
+    setMenuAnchorEl(null);
+  };
 
   const checksRef = useRef(checks);
   const selectedCheckIndexRef = useRef(selectedCheckIndex);
@@ -194,6 +203,29 @@ export default function PosCart(props){
     setSelectedCheckIndex(checks.length)
   }
 
+  const deleteCart = (e,check) => {
+    e.stopPropagation()
+    setSelectedCheckIndex(0)
+    if (window.confirm(t('Are you sure you want to delete this cart?'))) {
+      if(check.hasOwnProperty('id')){
+        axios.delete(`${process.env.MIX_API_URL}/api/checks/${check.id}`, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        }).then(response => {
+          getChecks()
+          eventBus.dispatch("notification", {type: 'success', message: 'Cart deleted successfully'});
+        }).catch(error => {
+          eventBus.dispatch("notification", {type: 'error', message: error.message});
+          console.log('Error', error)
+        })
+      }else{
+        checks.splice(checks.indexOf(check), 1)
+      }
+    }
+    handleMenuClose(event)
+  }
+
   const onChangeDiscount = (e) => {
     let tempChecks = checks
     if(e.target.name === 'discount'){
@@ -236,6 +268,14 @@ export default function PosCart(props){
     })
   }
 
+  const menuItems = () => {
+    let items = [];
+    if(selectedMenuCheck && selectedMenuCheck.status !== 'closed'){
+      items.push(<MenuItem key="1" onClick={(e) => {deleteCart(e,selectedMenuCheck)}}>{t('Delete')}</MenuItem>)
+    }
+    return items
+  }
+
   return (<>
     <Stack spacing={2} mb={2} direction="row" alignItems="center">
       <h5>{t('Shopping cart')}</h5>
@@ -262,6 +302,18 @@ export default function PosCart(props){
                              onChange={onChangeDiscount}
                              value={check.name}
                   /> : <> {check.name}</>}
+                {check.status !== 'closed' && <IconButton
+                  aria-label="more"
+                  id={`menu_button`}
+                  aria-controls={openMenu ? `cart_menu` : undefined}
+                  aria-expanded={openMenu ? 'true' : undefined}
+                  aria-haspopup="true"
+                  onClick={(e) => handleMenuClick(e,check)}
+                  size="small"
+                  sx={{padding: "0 5px",marginLeft: "auto"}}
+                >
+                  <MoreVertIcon fontSize="small" />
+                </IconButton>}
               </Box>
             </AccordionSummary>
             <AccordionDetails sx={{p: 0}}>
@@ -326,5 +378,16 @@ export default function PosCart(props){
       onChange={onChangeDiscount}
       check={checks[selectedCheckIndex]}
       currency={props.currency} />}
+    <Menu
+      id={`cart_menu`}
+      anchorEl={menuAnchorEl}
+      open={openMenu}
+      onClose={handleMenuClose}
+      MenuListProps={{
+        'aria-labelledby': `menu_button`,
+      }}
+    >
+      {menuItems()}
+    </Menu>
   </>);
 }

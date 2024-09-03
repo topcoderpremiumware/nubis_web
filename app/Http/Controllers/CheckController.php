@@ -155,4 +155,18 @@ class CheckController extends Controller
         $dompdf->render();
         $dompdf->stream('check.pdf', array("Attachment" => false,'compress' => false));
     }
+
+    public function delete($id, Request $request)
+    {
+        $check = Check::find($id);
+        if($check->status === 'closed') abort(400, 'This cart is closed');
+
+        if(!Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
+
+        Log::add($request,'delete-check','Deleted check #'.$check->id);
+
+        $check->delete();
+
+        return response()->json(['message' => 'Check is deleted']);
+    }
 }

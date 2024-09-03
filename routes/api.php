@@ -250,6 +250,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('checks',[CheckController::class, 'create']);
     Route::post('checks/{id}',[CheckController::class, 'save']);
     Route::post('checks/{id}/print',[CheckController::class, 'print']);
+    Route::delete('checks/{id}',[CheckController::class, 'delete']);
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);

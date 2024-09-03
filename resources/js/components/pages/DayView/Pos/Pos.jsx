@@ -41,6 +41,7 @@ export default function Pos(props){
     })
     eventBus.on("updateCategories", (categoryId) => {
       getCategories(categoryId)
+      getAllCategories()
     })
     eventBus.on("updateProducts", (categoryId) => {
       getProducts(categoryId)
@@ -135,6 +136,7 @@ export default function Pos(props){
         }
       }).then(response => {
         getCategories()
+        getAllCategories()
         eventBus.dispatch("notification", {type: 'success', message: 'Product category deleted successfully'});
       }).catch(error => {
         eventBus.dispatch("notification", {type: 'error', message: error.message});

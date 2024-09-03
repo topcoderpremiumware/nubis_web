@@ -62,6 +62,8 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
 
   const columns = [
     { field: 'id', headerName: t('Booking id'), width: 100 },
+    { field: 'pos', headerName: t('POS'), width: 100, renderCell: (params) =>
+        <span style={{cursor: "pointer"}} onClick={(e) => openPos(e,params.row)}>{t('POS')}</span>, type: 'actions', },
     { field: 'status', headerName: t('Status'), width: 100 },
     { field: 'from', headerName: t('From'), width: 70 },
     { field: 'to', headerName: t('To'), width: 70 },
@@ -81,6 +83,11 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     { field: 'area_name', headerName: t('Area'), width: 160 },
     { field: 'author_name', headerName: t('Admin'), width: 160 },
   ];
+
+  const openPos = (e, order) => {
+    setSelectedOrder(order)
+    eventBus.dispatch('openPosPopUp')
+  }
 
   const getOrders = () => {
     setLoading(true)

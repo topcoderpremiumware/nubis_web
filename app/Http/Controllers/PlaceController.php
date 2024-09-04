@@ -267,7 +267,7 @@ class PlaceController extends Controller
         foreach ($sms_notification_numbers as $number) {
             if($place->allow_send_sms()){
                 $place->decrease_sms_limit();
-                $result = SMS::send([$number], $customer_name.': '.$request->message, env('APP_SHORT_NAME'));
+                $result = SMS::send([$number], $customer_name.': '.$request->message."\nPhone: ".$request->phone."\nEmail: ".$request->email, env('APP_SHORT_NAME'));
             }
         }
 

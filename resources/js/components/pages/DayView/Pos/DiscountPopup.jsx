@@ -45,7 +45,7 @@ export default function DiscountPopup(props){
             }}
     >
       <DialogTitle sx={{m: 0, p: 2}}>
-        <>Discount</>
+        <>{t('Discount')}</>
         <IconButton onClick={props.onClose} sx={{
           position: 'absolute',
           right: 8,

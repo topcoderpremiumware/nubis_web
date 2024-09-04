@@ -7,12 +7,7 @@ import {
   CircularProgress,
   IconButton, Menu, MenuItem,
   Stack,
-  styled,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow, TextField,
+  TextField,
 } from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -25,6 +20,8 @@ import Box from "@mui/material/Box";
 import NumberButtons from "../../../components/NumberButtons";
 import {simpleCatchError} from "../../../../helper";
 import DiscountPopup from "./DiscountPopup";
+import SplitCheckPopup from "./SplitCheckPopup";
+import CheckTable from "./CheckTable";
 
 export default function PosCart(props){
   const {t} = useTranslation();
@@ -32,6 +29,7 @@ export default function PosCart(props){
   const [checks, setChecks] = useState([])
   const [selectedCheckIndex, setSelectedCheckIndex] = useState(null)
   const [discountsOpen, setDiscountsOpen] = useState(false)
+  const [splitCheckOpen, setSplitCheckOpen] = useState(false)
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const openMenu = Boolean(menuAnchorEl);
   const [selectedMenuCheck, setSelectedMenuCheck] = useState(null)
@@ -47,16 +45,6 @@ export default function PosCart(props){
 
   const checksRef = useRef(checks);
   const selectedCheckIndexRef = useRef(selectedCheckIndex);
-
-  const StyledTableRow = styled(TableRow)(({theme}) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
 
   useEffect( () => {
     function init(){
@@ -251,6 +239,14 @@ export default function PosCart(props){
     setChecks(prev => ([...tempChecks]))
   }
 
+  const onChangeSplitCheck = (oldCheck, newCheck) => {
+    let tempChecks = checks
+    tempChecks[selectedCheckIndex] = oldCheck
+    tempChecks[tempChecks.length] = newCheck
+    setChecks(prev => ([...tempChecks]))
+    setSplitCheckOpen(false)
+  }
+
   const openPDF = () => {
     axios.post(`${process.env.MIX_API_URL}/api/checks/${checks[selectedCheckIndex].id}/print`,{}, {
       responseType: 'blob'
@@ -272,6 +268,9 @@ export default function PosCart(props){
     let items = [];
     if(selectedMenuCheck && selectedMenuCheck.status !== 'closed'){
       items.push(<MenuItem key="1" onClick={(e) => {deleteCart(e,selectedMenuCheck)}}>{t('Delete')}</MenuItem>)
+    }
+    if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
+      items.push(<MenuItem key="2" onClick={(e) => {setSplitCheckOpen(true);handleMenuClose(event)}}>{t('Split')}</MenuItem>)
     }
     return items
   }
@@ -317,40 +316,13 @@ export default function PosCart(props){
               </Box>
             </AccordionSummary>
             <AccordionDetails sx={{p: 0}}>
-              <TableContainer>
-                <Table>
-                  <TableBody>
-                    {check.products.map((product, key) => {
-                      return <StyledTableRow key={key}>
-                        <TableCell size="small"><NumberButtons
-                          value={product.pivot.quantity}
-                          onAdd={e => eventBus.dispatch('addProductToCart',product)}
-                          onRemove={e => eventBus.dispatch('removeProductToCart',product)}/></TableCell>
-                        <TableCell size="small" style={{width: '100%'}}>{product.name}</TableCell>
-                        <TableCell size="small" align="right">{(product.pivot.price*product.pivot.quantity)?.toFixed(2)}</TableCell>
-                      </StyledTableRow>
-                    })}
-                    <StyledTableRow>
-                      <TableCell size="small"></TableCell>
-                      <TableCell size="small">{t('Subtotal')}</TableCell>
-                      <TableCell size="small" align="right">{check.subtotal?.toFixed(2)}</TableCell>
-                    </StyledTableRow>
-                    {check.discount &&
-                    <StyledTableRow>
-                      <TableCell size="small"></TableCell>
-                      <TableCell size="small">{t('Discount')}</TableCell>
-                      <TableCell size="small" align="right">
-                        {parseFloat(check.discount)?.toFixed(2)}{check.discount_type.includes('percent') ? '%' : ''}
-                      </TableCell>
-                    </StyledTableRow>}
-                    <StyledTableRow>
-                      <TableCell size="small"></TableCell>
-                      <TableCell size="small"><b>{t('Total')}</b></TableCell>
-                      <TableCell size="small" align="right"><b>{check.total?.toFixed(2)}</b></TableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <CheckTable
+                check={check}
+                quantityButtons={(product) => <NumberButtons
+                  value={product.pivot.quantity}
+                  onAdd={e => eventBus.dispatch('addProductToCart',product)}
+                  onRemove={e => eventBus.dispatch('removeProductToCart',product)}/>}
+              />
             </AccordionDetails>
           </Accordion>
         })}
@@ -371,13 +343,20 @@ export default function PosCart(props){
         </Box>
       }
     </Box>}
-    {(checks.length > 0 && checks[selectedCheckIndex]) &&
-    <DiscountPopup
-      open={discountsOpen}
-      onClose={() => setDiscountsOpen(false)}
-      onChange={onChangeDiscount}
-      check={checks[selectedCheckIndex]}
-      currency={props.currency} />}
+    {(checks.length > 0 && checks[selectedCheckIndex]) && <>
+      <DiscountPopup
+        open={discountsOpen}
+        onClose={() => setDiscountsOpen(false)}
+        onChange={onChangeDiscount}
+        check={checks[selectedCheckIndex]}
+        currency={props.currency} />
+      <SplitCheckPopup
+        open={splitCheckOpen}
+        onClose={() => setSplitCheckOpen(false)}
+        onChange={onChangeSplitCheck}
+        check={checks[selectedCheckIndex]}
+        calcCheckTotal={calcCheckTotal} />
+    </>}
     <Menu
       id={`cart_menu`}
       anchorEl={menuAnchorEl}

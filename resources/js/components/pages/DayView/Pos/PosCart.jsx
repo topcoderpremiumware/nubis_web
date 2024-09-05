@@ -22,6 +22,7 @@ import {simpleCatchError} from "../../../../helper";
 import DiscountPopup from "./DiscountPopup";
 import SplitCheckPopup from "./SplitCheckPopup";
 import CheckTable from "./CheckTable";
+import ChangeTablePopup from "./ChangeTablePopup";
 
 export default function PosCart(props){
   const {t} = useTranslation();
@@ -30,6 +31,7 @@ export default function PosCart(props){
   const [selectedCheckIndex, setSelectedCheckIndex] = useState(null)
   const [discountsOpen, setDiscountsOpen] = useState(false)
   const [splitCheckOpen, setSplitCheckOpen] = useState(false)
+  const [changeTableOpen, setChangeTableOpen] = useState(false)
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const openMenu = Boolean(menuAnchorEl);
   const [selectedMenuCheck, setSelectedMenuCheck] = useState(null)
@@ -149,7 +151,11 @@ export default function PosCart(props){
 
   const getChecks = () => {
     setLoading(true)
-    axios.get(`${process.env.MIX_API_URL}/api/orders/${props.orderId}/checks`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/orders/${props.orderId}/checks`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
       setChecks(prev => ([...response.data]))
       if(response.data.length > 0) setSelectedCheckIndex(0)
       setLoading(false)
@@ -157,19 +163,19 @@ export default function PosCart(props){
     })
   }
 
-  const saveCheck = () => {
+  const saveCheck = async () => {
     let check = checks[selectedCheckIndex]
     let url = `${process.env.MIX_API_URL}/api/checks`
-    if(check.hasOwnProperty('id')){
+    if (check.hasOwnProperty('id')) {
       url = `${process.env.MIX_API_URL}/api/checks/${check.id}`
     }
 
-    axios.post(url, check,{
+    await axios.post(url, check, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      if(!check.hasOwnProperty('id')){
+      if (!check.hasOwnProperty('id')) {
         let tempChecks = checks
         tempChecks[selectedCheckIndex].id = response.data.id
         setChecks(prev => ([...tempChecks]))
@@ -247,6 +253,17 @@ export default function PosCart(props){
     setSplitCheckOpen(false)
   }
 
+  const onChangeTable = async (orderId) => {
+    let tempChecks = checks
+    tempChecks[selectedCheckIndex].order_id = orderId
+    setChecks(prev => ([...tempChecks]))
+    setChangeTableOpen(false)
+    await saveCheck()
+    tempChecks.splice(selectedCheckIndex, 1)
+    setSelectedCheckIndex(null)
+    setChecks(prev => ([...tempChecks]))
+  }
+
   const openPDF = () => {
     axios.post(`${process.env.MIX_API_URL}/api/checks/${checks[selectedCheckIndex].id}/print`,{}, {
       responseType: 'blob'
@@ -271,6 +288,9 @@ export default function PosCart(props){
     }
     if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
       items.push(<MenuItem key="2" onClick={(e) => {setSplitCheckOpen(true);handleMenuClose(event)}}>{t('Split')}</MenuItem>)
+    }
+    if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
+      items.push(<MenuItem key="3" onClick={(e) => {setChangeTableOpen(true);handleMenuClose(event)}}>{t('Change table')}</MenuItem>)
     }
     return items
   }
@@ -327,9 +347,9 @@ export default function PosCart(props){
           </Accordion>
         })}
           <Stack spacing={2} sx={{mt: 2}} direction="row">
-            <Button variant="contained" type="button" disabled={checks[selectedCheckIndex].status === 'closed'} onClick={e => setDiscountsOpen(true)}>{t('Discounts')}</Button>
-            <Button variant="contained" type="button" disabled={loading} onClick={saveCheck}>{t('Save')}</Button>
-            <Button variant="contained" type="button" disabled={!checks[selectedCheckIndex].hasOwnProperty('id')} onClick={openPDF}>{t('Print')}</Button>
+            <Button variant="contained" type="button" disabled={!checks.hasOwnProperty(selectedCheckIndex) || checks[selectedCheckIndex].status === 'closed'} onClick={e => setDiscountsOpen(true)}>{t('Discounts')}</Button>
+            <Button variant="contained" type="button" disabled={!checks.hasOwnProperty(selectedCheckIndex) || loading} onClick={saveCheck}>{t('Save')}</Button>
+            <Button variant="contained" type="button" disabled={!checks.hasOwnProperty(selectedCheckIndex) || !checks[selectedCheckIndex].hasOwnProperty('id')} onClick={openPDF}>{t('Print')}</Button>
           </Stack>
         </>
         :
@@ -356,6 +376,11 @@ export default function PosCart(props){
         onChange={onChangeSplitCheck}
         check={checks[selectedCheckIndex]}
         calcCheckTotal={calcCheckTotal} />
+      <ChangeTablePopup
+        open={changeTableOpen}
+        onClose={() => setChangeTableOpen(false)}
+        onChange={onChangeTable}
+        check={checks[selectedCheckIndex]} />
     </>}
     <Menu
       id={`cart_menu`}

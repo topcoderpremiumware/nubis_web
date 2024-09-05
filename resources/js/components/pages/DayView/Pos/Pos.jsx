@@ -73,7 +73,11 @@ export default function Pos(props){
 
   const getAllCategories = async () => {
     setLoading(true)
-    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/product_categories?parent_id=all`).then(response => {
+    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/product_categories?parent_id=all`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
       setAllCategories(prev => ([...response.data]))
       setLoading(false)
     }).catch(error => {
@@ -82,7 +86,11 @@ export default function Pos(props){
 
   const getCategories = async (category_id = false) => {
     setLoadingCategories(true)
-    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/product_categories${categoryParam('parent_id',category_id)}`).then(response => {
+    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/product_categories${categoryParam('parent_id',category_id)}`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
       setCategories(prev => ([...response.data]))
       setLoadingCategories(false)
     }).catch(error => {
@@ -91,7 +99,11 @@ export default function Pos(props){
 
   const getProducts = async (category_id = false) => {
     setLoadingProducts(true)
-    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/products${categoryParam('product_category_id',category_id)}`).then(response => {
+    await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/products${categoryParam('product_category_id',category_id)}`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
       setProducts(prev => ([...response.data]))
       setLoadingProducts(false)
     }).catch(error => {

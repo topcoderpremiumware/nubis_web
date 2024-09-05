@@ -22,6 +22,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\Log as SysLog;
@@ -1535,5 +1536,23 @@ class OrderController extends Controller
         }
 
         return response()->json(['message' => 'Order switched successfully']);
+    }
+
+    public function neighbors($id,Request $request): JsonResponse
+    {
+        $order = Order::find($id);
+        $endTime = Carbon::parse($order->reservation_time)->addMinutes($order->length)->format('Y-m-d H:i:s');
+
+        $orders = Order::where('place_id',$order->place_id)
+            ->where(function($q) use ($order, $endTime) {
+                $q->whereBetween('reservation_time',[$order->reservation_time,$endTime])
+                    ->orWhereBetween(DB::raw("DATE_ADD(reservation_time, INTERVAL length MINUTE)"), [$order->reservation_time, $endTime]);
+            })
+            ->where('is_take_away',0)
+            ->whereIn('status',['confirmed','arrived','pending'])
+            ->where('id', '!=', $order->id)
+            ->get();
+
+        return response()->json($orders);
     }
 }

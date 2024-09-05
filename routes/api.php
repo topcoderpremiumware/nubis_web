@@ -166,6 +166,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('orders/{id}/restore',[OrderController::class, 'restore']);
     Route::post('orders/{id}/status',[OrderController::class, 'setStatus']);
     Route::post('orders_switch_tables',[OrderController::class, 'switchTables']);
+    Route::get('orders/{id}/neighbors',[OrderController::class, 'neighbors']);
 
     Route::post('dishes',[DishController::class, 'create']);
     Route::get('dishes/{id}',[DishController::class, 'getId']);

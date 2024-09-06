@@ -34,7 +34,13 @@ export default function ProductCategoryPopup(props){
         setItem(prev => ({...props.item,product_category_ids: product_category_ids}))
       }
     }else{
-      setItem(props.item)
+      setType(props.item.type)
+      if(props.item.type === 'product'){
+        let product_category_ids = props.item.product_categories.map(el => el.id)
+        setItem(prev => ({...props.item,product_category_ids: product_category_ids}))
+      }else{
+        setItem(props.item)
+      }
     }
   }, [props])
 

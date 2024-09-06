@@ -21,6 +21,7 @@ use Illuminate\Support\Collection;
  * @property string $name
  * @property string discount_name
  * @property float $subtotal
+ * @property string $payment_method // cash, card
  *
  * @property Place $place
  * @property Order $order

@@ -187,6 +187,7 @@ Route::middleware('auth:user_api')->group(function(){
 
     Route::get('giftcards/{id}',[GiftcardController::class, 'getId']);
     Route::post('giftcards/{id}',[GiftcardController::class, 'save']);
+    Route::delete('giftcards/{id}',[GiftcardController::class, 'delete']);
     Route::get('giftcards',[GiftcardController::class, 'getAllByPlace']);
     Route::post('giftcards_admin',[GiftcardController::class, 'createAdmin']);
 
@@ -238,14 +239,16 @@ Route::middleware('auth:user_api')->group(function(){
     Route::delete('giftcard_menus/{id}',[GiftcardMenuController::class, 'delete']);
 
     Route::post('product_categories',[ProductCategoryController::class, 'create']);
-    Route::post('product_categories/{id}',[ProductCategoryController::class, 'save']);
-    Route::delete('product_categories/{id}',[ProductCategoryController::class, 'delete']);
+    Route::post('product_categories/{id}',[ProductCategoryController::class, 'save'])->where('id', '[0-9]+');
+    Route::delete('product_categories/{id}',[ProductCategoryController::class, 'delete'])->where('id', '[0-9]+');
     Route::get('places/{place_id}/product_categories',[ProductCategoryController::class, 'getAllByPlace']);
+    Route::post('product_categories/set_position',[ProductCategoryController::class, 'setPosition']);
 
     Route::post('products',[ProductController::class, 'create']);
     Route::post('products/{id}',[ProductController::class, 'save']);
     Route::delete('products/{id}',[ProductController::class, 'delete']);
     Route::get('places/{place_id}/products',[ProductController::class, 'getAllByPlace']);
+    Route::post('product_categories/{id}/products/set_position',[ProductController::class, 'setPosition']);
 
     Route::get('orders/{order_id}/checks',[CheckController::class, 'getAllByOrder']);
     Route::post('checks',[CheckController::class, 'create']);

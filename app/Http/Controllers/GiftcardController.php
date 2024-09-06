@@ -303,8 +303,11 @@ class GiftcardController extends Controller
         }
 
         $giftcards = Giftcard::where('place_id',$request->place_id)
-            ->with('giftcard_menu')
-            ->orderBy('created_at','DESC')
+            ->with('giftcard_menu');
+        if($request->has('deleted')){
+            $giftcards = $giftcards->withTrashed();
+        }
+        $giftcards = $giftcards->orderBy('created_at','DESC')
             ->get();
 
         return response()->json($giftcards);
@@ -393,5 +396,28 @@ class GiftcardController extends Controller
         $dompdf->setPaper('A4');
         $dompdf->render();
         $dompdf->stream('giftcard.pdf', array("Attachment" => false,'compress' => false));
+    }
+
+    public function delete($id, Request $request)
+    {
+        if(!Auth::user()->tokenCan('admin')) return response()->json([
+            'message' => 'Unauthorized.'
+        ], 401);
+
+        $giftcard = Giftcard::find($id);
+        $giftcard->delete_comment = $request->delete_comment;
+        $giftcard->save();
+
+        if(!Auth::user()->places->contains($giftcard->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        Log::add($request,'delete-giftcard','Deleted giftcard #'.$giftcard->id);
+
+        $giftcard->delete();
+
+        return response()->json(['message' => 'Giftcard is deleted']);
     }
 }

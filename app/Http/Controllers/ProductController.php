@@ -25,7 +25,6 @@ class ProductController extends Controller
             'selling_price' => 'required|numeric',
             'stock' => 'required|numeric',
             'tax' => 'required|numeric'
-
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
@@ -49,7 +48,17 @@ class ProductController extends Controller
         ]);
 
         if($request->has('product_category_ids')){
-            $product->product_categories()->sync(explode(',',$request->product_category_ids));
+            $categoryIds = explode(',', $request->product_category_ids);
+
+            $syncData = [];
+            foreach ($categoryIds as $categoryId) {
+                $productCategory = ProductCategory::find($categoryId);
+                if ($productCategory) {
+                    $productCount = $productCategory->products->count() - 1;
+                    $syncData[$categoryId] = ['position' => $productCount];
+                }
+            }
+            $product->product_categories()->sync($syncData);
         }
 
         Log::add($request,'create-product','Created product #'.$product->id);
@@ -117,9 +126,13 @@ class ProductController extends Controller
     {
         $products = Product::where('place_id',$place_id);
         if($request->has('product_category_id')){
-            $products = $products->whereHas('product_categories',function($q) use ($request) {
-                return $q->where('product_categories.id',$request->product_category_id);
-            });
+//            $products = $products->whereHas('product_categories',function($q) use ($request) {
+//                return $q->where('product_categories.id',$request->product_category_id);
+//            });
+            $products = $products->join('product_product_category', 'products.id', '=', 'product_product_category.product_id')
+                ->where('product_product_category.product_category_id', $request->product_category_id)
+                ->orderBy('product_product_category.position','asc')
+                ->select('products.*');
         }else{
             $products = $products->whereDoesntHave('product_categories');
         }
@@ -139,5 +152,22 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json(['message' => 'Product is deleted']);
+    }
+
+    public function setPosition($id, Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'required|exists:products,id',
+        ]);
+
+        $category = ProductCategory::find($id);
+        $syncData = [];
+        foreach ($request->ids as $index => $product_id) {
+            $syncData[$product_id] = ['position' => $index];
+        }
+        $category->products()->sync($syncData);
+
+        return response()->json(['message' => 'Product position saved']);
     }
 }

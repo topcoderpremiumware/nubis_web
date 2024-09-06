@@ -40,6 +40,9 @@ class ProductCategoryController extends Controller
             'parent_id' => $request->parent_id
         ]);
 
+        $category->position = $category->parent->children->count() - 1;
+        $category->save();
+
         Log::add($request,'create-product_category','Created product category #'.$category->id);
 
         return response()->json($category);
@@ -93,7 +96,8 @@ class ProductCategoryController extends Controller
 
     public function getAllByPlace($place_id, Request $request)
     {
-        $categories = ProductCategory::where('place_id',$place_id);
+        $categories = ProductCategory::where('place_id',$place_id)
+            ->orderBy('position','asc');
         if($request->has('parent_id')){
             if($request->parent_id !== 'all'){
                 $categories = $categories->where('parent_id',$request->parent_id);
@@ -121,5 +125,19 @@ class ProductCategoryController extends Controller
         $category->delete();
 
         return response()->json(['message' => 'Product category is deleted']);
+    }
+
+    public function setPosition(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'required|exists:product_categories,id',
+        ]);
+
+        foreach ($request->ids as $index => $id) {
+            ProductCategory::where('id',$id)->update(['position' => $index]);
+        }
+
+        return response()->json(['message' => 'Category position saved']);
     }
 }

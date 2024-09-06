@@ -2,16 +2,18 @@ import './Pos.scss'
 import {useTranslation} from "react-i18next";
 import {CircularProgress, Dialog, DialogContent, DialogTitle, Grid, IconButton, Stack} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FileCopyIcon from '@mui/icons-material/FileCopy';
 import axios from "axios";
 import eventBus from "../../../../eventBus";
 import ProductCategoryPopup from "./ProductCategoryPopup";
 import PosCart from "./PosCart";
 import Box from "@mui/material/Box";
+import {simpleCatchError} from "../../../../helper";
 
 export default function Pos(props){
   const {t} = useTranslation();
@@ -26,6 +28,9 @@ export default function Pos(props){
   const [loadingCategories, setLoadingCategories] = useState(false)
   const [productCategoryOpen, setProductCategoryOpen] = useState(false)
   const [editItem, setEditItem] = useState({})
+
+  const dragItem = useRef(null)
+  const draggedOverItem = useRef(null)
 
   useEffect( () => {
     function init(){
@@ -174,6 +179,47 @@ export default function Pos(props){
     }
   }
 
+  const copyProduct = (e,product) => {
+    e.stopPropagation()
+    setProductCategoryOpen(true)
+    let copy = {...product, image_url: null,type: 'product'}
+    delete copy.id
+    setEditItem(copy)
+  }
+
+  const handleSortCategories = (e) => {
+    let tempCategories = categories
+    const [element] = tempCategories.splice(dragItem.current, 1);
+    tempCategories.splice(draggedOverItem.current, 0, element);
+    setCategories(prev => ([...tempCategories]))
+
+    axios.post(`${process.env.MIX_API_URL}/api/product_categories/set_position`, {ids: tempCategories.map(el => el.id)}, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Category position saved successfully'});
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+  }
+  const handleSortProducts = (e) => {
+    let tempProducts = products
+    const [element] = tempProducts.splice(dragItem.current, 1);
+    tempProducts.splice(draggedOverItem.current, 0, element);
+    setProducts(prev => ([...tempProducts]))
+
+    axios.post(`${process.env.MIX_API_URL}/api/product_categories/${selectedCategory.id}/products/set_position`, {ids: tempProducts.map(el => el.id)}, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Product position saved successfully'});
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+  }
+
   return (<>
     <Dialog className="pos_products" onClose={props.onClose} open={props.open} fullWidth maxWidth="xl"
             scroll="paper"
@@ -221,10 +267,16 @@ export default function Pos(props){
                   <div className="products_grid_wrapper">
                     {loadingCategories ? <div><CircularProgress/></div> : <>
                     {[{id: null, name: t('Back')}, ...categories].map((category,key) => {
-                      if(selectedCategory || category.id) return <div className="products_item" key={key}
-                                  onClick={(e) => categoryClick(category)}>
-                        {editMode && <IconButton className="delete_button" onClick={e => {deleteCategory(e,category)}}><DeleteIcon/></IconButton>}
-                        <div className="title" style={{"--product-image": `url('${category.image_url}')`}}>
+                      if(selectedCategory || category.id)
+                        return <div className="products_item" key={key}
+                                    draggable={editMode && category.id != null}
+                                    onDragStart={() => dragItem.current = key - 1}
+                                    onDragEnter={() => draggedOverItem.current = key - 1}
+                                    onDragEnd={handleSortCategories}
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onClick={(e) => categoryClick(category)}>
+                          {editMode && <IconButton className="delete_button" onClick={e => {deleteCategory(e,category)}}><DeleteIcon/></IconButton>}
+                          <div className="title" style={{"--product-image": `url('${category.image_url}')`}}>
                           {category.name}
                         </div>
                       </div>
@@ -234,10 +286,18 @@ export default function Pos(props){
                     {loadingProducts ? <div><CircularProgress/></div> : <>
                     {products.map((product,key) => {
                       return <div className="products_item" key={key}
+                                  draggable={editMode && !!selectedCategory}
+                                  onDragStart={() => dragItem.current = key}
+                                  onDragEnter={() => draggedOverItem.current = key}
+                                  onDragEnd={handleSortProducts}
+                                  onDragOver={(e) => e.preventDefault()}
                                   onClick={(e) => productClick(product)}>
                         {(editMode && product.id) &&
                           <IconButton className="delete_button"
                                       onClick={e => {deleteProduct(e,product)}}><DeleteIcon/></IconButton>}
+                        {(editMode && product.id) &&
+                          <IconButton className="copy_button"
+                                      onClick={e => {copyProduct(e,product)}}><FileCopyIcon/></IconButton>}
                         <div className="title" style={{"--product-image": `url('${product.image_url}')`}}>
                           {product.name}
                         </div>

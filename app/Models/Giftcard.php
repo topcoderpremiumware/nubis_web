@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -32,6 +33,8 @@ use Illuminate\Support\Facades\Storage;
  * @property string $greetings
  * @property bool $qty_together
  * @property integer $quantity
+ * @property Carbon $deleted_at
+ * @property string $delete_comment
  *
  * @property Place $place
  * @property Country $country
@@ -42,7 +45,7 @@ use Illuminate\Support\Facades\Storage;
  */
 class Giftcard extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 

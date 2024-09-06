@@ -85,6 +85,9 @@ export default function DayViewContent() {
     eventBus.on("loadedOrders",(data) => {
       setOrders(data)
     })
+    eventBus.on("changedSelectedOrder",(order) => {
+      setSelectedOrder(order)
+    })
     function handleOpenPosPopUp (){
       setPosOpen(true)
     }

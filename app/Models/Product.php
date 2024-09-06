@@ -46,7 +46,8 @@ class Product extends Model
 
     public function product_categories(): BelongsToMany
     {
-        return $this->belongsToMany(ProductCategory::class);
+        return $this->belongsToMany(ProductCategory::class)
+            ->withPivot('position');
     }
 
     public function checks(): BelongsToMany

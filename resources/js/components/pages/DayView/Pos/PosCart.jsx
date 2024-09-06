@@ -23,6 +23,7 @@ import DiscountPopup from "./DiscountPopup";
 import SplitCheckPopup from "./SplitCheckPopup";
 import CheckTable from "./CheckTable";
 import ChangeTablePopup from "./ChangeTablePopup";
+import ChangeOrder from "./ChangeOrder";
 
 export default function PosCart(props){
   const {t} = useTranslation();
@@ -298,6 +299,7 @@ export default function PosCart(props){
   return (<>
     <Stack spacing={2} mb={2} direction="row" alignItems="center">
       <h5>{t('Shopping cart')}</h5>
+      <ChangeOrder orderId={props.orderId} />
       <span style={{marginLeft: 'auto'}}></span>
       <IconButton onClick={e => {addCart()}}>
         <AddShoppingCartIcon/>

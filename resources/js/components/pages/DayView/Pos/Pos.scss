@@ -28,6 +28,14 @@
   top: 0;
   right: 0;
   z-index: 2;
+  color: #6f6f72;
+}
+.products_item .copy_button{
+  position: absolute;
+  top: 0;
+  right: 40px;
+  z-index: 2;
+  color: #6f6f72;
 }
 .products_item .title{
   display: flex;

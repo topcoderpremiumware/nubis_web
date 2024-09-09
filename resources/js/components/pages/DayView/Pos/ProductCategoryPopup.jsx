@@ -147,7 +147,7 @@ export default function ProductCategoryPopup(props){
                          onChange={(e) => setItem(prev => ({...prev, stock:e.target.value}))}
                          value={item?.stock}
               />
-              <TextField label={t('Tax')} size="small" fullWidth sx={{mb: 2}}
+              <TextField label={t('VAT')} size="small" fullWidth sx={{mb: 2}}
                          type="text" id="tax" name="tax" required
                          onChange={(e) => setItem(prev => ({...prev, tax:e.target.value}))}
                          value={item?.tax}

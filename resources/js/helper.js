@@ -57,7 +57,6 @@ export function isIPad() {
 }
 
 export const simpleCatchError = (error) => {
-  console.log('error',error.response.data.message)
   if (error.response && error.response.data && error.response.data.errors) {
     for (const [key, value] of Object.entries(error.response.data.errors)) {
       eventBus.dispatch("notification", {type: 'error', message: value});

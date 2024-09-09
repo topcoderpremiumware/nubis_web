@@ -215,5 +215,8 @@
     "Time": "Time",
     "Seats": "Seats",
     "Tables": "Tables",
-    "Cashier": "Cashier"
+    "Cashier": "Cashier",
+    "Received": "Received",
+    "on card": "on card",
+    "in cash": "in cash"
 }

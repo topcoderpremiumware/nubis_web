@@ -22,7 +22,17 @@
         $place = $check->place;
         $order = $check->order;
         $currency = $place->setting('online-payment-currency');
-        $vat = (float)$check->total - ((float)$check->total / 1.25);
+        $vat = 0;
+        foreach ($check->products as $product) {
+            $p_total = (float)$product->pivot->price * (float)$product->pivot->quantity;
+            if(str_contains($check->discount_type,'percent')){
+                $p_discount = $p_total * $check->discount / 100;
+            }else{
+                $p_discount = $p_total * $check->discount / $check->subtotal;
+            }
+            $p_total = $p_total - $p_discount;
+            $vat += $p_total - $p_total / (1 + $product->tax / 100);
+        }
     @endphp
     <div style="text-align: center">{{$place->name}}</div>
     @if($place->address)<div style="text-align: center">{{$place->address}}</div>@endif
@@ -53,5 +63,14 @@
     <div>{{__('VAT',[],$place->language)}} 25% <span style="float: right">{{number_format($vat,2)}} {{$currency}}</span></div>
     <div style="float:none;clear:both;"></div>
     <div>{{__('Total',[],$place->language)}} <span style="float: right;font-weight:bold;font-size: 16pt">{{number_format($check->total,2)}} {{$currency}}</span></div>
+    <div style="float:none;clear:both;"></div>
+    <hr>
+    <div>{{__('Received',[],$place->language)}}
+        @if($check->payment_method === 'card')
+            {{__('on card',[],$place->language)}}
+        @else
+            {{__('in cash',[],$place->language)}}
+        @endif
+        <span style="float: right;">{{number_format($check->total,2)}} {{$currency}}</span></div>
     <div style="float:none;clear:both;"></div>
 </body>

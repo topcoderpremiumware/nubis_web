@@ -24,6 +24,7 @@ import SplitCheckPopup from "./SplitCheckPopup";
 import CheckTable from "./CheckTable";
 import ChangeTablePopup from "./ChangeTablePopup";
 import ChangeOrder from "./ChangeOrder";
+import PaymentMethodPopup from "./PaymentMethodPopup";
 
 export default function PosCart(props){
   const {t} = useTranslation();
@@ -33,6 +34,7 @@ export default function PosCart(props){
   const [discountsOpen, setDiscountsOpen] = useState(false)
   const [splitCheckOpen, setSplitCheckOpen] = useState(false)
   const [changeTableOpen, setChangeTableOpen] = useState(false)
+  const [paymentMethodOpen, setPaymentMethodOpen] = useState(false)
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const openMenu = Boolean(menuAnchorEl);
   const [selectedMenuCheck, setSelectedMenuCheck] = useState(null)
@@ -164,13 +166,13 @@ export default function PosCart(props){
     })
   }
 
-  const saveCheck = async () => {
-    let check = checks[selectedCheckIndex]
+  const saveCheck = async (check = false) => {
+    if(!check) check = checks[selectedCheckIndex]
     let url = `${process.env.MIX_API_URL}/api/checks`
     if (check.hasOwnProperty('id')) {
       url = `${process.env.MIX_API_URL}/api/checks/${check.id}`
     }
-
+console.log('save check',check)
     await axios.post(url, check, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -265,6 +267,19 @@ export default function PosCart(props){
     setChecks(prev => ([...tempChecks]))
   }
 
+  const onChangePaymentMethod = async (paymentMethod) => {
+    let tempChecks = checks
+    if (tempChecks[selectedCheckIndex].status === 'closed') {
+      openPDF()
+    } else {
+      tempChecks[selectedCheckIndex].payment_method = paymentMethod
+      setChecks(prev => ([...tempChecks]))
+      setPaymentMethodOpen(false)
+      await saveCheck(tempChecks[selectedCheckIndex])
+      openPDF()
+    }
+  }
+
   const openPDF = () => {
     axios.post(`${process.env.MIX_API_URL}/api/checks/${checks[selectedCheckIndex].id}/print`,{}, {
       responseType: 'blob'
@@ -350,8 +365,10 @@ export default function PosCart(props){
         })}
           <Stack spacing={2} sx={{mt: 2}} direction="row">
             <Button variant="contained" type="button" disabled={!checks.hasOwnProperty(selectedCheckIndex) || checks[selectedCheckIndex].status === 'closed'} onClick={e => setDiscountsOpen(true)}>{t('Discounts')}</Button>
-            <Button variant="contained" type="button" disabled={!checks.hasOwnProperty(selectedCheckIndex) || loading} onClick={saveCheck}>{t('Save')}</Button>
-            <Button variant="contained" type="button" disabled={!checks.hasOwnProperty(selectedCheckIndex) || !checks[selectedCheckIndex].hasOwnProperty('id')} onClick={openPDF}>{t('Print')}</Button>
+            <Button variant="contained" type="button" disabled={!checks.hasOwnProperty(selectedCheckIndex) || loading} onClick={() => saveCheck()}>{t('Save')}</Button>
+            <Button variant="contained" type="button"
+                    disabled={!checks.hasOwnProperty(selectedCheckIndex) || !checks[selectedCheckIndex].hasOwnProperty('id')}
+                    onClick={e => checks[selectedCheckIndex].status === 'closed' ? openPDF() : setPaymentMethodOpen(true)}>{t('Print')}</Button>
           </Stack>
         </>
         :
@@ -383,6 +400,10 @@ export default function PosCart(props){
         onClose={() => setChangeTableOpen(false)}
         onChange={onChangeTable}
         check={checks[selectedCheckIndex]} />
+      <PaymentMethodPopup
+        open={paymentMethodOpen}
+        onClose={() => setPaymentMethodOpen(false)}
+        onChange={onChangePaymentMethod} />
     </>}
     <Menu
       id={`cart_menu`}

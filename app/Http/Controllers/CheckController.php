@@ -37,7 +37,8 @@ class CheckController extends Controller
             'discount' => $request->discount,
             'discount_name' => $request->discount_name,
             'discount_type' => $request->discount_type,
-            'discount_code' => $request->discount_code
+            'discount_code' => $request->discount_code,
+            'payment_method' => $request->payment_method
         ]);
 
         if($request->has('products')){
@@ -82,7 +83,8 @@ class CheckController extends Controller
             'discount' => $request->discount,
             'discount_name' => $request->discount_name,
             'discount_type' => $request->discount_type,
-            'discount_code' => $request->discount_code
+            'discount_code' => $request->discount_code,
+            'payment_method' => $request->payment_method
         ]);
 
         if($request->has('products')){

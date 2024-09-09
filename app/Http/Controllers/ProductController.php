@@ -133,6 +133,8 @@ class ProductController extends Controller
                 ->where('product_product_category.product_category_id', $request->product_category_id)
                 ->orderBy('product_product_category.position','asc')
                 ->select('products.*');
+        }elseif($request->has('search')) {
+            $products = $products->where('name','like','%'.$request->search.'%');
         }else{
             $products = $products->whereDoesntHave('product_categories');
         }

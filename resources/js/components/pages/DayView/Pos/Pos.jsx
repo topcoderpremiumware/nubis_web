@@ -1,6 +1,6 @@
 import './Pos.scss'
 import {useTranslation} from "react-i18next";
-import {CircularProgress, Dialog, DialogContent, DialogTitle, Grid, IconButton, Stack} from "@mui/material";
+import {CircularProgress, Dialog, DialogContent, DialogTitle, Grid, IconButton, Stack, TextField} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React, {useEffect, useRef, useState} from "react";
 import EditIcon from "@mui/icons-material/Edit";
@@ -28,6 +28,7 @@ export default function Pos(props){
   const [loadingCategories, setLoadingCategories] = useState(false)
   const [productCategoryOpen, setProductCategoryOpen] = useState(false)
   const [editItem, setEditItem] = useState({})
+  const [search, setSearch] = useState('')
 
   const dragItem = useRef(null)
   const draggedOverItem = useRef(null)
@@ -220,6 +221,26 @@ export default function Pos(props){
     })
   }
 
+  const onSearch = (e) => {
+    setSearch(e.target.value)
+    // setSelectedCategory(false)
+    if(e.target.value.length > 2){
+      setLoadingProducts(true)
+      axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/products?search=${e.target.value}`,{
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        setProducts(prev => ([...response.data]))
+        setLoadingProducts(false)
+      }).catch(error => {
+      })
+    }
+    if(e.target.value.length === 0){
+      getProducts()
+    }
+  }
+
   return (<>
     <Dialog className="pos_products" onClose={props.onClose} open={props.open} fullWidth maxWidth="xl"
             scroll="paper"
@@ -245,6 +266,11 @@ export default function Pos(props){
           <Grid item xs={12} sm={6} md={7} lg={8}>
             <Stack spacing={2} mb={2} direction="row" alignItems="center">
               <h5>{t('Products')}</h5>
+              <TextField label={t('Search')} size="small"
+                         type="text" fullWidth
+                         onChange={onSearch}
+                         value={search}
+              />
               <span style={{marginLeft: 'auto'}}></span>
               {['admin'].includes(window.role) && <>{editMode ?
                 <>
@@ -264,7 +290,7 @@ export default function Pos(props){
             <Box style={{height: 'calc(100svh - 155px)',overflowY: 'auto'}}>
               {loading ? <div><CircularProgress/></div> :
                 <>
-                  <div className="products_grid_wrapper">
+                {search.length === 0 && <div className="products_grid_wrapper">
                     {loadingCategories ? <div><CircularProgress/></div> : <>
                     {[{id: null, name: t('Back')}, ...categories].map((category,key) => {
                       if(selectedCategory || category.id)
@@ -281,7 +307,7 @@ export default function Pos(props){
                         </div>
                       </div>
                     })}</>}
-                  </div>
+                  </div>}
                   <div className="products_grid_wrapper">
                     {loadingProducts ? <div><CircularProgress/></div> : <>
                     {products.map((product,key) => {

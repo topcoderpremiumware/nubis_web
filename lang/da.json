@@ -215,5 +215,8 @@
     "Time": "Tid",
     "Seats": "Personer",
     "Tables": "Borde",
-    "Cashier": "Kasserer"
+    "Cashier": "Kasserer",
+    "Received": "Modtaget",
+    "on card": "på kort",
+    "in cash": "kontant"
 }

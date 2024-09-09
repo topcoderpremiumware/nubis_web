@@ -7,17 +7,11 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  Grid,
-  IconButton, InputAdornment, InputLabel, MenuItem, Select,
-  TextField
+  IconButton, InputLabel, MenuItem, Select
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React, {useEffect, useState} from "react";
-import eventBus from "../../../../eventBus";
-import PictureUploadButtonPreview from "../../../components/PictureUploadButtonPreview";
 import axios from "axios";
-import Moment from "moment/moment";
-import {simpleCatchError} from "../../../../helper";
 
 export default function ChangeTablePopup(props){
   const {t} = useTranslation();

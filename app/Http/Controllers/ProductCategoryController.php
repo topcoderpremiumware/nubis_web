@@ -96,7 +96,7 @@ class ProductCategoryController extends Controller
 
     public function getAllByPlace($place_id, Request $request)
     {
-        $categories = ProductCategory::where('place_id',$place_id)
+        $categories = ProductCategory::where('place_id',$place_id)->with('parent')
             ->orderBy('position','asc');
         if($request->has('parent_id')){
             if($request->parent_id !== 'all'){

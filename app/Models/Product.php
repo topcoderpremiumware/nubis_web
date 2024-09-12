@@ -33,7 +33,7 @@ class Product extends Model
 
     protected $guarded = [];
 
-    protected $with = ['product_categories'];
+//    protected $with = ['product_categories'];
 
     protected $appends = [
         'image_url'

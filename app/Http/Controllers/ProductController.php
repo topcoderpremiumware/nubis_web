@@ -122,9 +122,9 @@ class ProductController extends Controller
         }
     }
 
-    public function getAllByPlace($place_id,Request $request)
+    public function     getAllByPlace($place_id,Request $request)
     {
-        $products = Product::where('place_id',$place_id);
+        $products = Product::where('place_id',$place_id)->with('product_categories');
         if($request->has('product_category_id')){
 //            $products = $products->whereHas('product_categories',function($q) use ($request) {
 //                return $q->where('product_categories.id',$request->product_category_id);

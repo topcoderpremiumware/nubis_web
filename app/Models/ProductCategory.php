@@ -33,7 +33,7 @@ class ProductCategory extends Model
 
     protected $guarded = [];
 
-    protected $with = ['parent'];
+//    protected $with = ['parent'];
 
     protected $appends = [
         'image_url'

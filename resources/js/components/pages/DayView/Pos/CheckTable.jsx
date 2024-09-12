@@ -5,19 +5,10 @@ import {
   Table, TableBody, TableCell, TableContainer, TableRow,
 } from "@mui/material";
 import React from "react";
+import {StyledTableRow} from "../../../components/StyledTableRow";
 
 export default function CheckTable(props){
   const {t} = useTranslation();
-
-  const StyledTableRow = styled(TableRow)(({theme}) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
 
   return (
     <TableContainer>

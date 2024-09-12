@@ -20,7 +20,7 @@ class ProductCategoryController extends Controller
             'name' => 'required',
             'place_id' => 'required|exists:places,id',
             'file' => 'nullable|file|mimes:jpg,jpeg,png|max:1024',
-            'parent_id' => 'nullable|exists:product_categories,id',
+//            'parent_id' => 'nullable|exists:product_categories,id',
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
@@ -40,8 +40,10 @@ class ProductCategoryController extends Controller
             'parent_id' => $request->parent_id
         ]);
 
-        $category->position = $category->parent->children->count() - 1;
-        $category->save();
+        if($category->parent_id){
+            $category->position = $category->parent->children->count() - 1;
+            $category->save();
+        }
 
         Log::add($request,'create-product_category','Created product category #'.$category->id);
 

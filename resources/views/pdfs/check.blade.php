@@ -25,12 +25,15 @@
         $vat = 0;
         foreach ($check->products as $product) {
             $p_total = (float)$product->pivot->price * (float)$product->pivot->quantity;
-            if(str_contains($check->discount_type,'percent')){
-                $p_discount = $p_total * $check->discount / 100;
-            }else{
-                $p_discount = $p_total * $check->discount / $check->subtotal;
+            if($check->discount){
+                if(str_contains($check->discount_type,'percent')){
+                    $p_discount = $p_total * $check->discount / 100;
+                }else{
+                    $p_discount = $p_total * $check->discount / $check->subtotal;
+                }
+                $p_total = $p_total - $p_discount;
             }
-            $p_total = $p_total - $p_discount;
+
             $vat += $p_total - $p_total / (1 + $product->tax / 100);
         }
     @endphp

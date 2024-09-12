@@ -1,115 +1,154 @@
 import {useTranslation} from "react-i18next";
-import {useSearchParams} from "react-router-dom";
-import {useEffect, useState} from "react";
-import eventBus from "../../../eventBus";
-import moment from "moment/moment";
-import {IconButton} from "@mui/material";
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import {simpleCatchError} from "../../../helper";
-import {DataGrid} from "@mui/x-data-grid";
+import {useParams} from "react-router-dom";
+import {datetimeFormat, simpleCatchError} from "../../../helper";
+import React, { useEffect, useState } from 'react'
+import {
+  Button, Container,
+  IconButton,
+  Stack, styled,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
+} from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import axios from "axios";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {StyledTableRow} from "../../components/StyledTableRow";
+import Box from "@mui/material/Box";
 
-const Receipts = () => {
+const Receipt = () => {
   const { t } = useTranslation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [receipts, setReceipts] = useState([])
-  const [totalRows, setTotalRows] = useState(0)
+  let { id } = useParams();
+  const [receipt, setReceipt] = useState({})
   const [loading, setLoading] = useState(true)
-  const [paginationModel, setPaginationModel] = React.useState({
-    page: parseInt(searchParams.get('page')) || 0,
-    pageSize: parseInt(searchParams.get('per_page')) || 20,
-  });
-  const [filterModel, setFilterModel] = React.useState({items: (searchParams.get('filter_field') && searchParams.get('filter_field') !== 'null') ? [{
-      columnField: searchParams.get('filter_field'),
-      value: searchParams.get('filter_value')
-    }] : [],logicOperator: "and",
-    quickFilterLogicOperator: "and", quickFilterValues: []});
-  const [sortModel, setSortModel] = React.useState((searchParams.get('sort_field') && searchParams.get('sort_field') !== 'null') ? [{
-    field: searchParams.get('sort_field'),
-    sort: searchParams.get('sort_value')
-  }] : []);
+  const [paymentMethod, setPaymentMethod] = useState({})
 
   useEffect(() => {
-    getReceipts()
-    eventBus.on("placeChanged", () => {
-      getReceipts()
-    })
+    getReceipt()
+    getPaymentMethod()
   }, [])
 
-  useEffect(() => {
-    getReceipts()
-  }, [paginationModel,sortModel,filterModel])
-
-  const onFilterChange = React.useCallback((filter) => {
-    setFilterModel(filter)
-  }, []);
-
-  const onSortChange = React.useCallback((sort) => {
-    setSortModel(sort)
-  }, []);
-
-  const columns = () => {
-    let cols = []
-    cols.push({ field: 'id', headerName: t('ID'), flex: 1, minWidth: 80 })
-    cols.push({ field: 'payment_method', headerName: t('Payment method'), flex: 1, minWidth: 80 })
-    cols.push({field: 'printed_at', headerName: t('Given'), flex: 1, minWidth: 100, renderCell: (params) => moment.utc(params.value).local().format('DD-MM-YYYY HH:mm')})
-    cols.push({field: 'total', headerName: t('Total'), flex: 1, minWidth: 100, })
-    cols.push({ field: 'actions', headerName: t('Actions'), width: 80, filterable: false, sortable: false, renderCell: (params) =>
-        <span>
-          <IconButton onClick={e => { window.open(`/admin/Receipts/${params.row.id}`, '_blank') }} size="small">
-            <ReceiptIcon fontSize="small"/>
-          </IconButton>
-        </span>, })
-    return cols
-  }
-
-  const getReceipts = async () => {
+  const getReceipt = async () => {
     setLoading(true)
-    let params = {
-      page: paginationModel.page + 1,
-      per_page: paginationModel.pageSize,
-      filter_field: filterModel.hasOwnProperty('items') && filterModel.items.length > 0 ? filterModel.items[0].columnField : null,
-      filter_value: filterModel.hasOwnProperty('items') && filterModel.items.length > 0 ? filterModel.items[0].value : null,
-      sort_field: sortModel.length > 0 ? sortModel[0].field : null,
-      sort_value: sortModel.length > 0 ? sortModel[0].sort : null,
-      place_id: localStorage.getItem('place_id')
-    }
-    await axios.get(`${process.env.MIX_API_URL}/api/receipts`, {
-      params: params,
+    await axios.get(`${process.env.MIX_API_URL}/api/receipts/${id}`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setSearchParams({...params,page:params.page-1})
-      setTotalRows(response.data.total)
-      setReceipts(response.data.data)
+      setReceipt(response.data)
       setLoading(false)
     }).catch(error => {
       simpleCatchError(error)
     })
   }
 
-  return (
-    <DataGrid
-      paginationMode="server"
-      filterMode="server"
-      sortingMode="server"
-      rowCount={totalRows}
-      loading={loading}
-      rowsPerPageOptions={[paginationModel.pageSize]}
-      pagination
-      page={paginationModel.page}
-      pageSize={paginationModel.pageSize}
-      onPageChange={(newPage) => setPaginationModel(prev => ({...prev,page: newPage}))}
-      onPageSizeChange={(newPageSize) => setPaginationModel(prev => ({...prev,pageSize: newPageSize}))}
-      filterModel={filterModel}
-      onFilterModelChange={onFilterChange}
-      sortModel={sortModel}
-      onSortModelChange={onSortChange}
-      // onPreferencePanelClose={() => {getReceipts()}}
-      rows={receipts}
-      columns={columns()}
-    />
-  )
+  const openPDF = () => {
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${receipt.id}/print`,{}, {
+      responseType: 'blob'
+    }).then(response => {
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, '_blank');
+      URL.revokeObjectURL(pdfUrl);
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+  }
+
+  const getPaymentMethod = async () => {
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`)
+    setPaymentMethod(res.data)
+  }
+
+  const getVat = () => {
+    let vat = 0
+    receipt.products.forEach((item) => {
+      let pTotal = item.pivot.price * item.pivot.quantity
+
+      if(receipt.discount){
+        let pDiscount = 0
+        if(receipt.discount_type.includes('percent')) {
+          pDiscount = pTotal * receipt.discount / 100
+        }else{
+          pDiscount = pTotal * receipt.discount / receipt.subtotal
+        }
+        pTotal = pTotal - pDiscount
+      }
+
+      vat += pTotal - pTotal / (1 + item.tax / 100);
+    })
+    return vat.toFixed(2)
+  }
+
+  return (<>
+    {loading ? <CircularProgress/> :
+    <div className='pages__container'>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Receipt')} #{receipt.id}</h2>
+        <Button style={{marginLeft:'auto'}}
+                variant="contained"
+                type="button"
+                onClick={() => openPDF()}
+        >{t('Print receipt')}</Button>
+      </Stack>
+      <div>{datetimeFormat(receipt.printed_at)}</div>
+      <Container maxWidth="md" disableGutters={true}>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell size="small"><b>{t('Item')}</b></TableCell>
+                <TableCell size="small" align="right" width="100"><b>{t('Quantity')}</b></TableCell>
+                <TableCell size="small" align="right" width="120"><b>{t('Total')}</b></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {receipt.products.map((item, key) => {
+                return <StyledTableRow key={key}>
+                  <TableCell size="small">{item.name}</TableCell>
+                  <TableCell size="small" align="right">{item.pivot.quantity}</TableCell>
+                  <TableCell size="small" align="right">{paymentMethod['online-payment-currency']} {(item.pivot.quantity * item.pivot.price).toFixed(2)}</TableCell>
+                </StyledTableRow>
+              })}
+              <StyledTableRow>
+                <TableCell size="small" align="right" colSpan="3"><b>{t('Subtotal')}</b>: {paymentMethod['online-payment-currency']} {receipt.subtotal.toFixed(2)}</TableCell>
+              </StyledTableRow>
+              {receipt.discount && <StyledTableRow>
+                <TableCell size="small" align="right" colSpan="3">
+                  <b>{t('Discount')}</b>: {receipt.discount_type.includes('percent') ? '' : paymentMethod['online-payment-currency']}
+                  {receipt.discount.toFixed(2)} {receipt.discount_type.includes('percent') ? '%' : ''}
+                </TableCell>
+              </StyledTableRow>}
+              <StyledTableRow>
+                <TableCell size="small" align="right" colSpan="3"><b>{t('VAT')}</b>: {paymentMethod['online-payment-currency']} {getVat()}</TableCell>
+              </StyledTableRow>
+              <StyledTableRow>
+                <TableCell size="small" align="right" colSpan="3"><b>{t('Total')}</b>: {paymentMethod['online-payment-currency']} {receipt.total.toFixed(2)}</TableCell>
+              </StyledTableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box sx={{mt:3}}><h5>{t('Payment information')}</h5></Box>
+        <TableContainer>
+          <Table>
+            <TableBody>
+              <StyledTableRow>
+                <TableCell size="small"><b>{t('Payment')}</b>: {receipt.payment_method}</TableCell>
+                <TableCell size="small"><b>{t('Total')}</b>: {paymentMethod['online-payment-currency']} {receipt.total.toFixed(2)}</TableCell>
+              </StyledTableRow>
+              <StyledTableRow>
+                <TableCell size="small"><b>{t('Cashier')}</b>: {receipt.printed.name}</TableCell>
+              </StyledTableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
+    </div>}
+  </>)
 }
 
-export default Receipts
+export default Receipt

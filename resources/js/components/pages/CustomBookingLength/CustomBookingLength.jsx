@@ -18,6 +18,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CustomBookingLengthEditPopup from "./CustomBookingLengthEditPopup"
 import Moment from "moment";
 import { useNavigate } from "react-router-dom";
+import {StyledTableRow} from "../../components/StyledTableRow";
 
 export default function CustomBookingLength() {
   const {t} = useTranslation();
@@ -28,16 +29,6 @@ export default function CustomBookingLength() {
   const [editPopupOpened, setEditPopupOpened] = useState(false)
   const [selectedLength, setSelectedLength] = useState({})
   const [loading, setLoading] = useState(true)
-
-  const StyledTableRow = styled(TableRow)(({theme}) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
 
   useEffect(async () => {
     await getAreas()

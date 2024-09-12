@@ -25,6 +25,7 @@ import {
   TableRow,
   TextField
 } from "@mui/material";
+import {StyledTableRow} from "../../components/StyledTableRow";
 
 export default function TablePropertiesPopup(props) {
   const { t } = useTranslation();
@@ -34,16 +35,6 @@ export default function TablePropertiesPopup(props) {
   const [copy, setCopy] = useState(true)
   const [focusOn, setFocusOn] = useState('')
   const [editRow, setEditRow] = useState(0)
-
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
 
   useEffect(() => {
     setNumbers(props.numbers)

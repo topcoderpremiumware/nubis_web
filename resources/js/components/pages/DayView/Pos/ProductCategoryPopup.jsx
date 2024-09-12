@@ -61,11 +61,10 @@ export default function ProductCategoryPopup(props){
       formData.append('selling_price', item.selling_price)
       formData.append('stock', item.stock)
       formData.append('tax', item.tax)
-      formData.append('parent_id', item.parent_id)
       if(item.hasOwnProperty('product_category_ids')) formData.append('product_category_ids', item.product_category_ids)
     }
     if(type === 'category'){
-      formData.append('parent_id', item.parent_id)
+      if(item.hasOwnProperty('parent_id') && item.parent_id) formData.append('parent_id', item.parent_id)
     }
 
     let url = `${process.env.MIX_API_URL}/api/product${type === 'category' ? '_categorie' : ''}s${item.hasOwnProperty('id') ? `/${item.id}` : ''}`
@@ -76,9 +75,9 @@ export default function ProductCategoryPopup(props){
       }
     }).then(response => {
       if(type === 'category'){
-        eventBus.dispatch("updateCategories",props.currentCategory.id)
+        eventBus.dispatch("updateCategories",props.currentCategory?.id)
       }else{
-        eventBus.dispatch("updateProducts",props.currentCategory.id)
+        eventBus.dispatch("updateProducts",props.currentCategory?.id)
       }
       props.onClose()
     }).catch(error => {
@@ -170,9 +169,9 @@ export default function ProductCategoryPopup(props){
             {type === 'category' &&
             <FormControl size="small" fullWidth sx={{mb: 2}}>
               <InputLabel id="label_parent_id">{t('Category')}</InputLabel>
-              <Select label={t('Category')} value={item?.parent_id || null}
+              <Select label={t('Category')} value={item?.parent_id}
                       labelId="label_parent_id" id="parent_id" name="parent_id"
-                      onChange={(e) => setItem(prev => ({...prev, parent_id:e.target.value}))}>
+                      onChange={(e) => setItem(prev => ({...prev, parent_id: e.target.value}))}>
                 {[{id:null,name:t('Uncategorized')},...props.categories].map((el,key) => {
                   return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
                 })}

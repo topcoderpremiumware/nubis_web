@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
 import {
   CircularProgress,
-  IconButton
+  IconButton,
+  Stack,
 } from "@mui/material";
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import Moment from "moment";
@@ -71,7 +72,9 @@ export default function BillingReport() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Billing Report')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Billing Report')}</h2>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           {loading ? <div><CircularProgress/></div> : <div style={{ height: 'calc(100vh - 120px)', width: '100%' }}>

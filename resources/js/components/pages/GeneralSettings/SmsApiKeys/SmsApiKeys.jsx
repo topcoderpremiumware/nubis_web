@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, TextField } from '@mui/material';
+import { Button, Stack,TextField } from '@mui/material';
 import eventBus from "../../../../eventBus";
 
 const SmsApiKeys = () => {
@@ -104,7 +104,9 @@ const SmsApiKeys = () => {
 
   return (
     <div className='pages__container'>
-      <h2>{t('SMS Keys')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('SMS Keys')}</h2>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           <div className="mt-3">

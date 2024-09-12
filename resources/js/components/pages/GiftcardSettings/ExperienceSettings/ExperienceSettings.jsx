@@ -16,6 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import ExperienceEditPopup from "./ExperienceEditPopup";
+import {StyledTableRow} from "../../../components/StyledTableRow";
 
 export default function ExperienceSettings() {
   const {t} = useTranslation();
@@ -25,16 +26,6 @@ export default function ExperienceSettings() {
   const [editPopupOpened, setEditPopupOpened] = useState(false)
   const [selectedMenu, setSelectedMenu] = useState({})
   const [loading, setLoading] = useState(true)
-
-  const StyledTableRow = styled(TableRow)(({theme}) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
 
   useEffect(async () => {
     getMenus()

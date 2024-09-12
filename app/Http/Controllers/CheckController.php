@@ -120,8 +120,12 @@ class CheckController extends Controller
     public function print($id, Request $request)
     {
         $check = Check::find($id);
-        $check->status = 'closed';
-        $check->save();
+        if($check->status === 'open'){
+            $check->status = 'closed';
+            $check->printed_at = now()->format('Y-m-d H:i:s');
+            $check->printed_id = Auth::id();
+            $check->save();
+        }
 
         $html = view('pdfs.check', compact('check'))->render();
         $options = new Options();
@@ -170,5 +174,41 @@ class CheckController extends Controller
         $check->delete();
 
         return response()->json(['message' => 'Check is deleted']);
+    }
+
+    public function getAllReceipts(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+
+        $per_page = $request->has('per_page') ? $request->per_page : 10;
+
+        $checks = Check::where('place_id',$request->place_id)
+            ->where('status','closed')->with('order');
+        if($request->has('filter_field')) {
+            $checks = $checks->where($request->filter_field, 'like', $request->filter_value . '%');
+        }
+
+        if($request->has('sort_field')){
+            $checks = $checks->orderBy($request->sort_field, $request->sort_value);
+        }else{
+            $checks = $checks->orderBy('id', 'desc');
+        }
+
+        $checks = $checks->paginate($per_page)->setPath('/');
+
+        return response()->json($checks);
+    }
+
+    public function getReceipt($id, Request $request)
+    {
+        $check = Check::where('id',$id)->with(['products','order','printed'])->first();
+
+        if(!Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
+
+        return response()->json($check);
     }
 }

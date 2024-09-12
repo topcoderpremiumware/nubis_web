@@ -136,7 +136,9 @@ const ManageGiftCards = () => {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Manage Gift Cards')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Manage Gift Cards')}</h2>
+      </Stack>
       {loading ?
         <div><CircularProgress /></div> :
         <div style={{ width: '100%', height: 'calc(100vh - 300px)' }}>

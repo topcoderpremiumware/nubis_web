@@ -1,96 +1,50 @@
 import {useTranslation} from "react-i18next";
-import {useSearchParams} from "react-router-dom";
 import eventBus from "../../../eventBus";
-import moment from "moment/moment";
-import {IconButton, Stack} from "@mui/material";
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import {datetimeFormat, simpleCatchError} from "../../../helper";
-import {DataGrid} from "@mui/x-data-grid";
+import {Card, CardContent, FormControl, Grid, InputLabel, Stack} from "@mui/material";
+import {simpleCatchError} from "../../../helper";
 import React, { useEffect, useState } from 'react'
 import axios from "axios";
+import Moment from "moment/moment";
+import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css';
+import { LineChart } from '@mui/x-charts/LineChart';
 
-const Receipts = () => {
+const Report = () => {
   const { t } = useTranslation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [receipts, setReceipts] = useState([])
-  const [totalRows, setTotalRows] = useState(0)
+  const [from, setFrom] = useState(Moment().add(-1,'days').format('YYYY-MM-DD'))
+  const [to, setTo] = useState(Moment().format('YYYY-MM-DD'))
+  const [income, setIncome] = useState([])
+  const [total, setTotal] = useState(0)
+  const [number, setNumber] = useState(0)
+  const [numberReturned, setNumberReturned] = useState(0)
   const [loading, setLoading] = useState(true)
   const [paymentMethod, setPaymentMethod] = useState({})
-  const [paginationModel, setPaginationModel] = React.useState({
-    page: parseInt(searchParams.get('page')) || 0,
-    pageSize: parseInt(searchParams.get('per_page')) || 20,
-  });
-  const [filterModel, setFilterModel] = React.useState({items: (searchParams.get('filter_field') && searchParams.get('filter_field') !== 'null') ? [{
-      columnField: searchParams.get('filter_field'),
-      value: searchParams.get('filter_value')
-    }] : [],logicOperator: "and",
-    quickFilterLogicOperator: "and", quickFilterValues: []});
-  const [sortModel, setSortModel] = React.useState((searchParams.get('sort_field') && searchParams.get('sort_field') !== 'null') ? [{
-    field: searchParams.get('sort_field'),
-    sort: searchParams.get('sort_value')
-  }] : []);
 
   useEffect(() => {
-    getReceipts()
+    getReport()
     getPaymentMethod()
     eventBus.on("placeChanged", () => {
-      getReceipts()
+      getReport()
       getPaymentMethod()
     })
   }, [])
 
-  useEffect(() => {
-    getReceipts()
-  }, [paginationModel,sortModel,filterModel])
-
-  const onFilterChange = React.useCallback((filter) => {
-    setFilterModel(filter)
-  }, []);
-
-  const onSortChange = React.useCallback((sort) => {
-    setSortModel(sort)
-  }, []);
-
-  const columns = () => {
-    let cols = []
-    cols.push({ field: 'id', headerName: t('ID'), flex: 1, minWidth: 80 })
-    cols.push({ field: 'payment_method', headerName: t('Payment method'), flex: 1, minWidth: 80 })
-    cols.push({field: 'printed_at', headerName: t('Given'), flex: 1, minWidth: 140, renderCell: (params) => datetimeFormat(params.value)})
-    cols.push({ field: 'description', headerName: t('Description'), flex: 2, minWidth: 250 })
-    cols.push({field: 'total', headerName: t('Total'), flex: 1, minWidth: 100, type: 'number', renderCell: (params) => <>{paymentMethod['online-payment-currency']} {params.value.toFixed(2)}</>})
-    cols.push({ field: 'actions', headerName: t('Actions'), width: 80, filterable: false, sortable: false, renderCell: (params) =>
-        <span>
-          <IconButton onClick={e => { window.open(`/admin/Receipts/${params.row.id}`, '_blank') }} size="small">
-            <ReceiptIcon fontSize="small"/>
-          </IconButton>
-        </span>, })
-    return cols
-  }
-
-  const getReceipts = async () => {
+  const getReport = () => {
     setLoading(true)
-    let params = {
-      page: paginationModel.page + 1,
-      per_page: paginationModel.pageSize,
-      filter_field: filterModel.hasOwnProperty('items') && filterModel.items.length > 0 ? filterModel.items[0].columnField : null,
-      filter_value: filterModel.hasOwnProperty('items') && filterModel.items.length > 0 ? filterModel.items[0].value : null,
-      sort_field: sortModel.length > 0 ? sortModel[0].field : null,
-      sort_value: sortModel.length > 0 ? sortModel[0].sort : null
-    }
-    await axios.get(`${process.env.MIX_API_URL}/api/receipts`, {
+    axios.get(`${process.env.MIX_API_URL}/api/receipts_report`, {
       params: {
-        ...params,
+        from: from,
+        to: to,
         place_id: localStorage.getItem('place_id')
       },
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setSearchParams({...params,page:params.page-1})
-      setTotalRows(response.data.total)
-      setReceipts(response.data.data.map(i => {
-        return {...i,description: `${t('Booking id')}: #${i.order_id}, ${t('seats')}: ${i.order.seats}, ${t('tables')}: ${i.order.table_ids.join(', ')}`}
-      }))
+      setIncome(response.data.income)
+      setTotal(response.data.total)
+      setNumber(response.data.number)
+      setNumberReturned(response.data.number_returned)
       setLoading(false)
     }).catch(error => {
       simpleCatchError(error)
@@ -105,32 +59,69 @@ const Receipts = () => {
   return (
     <div className='pages__container'>
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
-        <h2>{t('Receipts')}</h2>
+        <h2>{t('Sales details')}</h2>
       </Stack>
-      <div style={{ width: '100%', height: 'calc(100vh - 300px)' }}>
-        <DataGrid
-          paginationMode="server"
-          filterMode="server"
-          sortingMode="server"
-          rowCount={totalRows}
-          loading={loading}
-          rowsPerPageOptions={[paginationModel.pageSize]}
-          pagination
-          page={paginationModel.page}
-          pageSize={paginationModel.pageSize}
-          onPageChange={(newPage) => setPaginationModel(prev => ({...prev,page: newPage}))}
-          onPageSizeChange={(newPageSize) => setPaginationModel(prev => ({...prev,pageSize: newPageSize}))}
-          filterModel={filterModel}
-          onFilterModelChange={onFilterChange}
-          sortModel={sortModel}
-          onSortModelChange={onSortChange}
-          // onPreferencePanelClose={() => {getReceipts()}}
-          rows={receipts}
-          columns={columns()}
-        />
-      </div>
+      <Grid container spacing={2} sx={{pb: 2}}>
+        <Grid item xs={12} sm={4}>
+          <FormControl size="small" fullWidth className="datePickerFullWidth">
+            <InputLabel htmlFor="from" shrink>{t('From')}</InputLabel>
+            <DatePicker
+              dateFormat='yyyy-MM-dd'
+              selected={new Date(from)} id="from"
+              onSelect={e => {setFrom(Moment.utc(e).format('YYYY-MM-DD'))}}
+              onChange={e => {setFrom(Moment.utc(e).format('YYYY-MM-DD'))}}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <FormControl size="small" fullWidth className="datePickerFullWidth">
+            <InputLabel htmlFor="to" shrink>{t('To')}</InputLabel>
+            <DatePicker
+              dateFormat='yyyy-MM-dd'
+              selected={new Date(to)} id="to"
+              onSelect={e => {setTo(Moment.utc(e).format('YYYY-MM-DD'))}}
+              onChange={e => {setTo(Moment.utc(e).format('YYYY-MM-DD'))}}
+            />
+          </FormControl>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} sx={{pb: 2}}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              hello
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              hello
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              hello
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              hello
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+      <LineChart
+        dataset={income}
+        xAxis={[{ dataKey: 'date'}]}
+        series={[{ dataKey: 'value'}]}
+      />
     </div>
   )
 }
 
-export default Receipts
+export default Report

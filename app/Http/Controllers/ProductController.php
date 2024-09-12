@@ -54,7 +54,11 @@ class ProductController extends Controller
             foreach ($categoryIds as $categoryId) {
                 $productCategory = ProductCategory::find($categoryId);
                 if ($productCategory) {
-                    $productCount = $productCategory->products->count() - 1;
+                    if($productCategory->products->count() > 1){
+                        $productCount = $productCategory->products->count() - 1;
+                    }else{
+                        $productCount = 0;
+                    }
                     $syncData[$categoryId] = ['position' => $productCount];
                 }
             }

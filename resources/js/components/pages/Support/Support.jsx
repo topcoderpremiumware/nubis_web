@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material'
+import { Button, Stack,TextField } from '@mui/material'
 import React from 'react'
 import { useState } from 'react'
 import {useTranslation} from "react-i18next";
@@ -31,7 +31,9 @@ const Support = () => {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Support')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Support')}</h2>
+      </Stack>
       <form onSubmit={onSubmit}>
         <div className="mt-3 mb-3">
           <TextField label={t('Subject')} size="small" fullWidth

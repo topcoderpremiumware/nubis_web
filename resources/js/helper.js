@@ -1,4 +1,5 @@
 import eventBus from "./eventBus";
+import moment from "moment";
 
 export const normalizeNumber = (number) => (number < 10 ? `0${number}` : number);
 
@@ -95,4 +96,9 @@ export const getBase64FromFile = (file) => {
     reader.onload = () => resolve(reader.result);
     reader.onerror = reject;
   })
+}
+
+export const datetimeFormat = (string) => {
+  if(!string) return ''
+  return moment.utc(string).local().format('DD-MM-YYYY HH:mm')
 }

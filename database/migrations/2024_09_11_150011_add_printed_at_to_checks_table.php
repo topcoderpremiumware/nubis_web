@@ -14,7 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('checks', function (Blueprint $table) {
-            $table->string('payment_method')->nullable()->index();
+            $table->dateTime('printed_at')->nullable()->index();
+            $table->unsignedBigInteger('printed_id')->nullable();
+            $table->foreign('printed_id')->references('id')->on('users');
         });
     }
 
@@ -26,7 +28,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('checks', function (Blueprint $table) {
-            $table->dropColumn(['payment_method']);
+            $table->dropForeign(['printed_id']);
+            $table->dropColumn(['printed_id','printed_at']);
         });
     }
 };

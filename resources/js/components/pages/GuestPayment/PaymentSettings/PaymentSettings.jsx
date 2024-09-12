@@ -1,4 +1,4 @@
-import { Alert, Button, Collapse, FormControlLabel, FormGroup, IconButton, MenuItem, Select, Switch, TextField } from '@mui/material'
+import { Alert, Button, Collapse, FormControlLabel, FormGroup, IconButton, MenuItem, Select, Switch, Stack, TextField } from '@mui/material'
 import React, {useEffect} from 'react'
 import { useState } from 'react'
 import eventBus from "../../../../eventBus";
@@ -266,8 +266,9 @@ const PaymentSettings = () => {
           {t('Please, enter stripe settings in Payment gateway')}
         </Alert>
       </Collapse>
-
-      <h2>{t('Payment Settings')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Payment Settings')}</h2>
+      </Stack>
       <FormGroup>
         <FormControlLabel
           control={

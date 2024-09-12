@@ -42,6 +42,9 @@ const Forgot = React.lazy(() => import('./pages/Forgot/Forgot'))
 const PasswordReset = React.lazy(() => import('./pages/PasswordReset/PasswordReset'))
 const GeneralSettings = React.lazy(() => import('./pages/GiftcardSettings/GeneralSettings/GeneralSettings'))
 const ExperienceSettings = React.lazy(() => import('./pages/GiftcardSettings/ExperienceSettings/ExperienceSettings'))
+const Receipts = React.lazy(() => import('./pages/Receipts/Receipts'))
+const Receipt = React.lazy(() => import('./pages/Receipts/Receipt'))
+const POSReport = React.lazy(() => import('./pages/Receipts/Report'))
 
 import eventBus from '../eventBus';
 
@@ -172,6 +175,16 @@ function App() {
                 </Suspense>}/>
                 <Route path='/BookingLinkGuide' exact element={<Suspense fallback={<LoadingPage/>}>
                   <BookingLinkGuide/>
+                </Suspense>}/>
+
+                <Route path='/Receipts' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Receipts/>
+                </Suspense>}/>
+                <Route path='/Receipts/:id' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <Receipt/>
+                </Suspense>}/>
+                <Route path='/POSReport' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <POSReport/>
                 </Suspense>}/>
 
                 <Route path='/pricing' exact element={<Suspense fallback={<LoadingPage/>}>

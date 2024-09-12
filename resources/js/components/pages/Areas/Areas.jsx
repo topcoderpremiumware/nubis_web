@@ -17,6 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AreaEditPopup from "./AreaEditPopup"
 import { useNavigate } from "react-router-dom";
+import {StyledTableRow} from "../../components/StyledTableRow";
 
 export default function Areas() {
   const {t} = useTranslation();
@@ -26,16 +27,6 @@ export default function Areas() {
   const [editPopupOpened, setEditPopupOpened] = useState(false)
   const [selectedArea, setSelectedArea] = useState({})
   const [loading, setLoading] = useState(true)
-
-  const StyledTableRow = styled(TableRow)(({theme}) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
 
   useEffect( () => {
     getAreas()

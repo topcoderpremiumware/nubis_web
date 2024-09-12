@@ -5,7 +5,7 @@ import {useParams} from "react-router-dom";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import eventBus from "../../../eventBus";
-import {Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField} from "@mui/material";
+import {Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField,Stack} from "@mui/material";
 import { useRef } from "react";
 
 const options = [
@@ -181,7 +181,9 @@ export default function EmailTemplate() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Email Templates')} - {t(pageTitle)}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Email Templates')} - {t(pageTitle)}</h2>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           <div className="col-lg-6 mt-3">

@@ -18,6 +18,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import TimetableEditPopup from "./TimetableEditPopup"
 import Moment from "moment";
 import { useNavigate } from "react-router-dom";
+import {StyledTableRow} from "../../components/StyledTableRow";
 
 export default function OpeningTimes() {
   const {t} = useTranslation();
@@ -29,16 +30,6 @@ export default function OpeningTimes() {
   const [editPopupOpened, setEditPopupOpened] = useState(false)
   const [selectedTimetable, setSelectedTimetable] = useState({})
   const [loading, setLoading] = useState(true)
-
-  const StyledTableRow = styled(TableRow)(({theme}) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
 
   useEffect(async () => {
     await getAreas()

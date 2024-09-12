@@ -15,6 +15,7 @@ import eventBus from "../../../eventBus";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VideoGuideEditPopup from "./VideoGuideEditPopup";
+import {StyledTableRow} from "../../components/StyledTableRow";
 
 const VideoGuideSettings = () => {
   const { t } = useTranslation();
@@ -24,16 +25,6 @@ const VideoGuideSettings = () => {
   const [editPopupOpened, setEditPopupOpened] = useState(false)
   const [selectedGuide, setSelectedGuide] = useState({})
   const [loading, setLoading] = useState(true)
-
-  const StyledTableRow = styled(TableRow)(({theme}) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
 
   useEffect(() => {
       getGuides()
@@ -103,7 +94,9 @@ const VideoGuideSettings = () => {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Video Guide Settings')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Video Guide Settings')}</h2>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           <div className="col-lg-3 col-md-6 mt-3">

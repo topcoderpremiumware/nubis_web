@@ -22,10 +22,13 @@ use Illuminate\Support\Collection;
  * @property string discount_name
  * @property float $subtotal
  * @property string $payment_method // cash, card
+ * @property Carbon $printed_at
+ * @property integer $printed_id
  *
  * @property Place $place
  * @property Order $order
  * @property Collection<Product> $products
+ * @property User $printed
  */
 class Check extends Model
 {
@@ -47,5 +50,10 @@ class Check extends Model
     {
         return $this->belongsToMany(Product::class)
             ->withPivot('price', 'quantity');
+    }
+
+    public function printed()
+    {
+        return $this->belongsTo(User::class, 'printed_id');
     }
 }

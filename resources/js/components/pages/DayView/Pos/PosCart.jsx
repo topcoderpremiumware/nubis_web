@@ -88,10 +88,10 @@ export default function PosCart(props){
             }
           }
         }
-        let totals = calcCheckTotal(tempChecks[selectedCheckIndexRef.current])
-        tempChecks[selectedCheckIndexRef.current].total = totals['total']
-        tempChecks[selectedCheckIndexRef.current].subtotal = totals['subtotal']
       }
+      let totals = calcCheckTotal(tempChecks[selectedCheckIndexRef.current])
+      tempChecks[selectedCheckIndexRef.current].total = totals['total']
+      tempChecks[selectedCheckIndexRef.current].subtotal = totals['subtotal']
       setChecks(prev => ([...tempChecks]))
     }
     function handleRemoveProductToCart(product){

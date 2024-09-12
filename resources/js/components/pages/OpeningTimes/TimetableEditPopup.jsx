@@ -18,6 +18,7 @@ import {
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import EditIcon from "@mui/icons-material/Edit";
+import {StyledTableRow} from "../../components/StyledTableRow";
 
 export default function TimetableEditPopup(props) {
   const { t } = useTranslation();
@@ -51,16 +52,6 @@ export default function TimetableEditPopup(props) {
     {title: `14 ${t('days')}`, value: 60*24*14},
     {title: `21 ${t('days')}`, value: 60*24*21},
   ]
-
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
 
   useEffect(() => {
     if(props.timetable.hasOwnProperty('start_date')){

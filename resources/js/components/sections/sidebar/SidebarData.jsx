@@ -1,6 +1,5 @@
 import React from 'react';
-import { KeyboardArrowDown, KeyboardArrowUp }from '@mui/icons-material';
-import { FeaturedPlayListOutlined, SettingsOutlined, CalendarMonthOutlined, EmailOutlined, Redeem} from '@mui/icons-material';
+import { FeaturedPlayListOutlined, SettingsOutlined, CalendarMonthOutlined, EmailOutlined, Redeem, PointOfSale} from '@mui/icons-material';
 import { TiMessages} from 'react-icons/ti';
 import { BsCreditCard } from 'react-icons/bs';
 import { MdOutlineContactSupport } from "react-icons/md";
@@ -10,8 +9,6 @@ export const SidebarData = (data) => { return [
     title: 'Restaurant Setup',
     path: '#',
     icon: <SettingsOutlined />,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
     show: ['admin','manager'].includes(data.role),
     subNav: [
       {
@@ -54,9 +51,6 @@ export const SidebarData = (data) => { return [
     title: 'Daily Use',
     path: '#',
     icon: <FeaturedPlayListOutlined  className='dailyuse-icon'/>,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
-
     subNav: [
       {
         title: 'Day View',
@@ -66,10 +60,6 @@ export const SidebarData = (data) => { return [
         title: 'Month View',
         path: '/MonthView',
       },
-      // {
-      //   title: 'Special Opening Times',
-      //   path: '/SpecialOpeningTimes',
-      // },
       {
         title: 'Manage Feedback',
         path: '/ManageFeedback',
@@ -86,8 +76,6 @@ export const SidebarData = (data) => { return [
     title: 'Guest Payment',
     path: '#',
     icon: <BsCreditCard />,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
     show: ['admin','manager'].includes(data.role),
     subNav: [
       {
@@ -108,8 +96,6 @@ export const SidebarData = (data) => { return [
     title: 'Online Booking',
     path: '#',
     icon: <CalendarMonthOutlined />,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
     show: ['admin','manager'].includes(data.role),
     subNav: [
       {
@@ -122,8 +108,6 @@ export const SidebarData = (data) => { return [
     title: 'Gift card Settings',
     path: '#',
     icon: <Redeem />,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
     show: ['admin','manager'].includes(data.role),
     subNav: [
       {
@@ -141,26 +125,10 @@ export const SidebarData = (data) => { return [
       },
     ]
   },
-  // {
-  //   title: 'Online Booking Templates',
-  //   path: '#',
-  //   icon: <CalendarMonthOutlined />,
-  //   iconClosed: <KeyboardArrowDown />,
-  //   iconOpened: <KeyboardArrowUp />,
-  //   subNav: [
-  //     {
-  //       title: 'sub-nav',
-  //       path: '',
-  //       cName: 'sub-nav'
-  //     }
-  //   ]
-  // },
   {
     title: 'SMS Templates',
     path: '#',
     icon: <TiMessages/>,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
     show: ['admin','manager'].includes(data.role),
     subNav: [
       {
@@ -193,8 +161,6 @@ export const SidebarData = (data) => { return [
     title: 'Email Templates',
     path: '#',
     icon: <EmailOutlined/>,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
     show: ['admin','manager'].includes(data.role),
     subNav: [
       {
@@ -227,26 +193,26 @@ export const SidebarData = (data) => { return [
       },
     ]
   },
-  // {
-  //   title: 'Statistics',
-  //   path: '#',
-  //   icon: <IoIosStats />,
-  //   iconClosed: <KeyboardArrowDown />,
-  //   iconOpened: <KeyboardArrowUp />,
-  //   subNav: [
-  //     {
-  //       title: 'sub-nav',
-  //       path: '',
-  //       cName: 'sub-nav'
-  //     }
-  //   ]
-  // },
+  {
+    title: 'POS',
+    path: '#',
+    icon: <PointOfSale />,
+    show: ['admin','manager'].includes(data.role),
+    subNav: [
+      {
+        title: 'Receipts',
+        path: '/Receipts',
+      },
+      {
+        title: 'Report',
+        path: '/POSReport',
+      }
+    ]
+  },
   {
     title: 'Billing',
     path: '#',
     icon: <BsCreditCard/>,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
     show: ['admin','manager'].includes(data.role) && localStorage.getItem('place_id') != 37,
     subNav: [
       {
@@ -267,8 +233,6 @@ export const SidebarData = (data) => { return [
     title: 'Support',
     path: '#',
     icon: <MdOutlineContactSupport />,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
     show: ['admin','manager'].includes(data.role),
     subNav: [
       {
@@ -285,8 +249,6 @@ export const SidebarData = (data) => { return [
     title: 'Admin setup',
     path: '#',
     icon: <SettingsOutlined />,
-    iconClosed: <KeyboardArrowDown />,
-    iconOpened: <KeyboardArrowUp />,
     show: data.is_superadmin,
     subNav: [
       // {

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import  './SendBulkSMS.scss';
 import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
-import {Button, FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import {Button, FormControl, InputLabel,Stack, MenuItem, Select, TextField} from "@mui/material";
 
 const options = [
   "#RESTAURANT_ADDRESS#",
@@ -98,7 +98,9 @@ export default function SendBulkSMS() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Send Bulk SMS')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Send Bulk SMS')}</h2>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           <div className="col-lg-6 mt-3">

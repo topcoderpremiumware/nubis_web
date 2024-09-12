@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {NavLink} from 'react-router-dom';
 import './SubMenu.scss';
 import { useTranslation } from 'react-i18next';
+import {KeyboardArrowDown, KeyboardArrowUp} from "@mui/icons-material";
 
 
 const SubMenu = ({ item }) => {
@@ -19,9 +20,9 @@ const SubMenu = ({ item }) => {
         </div>
         <div className='SidebarButtonOpen'>
           {item.subNav && subnav
-            ? item.iconOpened
+            ? <KeyboardArrowUp />
             : item.subNav
-            ? item.iconClosed
+            ? <KeyboardArrowDown />
             : null}
         </div>
       </ItemTagName>

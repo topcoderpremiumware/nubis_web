@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
 import {
   CircularProgress,
-  IconButton, Rating,
+  IconButton, Rating, Stack,
 } from "@mui/material";
 import ViewIcon from "@mui/icons-material/Visibility";
 import FeedbackViewPopup from "./FeedbackViewPopup"
@@ -68,7 +68,9 @@ export default function ManageFeedback() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Manage Feedback')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Manage Feedback')}</h2>
+      </Stack>
       <div className="container-fluid">
         <div className="row">
           {loading ? <div><CircularProgress/></div> : <div style={{ height: 'calc(100vh - 120px)', width: '100%' }}>

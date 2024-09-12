@@ -1,4 +1,4 @@
-import {Button, FormControl, InputLabel, MenuItem, Select, TextField, Grid, Autocomplete} from '@mui/material'
+import {Button, FormControl, Stack, InputLabel, MenuItem, Select, TextField, Grid, Autocomplete} from '@mui/material'
 import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
@@ -117,7 +117,9 @@ const RestaurantNew = () => {
 
   return (
     <Grid className="pages__container">
-      <h2>{t('Create new restaurant')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Create new restaurant')}</h2>
+      </Stack>
       <form onSubmit={onSubmit}>
         <Grid container spacing={2} sx={{pb: 2, mt: 3}}>
           {!hasOrganization && <Grid item xs={12} sm={6}>

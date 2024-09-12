@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import axios from 'axios';
 import React from 'react'
 import { useEffect } from 'react';
@@ -39,7 +39,9 @@ const BookingLinkGuide = () => {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Booking Link Guide')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Booking Link Guide')}</h2>
+      </Stack>
       <div className='mt-3'>
         <h4>{t('Home page')}:</h4>
         <Box sx={{display: 'flex', gap: '40px'}}>

@@ -75,7 +75,9 @@ export default function BasicInformation() {
 
   return (
     <div className='pages__container'>
-      <h2>{t('Basic Information')}</h2>
+      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+        <h2>{t('Basic Information')}</h2>
+      </Stack>
       <form onSubmit={onSubmit}>
         <Grid container spacing={2} sx={{pb: 2, mt: 3}}>
           <Grid item xs={12} sm={6}>

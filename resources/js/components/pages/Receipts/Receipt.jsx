@@ -141,7 +141,7 @@ const Receipt = () => {
                 <TableCell size="small"><b>{t('Total')}</b>: {paymentMethod['online-payment-currency']} {receipt.total.toFixed(2)}</TableCell>
               </StyledTableRow>
               <StyledTableRow>
-                <TableCell size="small"><b>{t('Cashier')}</b>: {receipt.printed.name}</TableCell>
+                <TableCell size="small"><b>{t('Cashier')}</b>: {receipt.printed?.name}</TableCell>
               </StyledTableRow>
             </TableBody>
           </Table>

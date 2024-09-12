@@ -43,13 +43,13 @@ class Check extends Model
 
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class)->withTrashed();
     }
 
     public function products()
     {
         return $this->belongsToMany(Product::class)
-            ->withPivot('price', 'quantity');
+            ->withPivot('price', 'quantity')->withTrashed();
     }
 
     public function printed()

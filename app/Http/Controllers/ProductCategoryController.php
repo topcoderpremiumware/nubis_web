@@ -98,14 +98,19 @@ class ProductCategoryController extends Controller
 
     public function getAllByPlace($place_id, Request $request)
     {
-        $categories = ProductCategory::where('place_id',$place_id)->with('parent')
-            ->orderBy('position','asc');
+        $categories = ProductCategory::where('place_id',$place_id);
         if($request->has('parent_id')){
             if($request->parent_id !== 'all'){
-                $categories = $categories->where('parent_id',$request->parent_id);
+                $categories = $categories->where('parent_id',$request->parent_id)
+                    ->with('parent')
+                    ->orderBy('position','asc');
+            }else{
+                $categories = $categories->orderBy('path','ASC');
             }
         }else{
-            $categories = $categories->whereNull('parent_id');
+            $categories = $categories->whereNull('parent_id')
+                ->with('parent')
+                ->orderBy('position','asc');
         }
         $categories = $categories->get();
 

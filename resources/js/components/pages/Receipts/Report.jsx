@@ -1,6 +1,16 @@
 import {useTranslation} from "react-i18next";
 import eventBus from "../../../eventBus";
-import {Card, CardContent, FormControl, Grid, InputLabel, Stack, Typography} from "@mui/material";
+import {
+  Card,
+  CardContent, Container,
+  FormControl,
+  Grid,
+  InputLabel,
+  Stack,
+  Table, TableBody, TableCell,
+  TableContainer, TableHead, TableRow,
+  Typography
+} from "@mui/material";
 import {simpleCatchError} from "../../../helper";
 import React, { useEffect, useState } from 'react'
 import axios from "axios";
@@ -9,6 +19,8 @@ import 'moment/locale/da'
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import { LineChart } from '@mui/x-charts/LineChart';
+import {StyledTableRow} from "../../components/StyledTableRow";
+import Box from "@mui/material/Box";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -20,6 +32,7 @@ const Report = () => {
   const [numberReturned, setNumberReturned] = useState(0)
   const [loading, setLoading] = useState(true)
   const [paymentMethod, setPaymentMethod] = useState({})
+  const [paymentMethods, setPaymentMethods] = useState([])
 
   useEffect(() => {
     // getReport()
@@ -51,6 +64,7 @@ const Report = () => {
       setTotal(response.data.total)
       setNumber(response.data.number)
       setNumberReturned(response.data.number_returned)
+      setPaymentMethods(response.data.payment_methods)
       setLoading(false)
     }).catch(error => {
       simpleCatchError(error)
@@ -72,7 +86,7 @@ const Report = () => {
         <h2>{t('Sales details')}</h2>
       </Stack>
       <Grid container spacing={2} sx={{pb: 2}}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={4} md={3}>
           <FormControl size="small" fullWidth className="datePickerFullWidth">
             <InputLabel htmlFor="from" shrink>{t('From')}</InputLabel>
             <DatePicker
@@ -83,7 +97,7 @@ const Report = () => {
             />
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={4} md={3}>
           <FormControl size="small" fullWidth className="datePickerFullWidth">
             <InputLabel htmlFor="to" shrink>{t('To')}</InputLabel>
             <DatePicker
@@ -115,7 +129,7 @@ const Report = () => {
                 {t('Number of sales')}
               </Typography>
               <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: '20px' }} gutterBottom>
-                {paymentMethod['online-payment-currency']} {number.toFixed(2)}
+                {number}
               </Typography>
             </CardContent>
           </Card>
@@ -127,7 +141,7 @@ const Report = () => {
                 {t('Average sales amount')}
               </Typography>
               <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: '20px' }} gutterBottom>
-                {paymentMethod['online-payment-currency']} {(total/number).toFixed(2)}
+                {paymentMethod['online-payment-currency']} {(number ? total/number : 0).toFixed(2)}
               </Typography>
             </CardContent>
           </Card>
@@ -152,6 +166,7 @@ const Report = () => {
           dataKey: 'date',
           scaleType: 'time',
           valueFormatter: (date) => Moment(date).format('DD MMM YYYY'),
+          label: t('Date')
         }]}
         series={[{
           id: 'Amount',
@@ -159,11 +174,36 @@ const Report = () => {
           color: '#FF9763',
           area: true,
           curve: "linear",
-          valueFormatter: (value) => `${paymentMethod['online-payment-currency']} ${value.toFixed(2)}`,
+          valueFormatter: (value) => `${value ? value.toFixed(2) : ''}`,
+          label: `${t('Amount')} (${paymentMethod['online-payment-currency']})`,
         }]}
         height={400}
-        // margin={{ top: 30, bottom: 30, left: 30, right: 30 }}
       />
+      <Container maxWidth="md" disableGutters={true}>
+        <Box sx={{mt:3}}><h5>{t('Payment methods')}</h5></Box>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell size="small"><b>{t('Payment method')}</b></TableCell>
+                <TableCell size="small" align="right"><b>{t('Amount')}</b></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {paymentMethods.map((item, key) => {
+                return <StyledTableRow key={key}>
+                  <TableCell size="small">{item.payment_method}</TableCell>
+                  <TableCell size="small" align="right">{paymentMethod['online-payment-currency']} {item.value.toFixed(2)}</TableCell>
+                </StyledTableRow>
+              })}
+              <StyledTableRow>
+                <TableCell size="small"><b>{t('Total')}</b></TableCell>
+                <TableCell size="small" align="right"><b>{paymentMethod['online-payment-currency']} {total.toFixed(2)}</b></TableCell>
+              </StyledTableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
     </div>
   )
 }

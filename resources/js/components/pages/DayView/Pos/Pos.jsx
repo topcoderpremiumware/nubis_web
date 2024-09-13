@@ -88,7 +88,7 @@ export default function Pos(props){
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setAllCategories(prev => ([...response.data]))
+      setAllCategories(response.data.map((el) => ({...el,label:el.name})))
       setLoading(false)
     }).catch(error => {
     })

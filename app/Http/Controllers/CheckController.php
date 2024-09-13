@@ -242,11 +242,19 @@ class CheckController extends Controller
             $total += $income->value;
         }
 
+        $payment_methods = Check::select(DB::raw('payment_method, SUM(total) as value'))
+            ->where('place_id',$request->place_id)
+            ->where('status','closed')
+            ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
+            ->groupBy(DB::raw('payment_method'))
+            ->get();
+
         return response()->json([
             'incomes' => $incomes,
             'total' => $total,
             'number' => $number,
             'number_returned' => $number_returned,
+            'payment_methods' => $payment_methods
         ]);
     }
 }

@@ -1,6 +1,7 @@
 import './Pos.scss'
 import {useTranslation} from "react-i18next";
 import {
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
@@ -85,6 +86,16 @@ export default function ProductCategoryPopup(props){
     })
   }
 
+  const selectedCategory = React.useMemo(
+    () => props.categories.filter((v) => item?.product_category_ids?.includes(v.id)),
+    [props.categories,item.product_category_ids],
+  );
+
+  const selectedParent = React.useMemo(
+    () => props.categories.find((v) => item?.parent_id === v.id),
+    [props.categories,item.parent_id],
+  );
+
   return (
     <Dialog onClose={props.onClose} open={props.open} fullWidth maxWidth="md"
             scroll="paper"
@@ -154,29 +165,54 @@ export default function ProductCategoryPopup(props){
                            endAdornment: <InputAdornment position="end">%</InputAdornment>,
                          }}
               />
-              <FormControl size="small" fullWidth sx={{mb: 2}}>
-                <InputLabel id="label_product_category_ids">{t('Categories')}</InputLabel>
-                <Select label={t('Categories')} value={item?.product_category_ids || []}
-                        multiple
-                        labelId="label_product_category_ids" id="product_category_ids" name="product_category_ids"
-                        onChange={(e) => setItem(prev => ({...prev, product_category_ids:e.target.value}))}>
-                  {props.categories.map((el,key) => {
-                    return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
-                  })}
-                </Select>
-              </FormControl>
+              <Autocomplete sx={{mb: 2}}
+                disablePortal
+                multiple
+                disableClearable
+                id="label_product_category_ids"
+                options={props.categories}
+                renderOption={(props, option) => (
+                  <li {...props} style={{paddingLeft: `${8 * option.path.split('.').length}px`}}>{option.label}</li>
+                )}
+                size="small"
+                onChange={(e, newValue) =>
+                  setItem(prev => ({...prev, product_category_ids: newValue.map(i => i.id)}))
+                }
+                renderInput={(params) =>
+                  <TextField
+                    {...params}
+                    label={t('Categories')}
+                    placeholder={t('Categories')}
+                  />
+                }
+                value={selectedCategory}
+              />
             </>}
             {type === 'category' &&
-            <FormControl size="small" fullWidth sx={{mb: 2}}>
-              <InputLabel id="label_parent_id">{t('Category')}</InputLabel>
-              <Select label={t('Category')} value={item?.parent_id}
-                      labelId="label_parent_id" id="parent_id" name="parent_id"
-                      onChange={(e) => setItem(prev => ({...prev, parent_id: e.target.value}))}>
-                {[{id:null,name:t('Uncategorized')},...props.categories].map((el,key) => {
-                  return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
-                })}
-              </Select>
-            </FormControl>}
+              <Autocomplete sx={{mb: 2}}
+                disablePortal
+                disableClearable
+                id="label_parent_id"
+                options={[
+                  {id:null,label:t('Uncategorized'),path:'0.0'},
+                  ...props.categories.map(i => (item.hasOwnProperty('id') && (i.path.includes('.'+item.id+'.') || i.path.endsWith('.'+item.id)) ? null : i)).filter(i => i)
+                ]}
+                renderOption={(props, option) => (
+                  <li {...props} style={{paddingLeft: `${8 * option.path.split('.').length}px`}}>{option.label}</li>
+                )}
+                size="small"
+                onChange={(e, newValue) =>
+                  setItem(prev => ({...prev, parent_id: newValue.id}))
+                }
+                renderInput={(params) =>
+                  <TextField
+                    {...params}
+                    label={t('Parent category')}
+                    placeholder={t('Parent category')}
+                  />
+                }
+                value={selectedParent}
+              />}
           </Grid>
           <Grid item xs={12} sm={6}>
             <PictureUploadButtonPreview

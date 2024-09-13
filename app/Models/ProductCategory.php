@@ -39,6 +39,27 @@ class ProductCategory extends Model
         'image_url'
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        self::created(function($model){
+            $model->path = ($model->parent_id ? $model->parent->path : 0).'.'.$model->id;
+            $model->saveQuietly();
+        });
+
+        self::updated(function($model){
+            $model->path = ($model->parent_id ? $model->parent->path : 0).'.'.$model->id;
+            $model->saveQuietly();
+            if($model->children->count()){
+                foreach ($model->children as $child){
+                    $child->path = ($child->parent_id ? $child->parent->path : 0).'.'.$child->id;
+                    $child->save();
+                }
+            }
+        });
+    }
+
     public function place(): BelongsTo
     {
         return $this->belongsTo(Place::class);

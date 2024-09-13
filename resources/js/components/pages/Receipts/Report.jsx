@@ -58,7 +58,11 @@ const Report = () => {
   }
 
   const getPaymentMethod = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`)
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    })
     setPaymentMethod(res.data)
   }
 
@@ -106,22 +110,37 @@ const Report = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card>
-            <CardContent>
-              hello
+            <CardContent sx={{padding: '16px 24px 12px !important'}}>
+              <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '16px', mb: 1 }}>
+                {t('Number of sales')}
+              </Typography>
+              <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: '20px' }} gutterBottom>
+                {paymentMethod['online-payment-currency']} {number.toFixed(2)}
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card>
-            <CardContent>
-              hello
+            <CardContent sx={{padding: '16px 24px 12px !important'}}>
+              <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '16px', mb: 1 }}>
+                {t('Average sales amount')}
+              </Typography>
+              <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: '20px' }} gutterBottom>
+                {paymentMethod['online-payment-currency']} {(total/number).toFixed(2)}
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card>
-            <CardContent>
-              hello
+            <CardContent sx={{padding: '16px 24px 12px !important'}}>
+              <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '16px', mb: 1 }}>
+                {t('Number of returns')}
+              </Typography>
+              <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: '20px' }} gutterBottom>
+                {paymentMethod['online-payment-currency']} {numberReturned.toFixed(2)}
+              </Typography>
             </CardContent>
           </Card>
         </Grid>

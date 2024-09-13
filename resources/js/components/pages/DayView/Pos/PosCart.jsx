@@ -282,6 +282,9 @@ console.log('save check',check)
 
   const openPDF = () => {
     axios.post(`${process.env.MIX_API_URL}/api/checks/${checks[selectedCheckIndex].id}/print`,{}, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      },
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
@@ -289,7 +292,7 @@ console.log('save check',check)
       window.open(pdfUrl, '_blank');
       URL.revokeObjectURL(pdfUrl);
       if(window.ReactNativeWebView){
-        window.ReactNativeWebView.postMessage('button_aiailable');
+        window.ReactNativeWebView.postMessage('print_receipt');
       }
 
       let tempChecks = checks

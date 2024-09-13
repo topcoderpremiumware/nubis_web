@@ -48,6 +48,9 @@ const Receipt = () => {
 
   const openPDF = () => {
     axios.post(`${process.env.MIX_API_URL}/api/checks/${receipt.id}/print`,{}, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      },
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
@@ -60,7 +63,11 @@ const Receipt = () => {
   }
 
   const getPaymentMethod = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`)
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    })
     setPaymentMethod(res.data)
   }
 

@@ -288,6 +288,9 @@ console.log('save check',check)
       const pdfUrl = URL.createObjectURL(pdfBlob);
       window.open(pdfUrl, '_blank');
       URL.revokeObjectURL(pdfUrl);
+      if(window.ReactNativeWebView){
+        window.ReactNativeWebView.postMessage('button_aiailable');
+      }
 
       let tempChecks = checks
       tempChecks[selectedCheckIndex].status = 'closed'

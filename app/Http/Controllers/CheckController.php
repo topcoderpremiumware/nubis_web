@@ -11,6 +11,7 @@ use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CheckController extends Controller
@@ -210,5 +211,42 @@ class CheckController extends Controller
         if(!Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
 
         return response()->json($check);
+    }
+
+    public function getReceiptsReport(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'from' => 'required|date_format:Y-m-d',
+            'to' => 'required|date_format:Y-m-d',
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+
+        $incomes = Check::select(DB::raw('DATE(created_at) as date, SUM(total) as value'))
+            ->where('place_id',$request->place_id)
+            ->where('status','closed')
+            ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date','asc')
+            ->get();
+
+        $total = 0;
+        $number_returned = 0;
+        $number = Check::where('place_id',$request->place_id)
+            ->where('status','closed')
+            ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
+            ->count();
+
+        foreach ($incomes as $income) {
+            $total += $income->value;
+        }
+
+        return response()->json([
+            'incomes' => $incomes,
+            'total' => $total,
+            'number' => $number,
+            'number_returned' => $number_returned,
+        ]);
     }
 }

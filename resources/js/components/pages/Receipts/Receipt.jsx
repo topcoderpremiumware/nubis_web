@@ -119,7 +119,7 @@ const Receipt = () => {
               </StyledTableRow>
               {receipt.discount && <StyledTableRow>
                 <TableCell size="small" align="right" colSpan="3">
-                  <b>{t('Discount')}</b>: {receipt.discount_type.includes('percent') ? '' : paymentMethod['online-payment-currency']}
+                  <b>{t('Discount')}</b>: {receipt.discount_type.includes('percent') ? '' : paymentMethod['online-payment-currency']}&nbsp;
                   {receipt.discount.toFixed(2)} {receipt.discount_type.includes('percent') ? '%' : ''}
                 </TableCell>
               </StyledTableRow>}

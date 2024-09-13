@@ -258,6 +258,7 @@ Route::middleware('auth:user_api')->group(function(){
 
     Route::get('receipts',[CheckController::class, 'getAllReceipts']);
     Route::get('receipts/{id}',[CheckController::class, 'getReceipt']);
+    Route::get('receipts_report', [CheckController::class, 'getReceiptsReport']);
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);

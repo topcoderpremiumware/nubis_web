@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Area;
 use App\Models\Check;
 use App\Models\Log;
 use App\Models\ProductCategory;
+use Illuminate\Support\Collection;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class CheckController extends Controller
 {
@@ -256,5 +254,50 @@ class CheckController extends Controller
             'number_returned' => $number_returned,
             'payment_methods' => $payment_methods
         ]);
+    }
+
+    public function getReceiptsCategoryReport(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'from' => 'required|date_format:Y-m-d',
+            'to' => 'required|date_format:Y-m-d',
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+
+        /* @var Collection<Check> $checks */
+        $checks = Check::where('place_id',$request->place_id)
+            ->where('status','closed')
+            ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
+            ->get();
+
+        $categories = ProductCategory::where('place_id',$request->place_id)
+            ->orderBy('path','ASC')
+            ->get();
+
+        $categories_sums = [];
+        foreach ($categories as $category) {
+            $categories_sums[$category->id] = $category;
+            $categories_sums[$category->id]->value = 0;
+        }
+        foreach ($checks as $check) {
+            foreach ($check->products as $product) {
+                $p_total = (float)$product->pivot->price * (float)$product->pivot->quantity;
+                if($check->discount){
+                    if(str_contains($check->discount_type,'percent')){
+                        $p_discount = $p_total * $check->discount / 100;
+                    }else{
+                        $p_discount = $p_total * $check->discount / $check->subtotal;
+                    }
+                    $p_total = $p_total - $p_discount;
+                }
+                foreach ($product->product_categories as $product_category) {
+                    $categories_sums[$product_category->id]->value += $p_total;
+                }
+            }
+        }
+
+        return response()->json(array_values($categories_sums));
     }
 }

@@ -33,12 +33,14 @@ const Report = () => {
   const [loading, setLoading] = useState(true)
   const [paymentMethod, setPaymentMethod] = useState({})
   const [paymentMethods, setPaymentMethods] = useState([])
+  const [categoriesReport, setCategoriesReport] = useState([])
 
   useEffect(() => {
     // getReport()
     getPaymentMethod()
     eventBus.on("placeChanged", () => {
       getReport()
+      getCategoriesReport()
       getPaymentMethod()
     })
     Moment.locale(localStorage.getItem('i18nextLng'))
@@ -46,6 +48,7 @@ const Report = () => {
 
   useEffect(() => {
     getReport()
+    getCategoriesReport()
   }, [from,to])
 
   const getReport = () => {
@@ -65,6 +68,25 @@ const Report = () => {
       setNumber(response.data.number)
       setNumberReturned(response.data.number_returned)
       setPaymentMethods(response.data.payment_methods)
+      setLoading(false)
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+  }
+
+  const getCategoriesReport = () => {
+    setLoading(true)
+    axios.get(`${process.env.MIX_API_URL}/api/receipts_category_report`, {
+      params: {
+        from: from,
+        to: to,
+        place_id: localStorage.getItem('place_id')
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setCategoriesReport(response.data)
       setLoading(false)
     }).catch(error => {
       simpleCatchError(error)
@@ -193,6 +215,29 @@ const Report = () => {
               {paymentMethods.map((item, key) => {
                 return <StyledTableRow key={key}>
                   <TableCell size="small">{item.payment_method}</TableCell>
+                  <TableCell size="small" align="right">{paymentMethod['online-payment-currency']} {item.value.toFixed(2)}</TableCell>
+                </StyledTableRow>
+              })}
+              <StyledTableRow>
+                <TableCell size="small"><b>{t('Total')}</b></TableCell>
+                <TableCell size="small" align="right"><b>{paymentMethod['online-payment-currency']} {total.toFixed(2)}</b></TableCell>
+              </StyledTableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box sx={{mt:3}}><h5>{t('Sales by categories')}</h5></Box>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell size="small"><b>{t('Category')}</b></TableCell>
+                <TableCell size="small" align="right"><b>{t('Amount')}</b></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {categoriesReport.map((item, key) => {
+                return <StyledTableRow key={key}>
+                  <TableCell size="small" style={{paddingLeft: `${8 * item.path.split('.').length}px`}}>{item.name}</TableCell>
                   <TableCell size="small" align="right">{paymentMethod['online-payment-currency']} {item.value.toFixed(2)}</TableCell>
                 </StyledTableRow>
               })}

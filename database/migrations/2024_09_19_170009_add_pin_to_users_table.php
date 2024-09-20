@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,9 +14,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('role_user', function (Blueprint $table) {
-            $table->foreignId('place_id')->constrained()->onDelete('cascade');
+        Schema::table('users', function (Blueprint $table) {
+            $table->unsignedSmallInteger('pin')->nullable();
         });
+
+        DB::statement("UPDATE users SET pin = (select floor(100 + RAND() * 1000));");
     }
 
     /**
@@ -25,8 +28,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('role_user', function (Blueprint $table) {
-            $table->dropColumn(['place_id']);
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['pin']);
         });
     }
 };

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Check;
 use App\Models\Log;
 use App\Models\ProductCategory;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -72,6 +73,26 @@ class CheckController extends Controller
         if(!Auth::user()->places->contains($request->place_id) ||
             !Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
 
+        if($request->payment_method === 'card/cash'){
+            if(!$request->has('cash_amount') || !$request->has('card_amount')){
+                abort(400, 'Amount is required');
+            }elseif(($request->cash_amount + $request->card_amount) != $request->total){
+                abort(400, 'Payment amount is not full');
+            }
+        }
+
+        if($request->has('payment_method')){
+            $printed_by = User::find($request->printed_id);
+            if($printed_by){
+                if($printed_by->pin != $request->pin) abort(400, 'PIN code not matched');
+                $check->printed_at = now()->format('Y-m-d H:i:s');
+                $check->printed_id = $request->printed_id;
+                $check->save();
+            }else{
+                abort(400, 'Cashier is not selected');
+            }
+        }
+
         $res = $check->update([
             'name' => $request->name,
             'place_id' => $request->place_id,
@@ -83,7 +104,9 @@ class CheckController extends Controller
             'discount_name' => $request->discount_name,
             'discount_type' => $request->discount_type,
             'discount_code' => $request->discount_code,
-            'payment_method' => $request->payment_method
+            'payment_method' => $request->payment_method,
+            'cash_amount' => $request->payment_method === 'cash' ? $request->total : $request->cash_amount,
+            'card_amount' => $request->payment_method === 'card' ? $request->total :$request->card_amount
         ]);
 
         if($request->has('products')){
@@ -121,8 +144,6 @@ class CheckController extends Controller
         $check = Check::find($id);
         if($check->status === 'open'){
             $check->status = 'closed';
-            $check->printed_at = now()->format('Y-m-d H:i:s');
-            $check->printed_id = Auth::id();
             $check->save();
         }
 

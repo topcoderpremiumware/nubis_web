@@ -28,6 +28,8 @@ return new class extends Migration
             $table->unsignedSmallInteger('min');
             $table->string('week_days')->default('[]');
             $table->string('status');
+            $table->longText('booking_limits');
+            $table->unsignedSmallInteger('min_time_before');
             $table->timestamps();
         });
     }

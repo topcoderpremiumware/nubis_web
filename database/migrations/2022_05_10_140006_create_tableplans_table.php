@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('place_id')->constrained()->onDelete('cascade');
             $table->longText('data');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

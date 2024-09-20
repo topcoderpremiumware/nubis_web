@@ -102,3 +102,9 @@ export const datetimeFormat = (string) => {
   if(!string) return ''
   return moment.utc(string).local().format('DD-MM-YYYY HH:mm')
 }
+
+export const round = (value) => {
+  if(!value && value !== 0) return ''
+  if(String(value).endsWith('.') || String(value).endsWith('.0')) return value
+  return Math.round(value*100)/100
+}

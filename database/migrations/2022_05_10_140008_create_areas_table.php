@@ -17,6 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('place_id')->constrained()->onDelete('cascade');
             $table->string('name');
+            $table->unsignedSmallInteger('priority');
+            $table->boolean('online_available');
+            $table->text('labels');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

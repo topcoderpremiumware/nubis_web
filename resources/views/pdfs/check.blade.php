@@ -47,7 +47,7 @@
     <div style="font-size: 16pt;text-align: center">{{__('Receipt',[],$place->language)}}</div>
     <div style="text-align: center">{{now()->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
     <div style="text-align: center">{{__('Receipt',[],$place->language)}} #{{$check->id}}</div>
-    <div style="text-align: center">{{__('Cashier',[],$place->language)}}: {{Auth::user()->name}}</div>
+    <div style="text-align: center">{{__('Cashier',[],$place->language)}}: {{$check->printed->name}}</div>
     <hr>
     <div>{{__('Booking id',[],$place->language)}} # {{$order->id}}</div>
     <div>{{__('Time',[],$place->language)}}: {{$order->reservation_time->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
@@ -68,12 +68,20 @@
     <div>{{__('Total',[],$place->language)}} <span style="float: right;font-weight:bold;font-size: 16pt">{{number_format($check->total,2)}} {{$currency}}</span></div>
     <div style="float:none;clear:both;"></div>
     <hr>
-    <div>{{__('Received',[],$place->language)}}
-        @if($check->payment_method === 'card')
-            {{__('on card',[],$place->language)}}
-        @else
-            {{__('in cash',[],$place->language)}}
-        @endif
-        <span style="float: right;">{{number_format($check->total,2)}} {{$currency}}</span></div>
+    @if($check->payment_method === 'card')
+        <div>{{__('Received',[],$place->language)}} {{__('on card',[],$place->language)}}
+            <span style="float: right;">{{number_format($check->total,2)}} {{$currency}}</span></div>
+    @endif
+    @if($check->payment_method === 'cash')
+        <div>{{__('Received',[],$place->language)}} {{__('in cash',[],$place->language)}}
+            <span style="float: right;">{{number_format($check->total,2)}} {{$currency}}</span></div>
+    @endif
+    @if($check->payment_method === 'card/cash')
+        <div>{{__('Received',[],$place->language)}} {{__('on card',[],$place->language)}}
+            <span style="float: right;">{{number_format($check->card_amount,2)}} {{$currency}}</span></div>
+        <div style="float:none;clear:both;"></div>
+        <div>{{__('Received',[],$place->language)}} {{__('in cash',[],$place->language)}}
+            <span style="float: right;">{{number_format($check->cash_amount,2)}} {{$currency}}</span></div>
+    @endif
     <div style="float:none;clear:both;"></div>
 </body>

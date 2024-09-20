@@ -24,6 +24,8 @@ use Illuminate\Support\Collection;
  * @property string $payment_method // cash, card
  * @property Carbon $printed_at
  * @property integer $printed_id
+ * @property float $cash_amount
+ * @property float $card_amount
  *
  * @property Place $place
  * @property Order $order

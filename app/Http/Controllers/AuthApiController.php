@@ -39,7 +39,8 @@ class AuthApiController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => bcrypt($request->password),
-            'language' => $request->language ?? 'en'
+            'language' => $request->language ?? 'en',
+            'pin' => rand(100,999)
         ]);
 
         if(!Auth::attempt($cred)){

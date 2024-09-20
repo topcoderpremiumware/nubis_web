@@ -172,8 +172,8 @@ export default function PosCart(props){
     if (check.hasOwnProperty('id')) {
       url = `${process.env.MIX_API_URL}/api/checks/${check.id}`
     }
-console.log('save check',check)
-    await axios.post(url, check, {
+
+    return await axios.post(url, check, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -184,8 +184,10 @@ console.log('save check',check)
         setChecks(prev => ([...tempChecks]))
       }
       eventBus.dispatch("notification", {type: 'success', message: 'Cart saved successfully'});
+      return true
     }).catch(error => {
       simpleCatchError(error)
+      return false
     })
   }
 
@@ -267,16 +269,17 @@ console.log('save check',check)
     setChecks(prev => ([...tempChecks]))
   }
 
-  const onChangePaymentMethod = async (paymentMethod) => {
+  const onChangePaymentMethod = async (data) => {
     let tempChecks = checks
     if (tempChecks[selectedCheckIndex].status === 'closed') {
       openPDF()
     } else {
-      tempChecks[selectedCheckIndex].payment_method = paymentMethod
+      tempChecks[selectedCheckIndex] = {...tempChecks[selectedCheckIndex], ...data}
       setChecks(prev => ([...tempChecks]))
       setPaymentMethodOpen(false)
-      await saveCheck(tempChecks[selectedCheckIndex])
-      openPDF()
+      saveCheck(tempChecks[selectedCheckIndex]).then((res) => {
+        if(res) openPDF()
+      })
     }
   }
 
@@ -409,7 +412,9 @@ console.log('save check',check)
       <PaymentMethodPopup
         open={paymentMethodOpen}
         onClose={() => setPaymentMethodOpen(false)}
-        onChange={onChangePaymentMethod} />
+        onChange={onChangePaymentMethod}
+        total={checks[selectedCheckIndex].total}
+        currency={props.currency} />
     </>}
     <Menu
       id={`cart_menu`}

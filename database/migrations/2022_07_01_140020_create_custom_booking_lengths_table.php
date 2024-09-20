@@ -29,6 +29,9 @@ return new class extends Migration
             $table->string('week_days');
             $table->text('spec_dates');
             $table->text('time_intervals');
+            $table->string('image')->nullable();
+            $table->unsignedSmallInteger('preparation_length')->default(0);
+            $table->unsignedSmallInteger('min_time_before');
             $table->timestamps();
         });
     }

@@ -79,7 +79,8 @@ export default function Roles() {
   const openEditPopup = (user) => {
     setSelectedUser({
       email: user ? user.email : '',
-      role: user ? user.roles[0].id : ''
+      role: user ? user.roles[0].id : '',
+      pin: user ? user.pin : ''
     })
     setEditPopupOpened(true)
   }

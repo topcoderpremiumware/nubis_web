@@ -16,9 +16,8 @@ return new class extends Migration
         Schema::create('role_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
+            $table->foreignId('place_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-
-
         });
     }
 

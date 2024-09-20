@@ -89,6 +89,16 @@ export default function RoleEditPopup(props) {
               </Select>
             </FormControl>
           </Grid>
+          {['admin'].includes(window.role) &&
+          <Grid item xs={12} sm={6}>
+            <TextField label={t('PIN code')} size="small" fullWidth
+                       type="text" disabled
+                       value={props.user.pin}
+                       InputProps={{
+                         readOnly: true,
+                       }}
+            />
+          </Grid>}
         </Grid>
       </DialogContent>
       <DialogActions sx={{p:2}}>

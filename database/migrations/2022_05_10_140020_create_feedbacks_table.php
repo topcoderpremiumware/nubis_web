@@ -27,6 +27,7 @@ return new class extends Migration
             $table->double('price_mark',3,1);
             $table->double('average_mark',3,1);
             $table->boolean('is_recommend');
+            $table->text('reply')->nullable();
             $table->timestamps();
         });
     }

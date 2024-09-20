@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('subject');
             $table->text('text');
             $table->string('language');
+            $table->boolean('active');
             $table->timestamps();
         });
     }

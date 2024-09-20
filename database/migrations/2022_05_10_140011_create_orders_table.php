@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('source');
             $table->text('marks');
             $table->softDeletes();
+            $table->unsignedSmallInteger('length');
+            $table->foreignId('custom_booking_length_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

@@ -6,6 +6,8 @@ use App\Models\Check;
 use App\Models\Log;
 use App\Models\ProductCategory;
 use App\Models\User;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Support\Collection;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -237,7 +239,7 @@ class CheckController extends Controller
         $request->validate([
             'place_id' => 'required|exists:places,id',
             'from' => 'required|date_format:Y-m-d',
-            'to' => 'required|date_format:Y-m-d',
+            'to' => 'required|date_format:Y-m-d'
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
@@ -249,6 +251,16 @@ class CheckController extends Controller
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('date','asc')
             ->get();
+
+        $data_incomes = [];
+        $temp_incomes = array_column($incomes->toArray(), null, 'date');
+        foreach (CarbonPeriod::create($request->from, $request->to) as $date) {
+            if(array_key_exists($date->format('Y-m-d'),$temp_incomes)){
+                $data_incomes[] = $temp_incomes[$date->format('Y-m-d')];
+            }else{
+                $data_incomes[] = ['date' => $date->format('Y-m-d'), 'value' => 0];
+            }
+        }
 
         $total = 0;
         $number_returned = 0;
@@ -268,12 +280,57 @@ class CheckController extends Controller
             ->groupBy(DB::raw('payment_method'))
             ->get();
 
+        if($request->has('compare')){
+            if($request->compare === 'year'){
+                $compare_from = Carbon::parse($request->from)->addYears(-1)->format('Y-m-d');
+                $compare_to = Carbon::parse($request->to)->addYears(-1)->format('Y-m-d');
+            }else{
+                $days = Carbon::parse($request->to)->diffInDays($request->from);
+                if($days == 0) $days = -1;
+                $compare_from = Carbon::parse($request->from)->addDays($days)->format('Y-m-d');
+                $compare_to = Carbon::parse($request->to)->addDays($days)->format('Y-m-d');
+            }
+
+            $compare_incomes = Check::select(DB::raw('DATE(created_at) as date, SUM(total) as value'))
+                ->where('place_id',$request->place_id)
+                ->where('status','closed')
+                ->whereBetween(DB::raw('DATE(created_at)'),[$compare_from,$compare_to])
+                ->groupBy(DB::raw('DATE(created_at)'))
+                ->orderBy('date','asc')
+                ->get();
+
+            $data_compare_incomes = [];
+            $temp_compare_incomes = array_column($incomes->toArray(), null, 'date');
+            foreach (CarbonPeriod::create($compare_from, $compare_to) as $date) {
+                if(array_key_exists($date->format('Y-m-d'),$temp_compare_incomes)){
+                    $data_compare_incomes[] = $temp_compare_incomes[$date->format('Y-m-d')];
+                }else{
+                    $data_compare_incomes[] = ['date' => $date->format('Y-m-d'), 'value' => 0];
+                }
+            }
+
+            $compare_total = 0;
+            $compare_number_returned = 0;
+            $compare_number = Check::where('place_id',$request->place_id)
+                ->where('status','closed')
+                ->whereBetween(DB::raw('DATE(created_at)'),[$compare_from,$compare_to])
+                ->count();
+
+            foreach ($compare_incomes as $compare_income) {
+                $compare_total += $compare_income->value;
+            }
+        }
+
         return response()->json([
-            'incomes' => $incomes,
+            'incomes' => $data_incomes,
             'total' => $total,
             'number' => $number,
             'number_returned' => $number_returned,
-            'payment_methods' => $payment_methods
+            'payment_methods' => $payment_methods,
+            'compare_incomes' => $data_compare_incomes ?? [],
+            'compare_total' => $compare_total ?? 0,
+            'compare_number' => $compare_number ?? 0,
+            'compare_number_returned' => $compare_number_returned ?? 0,
         ]);
     }
 

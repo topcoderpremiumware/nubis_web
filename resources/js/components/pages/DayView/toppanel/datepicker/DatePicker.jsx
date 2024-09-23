@@ -53,6 +53,7 @@ import { CgCalendarToday } from "react-icons/cg";
       </button>
 
       <DatePicker
+        className="orders"
         renderCustomHeader={({
           monthDate,
           customHeaderCount,

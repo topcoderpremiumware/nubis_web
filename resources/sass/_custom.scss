@@ -192,6 +192,30 @@ a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover{
   padding-left: 24px;
 }
 
-.datePickerFullWidth .react-datepicker__input-container input{
+.datePickerFullWidth .react-datepicker__input-container input {
   width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  padding: 7.5px 14px;
+  outline: 0;
+}
+
+.datePickerFullWidth .react-datepicker__input-container input:hover {
+  border: 1px solid rgba(0, 0, 0, 0.87);
+}
+
+.datePickerFullWidth .react-datepicker__input-container input:focus {
+  outline: 1px solid #1976d2;
+}
+
+.datePickerFullWidth label {
+  background: #fff;
+}
+
+.datePickerFullWidth:has(.react-datepicker__input-container input:focus) label {
+  color: #1976d2;
+}
+
+.react-datepicker {
+  display: flex !important;
 }

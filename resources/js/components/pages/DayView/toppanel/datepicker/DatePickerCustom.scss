@@ -21,24 +21,24 @@
     justify-content: center;
     color: #666;
 }
-.react-datepicker-wrapper {
+.react-datepicker-wrapper:has(.orders) {
     width: auto;
 }
-.react-datepicker__input-container{
+.react-datepicker__input-container:has(.orders){
     display: flex;
     justify-content: center;
 }
-.react-datepicker__input-container input{
+.react-datepicker__input-container:has(.orders) input{
     background: #fff;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
     border-radius: 6px;
     padding:5px;
     border:none;
 }
-.DayViewTop__container .react-datepicker__input-container input{
+.DayViewTop__container .react-datepicker__input-container:has(.orders) input{
     width: auto;
 }
-.react-datepicker__input-container input:focus-visible{
+.react-datepicker__input-container:has(.orders) input:focus-visible{
     // border:1px solid #216BA5;
     // box-shadow: none;
 }

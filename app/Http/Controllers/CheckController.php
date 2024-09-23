@@ -300,7 +300,7 @@ class CheckController extends Controller
                 ->get();
 
             $data_compare_incomes = [];
-            $temp_compare_incomes = array_column($incomes->toArray(), null, 'date');
+            $temp_compare_incomes = array_column($compare_incomes->toArray(), null, 'date');
             foreach (CarbonPeriod::create($compare_from, $compare_to) as $date) {
                 if(array_key_exists($date->format('Y-m-d'),$temp_compare_incomes)){
                     $data_compare_incomes[] = $temp_compare_incomes[$date->format('Y-m-d')];

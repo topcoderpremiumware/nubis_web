@@ -286,7 +286,7 @@ class CheckController extends Controller
                 $compare_to = Carbon::parse($request->to)->addYears(-1)->format('Y-m-d');
             }else{
                 $days = Carbon::parse($request->to)->diffInDays($request->from,false);
-                if($days == 0) $days = -1;
+                $days -= 1;
                 $compare_from = Carbon::parse($request->from)->addDays($days)->format('Y-m-d');
                 $compare_to = Carbon::parse($request->to)->addDays($days)->format('Y-m-d');
             }
@@ -366,7 +366,7 @@ class CheckController extends Controller
                     if(str_contains($check->discount_type,'percent')){
                         $p_discount = $p_total * $check->discount / 100;
                     }else{
-                        $p_discount = $p_total * $check->discount / $check->subtotal;
+                        $p_discount = $check->subtotal ? $p_total * $check->discount / $check->subtotal : 0;
                     }
                     $p_total = $p_total - $p_discount;
                 }

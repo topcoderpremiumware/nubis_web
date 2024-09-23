@@ -108,3 +108,7 @@ export const round = (value) => {
   if(String(value).endsWith('.') || String(value).endsWith('.0')) return value
   return Math.round(value*100)/100
 }
+
+export const currency_format = (number) => {
+  return (number).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+}

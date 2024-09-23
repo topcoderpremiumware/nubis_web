@@ -13,7 +13,7 @@ import {
   TableContainer, TableHead, TableRow,
   Typography, useMediaQuery
 } from "@mui/material";
-import {simpleCatchError} from "../../../helper";
+import {currency_format, simpleCatchError} from "../../../helper";
 import React, { useEffect, useState } from 'react'
 import axios from "axios";
 import Moment from "moment/moment";
@@ -221,7 +221,7 @@ const Report = () => {
                 {t('Total sales')}
               </Typography>
               <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: '20px' }} gutterBottom>
-                {paymentMethod['online-payment-currency']} {total.toFixed(2)}
+                {paymentMethod['online-payment-currency']} {currency_format(total)}
               </Typography>
               <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '20px' }} gutterBottom>
                 {total > 0 && <span style={{color: `${(total - compareTotal) < 0 ? 'red' : 'green'}`}}>
@@ -229,7 +229,7 @@ const Report = () => {
                   {(Math.abs(total - compareTotal) * 100 / total).toFixed(0)}%&nbsp;
                 </span>}
                 <span style={{color: '#C0C0C0'}}>
-                  ({paymentMethod['online-payment-currency']} {(total - compareTotal).toFixed(2)})
+                  ({paymentMethod['online-payment-currency']} {currency_format(total - compareTotal)})
                 </span>
               </Typography>
             </CardContent>
@@ -263,7 +263,7 @@ const Report = () => {
                 {t('Average sales amount')}
               </Typography>
               <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: '20px' }} gutterBottom>
-                {paymentMethod['online-payment-currency']} {(number ? total/number : 0).toFixed(2)}
+                {paymentMethod['online-payment-currency']} {currency_format(number ? total/number : 0)}
               </Typography>
               <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '20px' }} gutterBottom>
                 {number > 0 && <span style={{color: `${compareDiff() < 0 ? 'red' : 'green'}`}}>
@@ -271,7 +271,7 @@ const Report = () => {
                   {(Math.abs(compareDiff()) * 100 / (total/number)).toFixed(0)}%&nbsp;
                 </span>}
                 <span style={{color: '#C0C0C0'}}>
-                  ({paymentMethod['online-payment-currency']} {(compareDiff()).toFixed(2)})
+                  ({paymentMethod['online-payment-currency']} {currency_format(compareDiff())})
                 </span>
               </Typography>
             </CardContent>
@@ -343,12 +343,12 @@ const Report = () => {
               {paymentMethods.map((item, key) => {
                 return <StyledTableRow key={key}>
                   <TableCell size="small">{item.payment_method}</TableCell>
-                  <TableCell size="small" align="right">{paymentMethod['online-payment-currency']} {item.value.toFixed(2)}</TableCell>
+                  <TableCell size="small" align="right">{paymentMethod['online-payment-currency']} {currency_format(item.value)}</TableCell>
                 </StyledTableRow>
               })}
               <StyledTableRow>
                 <TableCell size="small"><b>{t('Total')}</b></TableCell>
-                <TableCell size="small" align="right"><b>{paymentMethod['online-payment-currency']} {total.toFixed(2)}</b></TableCell>
+                <TableCell size="small" align="right"><b>{paymentMethod['online-payment-currency']} {currency_format(total)}</b></TableCell>
               </StyledTableRow>
             </TableBody>
           </Table>
@@ -366,12 +366,12 @@ const Report = () => {
               {categoriesReport.map((item, key) => {
                 return <StyledTableRow key={key}>
                   <TableCell size="small" style={{paddingLeft: `${8 * item.path.split('.').length}px`}}>{item.name}</TableCell>
-                  <TableCell size="small" align="right">{paymentMethod['online-payment-currency']} {item.value.toFixed(2)}</TableCell>
+                  <TableCell size="small" align="right">{paymentMethod['online-payment-currency']} {currency_format(item.value)}</TableCell>
                 </StyledTableRow>
               })}
               <StyledTableRow>
                 <TableCell size="small"><b>{t('Total')}</b></TableCell>
-                <TableCell size="small" align="right"><b>{paymentMethod['online-payment-currency']} {total.toFixed(2)}</b></TableCell>
+                <TableCell size="small" align="right"><b>{paymentMethod['online-payment-currency']} {currency_format(total)}</b></TableCell>
               </StyledTableRow>
             </TableBody>
           </Table>

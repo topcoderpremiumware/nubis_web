@@ -284,7 +284,7 @@ const Report = () => {
                 {t('Number of returns')}
               </Typography>
               <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: '20px' }} gutterBottom>
-                {paymentMethod['online-payment-currency']} {numberReturned}
+                {numberReturned}
               </Typography>
               <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '20px' }} gutterBottom>
                 {numberReturned > 0 && <span style={{color: `${(numberReturned - compareNumberReturned) < 0 ? 'red' : 'green'}`}}>

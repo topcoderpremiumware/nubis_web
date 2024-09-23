@@ -285,7 +285,7 @@ class CheckController extends Controller
                 $compare_from = Carbon::parse($request->from)->addYears(-1)->format('Y-m-d');
                 $compare_to = Carbon::parse($request->to)->addYears(-1)->format('Y-m-d');
             }else{
-                $days = Carbon::parse($request->to)->diffInDays($request->from);
+                $days = Carbon::parse($request->to)->diffInDays($request->from,false);
                 if($days == 0) $days = -1;
                 $compare_from = Carbon::parse($request->from)->addDays($days)->format('Y-m-d');
                 $compare_to = Carbon::parse($request->to)->addDays($days)->format('Y-m-d');

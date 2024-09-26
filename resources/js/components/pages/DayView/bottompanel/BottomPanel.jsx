@@ -8,6 +8,7 @@ import eventBus from "../../../../eventBus";
 import {PDFDownloadLink} from "@react-pdf/renderer";
 import DayViewPdf from "../DayViewPdf/DayViewPdf";
 import {Stack} from "@mui/material";
+import FindBookingPopUp from "./FindBookingPopUp";
 
 export default function BottomPanel({ selectedOrder, setSelectedOrder }) {
   const [orders, setOrders] = useState([])
@@ -18,6 +19,10 @@ export default function BottomPanel({ selectedOrder, setSelectedOrder }) {
 
   const openNewBooking = () => {
     eventBus.dispatch("newBookingOpen");
+  }
+
+  const openFindBooking = () => {
+    eventBus.dispatch("findBookingOpen");
   }
 
   useEffect(async () => {
@@ -53,6 +58,8 @@ export default function BottomPanel({ selectedOrder, setSelectedOrder }) {
           <Button variant="contained" onClick={() => exportPdf()}>{t('Export to PDF')}</Button>
         </PDFDownloadLink>
       )}
+      <Button variant="contained" onClick={openFindBooking}>{t('Find Booking')}</Button>
+      <FindBookingPopUp setSelectedOrder={setSelectedOrder} />
     </Stack>
   )
 }

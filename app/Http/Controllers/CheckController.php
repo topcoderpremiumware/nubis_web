@@ -220,6 +220,10 @@ class CheckController extends Controller
             $checks = $checks->orderBy('id', 'desc');
         }
 
+        if($request->has('from')){
+            $checks = $checks->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to]);
+        }
+
         $checks = $checks->paginate($per_page)->setPath('/');
 
         return response()->json($checks);
@@ -377,5 +381,106 @@ class CheckController extends Controller
         }
 
         return response()->json(array_values($categories_sums));
+    }
+
+    public function exportCSV(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+
+        $checks = Check::where('place_id',$request->place_id)
+            ->where('status','closed')->with('order');
+        if($request->has('filter_field')) {
+            $checks = $checks->where($request->filter_field, 'like', $request->filter_value . '%');
+        }
+
+        if($request->has('sort_field')){
+            $checks = $checks->orderBy($request->sort_field, $request->sort_value);
+        }else{
+            $checks = $checks->orderBy('id', 'desc');
+        }
+
+        if($request->has('from')){
+            $checks = $checks->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to]);
+        }
+
+        $checks = $checks->get();
+        $data = [];
+        /* @var Check $check */
+        foreach ($checks as $check) {
+            $data[] = [
+                'id' => $check->id,
+                'payment_method' => $check->payment_method,
+                'given' => $check->created_at,
+                'description' => 'Booking id: #' . $check->order->id.', seats: '.$check->order->seats.'. tables: '.implode(',',$check->order->table_ids),
+                'total' => str_replace('.',',',$check->total),
+            ];
+        }
+
+        $csvFileName = 'user.csv';
+        $csvFile = fopen($csvFileName, 'w');
+        $headers = array_keys($data[0]);
+        fputcsv($csvFile, $headers);
+
+        foreach ($data as $row) {
+            fputcsv($csvFile, $row);
+        }
+
+        fclose($csvFile);
+
+        return response()->download(public_path($csvFileName))->deleteFileAfterSend(true);
+    }
+
+    public function exportPDF(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+        ]);
+
+        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+
+        $checks = Check::where('place_id',$request->place_id)
+            ->where('status','closed')->with('order');
+        if($request->has('filter_field')) {
+            $checks = $checks->where($request->filter_field, 'like', $request->filter_value . '%');
+        }
+
+        if($request->has('sort_field')){
+            $checks = $checks->orderBy($request->sort_field, $request->sort_value);
+        }else{
+            $checks = $checks->orderBy('id', 'desc');
+        }
+
+        if($request->has('from')){
+            $checks = $checks->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to]);
+        }
+
+        $checks = $checks->get();
+        $data = [];
+        /* @var Check $check */
+        foreach ($checks as $check) {
+            $data[] = [
+                'id' => $check->id,
+                'payment_method' => $check->payment_method,
+                'given' => $check->created_at,
+                'description' => 'Booking id: #' . $check->order->id.', seats: '.$check->order->seats.'. tables: '.implode(',',$check->order->table_ids),
+                'total' => $check->total,
+            ];
+        }
+
+        $html = view('pdfs.export_receipts', compact('data'))->render();
+        $options = new Options();
+        $options->set('enable_remote', TRUE);
+        $options->set('enable_html5_parser', FALSE);
+        $options->set('dpi', 72);
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4');
+        $dompdf->render();
+        $dompdf->stream('export_receipts.pdf', array("Attachment" => false,'compress' => false));
     }
 }

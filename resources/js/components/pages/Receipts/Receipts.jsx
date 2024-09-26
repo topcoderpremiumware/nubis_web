@@ -2,12 +2,16 @@ import {useTranslation} from "react-i18next";
 import {useSearchParams} from "react-router-dom";
 import eventBus from "../../../eventBus";
 import moment from "moment/moment";
-import {IconButton, Stack} from "@mui/material";
+import {Button, ButtonGroup, FormControl, Grid, IconButton, InputLabel, Stack} from "@mui/material";
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import {datetimeFormat, simpleCatchError} from "../../../helper";
 import {DataGrid} from "@mui/x-data-grid";
 import React, { useEffect, useState } from 'react'
 import axios from "axios";
+import Moment from "moment";
+import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css';
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 
 const Receipts = () => {
   const { t } = useTranslation();
@@ -15,7 +19,13 @@ const Receipts = () => {
   const [receipts, setReceipts] = useState([])
   const [totalRows, setTotalRows] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [csvLoading, setCSVLoading] = useState(false)
+  const [pdfLoading, setPDFLoading] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState({})
+  const [filter, setFilter] = useState({
+    from: Moment().add(-1,'days').format('YYYY-MM-DD'),
+    to: Moment().format('YYYY-MM-DD'),
+  })
   const [paginationModel, setPaginationModel] = React.useState({
     page: parseInt(searchParams.get('page')) || 0,
     pageSize: parseInt(searchParams.get('per_page')) || 20,
@@ -41,7 +51,7 @@ const Receipts = () => {
 
   useEffect(() => {
     getReceipts()
-  }, [paginationModel,sortModel,filterModel])
+  }, [paginationModel,sortModel,filterModel,filter])
 
   const onFilterChange = React.useCallback((filter) => {
     setFilterModel(filter)
@@ -75,7 +85,8 @@ const Receipts = () => {
       filter_field: filterModel.hasOwnProperty('items') && filterModel.items.length > 0 ? filterModel.items[0].columnField : null,
       filter_value: filterModel.hasOwnProperty('items') && filterModel.items.length > 0 ? filterModel.items[0].value : null,
       sort_field: sortModel.length > 0 ? sortModel[0].field : null,
-      sort_value: sortModel.length > 0 ? sortModel[0].sort : null
+      sort_value: sortModel.length > 0 ? sortModel[0].sort : null,
+      ...filter
     }
     await axios.get(`${process.env.MIX_API_URL}/api/receipts`, {
       params: {
@@ -97,6 +108,72 @@ const Receipts = () => {
     })
   }
 
+  const exportCSV = async () => {
+    setCSVLoading(true)
+    let params = {
+      page: paginationModel.page + 1,
+      per_page: paginationModel.pageSize,
+      filter_field: filterModel.hasOwnProperty('items') && filterModel.items.length > 0 ? filterModel.items[0].columnField : null,
+      filter_value: filterModel.hasOwnProperty('items') && filterModel.items.length > 0 ? filterModel.items[0].value : null,
+      sort_field: sortModel.length > 0 ? sortModel[0].field : null,
+      sort_value: sortModel.length > 0 ? sortModel[0].sort : null,
+      ...filter
+    }
+    await axios.get(`${process.env.MIX_API_URL}/api/receipts/export_csv`, {
+      params: {
+        ...params,
+        place_id: localStorage.getItem('place_id')
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      },
+      responseType: 'blob'
+    }).then(response => {
+      const csvBlob = new Blob([response.data], { type: 'text/csv' });
+      const csvUrl = URL.createObjectURL(csvBlob);
+      window.open(csvUrl, '_blank');
+      URL.revokeObjectURL(csvUrl);
+
+      setCSVLoading(false)
+    }).catch(error => {
+      simpleCatchError(error)
+      setCSVLoading(false)
+    })
+  }
+
+  const exportPDF = async () => {
+    setPDFLoading(true)
+    let params = {
+      page: paginationModel.page + 1,
+      per_page: paginationModel.pageSize,
+      filter_field: filterModel.hasOwnProperty('items') && filterModel.items.length > 0 ? filterModel.items[0].columnField : null,
+      filter_value: filterModel.hasOwnProperty('items') && filterModel.items.length > 0 ? filterModel.items[0].value : null,
+      sort_field: sortModel.length > 0 ? sortModel[0].field : null,
+      sort_value: sortModel.length > 0 ? sortModel[0].sort : null,
+      ...filter
+    }
+    await axios.get(`${process.env.MIX_API_URL}/api/receipts/export_pdf`, {
+      params: {
+        ...params,
+        place_id: localStorage.getItem('place_id')
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      },
+      responseType: 'blob'
+    }).then(response => {
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, '_blank');
+      URL.revokeObjectURL(pdfUrl);
+
+      setPDFLoading(false)
+    }).catch(error => {
+      simpleCatchError(error)
+      setPDFLoading(false)
+    })
+  }
+
   const getPaymentMethod = async () => {
     const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`,{
       headers: {
@@ -111,6 +188,42 @@ const Receipts = () => {
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
         <h2>{t('Receipts')}</h2>
       </Stack>
+      <Grid container spacing={2} sx={{pb: 2}}>
+        <Grid item xs={12} sm={4} md={3}>
+          <FormControl size="small" fullWidth className="datePickerFullWidth">
+            <InputLabel htmlFor="from" shrink>{t('From')}</InputLabel>
+            <DatePicker
+              dateFormat='yyyy-MM-dd'
+              selected={filter.from ? Moment(filter.from).toDate() : ''} id="from"
+              onSelect={e => {setFilter(prev => ({...prev, from: e ? Moment(e).format('YYYY-MM-DD') : ''}))}}
+              onChange={e => {setFilter(prev => ({...prev, from: e ? Moment(e).format('YYYY-MM-DD') : ''}))}}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={4} md={3}>
+          <FormControl size="small" fullWidth className="datePickerFullWidth">
+            <InputLabel htmlFor="to" shrink>{t('To')}</InputLabel>
+            <DatePicker
+              dateFormat='yyyy-MM-dd'
+              selected={filter.to ? Moment(filter.to).toDate() : ''} id="to"
+              onSelect={e => {setFilter(prev => ({...prev, to: e ? Moment(e).format('YYYY-MM-DD') : ''}))}}
+              onChange={e => {setFilter(prev => ({...prev, to: e ? Moment(e).format('YYYY-MM-DD') : ''}))}}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          <Stack spacing={2} direction="row" alignItems="center">
+            <Button variant="contained"
+                    onClick={exportCSV}
+                    disabled={csvLoading}
+                    endIcon={csvLoading && <HourglassBottomIcon/>}>{t('Export CSV')}</Button>
+            <Button variant="contained"
+                    onClick={exportPDF}
+                    disabled={pdfLoading}
+                    endIcon={pdfLoading && <HourglassBottomIcon/>}>{t('Export PDF')}</Button>
+          </Stack>
+        </Grid>
+      </Grid>
       <div style={{ width: '100%', height: 'calc(100vh - 300px)' }}>
         <DataGrid
           paginationMode="server"

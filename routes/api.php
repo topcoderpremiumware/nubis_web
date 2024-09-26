@@ -257,7 +257,9 @@ Route::middleware('auth:user_api')->group(function(){
     Route::delete('checks/{id}',[CheckController::class, 'delete']);
 
     Route::get('receipts',[CheckController::class, 'getAllReceipts']);
-    Route::get('receipts/{id}',[CheckController::class, 'getReceipt']);
+    Route::get('receipts/{id}',[CheckController::class, 'getReceipt'])->where('id', '[0-9]+');
+    Route::get('receipts/export_csv',[CheckController::class, 'exportCSV']);
+    Route::get('receipts/export_pdf',[CheckController::class, 'exportPDF']);
     Route::get('receipts_report', [CheckController::class, 'getReceiptsReport']);
     Route::get('receipts_category_report', [CheckController::class, 'getReceiptsCategoryReport']);
 });

@@ -221,6 +221,8 @@ class OrderController extends Controller
     {
         $order = Order::where('id',$id)->with(['customer', 'custom_booking_length'])->first();
 
+        if(!$order) abort(404, "Order not found");
+
         if(!Auth::user()->places->contains($order->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'

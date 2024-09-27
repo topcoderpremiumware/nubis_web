@@ -66,6 +66,7 @@ export default function PosCart(props){
           place_id: localStorage.getItem('place_id'),
           order_id: props.orderId,
           status: 'open',
+          subtotal: product.selling_price,
           total: product.selling_price,
           products: [{...product, pivot:{price: product.selling_price, quantity: 1}}]
         })

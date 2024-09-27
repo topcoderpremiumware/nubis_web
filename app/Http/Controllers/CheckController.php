@@ -284,6 +284,14 @@ class CheckController extends Controller
             ->groupBy(DB::raw('payment_method'))
             ->get();
 
+        $discounts = Check::select(DB::raw('discount_type, SUM(subtotal - total) as value'))
+            ->where('place_id',$request->place_id)
+            ->where('status','closed')
+            ->whereNotNull('discount_type')
+            ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
+            ->groupBy(DB::raw('discount_type'))
+            ->get();
+
         if($request->has('compare')){
             if($request->compare === 'year'){
                 $compare_from = Carbon::parse($request->from)->addYears(-1)->format('Y-m-d');
@@ -331,6 +339,7 @@ class CheckController extends Controller
             'number' => $number,
             'number_returned' => $number_returned,
             'payment_methods' => $payment_methods,
+            'discounts' => $discounts,
             'compare_incomes' => $data_compare_incomes ?? [],
             'compare_total' => $compare_total ?? 0,
             'compare_number' => $compare_number ?? 0,

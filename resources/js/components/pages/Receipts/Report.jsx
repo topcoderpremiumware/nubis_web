@@ -27,9 +27,9 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const Report = () => {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const [filter, setFilter] = useState({
-    from: Moment().add(-1,'days').format('YYYY-MM-DD'),
+    from: Moment().add(-1, 'days').format('YYYY-MM-DD'),
     to: Moment().format('YYYY-MM-DD'),
     compare: 'period'
   })
@@ -44,6 +44,7 @@ const Report = () => {
   const [loading, setLoading] = useState(true)
   const [paymentMethod, setPaymentMethod] = useState({})
   const [paymentMethods, setPaymentMethods] = useState([])
+  const [discounts, setDiscounts] = useState([])
   const [categoriesReport, setCategoriesReport] = useState([])
   const mediaQuery = useMediaQuery("(min-width:600px)");
 
@@ -80,6 +81,7 @@ const Report = () => {
       setNumber(response.data.number)
       setNumberReturned(response.data.number_returned)
       setPaymentMethods(response.data.payment_methods)
+      setDiscounts(response.data.discounts)
       setCompareTotal(response.data.compare_total)
       setCompareNumber(response.data.compare_number)
       setCompareNumberReturned(response.data.compare_number_returned)
@@ -108,7 +110,7 @@ const Report = () => {
   }
 
   const getPaymentMethod = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`,{
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -117,49 +119,56 @@ const Report = () => {
   }
 
   const setPeriod = (name) => {
-    if(name === 'today'){
+    if (name === 'today') {
       setFilter(prev => ({
         ...prev,
         from: Moment().format('YYYY-MM-DD'),
         to: Moment().format('YYYY-MM-DD')
       }))
     }
-    if(name === 'yesterday'){
+    if (name === 'yesterday') {
       setFilter(prev => ({
         ...prev,
-        from: Moment().add(-1,'days').format('YYYY-MM-DD'),
-        to: Moment().add(-1,'days').format('YYYY-MM-DD')
+        from: Moment().add(-1, 'days').format('YYYY-MM-DD'),
+        to: Moment().add(-1, 'days').format('YYYY-MM-DD')
       }))
     }
-    if(name === 'week'){
+    if (name === 'week') {
       setFilter(prev => ({
         ...prev,
-        from: Moment().add(-1,'weeks').format('YYYY-MM-DD'),
+        from: Moment().add(-1, 'weeks').format('YYYY-MM-DD'),
         to: Moment().format('YYYY-MM-DD')
       }))
     }
-    if(name === 'month'){
+    if (name === 'month') {
       setFilter(prev => ({
         ...prev,
-        from: Moment().add(-1,'months').format('YYYY-MM-DD'),
+        from: Moment().add(-1, 'months').format('YYYY-MM-DD'),
         to: Moment().format('YYYY-MM-DD')
       }))
     }
   }
 
   const compareDiff = () => {
-    let avg,cAvg
-    if(number === 0){
+    let avg, cAvg
+    if (number === 0) {
       avg = 0
-    }else{
-      avg = total/number
+    } else {
+      avg = total / number
     }
-    if(compareNumber === 0){
+    if (compareNumber === 0) {
       cAvg = 0
-    }else{
-      cAvg = compareTotal/compareNumber
+    } else {
+      cAvg = compareTotal / compareNumber
     }
     return avg - cAvg
+  }
+
+  const discount_types = {
+    our_code_amount: t('Our gift card'),
+    code_amount: t('Other gift card'),
+    custom_amount: t('Custom amount'),
+    custom_percent: t('Custom percent')
   }
 
   return (
@@ -349,6 +358,31 @@ const Report = () => {
               <StyledTableRow>
                 <TableCell size="small"><b>{t('Total')}</b></TableCell>
                 <TableCell size="small" align="right"><b>{paymentMethod['online-payment-currency']} {currency_format(total)}</b></TableCell>
+              </StyledTableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box sx={{mt:3}}><h5>{t('Discount methods')}</h5></Box>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell size="small"><b>{t('Discount method')}</b></TableCell>
+                <TableCell size="small" align="right"><b>{t('Amount')}</b></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {discounts.map((item, key) => {
+                return <StyledTableRow key={key}>
+                  <TableCell size="small">{discount_types[item.discount_type]}</TableCell>
+                  <TableCell size="small" align="right">{paymentMethod['online-payment-currency']} {currency_format(item.value)}</TableCell>
+                </StyledTableRow>
+              })}
+              <StyledTableRow>
+                <TableCell size="small"><b>{t('Total')}</b></TableCell>
+                <TableCell size="small" align="right">
+                  <b>{paymentMethod['online-payment-currency']} {currency_format(discounts.reduce((sum,i) => sum + i.value,0))}</b>
+                </TableCell>
               </StyledTableRow>
             </TableBody>
           </Table>

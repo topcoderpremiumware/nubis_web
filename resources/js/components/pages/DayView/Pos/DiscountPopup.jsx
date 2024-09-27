@@ -27,10 +27,10 @@ export default function DiscountPopup(props){
   }
 
   const types = [
-    {id: 'our_code_amount', title: 'Our gift card'},
-    {id: 'code_amount', title: 'Other gift card'},
-    {id: 'custom_amount', title: 'Custom amount'},
-    {id: 'custom_percent', title: 'Custom percent'}
+    {id: 'our_code_amount', title: t('Our gift card')},
+    {id: 'code_amount', title: t('Other gift card')},
+    {id: 'custom_amount', title: t('Custom amount')},
+    {id: 'custom_percent', title: t('Custom percent')}
   ]
 
   return (

@@ -555,7 +555,8 @@ class CheckController extends Controller
     public function refund($id, Request $request)
     {
         $request->validate([
-            'products' => 'required'
+            'products' => 'required',
+            'refund_description' => 'required'
         ]);
 
         $check = Check::find($id);
@@ -594,6 +595,7 @@ class CheckController extends Controller
             'discount_code' => $check->discount_code,
             'payment_method' => $check->payment_method,
             'parent_id' => $check->id,
+            'refund_description' => $request->refund_description,
             'cash_amount' => $check->payment_method === 'cash' ? $total : 0,
             'card_amount' => in_array($check->payment_method,['card','card/cash']) ? $total : 0
         ]);

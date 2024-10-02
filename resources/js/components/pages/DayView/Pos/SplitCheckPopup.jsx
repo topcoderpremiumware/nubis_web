@@ -152,6 +152,7 @@ export default function SplitCheckPopup(props){
             />
           </Grid>
         </Grid>
+        {props.children}
       </DialogContent>
       <DialogActions sx={{p:2}}>
         <Button variant="contained" onClick={handleSave}>{t('Apply')}</Button>

@@ -3,14 +3,14 @@ import {useParams} from "react-router-dom";
 import {datetimeFormat, simpleCatchError} from "../../../helper";
 import React, { useEffect, useState } from 'react'
 import {
-  Button, Container,
+  Button, Container, InputAdornment,
   Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow, TextField
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
@@ -26,6 +26,14 @@ const Receipt = () => {
   const [loading, setLoading] = useState(true)
   const [paymentMethod, setPaymentMethod] = useState({})
   const [splitCheckOpen, setSplitCheckOpen] = useState(false)
+  const [refundDescription, setRefundDescription] = useState(null)
+
+  const discountTypes = {
+    our_code_amount: t('Our gift card'),
+    code_amount: t('Other gift card'),
+    custom_amount: t('Custom amount'),
+    custom_percent: t('Custom percent')
+  }
 
   useEffect(() => {
     getReceipt()
@@ -92,7 +100,10 @@ const Receipt = () => {
   }
 
   const onSelectRefundProducts = (oldCheck, newCheck) => {
-    axios.post(`${process.env.MIX_API_URL}/api/checks/${receipt.id}/refund`, {products: newCheck.products}, {
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${receipt.id}/refund`, {
+      products: newCheck.products,
+      refund_description: refundDescription
+    }, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -148,6 +159,7 @@ const Receipt = () => {
               </StyledTableRow>
               {receipt.discount && <StyledTableRow>
                 <TableCell size="small" align="right" colSpan="3">
+                  <b>{t('Discount type')}</b>: {discountTypes[receipt.discount_type]} {receipt.discount_name ? receipt.discount_name : ''} {receipt.discount_code ? `(${receipt.discount_code})` : ''} |&nbsp;
                   <b>{t('Discount')}</b>: {receipt.discount_type.includes('percent') ? '' : paymentMethod['online-payment-currency']}&nbsp;
                   {receipt.discount.toFixed(2)} {receipt.discount_type.includes('percent') ? '%' : ''}
                 </TableCell>
@@ -179,7 +191,8 @@ const Receipt = () => {
           <Box sx={{mt:3}}><h5>{t('Refunds')}</h5></Box>
           {receipt.refunds.map((refund, r_key) => {
             return <div key={r_key}>
-              <div>{datetimeFormat(refund.created_at)}</div>
+              <hr/>
+              <div>{datetimeFormat(refund.created_at)} {refund.refund_description ? <>- {refund.refund_description}</> : ''}</div>
               <TableContainer>
                 <Table>
                   <TableHead>
@@ -205,6 +218,7 @@ const Receipt = () => {
                     </StyledTableRow>
                     {!!refund.discount && <StyledTableRow>
                       <TableCell size="small" align="right" colSpan="3">
+                        <b>{t('Discount type')}</b>: {discountTypes[refund.discount_type]} {refund.discount_name ? refund.discount_name : ''} {refund.discount_code ? `(${refund.discount_code})` : ''} |&nbsp;
                         <b>{t('Discount')}</b>: {refund.discount_type.includes('percent') ? '' : paymentMethod['online-payment-currency']}&nbsp;
                         {refund.discount.toFixed(2)} {refund.discount_type.includes('percent') ? '%' : ''}
                       </TableCell>
@@ -230,7 +244,13 @@ const Receipt = () => {
         open={splitCheckOpen}
         onClose={() => setSplitCheckOpen(false)}
         onChange={onSelectRefundProducts}
-        check={receipt} />
+        check={receipt}>
+        <TextField label={t('Refund description')} size="small" fullWidth sx={{mt: 2}}
+                   type="text" id="refund_description" name="refund_description" required
+                   onChange={(e) => setRefundDescription(e.target.value)}
+                   value={refundDescription}
+        />
+      </SplitCheckPopup>
     </div>}
   </>)
 }

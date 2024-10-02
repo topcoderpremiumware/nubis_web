@@ -1,7 +1,7 @@
 import {useTranslation} from "react-i18next";
 import {useSearchParams} from "react-router-dom";
 import eventBus from "../../../eventBus";
-import {Button, FormControl, Grid, IconButton, InputLabel, Stack} from "@mui/material";
+import {Button, ButtonGroup, FormControl, Grid, IconButton, InputLabel, Stack, useMediaQuery} from "@mui/material";
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import {datetimeFormat, simpleCatchError} from "../../../helper";
 import {DataGrid} from "@mui/x-data-grid";
@@ -20,6 +20,7 @@ const Receipts = () => {
   const [loading, setLoading] = useState(true)
   const [csvLoading, setCSVLoading] = useState(false)
   const [pdfLoading, setPDFLoading] = useState(false)
+  const mediaQuery = useMediaQuery("(min-width:600px)");
   const [paymentMethod, setPaymentMethod] = useState({})
   const [filter, setFilter] = useState({
     from: Moment().add(-1,'days').format('YYYY-MM-DD'),
@@ -184,10 +185,49 @@ const Receipts = () => {
     setPaymentMethod(res.data)
   }
 
+  const setPeriod = (name) => {
+    if (name === 'today') {
+      setFilter(prev => ({
+        ...prev,
+        from: Moment().format('YYYY-MM-DD'),
+        to: Moment().format('YYYY-MM-DD')
+      }))
+    }
+    if (name === 'yesterday') {
+      setFilter(prev => ({
+        ...prev,
+        from: Moment().add(-1, 'days').format('YYYY-MM-DD'),
+        to: Moment().add(-1, 'days').format('YYYY-MM-DD')
+      }))
+    }
+    if (name === 'week') {
+      setFilter(prev => ({
+        ...prev,
+        from: Moment().add(-1, 'weeks').format('YYYY-MM-DD'),
+        to: Moment().format('YYYY-MM-DD')
+      }))
+    }
+    if (name === 'month') {
+      setFilter(prev => ({
+        ...prev,
+        from: Moment().add(-1, 'months').format('YYYY-MM-DD'),
+        to: Moment().format('YYYY-MM-DD')
+      }))
+    }
+  }
+
   return (
     <div className='pages__container'>
-      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+      <Stack spacing={2} mb={2} direction="row" alignItems="center" flexWrap="wrap">
         <h2>{t('Receipts')}</h2>
+        <Button variant="contained" style={{marginLeft: 'auto'}}
+                onClick={exportCSV}
+                disabled={csvLoading}
+                endIcon={csvLoading && <HourglassBottomIcon/>}>{t('Export CSV')}</Button>
+        <Button variant="contained"
+                onClick={exportPDF}
+                disabled={pdfLoading}
+                endIcon={pdfLoading && <HourglassBottomIcon/>}>{t('Export PDF')}</Button>
       </Stack>
       <Grid container spacing={2} sx={{pb: 2}}>
         <Grid item xs={12} sm={4} md={3}>
@@ -213,16 +253,12 @@ const Receipts = () => {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          <Stack spacing={2} direction="row" alignItems="center">
-            <Button variant="contained"
-                    onClick={exportCSV}
-                    disabled={csvLoading}
-                    endIcon={csvLoading && <HourglassBottomIcon/>}>{t('Export CSV')}</Button>
-            <Button variant="contained"
-                    onClick={exportPDF}
-                    disabled={pdfLoading}
-                    endIcon={pdfLoading && <HourglassBottomIcon/>}>{t('Export PDF')}</Button>
-          </Stack>
+          <ButtonGroup variant="contained" size="small" orientation={`${mediaQuery ? `horizontal` : `vertical`}`}>
+            <Button onClick={() => setPeriod('today')}>{t('today')}</Button>
+            <Button onClick={() => setPeriod('yesterday')}>{t('yesterday')}</Button>
+            <Button onClick={() => setPeriod('week')}>{t('week')}</Button>
+            <Button onClick={() => setPeriod('month')}>{t('month')}</Button>
+          </ButtonGroup>
         </Grid>
       </Grid>
       <div style={{ width: '100%', height: 'calc(100vh - 300px)' }}>

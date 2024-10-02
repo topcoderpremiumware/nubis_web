@@ -30,6 +30,7 @@ use Illuminate\Support\Collection;
  * @property float $cash_amount
  * @property float $card_amount
  * @property integer $parent_id
+ * @property string $refund_description
  *
  * @property Place $place
  * @property Order $order

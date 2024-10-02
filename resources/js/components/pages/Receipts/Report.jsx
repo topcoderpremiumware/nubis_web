@@ -251,7 +251,7 @@ const Report = () => {
                 {t('Number of sales')}
               </Typography>
               <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: '20px' }} gutterBottom>
-                {number}
+                {number.toFixed(0)}
               </Typography>
               <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '20px' }} gutterBottom>
                 {number > 0 && <span style={{color: `${(number - compareNumber) < 0 ? 'red' : 'green'}`}}>
@@ -293,7 +293,7 @@ const Report = () => {
                 {t('Number of returns')}
               </Typography>
               <Typography sx={{ fontSize: 24, fontWeight: 500, lineHeight: '20px' }} gutterBottom>
-                {numberReturned}
+                {numberReturned.toFixed(0)}
               </Typography>
               <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '20px' }} gutterBottom>
                 {numberReturned > 0 && <span style={{color: `${(numberReturned - compareNumberReturned) < 0 ? 'red' : 'green'}`}}>

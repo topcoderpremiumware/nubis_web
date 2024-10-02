@@ -25,6 +25,7 @@ import CheckTable from "./CheckTable";
 import ChangeTablePopup from "./ChangeTablePopup";
 import ChangeOrder from "./ChangeOrder";
 import PaymentMethodPopup from "./PaymentMethodPopup";
+import {calcCheckTotal} from "./posHelper";
 
 export default function PosCart(props){
   const {t} = useTranslation();
@@ -136,22 +137,6 @@ export default function PosCart(props){
   useEffect(() => {
     selectedCheckIndexRef.current = selectedCheckIndex;
   },[selectedCheckIndex])
-
-  const calcCheckTotal = (check) => {
-    let subtotal = check.products.reduce(
-      (acc, product) => acc + product.pivot.quantity * product.pivot.price,
-      0
-    )
-    let total = subtotal
-    if(check.discount_type){
-      if(check.discount_type.includes('amount')){
-        total -= check.discount
-      }else if(check.discount_type.includes('percent')){
-        total -= total * check.discount / 100
-      }
-    }
-    return {total: parseFloat(total?.toFixed(2)),subtotal: parseFloat(subtotal?.toFixed(2))}
-  }
 
   const getChecks = () => {
     setLoading(true)
@@ -403,8 +388,7 @@ export default function PosCart(props){
         open={splitCheckOpen}
         onClose={() => setSplitCheckOpen(false)}
         onChange={onChangeSplitCheck}
-        check={checks[selectedCheckIndex]}
-        calcCheckTotal={calcCheckTotal} />
+        check={checks[selectedCheckIndex]} />
       <ChangeTablePopup
         open={changeTableOpen}
         onClose={() => setChangeTableOpen(false)}

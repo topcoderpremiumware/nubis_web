@@ -4,8 +4,7 @@ import {datetimeFormat, simpleCatchError} from "../../../helper";
 import React, { useEffect, useState } from 'react'
 import {
   Button, Container,
-  IconButton,
-  Stack, styled,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -15,10 +14,10 @@ import {
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import {StyledTableRow} from "../../components/StyledTableRow";
 import Box from "@mui/material/Box";
+import SplitCheckPopup from "../DayView/Pos/SplitCheckPopup";
+import eventBus from "../../../eventBus";
 
 const Receipt = () => {
   const { t } = useTranslation();
@@ -26,6 +25,7 @@ const Receipt = () => {
   const [receipt, setReceipt] = useState({})
   const [loading, setLoading] = useState(true)
   const [paymentMethod, setPaymentMethod] = useState({})
+  const [splitCheckOpen, setSplitCheckOpen] = useState(false)
 
   useEffect(() => {
     getReceipt()
@@ -71,7 +71,7 @@ const Receipt = () => {
     setPaymentMethod(res.data)
   }
 
-  const getVat = () => {
+  const getVat = (receipt) => {
     let vat = 0
     receipt.products.forEach((item) => {
       let pTotal = item.pivot.price * item.pivot.quantity
@@ -91,16 +91,38 @@ const Receipt = () => {
     return vat.toFixed(2)
   }
 
+  const onSelectRefundProducts = (oldCheck, newCheck) => {
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${receipt.id}/refund`, {products: newCheck.products}, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      getReceipt()
+      eventBus.dispatch("notification", {type: 'success', message: 'Refunded successfully'});
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+    setSplitCheckOpen(false)
+  }
+
+  const refund = () => {
+    setSplitCheckOpen(true)
+  }
+
   return (<>
     {loading ? <CircularProgress/> :
     <div className='pages__container'>
-      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+      <Stack spacing={2} mb={2} direction="row" alignItems="center">
         <h2>{t('Receipt')} #{receipt.id}</h2>
         <Button style={{marginLeft:'auto'}}
                 variant="contained"
                 type="button"
                 onClick={() => openPDF()}
         >{t('Print receipt')}</Button>
+        <Button variant="contained"
+                type="button"
+                onClick={() => refund()}
+        >{t('Refund')}</Button>
       </Stack>
       <div>{datetimeFormat(receipt.printed_at)}</div>
       <Container maxWidth="md" disableGutters={true}>
@@ -131,7 +153,7 @@ const Receipt = () => {
                 </TableCell>
               </StyledTableRow>}
               <StyledTableRow>
-                <TableCell size="small" align="right" colSpan="3"><b>{t('VAT')}</b>: {paymentMethod['online-payment-currency']} {getVat()}</TableCell>
+                <TableCell size="small" align="right" colSpan="3"><b>{t('VAT')}</b>: {paymentMethod['online-payment-currency']} {getVat(receipt)}</TableCell>
               </StyledTableRow>
               <StyledTableRow>
                 <TableCell size="small" align="right" colSpan="3"><b>{t('Total')}</b>: {paymentMethod['online-payment-currency']} {receipt.total.toFixed(2)}</TableCell>
@@ -153,7 +175,62 @@ const Receipt = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        {receipt.refunds.length > 0 && <>
+          <Box sx={{mt:3}}><h5>{t('Refunds')}</h5></Box>
+          {receipt.refunds.map((refund, r_key) => {
+            return <div key={r_key}>
+              <div>{datetimeFormat(refund.created_at)}</div>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell size="small"><b>{t('Item')}</b></TableCell>
+                      <TableCell size="small" align="right" width="100"><b>{t('Quantity')}</b></TableCell>
+                      <TableCell size="small" align="right" width="120"><b>{t('Total')}</b></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {refund.products.map((item, key) => {
+                      return <StyledTableRow key={key}>
+                        <TableCell size="small">{item.name}</TableCell>
+                        <TableCell size="small" align="right">{item.pivot.quantity}</TableCell>
+                        <TableCell size="small"
+                                   align="right">{paymentMethod['online-payment-currency']} {(item.pivot.quantity * item.pivot.price).toFixed(2)}</TableCell>
+                      </StyledTableRow>
+                    })}
+                    <StyledTableRow>
+                      <TableCell size="small" align="right"
+                                 colSpan="3"><b>{t('Subtotal')}</b>: {paymentMethod['online-payment-currency']} {refund.subtotal.toFixed(2)}
+                      </TableCell>
+                    </StyledTableRow>
+                    {!!refund.discount && <StyledTableRow>
+                      <TableCell size="small" align="right" colSpan="3">
+                        <b>{t('Discount')}</b>: {refund.discount_type.includes('percent') ? '' : paymentMethod['online-payment-currency']}&nbsp;
+                        {refund.discount.toFixed(2)} {refund.discount_type.includes('percent') ? '%' : ''}
+                      </TableCell>
+                    </StyledTableRow>}
+                    <StyledTableRow>
+                      <TableCell size="small" align="right"
+                                 colSpan="3"><b>{t('VAT')}</b>: {paymentMethod['online-payment-currency']} {getVat(refund)}
+                      </TableCell>
+                    </StyledTableRow>
+                    <StyledTableRow>
+                      <TableCell size="small" align="right"
+                                 colSpan="3"><b>{t('Total')}</b>: {paymentMethod['online-payment-currency']} {refund.total.toFixed(2)}
+                      </TableCell>
+                    </StyledTableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          })}
+        </>}
       </Container>
+      <SplitCheckPopup
+        open={splitCheckOpen}
+        onClose={() => setSplitCheckOpen(false)}
+        onChange={onSelectRefundProducts}
+        check={receipt} />
     </div>}
   </>)
 }

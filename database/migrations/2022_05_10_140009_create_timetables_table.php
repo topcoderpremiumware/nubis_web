@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('status');
             $table->longText('booking_limits');
             $table->unsignedSmallInteger('min_time_before');
+            $table->integer('future_booking_limit')->nullable();
             $table->timestamps();
         });
     }

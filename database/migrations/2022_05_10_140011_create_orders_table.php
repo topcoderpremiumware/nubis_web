@@ -30,6 +30,11 @@ return new class extends Migration
             $table->softDeletes();
             $table->unsignedSmallInteger('length');
             $table->foreignId('custom_booking_length_id')->nullable()->constrained();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('email')->nullable()->index();
+            $table->string('phone')->nullable();
             $table->timestamps();
         });
     }

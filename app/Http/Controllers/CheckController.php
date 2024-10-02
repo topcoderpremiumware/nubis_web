@@ -108,7 +108,7 @@ class CheckController extends Controller
             'discount_code' => $request->discount_code,
             'payment_method' => $request->payment_method,
             'cash_amount' => $request->payment_method === 'cash' ? $request->total : $request->cash_amount,
-            'card_amount' => $request->payment_method === 'card' ? $request->total :$request->card_amount
+            'card_amount' => $request->payment_method === 'card' ? $request->total : $request->card_amount
         ]);
 
         if($request->has('products')){
@@ -136,6 +136,7 @@ class CheckController extends Controller
     {
         $checks = Check::with('products')
             ->where('order_id',$order_id)
+            ->whereIn('status',['open','closed'])
             ->get();
 
         return response()->json($checks);
@@ -209,7 +210,7 @@ class CheckController extends Controller
         $per_page = $request->has('per_page') ? $request->per_page : 10;
 
         $checks = Check::where('place_id',$request->place_id)
-            ->where('status','closed')->with('order');
+            ->whereIn('status',['closed','refund'])->with('order');
         if($request->has('filter_field')) {
             $checks = $checks->where($request->filter_field, 'like', $request->filter_value . '%');
         }
@@ -231,7 +232,7 @@ class CheckController extends Controller
 
     public function getReceipt($id, Request $request)
     {
-        $check = Check::where('id',$id)->with(['products','order','printed'])->first();
+        $check = Check::where('id',$id)->with(['products','order','printed','refunds.products'])->first();
 
         if(!Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
 
@@ -248,9 +249,13 @@ class CheckController extends Controller
 
         if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
-        $incomes = Check::select(DB::raw('DATE(created_at) as date, SUM(total) as value'))
+        $incomes = Check::select(DB::raw('DATE(created_at) as date, SUM(CASE
+                WHEN status = "closed" THEN total
+                WHEN status = "refund" THEN -total
+                ELSE 0
+            END) as value'))
             ->where('place_id',$request->place_id)
-            ->where('status','closed')
+            ->whereIn('status', ['closed', 'refund'])
             ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('date','asc')
@@ -267,26 +272,53 @@ class CheckController extends Controller
         }
 
         $total = 0;
-        $number_returned = 0;
-        $number = Check::where('place_id',$request->place_id)
-            ->where('status','closed')
-            ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
-            ->count();
+//        $number = Check::where('place_id',$request->place_id)
+//            ->where('status','closed')
+//            ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
+//            ->count();
+        $number_returned = DB::table('checks')
+            ->join('check_product', 'checks.id', '=', 'check_product.check_id')
+            ->select(DB::raw('SUM(check_product.quantity) as total_products'))
+            ->where('checks.place_id', $request->place_id)
+            ->whereIn('checks.status', ['refund'])
+            ->whereBetween(DB::raw('DATE(checks.created_at)'), [$request->from, $request->to])
+            ->first()
+            ->total_products;
+        $number = DB::table('checks')
+            ->join('check_product', 'checks.id', '=', 'check_product.check_id')
+            ->select(DB::raw('SUM(CASE
+                WHEN checks.status = "closed" THEN check_product.quantity
+                WHEN checks.status = "refund" THEN -check_product.quantity
+                ELSE 0
+            END) as total_products'))
+            ->where('checks.place_id', $request->place_id)
+            ->whereIn('checks.status', ['closed', 'refund'])
+            ->whereBetween(DB::raw('DATE(checks.created_at)'), [$request->from, $request->to])
+            ->first()
+            ->total_products;
 
         foreach ($incomes as $income) {
             $total += $income->value;
         }
 
-        $payment_methods = Check::select(DB::raw('payment_method, SUM(total) as value'))
+        $payment_methods = Check::select(DB::raw('payment_method, SUM(CASE
+                WHEN status = "closed" THEN total
+                WHEN status = "refund" THEN -total
+                ELSE 0
+            END) as value'))
             ->where('place_id',$request->place_id)
-            ->where('status','closed')
+            ->whereIn('checks.status', ['closed', 'refund'])
             ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
             ->groupBy(DB::raw('payment_method'))
             ->get();
 
-        $discounts = Check::select(DB::raw('discount_type, SUM(subtotal - total) as value'))
+        $discounts = Check::select(DB::raw('discount_type, SUM(CASE
+                WHEN status = "closed" THEN subtotal - total
+                WHEN status = "refund" THEN -(subtotal - total)
+                ELSE 0
+            END) as value'))
             ->where('place_id',$request->place_id)
-            ->where('status','closed')
+            ->whereIn('checks.status', ['closed', 'refund'])
             ->whereNotNull('discount_type')
             ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
             ->groupBy(DB::raw('discount_type'))
@@ -303,9 +335,13 @@ class CheckController extends Controller
                 $compare_to = Carbon::parse($request->to)->addDays($days)->format('Y-m-d');
             }
 
-            $compare_incomes = Check::select(DB::raw('DATE(created_at) as date, SUM(total) as value'))
+            $compare_incomes = Check::select(DB::raw('DATE(created_at) as date, SUM(CASE
+                WHEN status = "closed" THEN total
+                WHEN status = "refund" THEN -total
+                ELSE 0
+            END) as value'))
                 ->where('place_id',$request->place_id)
-                ->where('status','closed')
+                ->whereIn('checks.status', ['closed', 'refund'])
                 ->whereBetween(DB::raw('DATE(created_at)'),[$compare_from,$compare_to])
                 ->groupBy(DB::raw('DATE(created_at)'))
                 ->orderBy('date','asc')
@@ -322,11 +358,30 @@ class CheckController extends Controller
             }
 
             $compare_total = 0;
-            $compare_number_returned = 0;
-            $compare_number = Check::where('place_id',$request->place_id)
-                ->where('status','closed')
-                ->whereBetween(DB::raw('DATE(created_at)'),[$compare_from,$compare_to])
-                ->count();
+//            $compare_number = Check::where('place_id',$request->place_id)
+//                ->where('status','closed')
+//                ->whereBetween(DB::raw('DATE(created_at)'),[$compare_from,$compare_to])
+//                ->count();
+            $compare_number_returned = DB::table('checks')
+                ->join('check_product', 'checks.id', '=', 'check_product.check_id')
+                ->select(DB::raw('SUM(check_product.quantity) as total_products'))
+                ->where('checks.place_id', $request->place_id)
+                ->whereIn('checks.status', ['refund'])
+                ->whereBetween(DB::raw('DATE(checks.created_at)'), [$compare_from, $compare_to])
+                ->first()
+                ->total_products;
+            $compare_number = DB::table('checks')
+                ->join('check_product', 'checks.id', '=', 'check_product.check_id')
+                ->select(DB::raw('SUM(CASE
+                WHEN checks.status = "closed" THEN check_product.quantity
+                WHEN checks.status = "refund" THEN -check_product.quantity
+                ELSE 0
+            END) as total_products'))
+                ->where('checks.place_id', $request->place_id)
+                ->whereIn('checks.status', ['closed', 'refund'])
+                ->whereBetween(DB::raw('DATE(checks.created_at)'), [$compare_from, $compare_to])
+                ->first()
+                ->total_products;
 
             foreach ($compare_incomes as $compare_income) {
                 $compare_total += $compare_income->value;
@@ -359,7 +414,7 @@ class CheckController extends Controller
 
         /* @var Collection<Check> $checks */
         $checks = Check::where('place_id',$request->place_id)
-            ->where('status','closed')
+            ->whereIn('checks.status', ['closed', 'refund'])
             ->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to])
             ->get();
 
@@ -384,7 +439,11 @@ class CheckController extends Controller
                     $p_total = $p_total - $p_discount;
                 }
                 foreach ($product->product_categories as $product_category) {
-                    $categories_sums[$product_category->id]->value += $p_total;
+                    if($check->status === 'closed'){
+                        $categories_sums[$product_category->id]->value += $p_total;
+                    }else{
+                        $categories_sums[$product_category->id]->value -= $p_total;
+                    }
                 }
             }
         }
@@ -401,7 +460,7 @@ class CheckController extends Controller
         if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         $checks = Check::where('place_id',$request->place_id)
-            ->where('status','closed')->with('order');
+            ->whereIn('status',['closed','refund'])->with('order');
         if($request->has('filter_field')) {
             $checks = $checks->where($request->filter_field, 'like', $request->filter_value . '%');
         }
@@ -452,7 +511,7 @@ class CheckController extends Controller
         if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         $checks = Check::where('place_id',$request->place_id)
-            ->where('status','closed')->with('order');
+            ->whereIn('status',['closed','refund'])->with('order');
         if($request->has('filter_field')) {
             $checks = $checks->where($request->filter_field, 'like', $request->filter_value . '%');
         }
@@ -491,5 +550,67 @@ class CheckController extends Controller
         $dompdf->setPaper('A4');
         $dompdf->render();
         $dompdf->stream('export_receipts.pdf', array("Attachment" => false,'compress' => false));
+    }
+
+    public function refund($id, Request $request)
+    {
+        $request->validate([
+            'products' => 'required'
+        ]);
+
+        $check = Check::find($id);
+
+        if(!Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
+
+        $subtotal = 0;
+        $total = 0;
+        $discount = 0;
+
+        foreach ($request->products as $product) {
+            $p_total = (float)$product['pivot']['price'] * (float)$product['pivot']['quantity'];
+            $subtotal += $p_total;
+            if($check->discount){
+                if(str_contains($check->discount_type,'percent')){
+                    $p_discount = $p_total * $check->discount / 100;
+                }else{
+                    $p_discount = $p_total * $check->discount / $check->subtotal;
+                }
+                $p_total = $p_total - $p_discount;
+                $discount += $p_discount;
+            }
+            $total += $p_total;
+        }
+
+        $refund = Check::create([
+            'name' => $check->name,
+            'place_id' => $check->place_id,
+            'order_id' => $check->order_id,
+            'status' => 'refund',
+            'subtotal' => $subtotal,
+            'total' => $total,
+            'discount' => str_contains($check->discount_type,'percent') ? $check->discount : $discount,
+            'discount_name' => $check->discount_name,
+            'discount_type' => $check->discount_type,
+            'discount_code' => $check->discount_code,
+            'payment_method' => $check->payment_method,
+            'parent_id' => $check->id,
+            'cash_amount' => $check->payment_method === 'cash' ? $total : 0,
+            'card_amount' => in_array($check->payment_method,['card','card/cash']) ? $total : 0
+        ]);
+
+        if($request->has('products')){
+            $sync_array = [];
+            foreach ($request->products as $product) {
+                $sync_array[$product['id']] = [
+                    'price' => $product['pivot']['price'],
+                    'quantity' => $product['pivot']['quantity']
+                ];
+            }
+            $refund->products()->sync($sync_array);
+        }
+
+        Log::add($request,'create-check-refund','Created check refund #'.$refund->id);
+
+        return response()->json($refund);
     }
 }

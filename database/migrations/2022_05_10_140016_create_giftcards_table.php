@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('receiver_email');
             $table->foreignId('country_id')->nullable();
             $table->string('status')->default('pending');
+            $table->string('filename')->nullable();
             $table->timestamps();
         });
     }

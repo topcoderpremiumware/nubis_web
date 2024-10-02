@@ -653,6 +653,7 @@ class OrderController extends Controller
                                     continue 2;
                                 }
                             }
+
                             array_push($free_time, $time->copy());
                             break;
                         }

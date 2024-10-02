@@ -1,8 +1,7 @@
 import {useTranslation} from "react-i18next";
 import {useSearchParams} from "react-router-dom";
 import eventBus from "../../../eventBus";
-import moment from "moment/moment";
-import {Button, ButtonGroup, FormControl, Grid, IconButton, InputLabel, Stack} from "@mui/material";
+import {Button, FormControl, Grid, IconButton, InputLabel, Stack} from "@mui/material";
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import {datetimeFormat, simpleCatchError} from "../../../helper";
 import {DataGrid} from "@mui/x-data-grid";
@@ -65,12 +64,14 @@ const Receipts = () => {
     let cols = []
     cols.push({ field: 'id', headerName: t('ID'), flex: 1, minWidth: 80 })
     cols.push({ field: 'payment_method', headerName: t('Payment method'), flex: 1, minWidth: 80 })
-    cols.push({field: 'printed_at', headerName: t('Given'), flex: 1, minWidth: 140, renderCell: (params) => datetimeFormat(params.value)})
+    cols.push({field: 'printed_at', headerName: t('Given'), flex: 1, minWidth: 140,
+      renderCell: (params) => params.value ? datetimeFormat(params.value) : datetimeFormat(params.row.created_at)})
     cols.push({ field: 'description', headerName: t('Description'), flex: 2, minWidth: 250 })
-    cols.push({field: 'total', headerName: t('Total'), flex: 1, minWidth: 100, type: 'number', renderCell: (params) => <>{paymentMethod['online-payment-currency']} {params.value.toFixed(2)}</>})
+    cols.push({field: 'total', headerName: t('Total'), flex: 1, minWidth: 100, type: 'number',
+      renderCell: (params) => <>{paymentMethod['online-payment-currency']} {params.value.toFixed(2)}</>})
     cols.push({ field: 'actions', headerName: t('Actions'), width: 80, filterable: false, sortable: false, renderCell: (params) =>
         <span>
-          <IconButton onClick={e => { window.open(`/admin/Receipts/${params.row.id}`, '_blank') }} size="small">
+          <IconButton onClick={e => { window.open(`/admin/Receipts/${params.row.status === 'refund' ? params.row.parent_id : params.row.id}`, '_blank') }} size="small">
             <ReceiptIcon fontSize="small"/>
           </IconButton>
         </span>, })
@@ -244,6 +245,7 @@ const Receipts = () => {
           // onPreferencePanelClose={() => {getReceipts()}}
           rows={receipts}
           columns={columns()}
+          getRowClassName={(params) => `receipt_status_${params.row.status}`}
         />
       </div>
     </div>

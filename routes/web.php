@@ -1,16 +1,11 @@
 <?php
 
-use App\Http\Controllers\TimetableController;
-use App\Models\Area;
+use App\Http\Controllers\SwedbankWebhookController;
+use App\Jobs\SwedbankPayment;
 use App\Models\Giftcard;
 use App\Models\Order;
-use App\Models\Place;
-use App\Models\User;
 use App\Models\VideoGuide;
-use Dompdf\Options;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
-use Dompdf\Dompdf;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,8 +22,10 @@ use Dompdf\Dompdf;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-
+    dispatch(new SwedbankPayment(20,'DKK',1,1, 1,2));
 });
+
+Route::any('/EPASSaleToPOI/3.1', [SwedbankWebhookController::class, 'webhook']);
 
 Route::get('/change_lang/{locale}', function ($locale = null) {
     app()->setLocale($locale);

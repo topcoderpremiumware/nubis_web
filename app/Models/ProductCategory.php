@@ -39,7 +39,7 @@ class ProductCategory extends Model
         'image_url'
     ];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 

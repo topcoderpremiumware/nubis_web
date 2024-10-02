@@ -17,6 +17,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import {calcCheckTotal} from "./posHelper";
 
 export default function SplitCheckPopup(props){
   const {t} = useTranslation();
@@ -59,11 +60,11 @@ export default function SplitCheckPopup(props){
     }
     tempNewCheck.products[newProdIndex].pivot.quantity += quantity
 
-    let totals = props.calcCheckTotal(tempOldCheck)
+    let totals = calcCheckTotal(tempOldCheck)
     tempOldCheck.total = totals['total']
     tempOldCheck.subtotal = totals['subtotal']
 
-    totals = props.calcCheckTotal(tempNewCheck)
+    totals = calcCheckTotal(tempNewCheck)
     tempNewCheck.total = totals['total']
     tempNewCheck.subtotal = totals['subtotal']
 
@@ -88,11 +89,11 @@ export default function SplitCheckPopup(props){
     }
     tempOldCheck.products[oldProdIndex].pivot.quantity += quantity
 
-    let totals = props.calcCheckTotal(tempNewCheck)
+    let totals = calcCheckTotal(tempNewCheck)
     tempNewCheck.total = totals['total']
     tempNewCheck.subtotal = totals['subtotal']
 
-    totals = props.calcCheckTotal(tempOldCheck)
+    totals = calcCheckTotal(tempOldCheck)
     tempOldCheck.total = totals['total']
     tempOldCheck.subtotal = totals['subtotal']
 

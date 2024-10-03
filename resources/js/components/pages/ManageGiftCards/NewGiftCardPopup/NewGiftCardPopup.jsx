@@ -107,7 +107,11 @@ export default function NewGiftCardPopup({ open, handleClose }) {
   }
 
   const getExperiences = async () => {
-    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/giftcard_menus`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/giftcard_menus`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
       setExperiences(response.data)
     }).catch(error => {
     })

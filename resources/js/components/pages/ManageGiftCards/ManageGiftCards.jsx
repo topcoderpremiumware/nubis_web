@@ -63,8 +63,7 @@ const ManageGiftCards = () => {
     await axios.get(`${process.env.MIX_API_URL}/api/giftcards?deleted=1`, {
       params: {
         place_id: localStorage.getItem('place_id')
-      }
-    }, {
+      },
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }

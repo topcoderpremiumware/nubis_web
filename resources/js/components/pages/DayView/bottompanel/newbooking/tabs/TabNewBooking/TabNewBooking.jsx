@@ -25,6 +25,7 @@ import 'react-phone-input-2/lib/material.css'
 import GuestTables from "./tables/GuestTables";
 import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {simpleCatchError} from "../../../../../../../helper";
 
 export default function TabNewBooking(props) {
   const {t} = useTranslation();
@@ -33,6 +34,8 @@ export default function TabNewBooking(props) {
   const [selectedTables, setSelectedTables] = React.useState([])
   const [customers, setCustomers] = React.useState([])
   const [areas, setAreas] = React.useState([])
+  const [tableplans, setTableplans] = React.useState([])
+  const [timeTableplans, setTimeTableplans] = React.useState([])
   const [times, setTimes] = React.useState([])
   const [tables, setTables] = React.useState([])
   const [isWalkIn, setIsWalkIn] = useState(false)
@@ -41,23 +44,10 @@ export default function TabNewBooking(props) {
   const [documents, setDocuments] = React.useState([])
 
   useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true)
+    getAreas()
+    getTableplans()
+    getCustomers()
 
-        // get areas
-        await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
-          setAreas(response.data)
-        })
-
-        await getCustomers()
-
-      } catch (err) {
-        console.log('err', err)
-      } finally {
-        setLoading(false)
-      }
-    })()
     eventBus.on('customersChanged',() => {
       getCustomers()
     })
@@ -81,6 +71,10 @@ export default function TabNewBooking(props) {
   }, [tables])
 
   useEffect(async () => {
+    getTimeTableplans()
+  }, [order.area_id, order.reservation_time])
+
+  useEffect(async () => {
     if(Object.keys(order).length) {
       // getTimes()
       getTables()
@@ -90,6 +84,46 @@ export default function TabNewBooking(props) {
   useEffect(async () => {
     getCustomers()
   }, [order?.customer?.first_name, order?.customer?.last_name, order?.customer?.email, order?.customer?.phone])
+
+  const getAreas = () => {
+    setLoading(true)
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/areas?all=1`).then(response => {
+      setAreas(response.data)
+      setLoading(false)
+    }).catch(error => {
+      simpleCatchError(error)
+      setLoading(false)
+    })
+  }
+
+  const getTableplans = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/tableplans`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setTableplans(response.data)
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+  }
+
+  const getTimeTableplans = () => {
+    if(order.area_id){
+      axios.get(`${process.env.MIX_API_URL}/api/areas/${order.area_id}/working`, {
+        params: {
+          date: Moment.utc(order.reservation_time).format('YYYY-MM-DD')
+        },
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        setTimeTableplans(response.data)
+      }).catch(error => {
+        simpleCatchError(error)
+      })
+    }
+  }
 
   const getCustomers = async () => {
     await axios.get(`${process.env.MIX_API_URL}/api/customers/all`, {
@@ -177,6 +211,7 @@ export default function TabNewBooking(props) {
       }
     ))
     if(e.target.name === 'area_id') setOrder(prev => ({...prev, area_id: e.target.value}))
+    if(e.target.name === 'tableplan_id') setOrder(prev => ({...prev, tableplan_id: e.target.value}))
     if(e.target.name === 'seats') setOrder(prev => ({...prev, seats: e.target.value}))
     if(e.target.name === 'length') setOrder(prev => ({...prev, length: e.target.value}))
     if(e.target.name === 'table_ids') setOrder(prev => ({...prev, table_ids: getTableIds(e.target.value)}))
@@ -428,15 +463,22 @@ export default function TabNewBooking(props) {
     return isNotRegister() ? order[name] : (order.customer ? order.customer[name] : '')
   }
 
+  const tableplanOptions = () => {
+    let ttps = timeTableplans.map(i => i.tableplan_id)
+    return tableplans.filter(el => {
+      return ttps.includes(el.id) || el.id === order.tableplan_id
+    })
+  }
+
   return (
     loading ? <div><CircularProgress/></div> :
       <div className="row pt-3 TabNewBooking__container">
         <div className="col-md-4">
-          <FormControl size="small" fullWidth className="datePickerFullWidth" sx={{mb:2}}>
+          <FormControl size="small" fullWidth className="datePickerFullWidth" sx={{mb: 2}}>
             <InputLabel htmlFor="date" shrink>{t('Date')}</InputLabel>
             <DatePicker
               dateFormat='LLLL dd yyyy'
-              selected={ new Date(order.reservation_time || new Date()) } id="date"
+              selected={new Date(order.reservation_time || new Date())} id="date"
               onSelect={e => {
                 onChange({target: {name: 'date', value: Moment.utc(e).format('YYYY-MM-DD')}})
               }}
@@ -445,19 +487,35 @@ export default function TabNewBooking(props) {
               }}
             />
           </FormControl>
-          <FormControl size="small" fullWidth sx={{mb:2}}>
-            <InputLabel id="label_area_id">{t('Area')}</InputLabel>
-            <Select label={t('Area')} value={order.area_id || ''} required
-                    labelId="label_area_id" id="area_id" name="area_id"
-                    onChange={onChange}>
-              {areas.map((el, key) => {
-                return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
-              })}
-            </Select>
-          </FormControl>
           <div className="row">
             <div className="col-6">
-              <FormControl size="small" fullWidth sx={{mb:2}}>
+              <FormControl size="small" fullWidth sx={{mb: 2}}>
+                <InputLabel id="label_area_id">{t('Area')}</InputLabel>
+                <Select label={t('Area')} value={order.area_id || ''} required
+                        labelId="label_area_id" id="area_id" name="area_id"
+                        onChange={onChange}>
+                  {areas.map((el, key) => {
+                    return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
+            </div>
+            <div className="col-6">
+              <FormControl size="small" fullWidth sx={{mb: 2}}>
+                <InputLabel id="label_tableplan_id">{t('Tableplan')}</InputLabel>
+                <Select label={t('Tableplan')} value={order.tableplan_id || ''} required
+                        labelId="label_tableplan_id" id="tableplan_id" name="tableplan_id"
+                        onChange={onChange}>
+                  {tableplanOptions().map((el, key) => {
+                    return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-6">
+              <FormControl size="small" fullWidth sx={{mb: 2}}>
                 <InputLabel id="label_seats">{t('Seats')}</InputLabel>
                 <Select label={t('Seats')} value={order.seats || ''} required
                         labelId="label_seats" id="seats" name="seats"
@@ -469,7 +527,7 @@ export default function TabNewBooking(props) {
               </FormControl>
             </div>
             <div className="col-6">
-              <FormControl size="small" fullWidth sx={{mb:2}}>
+              <FormControl size="small" fullWidth sx={{mb: 2}}>
                 <InputLabel id="label_length">{t('Length')}</InputLabel>
                 <Select label={t('Length')} value={order.length || ''} required
                         labelId="label_length" id="length" name="length"
@@ -483,7 +541,7 @@ export default function TabNewBooking(props) {
           </div>
           <div className="row">
             <div className="col-6">
-              <FormControl size="small" fullWidth sx={{mb:2}}>
+              <FormControl size="small" fullWidth sx={{mb: 2}}>
                 <InputLabel id="label_time">{t('Time')}</InputLabel>
                 <Select label={t('Time')} value={Moment.utc(order.reservation_time).format('HH:mm') || ''} required
                         labelId="label_time" id="time" name="time"
@@ -495,7 +553,7 @@ export default function TabNewBooking(props) {
               </FormControl>
             </div>
             <div className="col-6">
-              <FormControl size="small" fullWidth sx={{mb:2}}>
+              <FormControl size="small" fullWidth sx={{mb: 2}}>
                 <InputLabel id="label_tables">{t('Tables')}</InputLabel>
                 <Select label={t('Tables')} value={selectedTables} required
                         labelId="label_table_ids" id="table_ids" name="table_ids" multiple
@@ -507,11 +565,11 @@ export default function TabNewBooking(props) {
               </FormControl>
             </div>
           </div>
-          <TextField label={t('Note')} size="small" fullWidth multiline rows="2" sx={{mb:2}}
-                    type="text" id="comment" name="comment"
-                    onChange={onChange}
-                    value={order.comment}/>
-          <FormControl size="small" fullWidth sx={{mb:2}}>
+          <TextField label={t('Note')} size="small" fullWidth multiline rows="2" sx={{mb: 2}}
+                     type="text" id="comment" name="comment"
+                     onChange={onChange}
+                     value={order.comment}/>
+          <FormControl size="small" fullWidth sx={{mb: 2}}>
             <InputLabel id="label_status">{t('Status')}</InputLabel>
             <Select label={t('Language')} value={order.status}
                     labelId="label_status" id="status" name="status"
@@ -525,29 +583,33 @@ export default function TabNewBooking(props) {
             </Select>
           </FormControl>
           {/* <FormControlLabel label={t('Take away')} labelPlacement="start" sx={{mb:2}}
-                            control={
-                              <Switch onChange={onChange}
-                                      name="is_take_away"
-                                      checked={Boolean(order.is_take_away)} />
-                            }/> */}
-          <FormControlLabel label={t('Walk In')} labelPlacement="start" sx={{mb:2}}
+                        control={
+                          <Switch onChange={onChange}
+                                  name="is_take_away"
+                                  checked={Boolean(order.is_take_away)} />
+                        }/> */}
+          <FormControlLabel label={t('Walk In')} labelPlacement="start" sx={{mb: 2}}
                             control={
                               <Switch onChange={toogleWalkIn}
-                                      checked={isWalkIn} />
+                                      checked={isWalkIn}/>
                             }/>
-          <Box sx={{mb:2}}>
-          {order.hasOwnProperty('id') && <Button variant="contained" size="small" component="label">
-            {t('Add document')}
-            <input hidden name={props.name} onChange={e => {addDocument(e)}} type="file" />
-          </Button>}
-          {documents.map((doc,key) => {
-            return <Box key={key} sx={{mt:2}}>
-              <IconButton onClick={e => {removeDocument(doc.id)}} size="small">
-                <DeleteIcon fontSize="small"/>
-              </IconButton>
-              <a href={doc.url} target="_blank">{doc.filename}</a>
-            </Box>
-          })}
+          <Box sx={{mb: 2}}>
+            {order.hasOwnProperty('id') && <Button variant="contained" size="small" component="label">
+              {t('Add document')}
+              <input hidden name={props.name} onChange={e => {
+                addDocument(e)
+              }} type="file"/>
+            </Button>}
+            {documents.map((doc, key) => {
+              return <Box key={key} sx={{mt: 2}}>
+                <IconButton onClick={e => {
+                  removeDocument(doc.id)
+                }} size="small">
+                  <DeleteIcon fontSize="small"/>
+                </IconButton>
+                <a href={doc.url} target="_blank">{doc.filename}</a>
+              </Box>
+            })}
           </Box>
         </div>
         <div className="col-md-8">
@@ -557,64 +619,66 @@ export default function TabNewBooking(props) {
                 country={'dk'}
                 value={getOrderData('phone')}
                 disabled={isWalkIn}
-                onChange={phone => {onChange({target: {name: 'customer_phone', value: '+'+phone}})}}
+                onChange={phone => {
+                  onChange({target: {name: 'customer_phone', value: '+' + phone}})
+                }}
                 containerClass="phone-input mb-3"
               />
             </div>
             <div className="col-md-6">
-              <TextField label={t('First name')} size="small" fullWidth sx={{mb:2}}
-                        type="text" id="customer_first_name" name="customer_first_name"
-                        InputLabelProps={{ shrink: !!getOrderData('first_name') || isWalkIn }}
-                        value={isWalkIn ? 'Walk in' : getOrderData('first_name')} disabled={isWalkIn}
-                        onChange={onChange}/>
+              <TextField label={t('First name')} size="small" fullWidth sx={{mb: 2}}
+                         type="text" id="customer_first_name" name="customer_first_name"
+                         InputLabelProps={{shrink: !!getOrderData('first_name') || isWalkIn}}
+                         value={isWalkIn ? 'Walk in' : getOrderData('first_name')} disabled={isWalkIn}
+                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
-              <TextField label={t('Last name')} size="small" fullWidth sx={{mb:2}}
-                        type="text" id="customer_last_name" name="customer_last_name"
-                        InputLabelProps={{ shrink: !!getOrderData('last_name') }}
-                        value={getOrderData('last_name')} disabled={isWalkIn}
-                        onChange={onChange}/>
+              <TextField label={t('Last name')} size="small" fullWidth sx={{mb: 2}}
+                         type="text" id="customer_last_name" name="customer_last_name"
+                         InputLabelProps={{shrink: !!getOrderData('last_name')}}
+                         value={getOrderData('last_name')} disabled={isWalkIn}
+                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
-              <TextField label={t('Email address')} size="small" fullWidth sx={{mb:2}}
-                        type="email" id="customer_email" name="customer_email"
-                        InputLabelProps={{ shrink: !!getOrderData('email') }}
-                        value={getOrderData('email')} disabled={isWalkIn}
-                        onChange={onChange}/>
+              <TextField label={t('Email address')} size="small" fullWidth sx={{mb: 2}}
+                         type="email" id="customer_email" name="customer_email"
+                         InputLabelProps={{shrink: !!getOrderData('email')}}
+                         value={getOrderData('email')} disabled={isWalkIn}
+                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
-              <TextField label={t('Zip code')} size="small" fullWidth sx={{mb:2}}
-                        type="text" id="customer_zip_code" name="customer_zip_code"
-                        InputLabelProps={{ shrink: !!order?.customer?.zip_code }}
-                        value={order?.customer?.zip_code} disabled={isWalkIn}
-                        onChange={onChange}/>
+              <TextField label={t('Zip code')} size="small" fullWidth sx={{mb: 2}}
+                         type="text" id="customer_zip_code" name="customer_zip_code"
+                         InputLabelProps={{shrink: !!order?.customer?.zip_code}}
+                         value={order?.customer?.zip_code} disabled={isWalkIn}
+                         onChange={onChange}/>
             </div>
             <div className="col-md-6">
-              <FormControl size="small" fullWidth sx={{mb:2}}>
+              <FormControl size="small" fullWidth sx={{mb: 2}}>
                 <InputLabel id="label_language">{t('Language')}</InputLabel>
                 <Select label={t('Language')} value={order?.customer?.language || ''}
                         labelId="label_language" id="customer_language" name="customer_language"
                         disabled={isWalkIn} onChange={onChange}>
-                  {window.langs.map((lang,key) => {
+                  {window.langs.map((lang, key) => {
                     return <MenuItem key={key} value={lang.lang}>{lang.title}</MenuItem>
                   })}
                 </Select>
               </FormControl>
             </div>
             <div className="col-md-6">
-              <FormControlLabel label={t('Allow send emails')} labelPlacement="start" sx={{mb:2}}
+              <FormControlLabel label={t('Allow send emails')} labelPlacement="start" sx={{mb: 2}}
                                 control={
                                   <Switch onChange={onChange} disabled={isWalkIn}
                                           name="customer_allow_send_emails"
-                                          checked={Boolean(order?.customer?.allow_send_emails)} />
+                                          checked={Boolean(order?.customer?.allow_send_emails)}/>
                                 }/>
             </div>
             <div className="col-md-6">
-              <FormControlLabel label={t('Allow send news')} labelPlacement="start" sx={{mb:2}}
+              <FormControlLabel label={t('Allow send news')} labelPlacement="start" sx={{mb: 2}}
                                 control={
                                   <Switch onChange={onChange} disabled={isWalkIn}
                                           name="customer_allow_send_news"
-                                          checked={Boolean(order?.customer?.allow_send_news)} />
+                                          checked={Boolean(order?.customer?.allow_send_news)}/>
                                 }/>
             </div>
           </div>
@@ -623,7 +687,8 @@ export default function TabNewBooking(props) {
               <div className='GuestInfoActiveTable'>
                 <GuestTables
                   data={customers}
-                  onSelectCustomer={!isWalkIn ? setTableOrder : () => {}}
+                  onSelectCustomer={!isWalkIn ? setTableOrder : () => {
+                  }}
                 />
               </div>
             </div>

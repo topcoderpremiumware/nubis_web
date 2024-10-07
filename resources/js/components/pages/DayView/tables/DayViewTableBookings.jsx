@@ -81,6 +81,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     { field: 'menu', headerName: t('Menu'), width: 100},
     { field: 'order_date', headerName: t('Order date'), width: 140 },
     { field: 'area_name', headerName: t('Area'), width: 160 },
+    { field: 'tableplan_name', headerName: t('Tableplan'), width: 160 },
     { field: 'author_name', headerName: t('Admin'), width: 160 },
   ];
 
@@ -118,6 +119,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
           item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm') // removed local
           item.take_away = item.is_take_away ? t('yes') : t('no')
           item.area_name = item.area.name
+          item.tableplan_name = item.tableplan.name
           item.menu = item.custom_booking_length_id ? item.custom_booking_length.name : ''
           item.amount = item.marks.hasOwnProperty('amount') ? item.marks['amount'] : ''
           item.code = item.marks.hasOwnProperty('giftcard_code') ? item.marks['giftcard_code'] : ''
@@ -251,9 +253,17 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
             // style: { cursor: 'move' },
           },
         }}
-        getRowClassName={(params) => `dayview_table_row_${params.row.status}`}
+        getRowClassName={(params) => {
+          let tableplan_conflict = ''
+          let time = JSON.parse(localStorage.getItem('time'))
+          if(time) {
+            tableplan_conflict = params.row.tableplan_id !== time['tableplan_id'] ? 'dayview_tableplan_conflict' : ''
+          }
+          return `${tableplan_conflict} dayview_table_row_${params.row.status}`
+        }}
         // checkboxSelection
       />
     </div>
   }</>);
 };
+

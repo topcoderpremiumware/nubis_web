@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\TryChangeTableplanInOrders;
 use App\Models\Area;
 use App\Models\Log;
+use App\Models\Order;
 use App\Models\Tableplan;
 use App\Models\Timetable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Type\Time;
 
 class TimetableController extends Controller
 {
@@ -58,6 +61,8 @@ class TimetableController extends Controller
             'min_time_before' => $request->min_time_before,
             'future_booking_limit' => $request->future_booking_limit,
         ]);
+
+        dispatch(new TryChangeTableplanInOrders($request->place_id));
 
         Log::add($request,'create-timetable','Created timetable #'.$timetable->id);
 
@@ -117,6 +122,7 @@ class TimetableController extends Controller
 
         if($res){
             $timetable = Timetable::find($id);
+            dispatch(new TryChangeTableplanInOrders($request->place_id));
             return response()->json($timetable);
         }else{
             return response()->json(['message' => 'Timetable not updated'],400);
@@ -140,6 +146,8 @@ class TimetableController extends Controller
         Log::add($request,'delete-tableplan','Deleted tableplan #'.$timetable->id);
 
         $timetable->delete();
+
+        dispatch(new TryChangeTableplanInOrders($timetable->place_id));
 
         return response()->json(['message' => 'Timetable is deleted']);
     }

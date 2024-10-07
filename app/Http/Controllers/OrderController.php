@@ -251,7 +251,7 @@ class OrderController extends Controller
         if($request->area_id != 'all') {
             $orders = $orders->where('area_id', $request->area_id);
         }
-        $orders = $orders->with(['customer', 'custom_booking_length', 'area', 'author'])
+        $orders = $orders->with(['customer', 'custom_booking_length', 'area', 'author','tableplan'])
             ->whereBetween('reservation_time', [$request->reservation_from, $request->reservation_to]);
         if($request->has('deleted')){
             $orders = $orders->onlyTrashed();

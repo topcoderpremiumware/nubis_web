@@ -48,3 +48,10 @@ Artisan::command('time_migration', function () {
 //        }
 //    }
 })->purpose('Migrate time');
+
+Artisan::command('try_change_tableplan', function () {
+    $places = \App\Models\Place::all();
+    foreach ($places as $place) {
+        dispatch(new \App\Jobs\TryChangeTableplanInOrders($place->id));
+    }
+})->purpose('Try to change table plan in orders');

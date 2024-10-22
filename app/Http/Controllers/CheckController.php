@@ -480,7 +480,7 @@ class CheckController extends Controller
         /* @var Check $check */
         foreach ($checks as $check) {
             $data[] = [
-                'id' => $check->id,
+                'id' => $check->place_check_id,
                 'payment_method' => $check->payment_method,
                 'given' => $check->created_at,
                 'description' => 'Booking id: #' . $check->order->id.', seats: '.$check->order->seats.'. tables: '.implode(',',$check->order->table_ids),
@@ -531,7 +531,7 @@ class CheckController extends Controller
         /* @var Check $check */
         foreach ($checks as $check) {
             $data[] = [
-                'id' => $check->id,
+                'id' => $check->place_check_id,
                 'payment_method' => $check->payment_method,
                 'given' => $check->created_at,
                 'description' => 'Booking id: #' . $check->order->id.', seats: '.$check->order->seats.'. tables: '.implode(',',$check->order->table_ids),

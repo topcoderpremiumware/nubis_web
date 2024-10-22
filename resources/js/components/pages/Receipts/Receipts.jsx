@@ -63,7 +63,7 @@ const Receipts = () => {
 
   const columns = () => {
     let cols = []
-    cols.push({ field: 'id', headerName: t('ID'), flex: 1, minWidth: 80 })
+    cols.push({ field: 'place_check_id', headerName: t('ID'), flex: 1, minWidth: 80 })
     cols.push({ field: 'payment_method', headerName: t('Payment method'), flex: 1, minWidth: 80 })
     cols.push({field: 'printed_at', headerName: t('Given'), flex: 1, minWidth: 140,
       renderCell: (params) => params.value ? datetimeFormat(params.value) : datetimeFormat(params.row.created_at)})

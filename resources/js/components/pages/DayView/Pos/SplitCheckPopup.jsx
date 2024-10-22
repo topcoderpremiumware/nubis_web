@@ -25,10 +25,11 @@ export default function SplitCheckPopup(props){
   const [newCheck, setNewCheck] = useState({})
 
   useEffect(() => {
-    setOldCheck({...props.check,discount:null,discount_type:null,discount_name:null,discount_code:null})
+    const deepCloneCheck = structuredClone(props.check);
+    setOldCheck({...deepCloneCheck,discount:null,discount_type:null,discount_name:null,discount_code:null})
     setNewCheck({
-      place_id: props.check.place_id,
-      order_id: props.check.order_id,
+      place_id: deepCloneCheck.place_id,
+      order_id: deepCloneCheck.order_id,
       status: 'open',
       total: 0,
       products: []

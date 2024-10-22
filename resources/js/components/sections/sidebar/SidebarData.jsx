@@ -206,6 +206,10 @@ export const SidebarData = (data) => { return [
       {
         title: 'Report',
         path: '/POSReport',
+      },
+      {
+        title: 'Sign Settings',
+        path: '/SignSettings',
       }
     ]
   },

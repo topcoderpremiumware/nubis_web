@@ -263,6 +263,10 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('receipts/export_pdf',[CheckController::class, 'exportPDF']);
     Route::get('receipts_report', [CheckController::class, 'getReceiptsReport']);
     Route::get('receipts_category_report', [CheckController::class, 'getReceiptsCategoryReport']);
+
+    Route::get('has_key', [SettingController::class, 'hasKey']);
+    Route::post('save_key',[SettingController::class, 'saveKey']);
+
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);

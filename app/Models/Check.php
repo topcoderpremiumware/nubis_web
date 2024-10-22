@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\SignCheck;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ use Illuminate\Support\Collection;
  * @property integer $id
  * @property integer $place_id
  * @property integer $order_id
- * @property string $status // open, closed
+ * @property string $status // open, closed, refund
  * @property float $total
  * @property float $discount
  * @property string $discount_type
@@ -31,6 +32,10 @@ use Illuminate\Support\Collection;
  * @property float $card_amount
  * @property integer $parent_id
  * @property string $refund_description
+ * @property string $signature_data
+ * @property string $signature
+ * @property string $key_version
+ * @property integer $place_check_id
  *
  * @property Place $place
  * @property Order $order
@@ -45,6 +50,37 @@ class Check extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
+        'printed_at' => 'datetime'
+    ];
+
+    public static function boot(): void
+    {
+        parent::boot();
+        self::created(function ($model) {
+            if($model->status === 'refund' && !$model->place_check_id){
+                $last_check = Check::where('place_id', $model->place_id)
+                    ->orderBy('place_check_id', 'desc')
+                    ->first();
+                $model->place_check_id = $last_check ? $last_check->place_check_id + 1 : 1;
+                $model->saveQuietly();
+                dispatch(new SignCheck($model->id));
+            }
+        });
+
+        self::updated(function($model){
+            if($model->status === 'closed' && !$model->place_check_id){
+                $last_check = Check::where('place_id', $model->place_id)
+                    ->orderBy('place_check_id', 'desc')
+                    ->first();
+                $model->place_check_id = $last_check ? $last_check->place_check_id + 1 : 1;
+                $model->saveQuietly();
+                dispatch(new SignCheck($model->id));
+            }
+        });
+    }
 
     public function place(): BelongsTo
     {

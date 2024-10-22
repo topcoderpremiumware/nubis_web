@@ -124,7 +124,7 @@ const Receipt = () => {
     {loading ? <CircularProgress/> :
     <div className='pages__container'>
       <Stack spacing={2} mb={2} direction="row" alignItems="center">
-        <h2>{t('Receipt')} #{receipt.id}</h2>
+        <h2>{t('Receipt')} #{receipt.place_check_id}</h2>
         <Button style={{marginLeft:'auto'}}
                 variant="contained"
                 type="button"

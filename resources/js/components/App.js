@@ -45,6 +45,7 @@ const ExperienceSettings = React.lazy(() => import('./pages/GiftcardSettings/Exp
 const Receipts = React.lazy(() => import('./pages/Receipts/Receipts'))
 const Receipt = React.lazy(() => import('./pages/Receipts/Receipt'))
 const POSReport = React.lazy(() => import('./pages/Receipts/Report'))
+const SignSettings = React.lazy(() => import('./pages/Receipts/SignSettings'))
 
 import eventBus from '../eventBus';
 
@@ -185,6 +186,9 @@ function App() {
                 </Suspense>}/>
                 <Route path='/POSReport' exact element={<Suspense fallback={<LoadingPage/>}>
                   <POSReport/>
+                </Suspense>}/>
+                <Route path='/SignSettings' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <SignSettings/>
                 </Suspense>}/>
 
                 <Route path='/pricing' exact element={<Suspense fallback={<LoadingPage/>}>

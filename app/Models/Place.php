@@ -36,6 +36,7 @@ use Illuminate\Support\Collection;
  * @property Collection<Coupon> $coupons
  * @property Collection<Setting> $settings
  * @property Country $country
+ * @method static Place find(mixed $place_id)
  */
 class Place extends Model
 {

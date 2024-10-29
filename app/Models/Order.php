@@ -2,12 +2,38 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property integer $id
+ * @property integer $customer_id
+ * @property integer $place_id
+ * @property integer $tableplan_id
+ * @property integer $area_id
+ * @property array $table_ids
+ * @property integer $seats
+ * @property Carbon $reservation_time
+ * @property string $comment
+ * @property string $status
+ * @property bool $is_take_away
+ * @property string $source
+ * @property array $marks
+ * @property Carbon $deleted_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property integer $length
+ * @property integer $custom_booking_length_id
+ * @property integer $user_id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $email
+ * @property string $phone
+ */
 class Order extends Model
 {
     use HasFactory, SoftDeletes;

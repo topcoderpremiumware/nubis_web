@@ -54,12 +54,10 @@ class SignCheck implements ShouldQueue
             }
         }
 
-        if($check->payment_method == 'card'){
-            $payment_method = 'CARDSAL';
-        }elseif($check->payment_method == 'cash'){
-            $payment_method = 'CASHSAL';
+        if($check->status == 'closed'){
+            $transaction_code = 'CASHSAL';
         }else{
-            $payment_method = 'MIXEDSAL';
+            $transaction_code = 'RETURNSAL';
         }
 
         $vat = 0;
@@ -81,7 +79,7 @@ class SignCheck implements ShouldQueue
             $prev_signature,
             $check->place_check_id,
             $check->place_check_id,
-            $payment_method,
+            $transaction_code,
             $check->printed_at->format('Y-m-d'),
             $check->printed_at->format('H:i:s'),
             $check->printed_id,
@@ -116,6 +114,7 @@ class SignCheck implements ShouldQueue
                 $certData = openssl_x509_parse($certs['cert']);
 
                 $check->signature = base64_encode($signature);
+                $check->certificate = $certs['cert'];
                 $check->key_version = $certData['version'];
 
                 $isValid = openssl_verify($check->signature_data, base64_decode($check->signature), $publicKey, OPENSSL_ALGO_SHA512);

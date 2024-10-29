@@ -54,8 +54,8 @@ const Receipt = () => {
     })
   }
 
-  const openPDF = () => {
-    axios.post(`${process.env.MIX_API_URL}/api/checks/${receipt.id}/print`,{}, {
+  const openPDF = (receipt_id = receipt.id) => {
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${receipt_id}/print`,{}, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       },
@@ -109,11 +109,12 @@ const Receipt = () => {
       }
     }).then(response => {
       getReceipt()
+      openPDF(response.data.id)
+      setSplitCheckOpen(false)
       eventBus.dispatch("notification", {type: 'success', message: 'Refunded successfully'});
     }).catch(error => {
       simpleCatchError(error)
     })
-    setSplitCheckOpen(false)
   }
 
   const refund = () => {

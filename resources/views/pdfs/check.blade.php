@@ -44,9 +44,9 @@
     @if($place->email)<div style="text-align: center">{{$place->email}}</div>@endif
     @if($place->tax_number)<div style="text-align: center">{{__('VAT number',[],$place->language)}}: {{$place->tax_number}}</div>@endif
     <hr>
-    <div style="font-size: 16pt;text-align: center">{{__('Receipt',[],$place->language)}}</div>
+    <div style="font-size: 16pt;text-align: center">@if($check->status === 'refund'){{__('Refund',[],$place->language)}}@endif {{__('Receipt',[],$place->language)}}</div>
     <div style="text-align: center">{{$check->printed_at->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
-    <div style="text-align: center">{{__('Receipt',[],$place->language)}} #{{$check->place_check_id}}</div>
+    <div style="text-align: center">@if($check->status === 'refund'){{__('Refund',[],$place->language)}}@endif {{__('Receipt',[],$place->language)}} #{{$check->place_check_id}}</div>
     <div style="text-align: center">{{__('Cashier',[],$place->language)}}: {{$check->printed->name}}</div>
     <hr>
     <div>{{__('Booking id',[],$place->language)}} # {{$order->id}}</div>

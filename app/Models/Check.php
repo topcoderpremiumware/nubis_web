@@ -36,6 +36,7 @@ use Illuminate\Support\Collection;
  * @property string $signature
  * @property string $key_version
  * @property integer $place_check_id
+ * @property string $certificate
  *
  * @property Place $place
  * @property Order $order

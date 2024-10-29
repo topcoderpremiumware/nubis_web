@@ -2,11 +2,23 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @property integer $id
+ * @property integer $user_id
+ * @property string $action
+ * @property string $comment
+ * @property string $ip
+ * @property Carbon $created_at
+ *
+ * @property User $user
+ */
 class Log extends Model
 {
     use HasFactory, Prunable;
@@ -15,12 +27,12 @@ class Log extends Model
 
     public function prunable()
     {
-        return static::where('created_at', '<=', now()->subMonths(3));
+        return static::where('created_at', '<=', now()->subMonths(15));
     }
 
-    public function users()
+    public function user(): BelongsTo
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public static function add($request,$action,$comment)

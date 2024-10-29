@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AddressHelper;
 use App\Models\Check;
 use App\Models\Log;
+use App\Models\Place;
+use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\User;
+use App\Services\SafTService;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Collection;
@@ -148,6 +152,9 @@ class CheckController extends Controller
         if($check->status === 'open'){
             $check->status = 'closed';
             $check->save();
+            Log::add($request,'print-first-check','Printed check first time #'.$check->id);
+        }elseif($check->status === 'closed'){
+            Log::add($request,'print-check','Printed check #'.$check->id);
         }
 
         $html = view('pdfs.check', compact('check'))->render();
@@ -597,7 +604,9 @@ class CheckController extends Controller
             'parent_id' => $check->id,
             'refund_description' => $request->refund_description,
             'cash_amount' => $check->payment_method === 'cash' ? $total : 0,
-            'card_amount' => in_array($check->payment_method,['card','card/cash']) ? $total : 0
+            'card_amount' => in_array($check->payment_method,['card','card/cash']) ? $total : 0,
+            'printed_at' => now()->format('Y-m-d H:i:s'),
+            'printed_id' => Auth::user()->id,
         ]);
 
         if($request->has('products')){
@@ -614,5 +623,23 @@ class CheckController extends Controller
         Log::add($request,'create-check-refund','Created check refund #'.$refund->id);
 
         return response()->json($refund);
+    }
+
+    public function generateSaftReport(Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'from' => 'required|date_format:Y-m-d',
+            'to' => 'required|date_format:Y-m-d',
+        ]);
+
+        $xml = SafTService::xmlReport($request->place_id, $request->from, $request->to);
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/xml'
+        ]);
+//         $filename = "SAF-T Cash Register_".$place->tax_number."_".now()->format('YmdHis')."_1_1.xml";
+//        $file_path = '';
+//        return response()->download($file_path)->deleteFileAfterSend(true);
     }
 }

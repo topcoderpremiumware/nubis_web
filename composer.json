@@ -15,7 +15,8 @@
         "pusher/pusher-php-server": "^7.2",
         "stripe/stripe-php": "^10.1",
         "ext-simplexml": "*",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "ext-dom": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

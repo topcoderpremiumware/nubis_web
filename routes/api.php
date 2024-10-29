@@ -279,3 +279,5 @@ Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);
 
 Route::post('billing/webhook',[BillingController::class, 'webhook']);
 Route::post('places/{place_id}/webhook',[OrderWebhookController::class, 'webhook']);
+
+Route::get('receipts/saft',[CheckController::class, 'generateSaftReport']);

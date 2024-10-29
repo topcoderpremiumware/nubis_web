@@ -20,11 +20,12 @@ const Receipts = () => {
   const [loading, setLoading] = useState(true)
   const [csvLoading, setCSVLoading] = useState(false)
   const [pdfLoading, setPDFLoading] = useState(false)
+  const [saftLoading, setSaftLoading] = useState(false)
   const mediaQuery = useMediaQuery("(min-width:600px)");
   const [paymentMethod, setPaymentMethod] = useState({})
   const [filter, setFilter] = useState({
-    from: Moment().add(-1,'days').format('YYYY-MM-DD'),
-    to: Moment().format('YYYY-MM-DD'),
+    from: searchParams.get('from') || Moment().add(-1,'days').format('YYYY-MM-DD'),
+    to: searchParams.get('to') || Moment().format('YYYY-MM-DD'),
   })
   const [paginationModel, setPaginationModel] = React.useState({
     page: parseInt(searchParams.get('page')) || 0,
@@ -110,7 +111,7 @@ const Receipts = () => {
     })
   }
 
-  const exportCSV = async () => {
+  const exportCSV = () => {
     setCSVLoading(true)
     let params = {
       page: paginationModel.page + 1,
@@ -121,7 +122,7 @@ const Receipts = () => {
       sort_value: sortModel.length > 0 ? sortModel[0].sort : null,
       ...filter
     }
-    await axios.get(`${process.env.MIX_API_URL}/api/receipts/export_csv`, {
+    axios.get(`${process.env.MIX_API_URL}/api/receipts/export_csv`, {
       params: {
         ...params,
         place_id: localStorage.getItem('place_id')
@@ -143,7 +144,7 @@ const Receipts = () => {
     })
   }
 
-  const exportPDF = async () => {
+  const exportPDF = () => {
     setPDFLoading(true)
     let params = {
       page: paginationModel.page + 1,
@@ -154,7 +155,7 @@ const Receipts = () => {
       sort_value: sortModel.length > 0 ? sortModel[0].sort : null,
       ...filter
     }
-    await axios.get(`${process.env.MIX_API_URL}/api/receipts/export_pdf`, {
+    axios.get(`${process.env.MIX_API_URL}/api/receipts/export_pdf`, {
       params: {
         ...params,
         place_id: localStorage.getItem('place_id')
@@ -173,6 +174,39 @@ const Receipts = () => {
     }).catch(error => {
       simpleCatchError(error)
       setPDFLoading(false)
+    })
+  }
+
+  const exportSaft = () => {
+    setSaftLoading(true)
+    axios.get(`${process.env.MIX_API_URL}/api/receipts/saft`, {
+      params: {
+        ...filter,
+        place_id: localStorage.getItem('place_id')
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      },
+    }).then(response => {
+      const xmlBlob = new Blob([response.data.content], { type: 'application/xml' });
+      const xmlUrl = URL.createObjectURL(xmlBlob);
+      // window.open(xmlUrl, '_blank');
+
+      const downloadLink = document.createElement('a');
+      downloadLink.href = xmlUrl;
+
+      downloadLink.download = response.data.filename;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+      URL.revokeObjectURL(xmlUrl);
+
+      setSaftLoading(false)
+    }).catch(error => {
+      simpleCatchError(error)
+      setSaftLoading(false)
     })
   }
 
@@ -220,7 +254,12 @@ const Receipts = () => {
     <div className='pages__container'>
       <Stack spacing={2} mb={2} direction="row" alignItems="center" flexWrap="wrap">
         <h2>{t('Receipts')}</h2>
-        <Button variant="contained" style={{marginLeft: 'auto'}}
+        <span style={{marginLeft: 'auto'}}></span>
+        {['admin'].includes(window.role) && <Button variant="contained"
+                onClick={exportSaft}
+                disabled={saftLoading}
+                endIcon={saftLoading && <HourglassBottomIcon/>}>{t('SAF-T report')}</Button>}
+        <Button variant="contained"
                 onClick={exportCSV}
                 disabled={csvLoading}
                 endIcon={csvLoading && <HourglassBottomIcon/>}>{t('Export CSV')}</Button>

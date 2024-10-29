@@ -633,11 +633,17 @@ class CheckController extends Controller
             'to' => 'required|date_format:Y-m-d',
         ]);
 
-        $xml = SafTService::xmlReport($request->place_id, $request->from, $request->to);
+        $place = Place::find($request->place_id);
+        $report = SafTService::xmlReport($place, $request->from, $request->to);
+        if($report['status']){
+            return response()->json([
+                'filename' => "SAF-T Cash Register_".$place->tax_number."_".now()->format('YmdHis')."_1_1.xml",
+                'content' => $report['result']
+            ]);
+        }else{
+            abort(400,$report['result']);
+        }
 
-        return response($xml, 200, [
-            'Content-Type' => 'application/xml'
-        ]);
 //         $filename = "SAF-T Cash Register_".$place->tax_number."_".now()->format('YmdHis')."_1_1.xml";
 //        $file_path = '';
 //        return response()->download($file_path)->deleteFileAfterSend(true);

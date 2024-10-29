@@ -16,7 +16,13 @@ use Illuminate\Support\Facades\DB;
 
 class SafTService
 {
-    public static function xmlReport(int $place_id, string $from, string $to): bool|string
+    /**
+     * @param Place $place
+     * @param string $from
+     * @param string $to
+     * @return array{status: bool, result: string}
+     */
+    public static function xmlReport(Place $place, string $from, string $to): array
     {
         $from = Carbon::parse($from);
         $to = Carbon::parse($to);
@@ -25,19 +31,19 @@ class SafTService
         }else{
             $year = $from->format('Y');
         }
-        $place = Place::find($place_id);
         $organization = $place->organization;
 
         /*  @var Collection<Check> $checks
          *  @var Check $first_check
          *  @var Check $last_check
          */
-        $checks = Check::where('place_id',$place_id)
+        $checks = Check::where('place_id',$place->id)
             ->whereBetween(DB::raw('DATE(printed_at)'),[$from,$to])
             ->whereIn('status',['closed','refund'])
             ->whereNotNull('place_check_id')
             ->orderBy('place_check_id','asc')
             ->get();
+        if($checks->count() === 0) return ['status' => false, 'result' => 'There are no receipts in period'];
 
         $first_check = $checks->first();
         $last_check = $checks->last();
@@ -87,7 +93,6 @@ class SafTService
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><auditfile xmlns="urn:StandardAuditFile-Taxation-CashRegister:DK" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:doc="urn:schema-extensions:documentation" xsi:schemaLocation="urn:StandardAuditFile-Taxation-CashRegister:DK schema.xsd" Id="AAAAA" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></auditfile>');
 
         $header = $xml->addChild('header');
-        $header->addChild('auditfileVersion', '1.0.3');
         $header->addChild('fiscalYear', $year);
         $header->addChild('startDate', $from->format('Y-m-d'));
         $header->addChild('endDate', $to->format('Y-m-d'));
@@ -97,6 +102,7 @@ class SafTService
         $header->addChild('softwareDesc', 'Nubisreservation');
         $header->addChild('softwareVersion', '1.0');
         $header->addChild('softwareCompanyName', 'Vasilkoff LTD');
+        $header->addChild('auditfileVersion', '1.0.3');
 
         $company = $xml->addChild('company');
         $company->addChild('companyIdent', $place->tax_number);
@@ -306,7 +312,12 @@ class SafTService
         $dom->formatOutput = true;
         $dom->loadXML($xml->asXML());
 
-        return $dom->saveXML();
+        $xsdPath = base_path('xsd/SAF-T.xsd');
+        if ($dom->schemaValidate($xsdPath)) {
+            return ['status' => true, 'result' => $dom->saveXML()];
+        } else {
+            return ['status' => false, 'result' => self::libxmlGetErrors()];
+        }
     }
 
     private static function addZReport(\SimpleXMLElement &$root, int &$event_id, int &$id,  Place $place, Carbon $date): void
@@ -318,6 +329,19 @@ class SafTService
             ->where(DB::raw('DATE(printed_at)'),$date->format('Y-m-d'))
             ->get();
 
+        $grand_total = Check::select(DB::raw('SUM(CASE
+                WHEN status = "closed" THEN total
+                ELSE 0
+            END) as closed, SUM(CASE
+                WHEN status = "refund" THEN total
+                ELSE 0
+            END) as refund'))
+            ->where('place_id',$place->id)
+            ->whereIn('status', ['closed', 'refund'])
+            ->whereNotNull('place_check_id')
+            ->whereBetween(DB::raw('DATE(printed_at)'),['2000-01-01',$date->format('Y-m-d')])
+            ->first();
+
         $total = 0;
         $last = $checks->last();
         $cash = 0;
@@ -325,6 +349,10 @@ class SafTService
         $cash_num = 0;
         $card_num = 0;
         $emp_payments = [];
+        $refund = 0;
+        $refund_num = 0;
+        $discount_amnt = 0;
+        $discount_num = 0;
         foreach ($checks as $check) {
             $total += ($check->status === 'refund' ? -$check->total : $check->total);
             $cash += ($check->status === 'refund' ? -$check->cash_amount : $check->cash_amount);
@@ -339,6 +367,16 @@ class SafTService
             $emp_payments[$check->printed_id]['card'] += ($check->status === 'refund' ? -$check->card_amount : $check->card_amount);
             if($check->cash_amount) $emp_payments[$check->printed_id]['cash_num']++;
             if($check->card_amount) $emp_payments[$check->printed_id]['card_num']++;
+
+            if($check->status === 'refund'){
+                $refund += $check->total;
+                $refund_num++;
+            }
+
+            if($check->total != $check->subtotal){
+                $discount_amnt += $check->subtotal - $check->total;
+                $discount_num++;
+            }
         }
 
         $day_vat = round($total - $total / (1 + 25 / 100),2);
@@ -408,10 +446,74 @@ class SafTService
         $eventReport->addChild('reportOpenCashBoxNum', 0);
         $eventReport->addChild('reportReceiptCopyNum', 0);
         $eventReport->addChild('reportReceiptCopyAmnt', '0.00');
+        $eventReport->addChild('reportReceiptProformaNum', 0); // TODO: Створити логи в яких писати коли друкувався чек на оплату і на яку суму
+        $eventReport->addChild('reportReceiptProformaAmnt', '0.00');
+        $eventReport->addChild('reportReturnNum', $refund_num);
+        $eventReport->addChild('reportReturnAmnt', number_format($refund,2,'.',''));
+        $eventReport->addChild('reportDiscountNum', $discount_num);
+        $eventReport->addChild('reportDiscountAmnt', number_format($discount_amnt,2,'.',''));
+        $eventReport->addChild('reportVoidTransNum',0);
+        $eventReport->addChild('reportVoidTransAmnt', '0.00');
+        $reportCorrLines = $eventReport->addChild('reportCorrLines');
+        $reportCorrLine = $reportCorrLines->addChild('reportCorrLine');
+        $reportCorrLine->addChild('corrLineType', 'NONE');
+        $reportCorrLine->addChild('corrLineNum', 0);
+        $reportCorrLine->addChild('corrLineAmnt', '0.00');
 
+        $reportPriceInquiries = $eventReport->addChild('reportPriceInquiries');
+        $reportPriceInquiry = $reportPriceInquiries->addChild('reportPriceInquiry');
+        $reportPriceInquiry->addChild('priceInquiryGroup', 'NONE');
+        $reportPriceInquiry->addChild('priceInquiryNum', 0);
+        $reportPriceInquiry->addChild('priceInquiryAmnt', '0.00');
 
+        $reportOtherCorrs = $eventReport->addChild('reportOtherCorrs');
+        $reportOtherCorr = $reportOtherCorrs->addChild('reportOtherCorr');
+        $reportOtherCorr->addChild('otherCorrType', 'NONE');
+        $reportOtherCorr->addChild('otherCorrNum', 0);
+        $reportOtherCorr->addChild('otherCorrAmnt', '0.00');
+
+        $eventReport->addChild('reportReceiptDeliveryNum', 0);
+        $eventReport->addChild('reportReceiptDeliveryAmnt', '0.00');
+        $eventReport->addChild('reportTrainingNum', 0);
+        $eventReport->addChild('reportTrainingAmnt', '0.00');
+
+        $eventReport->addChild('reportGrandTotalSales', number_format($grand_total->closed,2,'.',''));
+        $eventReport->addChild('reportGrandTotalReturn', number_format($grand_total->refund,2,'.',''));
+        $eventReport->addChild('reportGrandTotalSalesNet', number_format($grand_total->closed-$grand_total->refund,2,'.',''));
 
         $event_id++;
         $id++;
+    }
+
+    private static function libxmlGetErrors(): string
+    {
+        $errors = libxml_get_errors();
+        $message = '';
+
+        foreach ($errors as $error) {
+            $message .= self::formatLibxmlError($error) . PHP_EOL;
+        }
+
+        libxml_clear_errors();
+
+        return $message;
+    }
+
+    private static function formatLibxmlError(\LibXMLError $error): string
+    {
+        $return = "Error at line {$error->line} column {$error->column}: ";
+        switch ($error->level) {
+            case LIBXML_ERR_WARNING:
+                $return .= "Warning {$error->code}: ";
+                break;
+            case LIBXML_ERR_ERROR:
+                $return .= "Error {$error->code}: ";
+                break;
+            case LIBXML_ERR_FATAL:
+                $return .= "Fatal Error {$error->code}: ";
+                break;
+        }
+        $return .= trim($error->message);
+        return $return;
     }
 }

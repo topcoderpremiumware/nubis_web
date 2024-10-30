@@ -16,9 +16,7 @@ class SwedbankPayment implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $amount;
-    private $currency;
     private $order_id;
-    private $place_id;
     private $user_id;
     private $terminal_id;
 
@@ -27,12 +25,10 @@ class SwedbankPayment implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($amount,$currency,$order_id,$place_id,$terminal_id,$user_id)
+    public function __construct($amount,$order_id,$terminal_id,$user_id)
     {
        $this->amount = $amount;
-       $this->currency = $currency;
        $this->order_id = $order_id;
-       $this->place_id = $place_id;
        $this->terminal_id = $terminal_id;
        $this->user_id = $user_id;
     }
@@ -44,9 +40,9 @@ class SwedbankPayment implements ShouldQueue
      */
     public function handle()
     {
-        $sg = new \App\Gateways\SwedbankGateway($this->user_id,$this->place_id,$this->terminal_id);
+        $sg = new \App\Gateways\SwedbankGateway($this->user_id,$this->terminal_id);
         if($sg->login()){
-            $pay_data = $sg->pay($this->amount,$this->currency,$this->order_id);
+            $pay_data = $sg->pay($this->amount,$this->order_id);
             Log::info('SwedbankPayment::handle',['$pay_data' => $pay_data]);
             if($pay_data){
                 // 'Success' | 'Failure'

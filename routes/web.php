@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-    dispatch(new SwedbankPayment(20,'DKK',1,1, 1,2));
+
 });
 
 Route::any('/EPASSaleToPOI/3.1', [SwedbankWebhookController::class, 'webhook']);

@@ -2,6 +2,7 @@
 
 namespace App\Gateways;
 
+use App\Models\Terminal;
 use Carbon\Carbon;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
@@ -10,22 +11,21 @@ use Illuminate\Support\Facades\Log;
 class SwedbankGateway
 {
     private $user_id;
-    private $place_id;
-    private $terminal_id;
+    private $terminal;
     private $service_id;
 
-    public function __construct($user_id, $place_id, $terminal_id)
+    public function __construct($user_id, $terminal_id)
     {
         $this->user_id = $user_id;
-        $this->place_id = $place_id;
-        $this->terminal_id = $terminal_id;
+        $this->terminal = Terminal::find($terminal_id);
+        $this->currency = $this->terminal->place->setting('online-payment-currency');
         $this->service_id = time();
     }
 
     public function login(): string|bool
     {
         $result = $this->request('<SaleToPOIRequest>
- <MessageHeader ProtocolVersion="3.1" MessageClass="Service" MessageCategory="Login" MessageType="Request" ServiceID="'.$this->getServiceId().'" SaleID="'.$this->user_id.'" POIID="N-'.$this->place_id.'-'.$this->terminal_id.'"/>
+ <MessageHeader ProtocolVersion="3.1" MessageClass="Service" MessageCategory="Login" MessageType="Request" ServiceID="'.$this->getServiceId().'" SaleID="'.$this->user_id.'" POIID="'.$this->terminal->serial.'"/>
  <LoginRequest OperatorLanguage="da">
   <DateTime>'.Carbon::now()->format('Y-m-d\TH:i:s.uP').'</DateTime>
   <SaleSoftware ProviderIdentification="Vasilkoff LTD" ApplicationName="'.env('APP_NAME').'" SoftwareVersion="1.0"/>
@@ -46,22 +46,21 @@ class SwedbankGateway
 
     /**
      * @param $amount
-     * @param $currency
      * @param $order_id // id of order for webhook
      * @param $type // 'Normal' - pay, 'Refund' - refund
      * @return array|bool
      */
-    public function pay($amount,$currency,$order_id = '1524253496',$type = 'Normal'): array|bool
+    public function pay($amount,$order_id = '1524253496',$type = 'Normal'): array|bool
     {
         try{
             $result = $this->request('<SaleToPOIRequest>
-    <MessageHeader ProtocolVersion="3.1" MessageClass="Service" MessageCategory="Payment" MessageType="Request" ServiceID="'.$this->getServiceId().'" SaleID="'.$this->user_id.'" POIID="N-'.$this->place_id.'-'.$this->terminal_id.'" />
+    <MessageHeader ProtocolVersion="3.1" MessageClass="Service" MessageCategory="Payment" MessageType="Request" ServiceID="'.$this->getServiceId().'" SaleID="'.$this->user_id.'" POIID="'.$this->terminal->serial.'" />
     <PaymentRequest>
         <SaleData TokenRequestedType="Customer">
             <SaleTransactionID TimeStamp="'.Carbon::now()->format('Y-m-d\TH:i:s.uP').'" TransactionID="'.$order_id.'"/>
         </SaleData>
         <PaymentTransaction>
-            <AmountsReq CashBackAmount="0" Currency="'.$currency.'" RequestedAmount="'.$amount.'"/>
+            <AmountsReq CashBackAmount="0" Currency="'.$this->currency.'" RequestedAmount="'.$amount.'"/>
         </PaymentTransaction>
         <PaymentData PaymentType="'.$type.'"/>
     </PaymentRequest>
@@ -78,7 +77,7 @@ class SwedbankGateway
     {
         try{
             $result = $this->request('<SaleToPOIRequest>
-     <MessageHeader ProtocolVersion="3.1" MessageClass="Service" MessageCategory="TransactionStatus" MessageType="Request" ServiceID="'.$this->getServiceId().'" SaleID="'.$this->user_id.'" POIID="N-'.$this->place_id.'-'.$this->terminal_id.'" />
+     <MessageHeader ProtocolVersion="3.1" MessageClass="Service" MessageCategory="TransactionStatus" MessageType="Request" ServiceID="'.$this->getServiceId().'" SaleID="'.$this->user_id.'" POIID="'.$this->terminal->serial.'" />
      <TransactionStatusRequest/>
     </SaleToPOIRequest>');
             return $result;
@@ -92,20 +91,17 @@ class SwedbankGateway
     public function logout(): string|bool
     {
         $result = $this->request('<SaleToPOIRequest>
- <MessageHeader ProtocolVersion="3.1" MessageClass="Service" MessageCategory="Logout" MessageType="Request" ServiceID="'.$this->getServiceId().'" SaleID="'.$this->user_id.'" POIID="N-'.$this->place_id.'-'.$this->terminal_id.'" />
+ <MessageHeader ProtocolVersion="3.1" MessageClass="Service" MessageCategory="Logout" MessageType="Request" ServiceID="'.$this->getServiceId().'" SaleID="'.$this->user_id.'" POIID="'.$this->terminal->serial.'" />
  <LogoutRequest MaintenanceAllowed="true"/>
 </SaleToPOIRequest>');
 
-        echo '<pre>';
-        var_dump($result);
-        echo '</pre>';
-        return true;
+        return $result;
     }
 
     private function request($xml): bool|array
     {
         $response = Http::timeout(30)->accept('*/*')->withBody($xml,'application/xml; charset=utf-8')
-            ->post(env('SWEDBANK_TERMINAL_URL').'/EPASSaleToPOI/3.1');
+            ->post($this->terminal->url.'/EPASSaleToPOI/3.1');
 
         if($response->status() == 200){
             $data = json_decode(json_encode(simplexml_load_string($response->body())),true);

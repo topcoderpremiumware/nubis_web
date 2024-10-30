@@ -24,6 +24,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TableplanController;
+use App\Http\Controllers\TerminalController;
 use App\Http\Controllers\TimetableController;
 use App\Http\Controllers\VideoGuideController;
 use Illuminate\Http\Request;
@@ -267,6 +268,11 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('has_key', [SettingController::class, 'hasKey']);
     Route::post('save_key',[SettingController::class, 'saveKey']);
 
+    Route::get('places/{place_id}/terminals',[TerminalController::class, 'getAllByPlace']);
+    Route::post('terminals',[TerminalController::class, 'create']);
+    Route::post('terminals/{id}',[TerminalController::class, 'save']);
+    Route::delete('terminals/{id}',[TerminalController::class, 'delete']);
+    Route::post('terminals/{id}/pay',[TerminalController::class, 'sendPayment']);
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);

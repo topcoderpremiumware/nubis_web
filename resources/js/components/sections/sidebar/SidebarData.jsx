@@ -210,6 +210,10 @@ export const SidebarData = (data) => { return [
       {
         title: 'Sign Settings',
         path: '/SignSettings',
+      },
+      {
+        title: 'Terminal Settings',
+        path: '/TerminalSettings',
       }
     ]
   },

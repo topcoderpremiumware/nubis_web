@@ -106,7 +106,7 @@ class SafTService
 
         $company = $xml->addChild('company');
         $company->addChild('companyIdent', $place->tax_number);
-        $company->addChild('companyName', $place->name); // $organization->name
+        $company->addChild('companyName', htmlspecialchars($place->name,ENT_XML1)); // $organization->name
         $company->addChild('taxRegistrationCountry', $place->country->code);
 
         // foreach place of company
@@ -117,7 +117,7 @@ class SafTService
         $address->addChild('number', $address_data['number']);
         if($address_data['building']) $address->addChild('building', $address_data['building']);
         if($address_data['additional_number']) $address->addChild('number', $address_data['additional_number']);
-        $address->addChild('city', $place->city);
+        $address->addChild('city', htmlspecialchars($place->city,ENT_XML1));
         $address->addChild('postalCode', $place->zip_code);
         $address->addChild('country', $place->country->code);
 
@@ -126,7 +126,7 @@ class SafTService
         $postal_address->addChild('number', $address_data['number']);
         if($address_data['building']) $postal_address->addChild('building', $address_data['building']);
         if($address_data['additional_number']) $postal_address->addChild('number', $address_data['additional_number']);
-        $postal_address->addChild('city', $place->city);
+        $postal_address->addChild('city', htmlspecialchars($place->city, ENT_XML1));
         $postal_address->addChild('postalCode', $place->zip_code);
         $postal_address->addChild('country', $place->country->code);
 //        }
@@ -155,8 +155,8 @@ class SafTService
             $employee->addChild('empID',$cashier->id);
             $employee->addChild('dateOfEntry',$cashier->created_at->format('Y-m-d'));
             $employee->addChild('timeOfEntry',$cashier->created_at->format('H:i:s'));
-            $employee->addChild('firstName',$cashier->first_name);
-            $employee->addChild('surName',$cashier->last_name);
+            $employee->addChild('firstName',htmlspecialchars($cashier->first_name,ENT_COMPAT));
+            $employee->addChild('surName',htmlspecialchars($cashier->last_name,ENT_XML1));
         }
 
         $articles = $company->addChild('articles');
@@ -164,7 +164,7 @@ class SafTService
             $article = $articles->addChild('article');
             $article->addChild('artID', $used_product->id);
             $article->addChild('dateOfEntry', $used_product->created_at->format('Y-m-d'));
-            $article->addChild('artDesc', $used_product->name);
+            $article->addChild('artDesc', htmlspecialchars($used_product->name,ENT_XML1));
         }
 
         $basics = $company->addChild('basics');
@@ -180,13 +180,13 @@ class SafTService
 
         //foreach place
         $location = $company->addChild('location');
-        $location->addChild('name',$place->name);
+        $location->addChild('name',htmlspecialchars($place->name,ENT_XML1));
         $address = $location->addChild('streetAddress');
         $address->addChild('streetname', $address_data['street']);
         $address->addChild('number', $address_data['number']);
         if($address_data['building']) $address->addChild('building', $address_data['building']);
         if($address_data['additional_number']) $address->addChild('number', $address_data['additional_number']);
-        $address->addChild('city', $place->city);
+        $address->addChild('city', htmlspecialchars($place->city,ENT_XML1));
         $address->addChild('postalCode', $place->zip_code);
         $address->addChild('country', $place->country->code);
 
@@ -391,7 +391,7 @@ class SafTService
         $eventReport->addChild('reportID',$id);
         $eventReport->addChild('reportType','Z report');
         $eventReport->addChild('companyIdent',$place->tax_number);
-        $eventReport->addChild('companyName',$place->name);
+        $eventReport->addChild('companyName',htmlspecialchars($place->name,ENT_XML1));
         $eventReport->addChild('reportDate',$date->format('Y-m-d'));
         $eventReport->addChild('reportTime','23:59:59');
         $eventReport->addChild('registerID','Nubis-'.$place->id);

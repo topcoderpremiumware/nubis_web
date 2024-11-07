@@ -146,6 +146,12 @@ const App = () => {
       return;
     }
 
+    if(customerDenyRegister && type === "registerWait"){
+      getUserInfoReq();
+      setDefaultModal("submit");
+      return;
+    }
+
     const config =
       type === "logout" || type === "edit"
         ? {
@@ -163,7 +169,7 @@ const App = () => {
           handleChangeItem();
         }
         type === "login" && getUserInfoReq();
-        if (type === "loginWait") {
+        if (["loginWait"].includes(type)) {
           localStorage.setItem("token", response.data.token);
           getUserInfoReq();
           setDefaultModal("submit");
@@ -210,7 +216,9 @@ const App = () => {
           });
         }
         console.log("reg error", error);
-        type === "email" && setDefaultModal("register");
+
+        ["email"].includes(type) && setDefaultModal("register");
+        ["emailWait"].includes(type) && setDefaultModal("registerWait");
       });
   };
 

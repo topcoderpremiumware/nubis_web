@@ -89,7 +89,11 @@ const Pricing = () => {
   }
 
   const payTrial = () => {
-    axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`).then(response => {
+    axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/pay_trial`,{},{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
       getIsBillPaid()
       getTrialBill()
       eventBus.dispatch("notification", {type: 'success', message: 'Paid Trial successfully'});

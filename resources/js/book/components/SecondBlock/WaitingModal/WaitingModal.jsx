@@ -34,7 +34,7 @@ export default function WaitingModal(props) {
     } else if (defaultModal === "agreements") {
       setDefaultModal("emailWait");
     }else if(defaultModal === "noTime"){
-      props.setDefaultModal("waiting");
+      props.setDefaultModal("agreements");
     }
   };
 
@@ -118,11 +118,7 @@ export default function WaitingModal(props) {
               </div>
             </div>
           </div>
-        ) : (
-          <div className="no-choose-time">
-            <b>{t('Please select a date:')}</b>
-          </div>
-        )}
+        ) : null}
         {defaultModal === "agreements" && (
           <p>
             <Trans i18nKey="WaitingNote">Please note this is a request for a place on the waiting list and
@@ -242,10 +238,7 @@ export default function WaitingModal(props) {
             </div>
           </div>
         )}
-        {(defaultModal === "register" ||
-          defaultModal === "edit" ||
-          defaultModal === "login" ||
-          defaultModal === "email") && (
+        {(['register','registerWait','edit','login','email'].includes(defaultModal)) && (
           <div className="error-response">
             {dispErrors?.title}
             <br />

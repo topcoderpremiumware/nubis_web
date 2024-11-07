@@ -35,7 +35,6 @@ function SecondBlock(props) {
   const [alternativeRestaurants, setAlternativeRestaurants] = useState([])
   const [extraTimeReq, setExtraTimeReq] = useState([]);
   const [times, setTimes] = useState([]);
-  const [queryNumber, setQueryNumber] = useState(0)
   const [nonWorkingDayReason, setNonWorkingDayReason] = useState('')
 
   useEffect(async () => {
@@ -142,7 +141,7 @@ function SecondBlock(props) {
       });
   }
 
-  const getExtraTime = (date) => {
+  const getExtraTime = (date,clicked=false) => {
     axios.get(`${process.env.MIX_API_URL}/api/custom_booking_lengths`, {
       params: {
         place_id: props.getPlaceId(),
@@ -157,7 +156,7 @@ function SecondBlock(props) {
         setExtraTimeReq(response.data);
 
         if (response.data.length === 0) {
-          getTime(date)
+          getTime(date,clicked)
         }
       })
       .catch((error) => {
@@ -165,7 +164,7 @@ function SecondBlock(props) {
       });
   }
 
-  const getTime = (date) => {
+  const getTime = (date,clicked=false) => {
     axios.get(`${process.env.MIX_API_URL}/api/free_time`, {
       params: {
         place_id: props.getPlaceId(),
@@ -175,7 +174,6 @@ function SecondBlock(props) {
       },
     })
       .then((response) => {
-        setQueryNumber(queryNumber + 1)
         if(response.data.free_time.length) {
           const timesArray = response.data?.free_time?.map((time) => ({
             time: moment.utc(time).format('HH:mm:ss'),
@@ -184,7 +182,7 @@ function SecondBlock(props) {
           console.log('timesArray', timesArray)
           setTimes(timesArray);
         } else {
-          if(queryNumber !== 0){
+          if(clicked){
             props.setDefaultModal("noTime");
             setModalActive(true)
           }
@@ -212,7 +210,7 @@ function SecondBlock(props) {
   const setCalendarValue = (date) => {
     console.log('setCalendarValue', date)
     setSelectedDay(date);
-    getExtraTime(date);
+    getExtraTime(date,true);
   };
 
   const setMonthUp = () => {
@@ -241,7 +239,7 @@ function SecondBlock(props) {
     e.preventDefault();
     props.setDefaultModal("waiting");
     setModalActive(true);
-    getExtraTime(selectedDay);
+    getExtraTime(selectedDay,true);
   }
 
   const checkToken = () => {
@@ -381,7 +379,7 @@ function SecondBlock(props) {
             setUserData={props.setUserData}
           />
         )}
-      {props.defaultModal === "register" && (
+      {['register','registerWait'].includes(props.defaultModal) && (
         <MainModal
           title={t('Enter your contact details')}
           active={modalActive}

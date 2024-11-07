@@ -46,6 +46,7 @@ export default function MainModal(props) {
 
   const getUrl = {
     register: "/api/customers/register",
+    registerWait: "/api/customers/register",
     email: "/api/customers/verify",
     emailWait: "/api/customers/verify",
     emailCancel: "/api/customers/verify",
@@ -58,7 +59,7 @@ export default function MainModal(props) {
   };
 
   const runContinue = () => {
-    if(defaultModal === 'register' && (!userData.first_name || !userData.last_name ||
+    if(['register','registerWait'].includes(defaultModal) && (!userData.first_name || !userData.last_name ||
       !userData.email || !userData.phone)){
       console.log('runContinue')
       eventBus.dispatch("notification", {type: 'error', message: 'All fields are mandatory'});
@@ -84,7 +85,7 @@ export default function MainModal(props) {
         {defaultModal !== "done" && (
           <form className="form form-modal">
             <div className="form-name">
-              {(defaultModal === "register" || defaultModal === "edit") && (
+              {(['register','registerWait','edit'].includes(defaultModal)) && (
                 <>
                   <input
                     type="text"
@@ -110,6 +111,7 @@ export default function MainModal(props) {
             <div className="form__wrapper">
               {[
                 "register",
+                "registerWait",
                 "edit",
                 "login",
                 "email",
@@ -129,7 +131,7 @@ export default function MainModal(props) {
               )}
             </div>
             <div className="form-mobile-zip">
-              {["register","edit"].includes(defaultModal) && (
+              {["register","registerWait","edit"].includes(defaultModal) && (
                 <>
                   <PhoneInput
                     country={'dk'}
@@ -139,7 +141,7 @@ export default function MainModal(props) {
                     buttonClass="phone-input-btn"
                     dropdownStyle={{ textAlign: 'left' }}
                   />
-                  {((defaultModal == "register" && !customerDenyRegister) || defaultModal == "edit") &&
+                  {((['register','registerWait'].includes(defaultModal) && !customerDenyRegister) || defaultModal == "edit") &&
                   <input
                     type="text"
                     className="form-name__zip"
@@ -154,7 +156,7 @@ export default function MainModal(props) {
               )}
             </div>
             <div className="form-password">
-              {((["register"].includes(defaultModal) && !customerDenyRegister) ||
+              {((['register','registerWait'].includes(defaultModal) && !customerDenyRegister) ||
                 ["login","loginWait","loginCancel","loginMore"].includes(defaultModal)) && (
                   <>
                     <input
@@ -164,10 +166,10 @@ export default function MainModal(props) {
                       value={userData.password}
                       onChange={(event) => setInput("password", event.target.value)}
                     />
-                    {defaultModal !== "register" && <a href="/admin/forgot?type=customer">{t('Forgot password?')}</a>}
+                    {!['register','registerWait'].includes(defaultModal) && <a href="/admin/forgot?type=customer">{t('Forgot password?')}</a>}
                   </>
               )}
-              {(defaultModal === "register" && !customerDenyRegister) && (
+              {(['register','registerWait'].includes(defaultModal) && !customerDenyRegister) && (
                 <input
                   type="password"
                   className="form-name__confirm-password"
@@ -183,6 +185,7 @@ export default function MainModal(props) {
         )}
         {[
           "register",
+          "registerWait",
           "edit",
           "login",
           "email",
@@ -203,7 +206,7 @@ export default function MainModal(props) {
           </div>
         )}
 
-        {["register","edit","login","email"].includes(defaultModal) && (
+        {["register","registerWait","edit","login","email"].includes(defaultModal) && (
           <div className="error-response">
             {dispErrors?.title}
             <br />

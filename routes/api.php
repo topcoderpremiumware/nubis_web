@@ -102,7 +102,6 @@ Route::middleware('auth:customer_api')->group(function(){
     Route::post('customers/password',[CustomerController::class, 'password']);
     Route::get('customers/orders',[OrderController::class, 'getAllByCustomer']);
     Route::get('customers/client_secret',[OrderController::class, 'getStripeClientSecret']);
-    Route::get('customers/all',[CustomerController::class, 'allCustomers']);
 });
 Route::middleware('auth:user_api')->group(function(){
     Route::post('logout',[AuthApiController::class, 'logout']);
@@ -273,6 +272,8 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('terminals/{id}',[TerminalController::class, 'save']);
     Route::delete('terminals/{id}',[TerminalController::class, 'delete']);
     Route::post('terminals/{id}/pay',[TerminalController::class, 'sendPayment']);
+
+    Route::get('customers/all',[CustomerController::class, 'allCustomers']);
 });
 
 Route::post('giftcards',[GiftcardController::class, 'create']);

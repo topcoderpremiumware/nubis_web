@@ -68,3 +68,9 @@
 body .Calendar__day.-weekend:not(.-selected):not(.-blank):not(.-selectedStart):not(.-selectedEnd):not(.-selectedBetween) {
   color: rgba(0,0,0,0.8);
 }
+body .react-tel-input .country-list .country {
+  padding-left: 40px;
+}
+body .react-tel-input .country-list .flag{
+  margin-top: 5px;
+}

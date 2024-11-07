@@ -94,7 +94,7 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
 
-        if($sms_confirmation_template && $place->allow_send_sms() && $customer_phone){
+        if($order->status !== 'waiting' && $sms_confirmation_template && $place->allow_send_sms() && $customer_phone){
             $place->decrease_sms_limit();
             $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text,$customer_language), env('APP_SHORT_NAME'));
         }
@@ -1242,7 +1242,7 @@ class OrderController extends Controller
             ->where('active',1)
             ->first();
 
-        if($sms_confirmation_template && $place->allow_send_sms() && $customer_phone){
+        if($order->status !== 'waiting' && $sms_confirmation_template && $place->allow_send_sms() && $customer_phone){
             $place->decrease_sms_limit();
             $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text,$customer_language), env('APP_SHORT_NAME'));
         }

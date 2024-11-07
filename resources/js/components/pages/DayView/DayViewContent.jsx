@@ -125,7 +125,7 @@ export default function DayViewContent() {
             <DayViewTableBookings setSelectedOrder={setSelectedOrder} />
           </TabPanel>
           <TabPanel className='DayView__BoxItem' value={value} index={1}>
-            <DayViewTableWaiting/>
+            <DayViewTableWaiting setSelectedOrder={setSelectedOrder} />
           </TabPanel>
           <TabPanel className='DayView__BoxItem' value={value} index={2}>
             <DayViewTableDeleted/>

@@ -232,8 +232,18 @@ class CheckController extends Controller
             $checks = $checks->whereBetween(DB::raw('DATE(created_at)'),[$request->from,$request->to]);
         }
 
-        $checks = $checks->paginate($per_page)->setPath('/');
+        $total_amount = $checks->clone()->select(DB::raw('SUM(CASE
+                WHEN status = "closed" THEN total
+                WHEN status = "refund" THEN -total
+                ELSE 0
+            END) as total_amount'))
+            ->reorder()
+            ->groupBy('place_id')
+            ->get()
+            ->pluck('total_amount');
 
+        $checks = json_decode(json_encode($checks->paginate($per_page)->setPath('/')),true);
+        $checks['total_amount'] = count($total_amount) > 0 ? $total_amount[0] : 0;
         return response()->json($checks);
     }
 
@@ -484,6 +494,7 @@ class CheckController extends Controller
 
         $checks = $checks->get();
         $data = [];
+        $total = 0;
         /* @var Check $check */
         foreach ($checks as $check) {
             $data[] = [
@@ -491,9 +502,18 @@ class CheckController extends Controller
                 'payment_method' => $check->payment_method,
                 'given' => $check->created_at,
                 'description' => 'Booking id: #' . $check->order->id.', seats: '.$check->order->seats.'. tables: '.implode(',',$check->order->table_ids),
-                'total' => str_replace('.',',',$check->total),
+                'total' => str_replace('.',',',$check->status === 'refund' ? -$check->total : $check->total),
             ];
+            $total += $check->status === 'refund' ? -$check->total : $check->total;
         }
+
+        $data[] = [
+            'id' => '',
+            'payment_method' => '',
+            'given' => '',
+            'description' => 'total',
+            'total' => str_replace('.',',',$total),
+        ];
 
         $csvFileName = 'user.csv';
         $csvFile = fopen($csvFileName, 'w');
@@ -535,6 +555,7 @@ class CheckController extends Controller
 
         $checks = $checks->get();
         $data = [];
+        $total = 0;
         /* @var Check $check */
         foreach ($checks as $check) {
             $data[] = [
@@ -542,9 +563,18 @@ class CheckController extends Controller
                 'payment_method' => $check->payment_method,
                 'given' => $check->created_at,
                 'description' => 'Booking id: #' . $check->order->id.', seats: '.$check->order->seats.'. tables: '.implode(',',$check->order->table_ids),
-                'total' => $check->total,
+                'total' => str_replace('.',',',$check->status === 'refund' ? -$check->total : $check->total),
             ];
+            $total += $check->status === 'refund' ? -$check->total : $check->total;
         }
+
+        $data[] = [
+            'id' => '',
+            'payment_method' => '',
+            'given' => '',
+            'description' => 'total',
+            'total' => str_replace('.',',',$total),
+        ];
 
         $html = view('pdfs.export_receipts', compact('data'))->render();
         $options = new Options();

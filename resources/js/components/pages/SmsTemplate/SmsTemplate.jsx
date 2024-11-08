@@ -227,7 +227,7 @@ export default function SmsTemplate() {
                 <TextField label={t('Message')} size="small" fullWidth
                            type="text" id="text" name="text" required
                            onChange={onChange} value={text}
-                           multiline rows="3"
+                           multiline rows="6"
                            error={textError.length > 0}
                            helperText={
                              <>{textError.map(el => {return t(el)})}</>

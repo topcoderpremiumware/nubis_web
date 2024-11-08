@@ -148,6 +148,10 @@ export const SidebarData = (data) => { return [
         path: '/SmsTemplates/delete'
       },
       {
+        title: 'Waiting List',
+        path: '/SmsTemplates/waiting-list'
+      },
+      {
         title: 'Notification',
         path: '/SmsTemplates/notification'
       },

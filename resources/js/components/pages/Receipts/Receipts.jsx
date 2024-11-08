@@ -11,12 +11,14 @@ import Moment from "moment";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
+import Box from "@mui/material/Box";
 
 const Receipts = () => {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [receipts, setReceipts] = useState([])
   const [totalRows, setTotalRows] = useState(0)
+  const [totalAmount, setTotalAmount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [csvLoading, setCSVLoading] = useState(false)
   const [pdfLoading, setPDFLoading] = useState(false)
@@ -102,6 +104,7 @@ const Receipts = () => {
     }).then(response => {
       setSearchParams({...params,page:params.page-1})
       setTotalRows(response.data.total)
+      setTotalAmount(response.data.total_amount)
       setReceipts(response.data.data.map(i => {
         return {...i,description: `${t('Booking id')}: #${i.order_id}, ${t('seats')}: ${i.order.seats}, ${t('tables')}: ${i.order.table_ids.join(', ')}`}
       }))
@@ -323,6 +326,7 @@ const Receipts = () => {
           getRowClassName={(params) => `receipt_status_${params.row.status}`}
         />
       </div>
+      <Box sx={{mt:2}}>{t('Total')}: {paymentMethod['online-payment-currency']} {totalAmount.toFixed(2)}</Box>
     </div>
   )
 }

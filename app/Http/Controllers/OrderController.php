@@ -88,44 +88,31 @@ class OrderController extends Controller
             $customer_phone = $order->phone;
             $customer_email = $order->email;
         }
+
+        $message_template = $order->status === 'waiting' ? 'waiting-list' : 'confirmation';
         $sms_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
-            ->where('purpose','sms-confirmation')
+            ->where('purpose','sms-'.$message_template)
             ->where('language',$customer_language)
             ->where('active',1)
             ->first();
 
-        if($order->status !== 'waiting' && $sms_confirmation_template && $place->allow_send_sms() && $customer_phone){
+        if($sms_confirmation_template && $place->allow_send_sms() && $customer_phone){
             $place->decrease_sms_limit();
             $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text,$customer_language), env('APP_SHORT_NAME'));
         }
-        if($order->status === 'waiting'){
-            $email_waiting_list_template = MessageTemplate::where('place_id',$request->place_id)
-                ->where('purpose','email-waiting-list')
-                ->where('language',$customer_language)
-                ->where('active',1)
-                ->first();
-            if($email_waiting_list_template && $customer_email){
-                try{
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_waiting_list_template->text,$customer_language), function($msg) use ($place,$email_waiting_list_template, $customer_email) {
-                        $msg->to($customer_email)->subject($email_waiting_list_template->subject);
-                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                    });
-                }catch (\Exception $e){}
-            }
-        }else{
-            $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
-                ->where('purpose','email-confirmation')
-                ->where('language',$customer_language)
-                ->where('active',1)
-                ->first();
-            if($email_confirmation_template && $customer_email){
-                try{
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer_language), function($msg) use ($place,$email_confirmation_template, $customer_email) {
-                        $msg->to($customer_email)->subject($email_confirmation_template->subject);
-                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                    });
-                }catch (\Exception $e){}
-            }
+
+        $email_confirmation_template = MessageTemplate::where('place_id',$request->place_id)
+            ->where('purpose','email-'.$message_template)
+            ->where('language',$customer_language)
+            ->where('active',1)
+            ->first();
+        if($email_confirmation_template && $customer_email){
+            try{
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer_language), function($msg) use ($place,$email_confirmation_template, $customer_email) {
+                    $msg->to($customer_email)->subject($email_confirmation_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                });
+            }catch (\Exception $e){}
         }
 
         event(new OrderCreated($order));
@@ -1253,46 +1240,32 @@ class OrderController extends Controller
             $customer_phone = $order->phone;
             $customer_email = $order->email;
         }
+
+        $message_template = $order->status === 'waiting' ? 'waiting-list' : 'confirmation';
         $sms_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
-            ->where('purpose','sms-confirmation')
+            ->where('purpose','sms-'.$message_template)
             ->where('language',$customer_language)
             ->where('active',1)
             ->first();
 
-        if($order->status !== 'waiting' && $sms_confirmation_template && $place->allow_send_sms() && $customer_phone){
+        if($sms_confirmation_template && $place->allow_send_sms() && $customer_phone){
             $place->decrease_sms_limit();
             $result = SMS::send([$customer_phone], TemplateHelper::setVariables($order,$sms_confirmation_template->text,$customer_language), env('APP_SHORT_NAME'));
         }
-        if($order->status === 'waiting'){
-            $email_waiting_list_template = MessageTemplate::where('place_id',$order->place_id)
-                ->where('purpose','email-waiting-list')
-                ->where('language',$customer_language)
-                ->where('active',1)
-                ->first();
-            if($email_waiting_list_template && $customer_email){
-                try{
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_waiting_list_template->text,$customer_language), function($msg) use ($place,$customer_email, $email_waiting_list_template) {
-                        $msg->to($customer_email)->subject($email_waiting_list_template->subject);
-                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                    });
-                }catch (\Exception $e){}
-            }
-        }else{
-            $email_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
-                ->where('purpose','email-confirmation')
-                ->where('language',$customer_language)
-                ->where('active',1)
-                ->first();
-            if($email_confirmation_template && $customer_email){
-                try{
-                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer_language), function($msg) use ($place,$customer_email, $email_confirmation_template) {
-                        $msg->to($customer_email)->subject($email_confirmation_template->subject);
-                        $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
-                    });
-                }catch (\Exception $e){}
-            }
-        }
 
+        $email_confirmation_template = MessageTemplate::where('place_id',$order->place_id)
+            ->where('purpose','email-'.$message_template)
+            ->where('language',$customer_language)
+            ->where('active',1)
+            ->first();
+        if($email_confirmation_template && $customer_email){
+            try{
+                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order,$email_confirmation_template->text,$customer_language), function($msg) use ($place,$customer_email, $email_confirmation_template) {
+                    $msg->to($customer_email)->subject($email_confirmation_template->subject);
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                });
+            }catch (\Exception $e){}
+        }
 
         $sms_notification_template = MessageTemplate::where('place_id',$order->place_id)
             ->where('purpose','sms-notification')

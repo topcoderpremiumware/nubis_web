@@ -25,6 +25,7 @@ import {StyledTableRow} from "../../components/StyledTableRow";
 import Box from "@mui/material/Box";
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import PrintIcon from '@mui/icons-material/Print';
 
 const Report = () => {
   const {t} = useTranslation();
@@ -173,8 +174,9 @@ const Report = () => {
 
   return (
     <div className='pages__container'>
-      <Stack spacing={10} mb={2} direction="row" alignItems="center">
+      <Stack mb={2} direction="row" alignItems="center">
         <h2>{t('Sales details')}</h2>
+        <Button variant="contained" type="button" onClick={(e) => window.print()} style={{marginLeft:"auto"}}><PrintIcon/></Button>
       </Stack>
       <Grid container spacing={2} sx={{pb: 2}}>
         <Grid item xs={12} sm={4} md={3}>

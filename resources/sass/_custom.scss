@@ -222,3 +222,17 @@ a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover{
 .receipt_status_refund.MuiDataGrid-row {
   background: rgba(255, 0, 0, 0.1);
 }
+
+@media print {
+  html{
+    overflow-y: auto;
+  }
+  .navbar,
+  .Sadebar{
+    display: none !important;
+  }
+  .scroll_wrapper{
+    height: auto;
+    padding-bottom: 100px;
+  }
+}

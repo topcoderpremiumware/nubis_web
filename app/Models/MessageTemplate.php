@@ -120,6 +120,22 @@ class MessageTemplate extends Model
             ],
             [
                 'place_id' => $place_id,
+                'purpose' => 'sms-waiting-list',
+                'subject' => 'You on our waiting list',
+                'text' => "Dear #FIRST_NAME# #LAST_NAME# you are on our waiting list for a table for:\n#NUMBER_OF_GUESTS# persons at #RESTAURANT_NAME# the #BOOK_MONTH_NAME# #BOOK_DAY_NAME# #BOOK_DAY# at #BOOK_HOUR#:#BOOK_MIN#. We are looking forward to seeing you. Best regards #RESTAURANT_NAME#\nWe will contact you if we get a free table and are hoping to see you in the near future",
+                'language' => 'en',
+                'active' => 1
+            ],
+            [
+                'place_id' => $place_id,
+                'purpose' => 'sms-waiting-list',
+                'subject' => 'Du kommet på vores venteliste',
+                'text' => "Kære #FIRST_NAME# #LAST_NAME#\nDu er kommet på vores venteliste for:\n#NUMBER_OF_GUESTS# persons at #RESTAURANT_NAME# the #BOOK_MONTH_NAME# #BOOK_DAY_NAME# #BOOK_DAY# at #BOOK_HOUR#:#BOOK_MIN#. We are looking forward to seeing you. Best regards #RESTAURANT_NAME#\nVi vil kontakte dig såfremt der bliver et bord ledigt til dig og håber at se dig i nær fremtid",
+                'language' => 'da',
+                'active' => 1
+            ],
+            [
+                'place_id' => $place_id,
                 'purpose' => 'email-waiting-list',
                 'subject' => 'You on our waiting list',
                 'text' => '<p>Dear #FIRST_NAME# #LAST_NAME# <i><strong>you are on our waiting list </strong></i>for a table for:</p><p>&nbsp;#NUMBER_OF_GUESTS# persons at #RESTAURANT_NAME# the #BOOK_MONTH_NAME# #BOOK_DAY_NAME# #BOOK_DAY# at #BOOK_HOUR#:#BOOK_MIN#. We are looking forward to seeing you. Best regards #RESTAURANT_NAME#&nbsp;</p><p><strong>We will contact you if we get a free table and are hoping to see you in the near future</strong></p><p>You can not replay to this e-mail but you can contack us here:</p><p>#RESTAURANT_NAME#</p><p>#RESTAURANT_ZIPCODE# #RESTAURANT_CITY#</p><p>#RESTAURANT_EMAIL#</p><p>#RESTAURANT_PHONE#</p><p>&nbsp;</p>',

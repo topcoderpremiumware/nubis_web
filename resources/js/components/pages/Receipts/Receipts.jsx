@@ -106,7 +106,9 @@ const Receipts = () => {
       setTotalRows(response.data.total)
       setTotalAmount(response.data.total_amount)
       setReceipts(response.data.data.map(i => {
-        return {...i,description: `${t('Booking id')}: #${i.order_id}, ${t('seats')}: ${i.order.seats}, ${t('tables')}: ${i.order.table_ids.join(', ')}`}
+        return {
+          ...i,
+          description: `${i.status === 'refund' ? `${i.refund_description}.` : ''} ${t('Booking id')}: #${i.order_id}, ${t('seats')}: ${i.order.seats}, ${t('tables')}: ${i.order.table_ids.join(', ')}`}
       }))
       setLoading(false)
     }).catch(error => {

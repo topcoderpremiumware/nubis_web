@@ -132,6 +132,7 @@ export default function PosCart(props){
 
   useEffect(() => {
     checksRef.current = checks;
+    console.log('checks',checks)
   },[checks])
 
   useEffect(() => {
@@ -152,8 +153,9 @@ export default function PosCart(props){
     })
   }
 
-  const saveCheck = async (check = false) => {
+  const saveCheck = async (check = false,scIndex = false) => {
     if(!check) check = checks[selectedCheckIndex]
+    if(!scIndex) scIndex = selectedCheckIndex
     let url = `${process.env.MIX_API_URL}/api/checks`
     if (check.hasOwnProperty('id')) {
       url = `${process.env.MIX_API_URL}/api/checks/${check.id}`
@@ -165,8 +167,9 @@ export default function PosCart(props){
       }
     }).then(response => {
       if (!check.hasOwnProperty('id')) {
-        let tempChecks = checks
-        tempChecks[selectedCheckIndex].id = response.data.id
+        let tempChecks = checksRef.current
+        console.log('checks length',tempChecks.length,scIndex)
+        tempChecks[scIndex].id = response.data.id
         setChecks(prev => ([...tempChecks]))
       }
       eventBus.dispatch("notification", {type: 'success', message: 'Cart saved successfully'});
@@ -263,7 +266,7 @@ export default function PosCart(props){
       tempChecks[selectedCheckIndex] = {...tempChecks[selectedCheckIndex], ...data}
       setChecks(prev => ([...tempChecks]))
       setPaymentMethodOpen(false)
-      saveCheck(tempChecks[selectedCheckIndex]).then((res) => {
+      saveCheck(tempChecks[selectedCheckIndex],selectedCheckIndex).then((res) => {
         if(res) openPDF()
       })
     }
@@ -306,6 +309,29 @@ export default function PosCart(props){
     return items
   }
 
+  const correct = () => {
+    let check = checks[selectedCheckIndex]
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${check.id}/refund`, {
+      products: check.products,
+      refund_description: 'Receipt correction'
+    }, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Refunded successfully'});
+      let newCheck = {...check, status: 'open'}
+      let newIndex = checks.length
+      delete newCheck.id
+      delete newCheck.payment_method
+      setChecks(prev => ([...prev,{...newCheck}]))
+      setSelectedCheckIndex(newIndex)
+      saveCheck(newCheck,newIndex)
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+  }
+
   return (<>
     <Stack spacing={2} mb={2} direction="row" alignItems="center">
       <h5>{t('Shopping cart')}</h5>
@@ -326,7 +352,7 @@ export default function PosCart(props){
               aria-controls={`check${key}-content`}
               className={`check_${check.status}`}
               id={`check${key}-header`}>
-              <Box style={{display: 'flex', alignItems: 'center'}}>{t('Cart')} #{key}
+              <Box style={{display: 'flex', alignItems: 'center'}}>{t('Cart')} #{check.place_check_id}
                 {(check.status !== 'closed' && selectedCheckIndex === key) ?
                   <TextField label={t('Title')} size="small" sx={{ml: 1}}
                              type="text" id="name" name="name"
@@ -360,10 +386,12 @@ export default function PosCart(props){
         })}
           <Stack spacing={2} sx={{mt: 2}} direction="row">
             <Button variant="contained" type="button" disabled={!checks.hasOwnProperty(selectedCheckIndex) || checks[selectedCheckIndex].status === 'closed'} onClick={e => setDiscountsOpen(true)}>{t('Discounts')}</Button>
-            <Button variant="contained" type="button" disabled={!checks.hasOwnProperty(selectedCheckIndex) || loading} onClick={() => saveCheck()}>{t('Save')}</Button>
+            <Button variant="contained" type="button" disabled={!checks.hasOwnProperty(selectedCheckIndex) || checks[selectedCheckIndex].status === 'closed' || loading} onClick={() => saveCheck()}>{t('Save')}</Button>
             <Button variant="contained" type="button"
                     disabled={!checks.hasOwnProperty(selectedCheckIndex) || !checks[selectedCheckIndex].hasOwnProperty('id')}
                     onClick={e => checks[selectedCheckIndex].status === 'closed' ? openPDF() : setPaymentMethodOpen(true)}>{t('Print')}</Button>
+            {checks.hasOwnProperty(selectedCheckIndex) && checks[selectedCheckIndex].status === 'closed' ? <Button variant="contained" type="button"
+                    onClick={correct}>{t('Correct')}</Button> : null}
           </Stack>
         </>
         :

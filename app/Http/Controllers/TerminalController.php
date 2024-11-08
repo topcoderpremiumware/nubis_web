@@ -106,10 +106,10 @@ class TerminalController extends Controller
     {
         $request->validate([
             'amount' => 'required',
-            'order_id' => 'required'
+            'check_id' => 'required'
         ]);
 
-        dispatch(new SwedbankPayment($request->amount, $request->order_id, $id, Auth::user()->id));
+        dispatch(new SwedbankPayment($request->amount, $request->check_id, $id, Auth::user()->id));
         return response()->json(['message' => 'The payment has been sent to the terminal']);
     }
 }

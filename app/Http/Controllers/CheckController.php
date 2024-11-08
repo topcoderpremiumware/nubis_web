@@ -87,7 +87,7 @@ class CheckController extends Controller
             }
         }
 
-        if($request->has('payment_method')){
+        if($request->has('payment_method') && $request->payment_method){
             $printed_by = User::find($request->printed_id);
             if($printed_by){
                 if($printed_by->pin != $request->pin) abort(400, 'PIN code not matched');

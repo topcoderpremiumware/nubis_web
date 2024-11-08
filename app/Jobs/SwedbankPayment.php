@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Check;
 use App\SMS\SMS;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -16,7 +17,7 @@ class SwedbankPayment implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $amount;
-    private $order_id;
+    private $check_id;
     private $user_id;
     private $terminal_id;
 
@@ -25,10 +26,10 @@ class SwedbankPayment implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($amount,$order_id,$terminal_id,$user_id)
+    public function __construct($amount,$check_id,$terminal_id,$user_id)
     {
        $this->amount = $amount;
-       $this->order_id = $order_id;
+       $this->check_id = $check_id;
        $this->terminal_id = $terminal_id;
        $this->user_id = $user_id;
     }
@@ -42,12 +43,25 @@ class SwedbankPayment implements ShouldQueue
     {
         $sg = new \App\Gateways\SwedbankGateway($this->user_id,$this->terminal_id);
         if($sg->login()){
-            $pay_data = $sg->pay($this->amount,$this->order_id);
+            $pay_data = $sg->pay($this->amount,$this->check_id);
             Log::info('SwedbankPayment::handle',['$pay_data' => $pay_data]);
             if($pay_data){
                 // 'Success' | 'Failure'
                 $result = $pay_data['PaymentResponse']['Response']['@attributes']['Result'];
-                if($result !== 'Success'){
+                if($result === 'Success'){
+                    $receipt_text = '';
+                    foreach ($pay_data['PaymentResponse']['PaymentReceipt'] as $PaymentReceipt) {
+                        Log::info('SwedbankPayment::handle',[
+                            $PaymentReceipt['@attributes']['DocumentQualifier'] => base64_decode($PaymentReceipt['OutputContent']['OutputText'])
+                        ]);
+                        if($PaymentReceipt['@attributes']['DocumentQualifier'] === 'CustomerReceipt'){
+                            $receipt_text = base64_decode($PaymentReceipt['OutputContent']['OutputText']);
+                            $check = Check::find($this->check_id);
+                            $check->bank_log = $receipt_text;
+                            $check->save();
+                        }
+                    }
+                }else{
                     // 'Cancel' | 'Refusal'
                     $condition = $pay_data['PaymentResponse']['Response']['@attributes']['ErrorCondition'];
                 }

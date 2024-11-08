@@ -37,6 +37,7 @@ use Illuminate\Support\Collection;
  * @property string $key_version
  * @property integer $place_check_id
  * @property string $certificate
+ * @property string $bank_log
  *
  * @property Place $place
  * @property Order $order

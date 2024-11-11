@@ -37,7 +37,7 @@ use Illuminate\Support\Collection;
  * @property string $key_version
  * @property integer $place_check_id
  * @property string $certificate
- * @property string $bank_log
+ * @property array $bank_log
  *
  * @property Place $place
  * @property Order $order
@@ -55,7 +55,8 @@ class Check extends Model
 
     protected $casts = [
         'deleted_at' => 'datetime',
-        'printed_at' => 'datetime'
+        'printed_at' => 'datetime',
+        'bank_log' => 'array'
     ];
 
     public static function boot(): void

@@ -11,16 +11,41 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React, {useEffect, useState} from "react";
-import {round} from "../../../../helper";
+import {round, simpleCatchError} from "../../../../helper";
+import axios from "axios";
+import eventBus from "../../../../eventBus";
 
 export default function PaymentMethodPopup(props){
   const {t} = useTranslation();
   const [data, setData] = useState({})
   const [users, setUsers] = useState([])
+  const [terminals, setTerminals] = useState([])
+  const [selectedTerminal, setSelectedTerminal] = useState({})
+  const [loading, setLoading] = useState(false)
+
+  let channelName
 
   useEffect(() => {
     setData({payment_method: 'card'})
     getUsers()
+    getTerminals()
+
+    channelName = `place-${localStorage.getItem('place_id')}`
+    Echo.channel(channelName)
+      .listen('.terminal-paid', function(data) {
+        console.log('echo order-created',data)
+        if(data['terminal'].id === selectedTerminal){
+          setLoading(false)
+          eventBus.dispatch("notification", {type: 'success', message: 'The order has been paid by the terminal'});
+        }
+      })
+      .listen('.terminal-error', function(data) {
+        console.log('echo order-updated',data)
+        if(data['terminal'].id === selectedTerminal){
+          setLoading(false)
+          eventBus.dispatch("notification", {type: 'error', message: 'A payment error occurred'});
+        }
+      })
   },[props.open])
 
   const methods = [
@@ -40,24 +65,51 @@ export default function PaymentMethodPopup(props){
     })
   }
 
+  const getTerminals = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/terminals`,{
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    }).then(response => {
+      setTerminals(response.data)
+      if(response.data.length === 1) setSelectedTerminal(response.data[0])
+    }).catch(error => {
+    })
+  }
+
   const onChange = (e) => {
     if(e.target.name === 'card_amount'){
-      if(e.target.value <= props.total)
+      if(e.target.value <= props.check.total)
         setData(prev => ({
           ...prev,
           card_amount: round(e.target.value),
-          cash_amount: round(props.total - e.target.value)
+          cash_amount: round(props.check.total - e.target.value)
         }))
     }else if(e.target.name === 'cash_amount'){
-      if(e.target.value <= props.total)
+      if(e.target.value <= props.check.total)
         setData(prev => ({
           ...prev,
           cash_amount: round(e.target.value),
-          card_amount: round(props.total - e.target.value)
+          card_amount: round(props.check.total - e.target.value)
         }))
     }else{
       setData(prev => ({...prev, [e.target.name]: e.target.value}))
     }
+  }
+
+  const sendTerminalPay = () => {
+    setLoading(true)
+    axios.post(`${process.env.MIX_API_URL}/api/terminals/${selectedTerminal.id}/pay`, {
+      amount: props.check.total,
+      check_id: props.check.id
+    }, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+    }).catch(error => {
+      simpleCatchError(error)
+    })
   }
 
   return (
@@ -109,6 +161,23 @@ export default function PaymentMethodPopup(props){
                      }}
           />
         </>}
+        {['card/cash','card'].includes(data.payment_method) ? <>
+        {terminals.length > 1 ?
+          <FormControl size="small" fullWidth sx={{mb: 2}}>
+            <InputLabel id="label_terminal">{t('Terminal')}</InputLabel>
+            <Select label={t('Terminal')} value={selectedTerminal}
+                    labelId="label_terminal" id="terminal" name="terminal"
+                    onChange={(e) => setSelectedTerminal(e.target.value)}>
+              {users.map((el,key) => {
+                return <MenuItem key={key} value={el.id}>{el.serial}</MenuItem>
+              })}
+            </Select>
+          </FormControl> : null}
+        {selectedTerminal ? <Button
+            variant="contained"
+            disabled={loading} sx={{mb: 2}}
+            onClick={() => sendTerminalPay()}>{t('Send payment to the terminal')}</Button> : null}
+        </> : null}
         <FormControl size="small" fullWidth sx={{mb: 2}}>
           <InputLabel id="label_printed_id">{t('Cashier')}</InputLabel>
           <Select label={t('Cashier')} value={data.printed_id}

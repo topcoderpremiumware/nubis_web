@@ -5,6 +5,7 @@ use App\Jobs\SwedbankPayment;
 use App\Models\Giftcard;
 use App\Models\Order;
 use App\Models\VideoGuide;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-
+    dispatch(new SwedbankPayment(20, 162, 1, 1));
 });
 
 Route::any('/EPASSaleToPOI/3.1', [SwedbankWebhookController::class, 'webhook']);

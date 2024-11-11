@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Events\TerminalError;
+use App\Events\TerminalPaid;
 use App\Models\Check;
-use App\SMS\SMS;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -59,12 +59,15 @@ class SwedbankPayment implements ShouldQueue
                             $check = Check::find($this->check_id);
                             $check->bank_log = $receipt_text;
                             $check->save();
+                            event(new TerminalPaid($this->terminal_id));
                         }
                     }
                 }else{
                     // 'Cancel' | 'Refusal'
                     $condition = $pay_data['PaymentResponse']['Response']['@attributes']['ErrorCondition'];
                 }
+            }else{
+                event(new TerminalError($this->terminal_id));
             }
         }
     }

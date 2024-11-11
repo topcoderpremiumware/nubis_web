@@ -83,5 +83,12 @@
         <div>{{__('Received',[],$place->language)}} {{__('in cash',[],$place->language)}}
             <span style="float: right;">{{number_format($check->cash_amount,2)}} {{$currency}}</span></div>
     @endif
+    @if($check->bank_log)
+        <div style="float:none;clear:both;"></div>
+        @foreach($check->bank_log['Cardholder']['Optional']['ReceiptString'] as $index => $line)
+            @if($index < 7) @continue @endif
+            <pre>{{$line}}</pre>
+        @endforeach
+    @endif
     <div style="float:none;clear:both;"></div>
 </body>

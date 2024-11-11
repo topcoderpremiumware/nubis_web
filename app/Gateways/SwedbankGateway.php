@@ -37,6 +37,7 @@ class SwedbankGateway
   </SaleTerminalData>
  </LoginRequest>
 </SaleToPOIRequest>');
+        Log::info("SwedbankGateway::login",['$result' => $result]);
         if($result['LoginResponse']['Response']['@attributes']['Result'] === 'Success'){
             return true;
         }else{

@@ -132,7 +132,6 @@ export default function PosCart(props){
 
   useEffect(() => {
     checksRef.current = checks;
-    console.log('checks',checks)
   },[checks])
 
   useEffect(() => {
@@ -426,7 +425,7 @@ export default function PosCart(props){
         open={paymentMethodOpen}
         onClose={() => setPaymentMethodOpen(false)}
         onChange={onChangePaymentMethod}
-        total={checks[selectedCheckIndex].total}
+        check={checks[selectedCheckIndex]}
         currency={props.currency} />
     </>}
     <Menu

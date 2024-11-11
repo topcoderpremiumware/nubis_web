@@ -34,7 +34,7 @@ export default function SplitCheckPopup(props){
       total: 0,
       products: []
     })
-  },[props.check])
+  },[props.check,props.open])
 
   const handleClose = () => {
     props.onClose()

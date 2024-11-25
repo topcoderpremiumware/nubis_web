@@ -45,6 +45,9 @@ export default function DayViewTableWaiting() {
         console.log('echo order-deleted',data)
         getOrders()
       })
+    return () => {
+      Echo.leave(channelName)
+    }
   }, [])
 
   const columns = [

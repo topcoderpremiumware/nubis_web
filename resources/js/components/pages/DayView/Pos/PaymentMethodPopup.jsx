@@ -13,6 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import React, {useEffect, useState} from "react";
 import {round, simpleCatchError} from "../../../../helper";
 import axios from "axios";
+import TerminalPaymentForm from "./TerminalPaymentForm";
 import eventBus from "../../../../eventBus";
 
 export default function PaymentMethodPopup(props){
@@ -21,31 +22,12 @@ export default function PaymentMethodPopup(props){
   const [users, setUsers] = useState([])
   const [terminals, setTerminals] = useState([])
   const [selectedTerminal, setSelectedTerminal] = useState({})
-  const [loading, setLoading] = useState(false)
-
-  let channelName
+  const [printType, setPrintType] = useState('proforma')
 
   useEffect(() => {
     setData({payment_method: 'card'})
     getUsers()
     getTerminals()
-
-    channelName = `place-${localStorage.getItem('place_id')}`
-    Echo.channel(channelName)
-      .listen('.terminal-paid', function(data) {
-        console.log('echo order-created',data)
-        if(data['terminal'].id === selectedTerminal){
-          setLoading(false)
-          eventBus.dispatch("notification", {type: 'success', message: 'The order has been paid by the terminal'});
-        }
-      })
-      .listen('.terminal-error', function(data) {
-        console.log('echo order-updated',data)
-        if(data['terminal'].id === selectedTerminal){
-          setLoading(false)
-          eventBus.dispatch("notification", {type: 'error', message: 'A payment error occurred'});
-        }
-      })
   },[props.open])
 
   const methods = [
@@ -97,16 +79,14 @@ export default function PaymentMethodPopup(props){
     }
   }
 
-  const sendTerminalPay = () => {
-    setLoading(true)
-    axios.post(`${process.env.MIX_API_URL}/api/terminals/${selectedTerminal.id}/pay`, {
-      amount: props.check.total,
-      check_id: props.check.id
-    }, {
+  const printProforma = () => {
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${props.check.id}/proforma`, {...props.check, ...data}, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
+      eventBus.dispatch("openReceiptPDF")
+      props.onClose()
     }).catch(error => {
       simpleCatchError(error)
     })
@@ -124,7 +104,7 @@ export default function PaymentMethodPopup(props){
             }}
     >
       <DialogTitle sx={{m: 0, p: 2}}>
-        <>{t('Payment method')}</>
+        <>{t('Print receipt')}</>
         <IconButton onClick={props.onClose} sx={{
           position: 'absolute',
           right: 8,
@@ -134,49 +114,62 @@ export default function PaymentMethodPopup(props){
       </DialogTitle>
       <DialogContent dividers>
         <FormControl size="small" fullWidth sx={{mb: 2}}>
-          <InputLabel id="label_payment_method">{t('Payment method')}</InputLabel>
-          <Select label={t('Payment method')} value={data.payment_method}
-                  labelId="label_payment_method" id="payment_method" name="payment_method"
-                  onChange={onChange}>
-            {methods.map((el,key) => {
-              return <MenuItem key={key} value={el.value}>{el.label}</MenuItem>
+          <InputLabel id="label_print_type">{t('Print type')}</InputLabel>
+          <Select label={t('Print type')} value={printType}
+                  labelId="label_print_type" id="print_type" name="print_type"
+                  onChange={(e) => setPrintType(e.target.value)}>
+            {['proforma','payment'].map((el,key) => {
+              return <MenuItem key={key} value={el}>{el}</MenuItem>
             })}
           </Select>
         </FormControl>
-        {data.payment_method === 'card/cash' && <>
-          <TextField label={t('Card amount')} size="small" fullWidth sx={{mb: 2}}
-                     type="text" id="card_amount" name="card_amount" required
-                     onChange={onChange}
-                     value={data.card_amount}
-                     InputProps={{
-                       startAdornment: <InputAdornment position="start">{props.currency}</InputAdornment>,
-                     }}
-          />
-          <TextField label={t('Cash amount')} size="small" fullWidth sx={{mb: 2}}
-                     type="text" id="cash_amount" name="cash_amount" required
-                     onChange={onChange}
-                     value={data.cash_amount}
-                     InputProps={{
-                       startAdornment: <InputAdornment position="start">{props.currency}</InputAdornment>,
-                     }}
-          />
-        </>}
-        {['card/cash','card'].includes(data.payment_method) ? <>
-        {terminals.length > 1 ?
+        {printType === 'payment' ? <>
           <FormControl size="small" fullWidth sx={{mb: 2}}>
-            <InputLabel id="label_terminal">{t('Terminal')}</InputLabel>
-            <Select label={t('Terminal')} value={selectedTerminal}
-                    labelId="label_terminal" id="terminal" name="terminal"
-                    onChange={(e) => setSelectedTerminal(e.target.value)}>
-              {users.map((el,key) => {
-                return <MenuItem key={key} value={el.id}>{el.serial}</MenuItem>
+            <InputLabel id="label_payment_method">{t('Payment method')}</InputLabel>
+            <Select label={t('Payment method')} value={data.payment_method}
+                    labelId="label_payment_method" id="payment_method" name="payment_method"
+                    onChange={onChange}>
+              {methods.map((el,key) => {
+                return <MenuItem key={key} value={el.value}>{el.label}</MenuItem>
               })}
             </Select>
-          </FormControl> : null}
-        {selectedTerminal ? <Button
-            variant="contained"
-            disabled={loading} sx={{mb: 2}}
-            onClick={() => sendTerminalPay()}>{t('Send payment to the terminal')}</Button> : null}
+          </FormControl>
+          {data.payment_method === 'card/cash' && <>
+            <TextField label={t('Card amount')} size="small" fullWidth sx={{mb: 2}}
+                       type="text" id="card_amount" name="card_amount" required
+                       onChange={onChange}
+                       value={data.card_amount}
+                       InputProps={{
+                         startAdornment: <InputAdornment position="start">{props.currency}</InputAdornment>,
+                       }}
+            />
+            <TextField label={t('Cash amount')} size="small" fullWidth sx={{mb: 2}}
+                       type="text" id="cash_amount" name="cash_amount" required
+                       onChange={onChange}
+                       value={data.cash_amount}
+                       InputProps={{
+                         startAdornment: <InputAdornment position="start">{props.currency}</InputAdornment>,
+                       }}
+            />
+          </>}
+          {['card/cash','card'].includes(data.payment_method) ? <>
+            {terminals.length > 1 ?
+              <FormControl size="small" fullWidth sx={{mb: 2}}>
+                <InputLabel id="label_terminal">{t('Terminal')}</InputLabel>
+                <Select label={t('Terminal')} value={selectedTerminal}
+                        labelId="label_terminal" id="terminal" name="terminal"
+                        onChange={(e) => setSelectedTerminal(e.target.value)}>
+                  {terminals.map((el,key) => {
+                    return <MenuItem key={key} value={el.id}>{el.serial}</MenuItem>
+                  })}
+                </Select>
+              </FormControl> : null}
+            {selectedTerminal ? <TerminalPaymentForm
+              selectedTerminal={selectedTerminal}
+              check_id={props.check.id}
+              amount={data.payment_method === 'card' ? props.check.total : data.card_amount}
+            /> : null}
+          </> : null}
         </> : null}
         <FormControl size="small" fullWidth sx={{mb: 2}}>
           <InputLabel id="label_printed_id">{t('Cashier')}</InputLabel>
@@ -195,7 +188,11 @@ export default function PaymentMethodPopup(props){
         />}
       </DialogContent>
       <DialogActions sx={{p:2}}>
-        <Button variant="contained" onClick={() => props.onChange(data)}>{t('Save')}</Button>
+        {printType === 'proforma' ?
+          <Button variant="contained" onClick={printProforma}>{t('Print')}</Button>
+          :
+          <Button variant="contained" onClick={() => props.onChange(data)}>{t('Save')}</Button>
+        }
       </DialogActions>
     </Dialog>
   );

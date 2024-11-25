@@ -255,6 +255,8 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('checks/{id}',[CheckController::class, 'save']);
     Route::post('checks/{id}/refund',[CheckController::class, 'refund']);
     Route::post('checks/{id}/print',[CheckController::class, 'print']);
+    Route::post('checks/{id}/proforma',[CheckController::class, 'createProforma']);
+    Route::post('checks/{data}/print_template',[CheckController::class, 'printTemplate']);
     Route::delete('checks/{id}',[CheckController::class, 'delete']);
 
     Route::get('receipts',[CheckController::class, 'getAllReceipts']);
@@ -272,6 +274,11 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('terminals/{id}',[TerminalController::class, 'save']);
     Route::delete('terminals/{id}',[TerminalController::class, 'delete']);
     Route::post('terminals/{id}/pay',[TerminalController::class, 'sendPayment']);
+    Route::post('terminals/{id}/revert',[TerminalController::class, 'sendRevert']);
+    Route::post('terminals/{id}/abort',[TerminalController::class, 'sendAbort']);
+    Route::post('terminals/{id}/input',[TerminalController::class, 'sendInput']);
+    Route::post('terminals/{id}/refund',[TerminalController::class, 'sendRefund']);
+
 
     Route::get('customers/all',[CustomerController::class, 'allCustomers']);
 });

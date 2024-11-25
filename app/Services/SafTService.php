@@ -49,7 +49,7 @@ class SafTService
         $last_check = $checks->last();
 
         /* @var Collection<Log> $logs */
-        $logs = Log::whereIn('action',['create-check-refund','print-first-check','print-check'])
+        $logs = Log::whereIn('action',['create-check-refund','print-first-check','print-check','print-proforma'])
             ->whereBetween(DB::raw('DATE(created_at)'),[$from,$to])
             ->orderBy('created_at','asc')
             ->get();
@@ -86,7 +86,8 @@ class SafTService
             '13' => [
                 ['id' => 'ZREP','pred' => '13009', 'desc' => 'Z report'],
                 ['id' => 'SALREC','pred' => '13012', 'desc' => 'Sales receipt'],
-                ['id' => 'RETREC','pred' => '13013', 'desc' => 'Return receipt']
+                ['id' => 'RETREC','pred' => '13013', 'desc' => 'Return receipt'],
+                ['id' => 'PROFORMA','pred' => '13015', 'desc' => 'Pro forma receipt']
             ],
         ];
 
@@ -196,16 +197,26 @@ class SafTService
         $cashregister->addChild('regDesc', 'The only cash register');
         $event_id = 1;
         $report_id = 1;
+        $proforma_num_array = [];
         for ($i = 0; $i < count($logs); $i++) {
             $log = $logs->get($i);
             if(in_array($log->action,['print-first-check','print-check'])){
                 $eventType = 'SALREC';
-            }elseif(in_array($log->action,['create-check-refund'])){
+            }elseif(in_array($log->action,['create-check-refund'])) {
                 $eventType = 'RETREC';
+            }elseif(in_array($log->action,['print-proforma'])){
+                $eventType = 'PROFORMA';
             }else{
                 continue;
             }
-            $check_id = explode('#',$log->comment)[1];
+            if($eventType == 'PROFORMA'){
+                $check_data = explode('#',$log->comment)[1];
+                $check_id = explode(':',$check_data)[0];
+                if(!array_key_exists($check_id,$proforma_num_array)) $proforma_num_array[$check_id] = 0;
+                $proforma_num_array[$check_id] += 1;
+            }else{
+                $check_id = explode('#',$log->comment)[1];
+            }
             $check = Check::find($check_id);
             if(!$check || !$check->place_check_id) continue;
             $event = $cashregister->addChild('event');
@@ -303,6 +314,9 @@ class SafTService
             $cashtransaction->addChild('signature',$check->signature);
             $cashtransaction->addChild('keyVersion',$check->key_version);
             $cashtransaction->addChild('certificateData',$check->certificate);
+            if(array_key_exists($check->id,$proforma_num_array)){
+                $cashtransaction->addChild('receiptProformaNum',$proforma_num_array[$check->id]);
+            }
             $cashtransaction->addChild('voidTransaction','false');
             $cashtransaction->addChild('trainingID','false');
         }
@@ -328,6 +342,17 @@ class SafTService
             ->whereNotNull('place_check_id')
             ->where(DB::raw('DATE(printed_at)'),$date->format('Y-m-d'))
             ->get();
+
+        $logs = Log::whereIn('action',['print-proforma'])
+            ->where(DB::raw('DATE(created_at)'),$date->format('Y-m-d'))
+            ->get();
+        $proforma_num = count($logs);
+        $proforma_amnt = 0;
+        foreach ($logs as $log) {
+            $check_data = explode('#',$log->comment)[1];
+            $amount = explode(':',$check_data)[1];
+            $proforma_amnt += (float)$amount;
+        }
 
         $grand_total = Check::select(DB::raw('SUM(CASE
                 WHEN status = "closed" THEN total
@@ -446,8 +471,8 @@ class SafTService
         $eventReport->addChild('reportOpenCashBoxNum', 0);
         $eventReport->addChild('reportReceiptCopyNum', 0);
         $eventReport->addChild('reportReceiptCopyAmnt', '0.00');
-        $eventReport->addChild('reportReceiptProformaNum', 0); // TODO: Створити логи в яких писати коли друкувався чек на оплату і на яку суму
-        $eventReport->addChild('reportReceiptProformaAmnt', '0.00');
+        $eventReport->addChild('reportReceiptProformaNum', $proforma_num);
+        $eventReport->addChild('reportReceiptProformaAmnt', number_format($proforma_amnt,2,'.',''));
         $eventReport->addChild('reportReturnNum', $refund_num);
         $eventReport->addChild('reportReturnAmnt', number_format($refund,2,'.',''));
         $eventReport->addChild('reportDiscountNum', $discount_num);

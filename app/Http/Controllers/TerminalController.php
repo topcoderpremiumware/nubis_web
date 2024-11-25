@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SwedbankAbort;
+use App\Jobs\SwedbankInput;
 use App\Jobs\SwedbankPayment;
+use App\Jobs\SwedbankRefund;
+use App\Jobs\SwedbankRevert;
 use App\Models\Area;
 use App\Models\Log;
 use App\Models\Terminal;
@@ -109,7 +113,49 @@ class TerminalController extends Controller
             'check_id' => 'required'
         ]);
 
-        dispatch(new SwedbankPayment($request->amount, $request->check_id, $id, Auth::user()->id));
+        dispatch(new SwedbankPayment($request->amount, $request->check_id, $id, Auth::user()->id))->onQueue('terminal');
         return response()->json(['message' => 'The payment has been sent to the terminal']);
+    }
+
+    public function sendRefund($id, Request $request)
+    {
+        $request->validate([
+            'amount' => 'required',
+            'check_id' => 'required'
+        ]);
+
+        dispatch(new SwedbankRefund($request->amount, $request->check_id, $id, Auth::user()->id))->onQueue('terminal');
+        return response()->json(['message' => 'The refund has been sent to the terminal']);
+    }
+
+    public function sendRevert($id, Request $request)
+    {
+        $request->validate([
+            'check_id' => 'required'
+        ]);
+
+        dispatch(new SwedbankRevert($request->check_id, $id, Auth::user()->id))->onQueue('terminal');
+        return response()->json(['message' => 'The revert has been sent to the terminal']);
+    }
+
+    public function sendAbort($id, Request $request)
+    {
+        $request->validate([
+            'check_id' => 'required'
+        ]);
+
+        dispatch(new SwedbankAbort($request->check_id, $id, Auth::user()->id));
+        return response()->json(['message' => 'The abort has been sent to the terminal']);
+    }
+
+    public function sendInput($id, Request $request)
+    {
+        $request->validate([
+            'check_id' => 'required',
+            'value' => 'required'
+        ]);
+
+        dispatch(new SwedbankInput($request->value,$request->check_id, $id, Auth::user()->id));
+        return response()->json(['message' => 'The abort has been sent to the terminal']);
     }
 }

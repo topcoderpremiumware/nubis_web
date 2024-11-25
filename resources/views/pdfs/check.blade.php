@@ -36,6 +36,7 @@
 
             $vat += $p_total - $p_total / (1 + $product->tax / 100);
         }
+        $printed_at = $check->printed_at ? $check->printed_at : now();
     @endphp
     <div style="text-align: center">{{$place->name}}</div>
     @if($place->address)<div style="text-align: center">{{$place->address}}</div>@endif
@@ -45,9 +46,9 @@
     @if($place->tax_number)<div style="text-align: center">{{__('VAT number',[],$place->language)}}: {{$place->tax_number}}</div>@endif
     <hr>
     <div style="font-size: 16pt;text-align: center">@if($check->status === 'refund'){{__('Refund',[],$place->language)}}@endif {{__('Receipt',[],$place->language)}}</div>
-    <div style="text-align: center">{{$check->printed_at->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
+    <div style="text-align: center">{{$printed_at->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
     <div style="text-align: center">@if($check->status === 'refund'){{__('Refund',[],$place->language)}}@endif {{__('Receipt',[],$place->language)}} #{{$check->place_check_id}}</div>
-    <div style="text-align: center">{{__('Cashier',[],$place->language)}}: {{$check->printed->name}}</div>
+    <div style="text-align: center">{{__('Cashier',[],$place->language)}}: {{$check->printed ? $check->printed->name : ''}}</div>
     <hr>
     <div>{{__('Booking id',[],$place->language)}} # {{$order->id}}</div>
     <div>{{__('Time',[],$place->language)}}: {{$order->reservation_time->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
@@ -83,6 +84,11 @@
         <div>{{__('Received',[],$place->language)}} {{__('in cash',[],$place->language)}}
             <span style="float: right;">{{number_format($check->cash_amount,2)}} {{$currency}}</span></div>
     @endif
+    @php
+        if($check->bank_log && !is_array($check->bank_log)){
+            $check->bank_log = json_decode($check->bank_log,true);
+        }
+    @endphp
     @if($check->bank_log)
         <div style="float:none;clear:both;"></div>
         @foreach($check->bank_log['Cardholder']['Optional']['ReceiptString'] as $index => $line)

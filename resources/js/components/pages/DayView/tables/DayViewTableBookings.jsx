@@ -57,6 +57,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
       eventBus.remove('timeChanged',handleOrdersChange)
       eventBus.remove('dateChanged',handleOrdersChange)
       eventBus.remove('orderEdited',handleOrdersChange)
+      Echo.leave(channelName)
     }
   }, [])
 

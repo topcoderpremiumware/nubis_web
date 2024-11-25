@@ -13,15 +13,17 @@ class TerminalPaid implements ShouldBroadcast
     use SerializesModels;
 
     public Terminal $terminal;
+    public string $message;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(int $terminal_id)
+    public function __construct(int $terminal_id, string $message = '')
     {
         $this->terminal = Terminal::find($terminal_id);
+        $this->message = $message;
     }
 
     /**
@@ -51,6 +53,6 @@ class TerminalPaid implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
-        return ['terminal' => $this->terminal];
+        return ['terminal' => $this->terminal,'message' => $this->message];
     }
 }

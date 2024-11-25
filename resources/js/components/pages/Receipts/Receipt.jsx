@@ -18,6 +18,7 @@ import {StyledTableRow} from "../../components/StyledTableRow";
 import Box from "@mui/material/Box";
 import SplitCheckPopup from "../DayView/Pos/SplitCheckPopup";
 import eventBus from "../../../eventBus";
+import TerminalRefundPopup from "./TerminalRefundPopup";
 
 const Receipt = () => {
   const { t } = useTranslation();
@@ -27,6 +28,9 @@ const Receipt = () => {
   const [paymentMethod, setPaymentMethod] = useState({})
   const [splitCheckOpen, setSplitCheckOpen] = useState(false)
   const [refundDescription, setRefundDescription] = useState(null)
+  const [terminalRefundOpen, setTermnalRefundOpen] = useState(false)
+  const [refundId, setRefundId] = useState(0)
+  const [refundAmount, setRefundAmount] = useState(0)
 
   const discountTypes = {
     our_code_amount: t('Our gift card'),
@@ -109,9 +113,15 @@ const Receipt = () => {
       }
     }).then(response => {
       getReceipt()
-      openPDF(response.data.id)
       setSplitCheckOpen(false)
       eventBus.dispatch("notification", {type: 'success', message: 'Refunded successfully'});
+      if(response.data.card_amount > 0){
+        setTermnalRefundOpen(true)
+        setRefundId(response.data.id)
+        setRefundAmount(response.data.card_amount)
+      }else{
+        openPDF(response.data.id)
+      }
     }).catch(error => {
       simpleCatchError(error)
     })
@@ -252,6 +262,15 @@ const Receipt = () => {
                    value={refundDescription}
         />
       </SplitCheckPopup>
+      <TerminalRefundPopup
+        open={terminalRefundOpen}
+        onClose={() => {
+          setTermnalRefundOpen(false);
+          openPDF(refundId)
+        }}
+        check_id={refundId}
+        amount={refundAmount}
+        />
     </div>}
   </>)
 }

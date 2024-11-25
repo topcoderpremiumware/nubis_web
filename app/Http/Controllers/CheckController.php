@@ -149,7 +149,7 @@ class CheckController extends Controller
     public function print($id, Request $request)
     {
         $check = Check::find($id);
-        if($check->status === 'open'){
+        if($check->status === 'open' && $check->printed_id){
             $check->status = 'closed';
             $check->save();
             Log::add($request,'print-first-check','Printed check first time #'.$check->id);
@@ -158,6 +158,46 @@ class CheckController extends Controller
         }
 
         $html = view('pdfs.check', compact('check'))->render();
+        $options = new Options();
+        $options->set('enable_remote', TRUE);
+        $options->set('enable_html5_parser', FALSE);
+        $options->set('dpi', 72);
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper([0,0,5.7/2.54*72,3000]);
+
+        $GLOBALS['bodyHeight'] = 0;
+
+        $dompdf->setCallbacks([
+            'myCallbacks' => [
+                'event' => 'end_frame', 'f' => function ($frame) {
+                    $node = $frame->get_node();
+                    if (strtolower($node->nodeName) === "body") {
+                        $padding_box = $frame->get_padding_box();
+                        $GLOBALS['bodyHeight'] += $padding_box['h'];
+                    }
+                }
+            ]
+        ]);
+
+        $dompdf->render();
+        unset($dompdf);
+        $docHeight = $GLOBALS['bodyHeight'] + 30;
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper([0,0,5.7/2.54*72,$docHeight]);
+        $dompdf->render();
+        $dompdf->stream('check.pdf', array("Attachment" => false,'compress' => false));
+    }
+
+    public function printTemplate($data, Request $request)
+    {
+        $data = json_decode(base64_decode($data),true);
+
+        $text = $data['Merchant']['Optional']['ReceiptString'];
+        $html = view('pdfs.check_template', compact('text'))->render();
         $options = new Options();
         $options->set('enable_remote', TRUE);
         $options->set('enable_html5_parser', FALSE);
@@ -677,5 +717,41 @@ class CheckController extends Controller
 //         $filename = "SAF-T Cash Register_".$place->tax_number."_".now()->format('YmdHis')."_1_1.xml";
 //        $file_path = '';
 //        return response()->download($file_path)->deleteFileAfterSend(true);
+    }
+
+    public function createProforma($id, Request $request)
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'order_id' => 'required|exists:orders,id',
+            'status' => 'required',
+            'subtotal' => 'required',
+            'total' => 'required'
+        ]);
+
+        $check = Check::find($id);
+        if($check->status == 'closed') abort(400, 'This cart is closed');
+
+        if(!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
+
+        if($request->payment_method === 'card/cash'){
+            if(!$request->has('cash_amount') || !$request->has('card_amount')){
+                abort(400, 'Amount is required');
+            }elseif(($request->cash_amount + $request->card_amount) != $request->total){
+                abort(400, 'Payment amount is not full');
+            }
+        }
+
+        $printed_by = User::find($request->printed_id);
+        if($printed_by){
+            if($printed_by->pin != $request->pin) abort(400, 'PIN code not matched');
+        }else {
+            abort(400, 'Cashier is not selected');
+        }
+
+        Log::add($request,'print-proforma','Printed proforma #'.$id.':'.$check->total, $request->printed_id);
+
+        return response()->json(['message' => 'Proforma saved to the logs']);
     }
 }

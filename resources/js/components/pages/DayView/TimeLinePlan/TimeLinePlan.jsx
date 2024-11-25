@@ -79,6 +79,9 @@ export default function TimeLinePlan(props) {
         console.log('echo order-deleted',data)
         getOrders()
       })
+    return () => {
+      Echo.leave(channelName)
+    }
   },[])
 
   const redrawComponent = () => {

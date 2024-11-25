@@ -35,10 +35,11 @@ class Log extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function add($request,$action,$comment)
+    public static function add($request,$action,$comment,$user_id = null): void
     {
+        if(!$user_id) $user_id = Auth::user()->id;
         self::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => $user_id,
             'action' => $action,
             'comment' => $comment,
             'ip' => $request->ip()

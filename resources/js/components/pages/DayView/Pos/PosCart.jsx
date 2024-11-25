@@ -120,13 +120,18 @@ export default function PosCart(props){
       tempChecks[selectedCheckIndexRef.current].subtotal = totals['subtotal']
       setChecks(prev => ([...tempChecks]))
     }
+    function openReceiptPDF(){
+      openPDF()
+    }
     eventBus.on("addProductToCart", handleAddProductToCart)
     eventBus.on("removeProductToCart", handleRemoveProductToCart)
     eventBus.on("placeChanged", handlePlaceChanged)
+    eventBus.on("openReceiptPDF", openReceiptPDF)
     return () => {
       eventBus.remove("addProductToCart", handleAddProductToCart)
       eventBus.remove("removeProductToCart", handleRemoveProductToCart)
       eventBus.remove("placeChanged", handlePlaceChanged)
+      eventBus.remove("openReceiptPDF", openReceiptPDF)
     }
   }, [props.orderId])
 
@@ -169,6 +174,7 @@ export default function PosCart(props){
         let tempChecks = checksRef.current
         console.log('checks length',tempChecks.length,scIndex)
         tempChecks[scIndex].id = response.data.id
+        tempChecks[scIndex].printed_id = response.data.printed_id
         setChecks(prev => ([...tempChecks]))
       }
       eventBus.dispatch("notification", {type: 'success', message: 'Cart saved successfully'});
@@ -272,7 +278,7 @@ export default function PosCart(props){
   }
 
   const openPDF = () => {
-    axios.post(`${process.env.MIX_API_URL}/api/checks/${checks[selectedCheckIndex].id}/print`,{}, {
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${checksRef.current[selectedCheckIndexRef.current].id}/print`,{}, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       },
@@ -286,9 +292,11 @@ export default function PosCart(props){
         window.ReactNativeWebView.postMessage('print_receipt');
       }
 
-      let tempChecks = checks
-      tempChecks[selectedCheckIndex].status = 'closed'
-      setChecks(prev => ([...tempChecks]))
+      if(checksRef.current.printed_id){
+        let tempChecks = checksRef.current
+        tempChecks[selectedCheckIndexRef.current].status = 'closed'
+        setChecks(prev => ([...tempChecks]))
+      }
     }).catch(error => {
       simpleCatchError(error)
     })
@@ -389,8 +397,8 @@ export default function PosCart(props){
             <Button variant="contained" type="button"
                     disabled={!checks.hasOwnProperty(selectedCheckIndex) || !checks[selectedCheckIndex].hasOwnProperty('id')}
                     onClick={e => checks[selectedCheckIndex].status === 'closed' ? openPDF() : setPaymentMethodOpen(true)}>{t('Print')}</Button>
-            {checks.hasOwnProperty(selectedCheckIndex) && checks[selectedCheckIndex].status === 'closed' ? <Button variant="contained" type="button"
-                    onClick={correct}>{t('Correct')}</Button> : null}
+            {/*{checks.hasOwnProperty(selectedCheckIndex) && checks[selectedCheckIndex].status === 'closed' ? <Button variant="contained" type="button"*/}
+            {/*        onClick={correct}>{t('Correct')}</Button> : null}*/}
           </Stack>
         </>
         :

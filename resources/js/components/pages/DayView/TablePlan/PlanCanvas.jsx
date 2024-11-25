@@ -76,6 +76,9 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
         console.log('echo order-deleted',data)
         getOrders()
       })
+    return () => {
+      Echo.leave(channelName)
+    }
   },[])
 
   const redrawComponent = () => {

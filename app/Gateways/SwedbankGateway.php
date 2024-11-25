@@ -62,7 +62,6 @@ class SwedbankGateway
         try{
             $timestamp = Carbon::now()->format('Y-m-d\TH:i:s.uP');
             Cache::put('swed_pay_'.$order_id.'_service',$this->service_id,now()->addDays(1));
-            Cache::put('swed_pay_'.$order_id.'_timestamp',$timestamp,now()->addDays(1));
             $result = $this->request('<SaleToPOIRequest>
      <MessageHeader ProtocolVersion="3.1" MessageClass="Service" MessageCategory="Payment" MessageType="Request" ServiceID="'.$this->getServiceId().'" SaleID="'.$this->user_id.'" POIID="'.$this->terminal->serial.'" />
      <PaymentRequest>
@@ -84,6 +83,9 @@ class SwedbankGateway
                     }
                 }
             }
+            $pt_id_data = $result['PaymentResponse']['POIData']['POITransactionID'];
+            Cache::put('swed_pay_'.$order_id.'_timestamp',$pt_id_data['@attributes']['TimeStamp'],now()->addDays(1));
+            Cache::put('swed_pay_'.$order_id.'_transaction',$pt_id_data['@attributes']['TransactionID'],now()->addDays(1));
             return $result;
         }catch (ConnectionException $e){
             Log::error('SwedbankGateway::pay',[$e->getMessage()]);
@@ -100,11 +102,12 @@ class SwedbankGateway
     {
         try{
             $pay_timestamp = Cache::get('swed_pay_'.$order_id.'_timestamp');
+            $pay_transaction = Cache::get('swed_pay_'.$order_id.'_transaction');
             $result = $this->request('<SaleToPOIRequest>
      <MessageHeader ProtocolVersion="3.1" MessageClass="Service" MessageCategory="Reversal" MessageType="Request" ServiceID="'.$this->getServiceId().'" SaleID="'.$this->user_id.'" POIID="'.$this->terminal->serial.'" />
      <ReversalRequest ReversalReason="MerchantCancel">
   <OriginalPOITransaction SaleID="'.$this->user_id.'" POIID="'.$this->terminal->serial.'">
-   <POITransactionID TransactionID="'.$order_id.'" TimeStamp="'.$pay_timestamp.'"/>
+   <POITransactionID TransactionID="'.$pay_transaction.'" TimeStamp="'.$pay_timestamp.'"/>
   </OriginalPOITransaction>
  </ReversalRequest>
      </SaleToPOIRequest>');

@@ -62,6 +62,7 @@ export default function ProductCategoryPopup(props){
       formData.append('selling_price', item.selling_price)
       formData.append('stock', item.stock)
       formData.append('tax', item.tax)
+      formData.append('type', item.type)
       if(item.hasOwnProperty('product_category_ids')) formData.append('product_category_ids', item.product_category_ids)
     }
     if(type === 'category'){
@@ -136,6 +137,16 @@ export default function ProductCategoryPopup(props){
                        value={item?.name}
             />
             {type === 'product' && <>
+              <FormControl size="small" fullWidth sx={{mb: 2}}>
+                <InputLabel id="label_product_type">{t('Product type')}</InputLabel>
+                <Select label={t('Product type')} value={item?.type}
+                        labelId="label_product_type" id="product_type" name="product_type"
+                        onChange={(e) => setItem(prev => ({...prev, type:e.target.value}))}>
+                  {['drink','food'].map((el,key) => {
+                    return <MenuItem key={key} value={el}>{t(el)}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
               <TextField label={t('Cost price')} size="small" fullWidth sx={{mb: 2}}
                          type="text" id="cost_price" name="cost_price" required
                          onChange={(e) => setItem(prev => ({...prev, cost_price:e.target.value}))}

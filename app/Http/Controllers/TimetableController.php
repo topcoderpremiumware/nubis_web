@@ -244,7 +244,7 @@ class TimetableController extends Controller
         $working_hours = [];
 
         foreach ($working as $item){
-            if($item->future_booking_limit && Carbon::now()->addDays($item->future_booking_limit)->lt(Carbon::parse($date))) return [];
+            if(!$for_admin && $item->future_booking_limit && Carbon::now()->addDays($item->future_booking_limit)->lt(Carbon::parse($date))) return [];
             if(empty($item->week_days) || in_array($week_day,$item->week_days)){
                 $working_hours[] = [
                     'date' => $date,

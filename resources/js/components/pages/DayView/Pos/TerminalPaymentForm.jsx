@@ -8,12 +8,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import React, {useEffect, useState} from "react";
 import {simpleCatchError} from "../../../../helper";
 import axios from "axios";
+import eventBus from "../../../../eventBus";
 
 export default function TerminalPaymentForm(props){
   const {t} = useTranslation();
   const [loading, setLoading] = useState(false)
   const [loadingRevert, setLoadingRevert] = useState(false)
-  const [loadingAbort, setLoadingAbort] = useState(false)
+  const [loadingAbort, setLoadingAbort] = useState(true)
   const [terminalErrors,  setTerminalErrors] = useState([])
   const [terminalDisplay,  setTerminalDisplay] = useState('Welcome')
 
@@ -26,7 +27,7 @@ export default function TerminalPaymentForm(props){
         if(data['terminal'].id === props.selectedTerminal.id){
           setLoading(false)
           setLoadingRevert(false)
-          setLoadingAbort(false)
+          setLoadingAbort(true)
           setTerminalErrors(prev => ([...prev,{type: 'success', message: t(data['message'])}]))
         }
       })
@@ -34,15 +35,16 @@ export default function TerminalPaymentForm(props){
         if(data['terminal'].id === props.selectedTerminal.id){
           setLoading(false)
           setLoadingRevert(false)
-          setLoadingAbort(false)
+          setLoadingAbort(true)
           setTerminalErrors(prev => ([...prev,{type: 'success', message: t(data['message'])}]))
+          eventBus.dispatch("madeReversal")
         }
       })
       .listen('.terminal-aborted', function(data) {
         if(data['terminal'].id === props.selectedTerminal.id){
           setLoading(false)
           setLoadingRevert(false)
-          setLoadingAbort(false)
+          setLoadingAbort(true)
           setTerminalErrors(prev => ([...prev,{type: 'success', message: t(data['message'])}]))
         }
       })
@@ -50,7 +52,7 @@ export default function TerminalPaymentForm(props){
         if(data['terminal'].id === props.selectedTerminal.id){
           setLoading(false)
           setLoadingRevert(false)
-          setLoadingAbort(false)
+          setLoadingAbort(true)
           setTerminalErrors(prev => ([...prev,{type: 'error', message: t(data['message'])}]))
         }
       })
@@ -76,6 +78,8 @@ export default function TerminalPaymentForm(props){
 
   const sendTerminalPay = () => {
     setLoading(true)
+    setLoadingAbort(false)
+    setLoadingRevert(true)
     axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/pay`, {
       amount: props.amount,
       check_id: props.check_id
@@ -91,6 +95,8 @@ export default function TerminalPaymentForm(props){
 
   const sendTerminalRevert = () => {
     setLoadingRevert(true)
+    setLoading(true)
+    setLoadingAbort(false)
     axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/revert`, {
       check_id: props.check_id
     }, {

@@ -24,7 +24,8 @@ class ProductController extends Controller
             'cost_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
             'stock' => 'required|numeric',
-            'tax' => 'required|numeric'
+            'tax' => 'required|numeric',
+            'type' => 'required'
         ]);
 
         if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
@@ -45,6 +46,7 @@ class ProductController extends Controller
             'selling_price' => $request->selling_price,
             'stock' => $request->stock,
             'tax' => $request->tax,
+            'type' => $request->type
         ]);
 
         if($request->has('product_category_ids')){
@@ -81,7 +83,8 @@ class ProductController extends Controller
             'cost_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
             'stock' => 'required|numeric',
-            'tax' => 'required|numeric'
+            'tax' => 'required|numeric',
+            'type' => 'required'
         ]);
 
         $product = Product::find($id);
@@ -109,7 +112,8 @@ class ProductController extends Controller
             'cost_price' => $request->cost_price,
             'selling_price' => $request->selling_price,
             'stock' => $request->stock,
-            'tax' => $request->tax
+            'tax' => $request->tax,
+            'type' => $request->type
         ]);
 
         if($request->has('product_category_ids')){
@@ -126,7 +130,7 @@ class ProductController extends Controller
         }
     }
 
-    public function     getAllByPlace($place_id,Request $request)
+    public function getAllByPlace($place_id,Request $request)
     {
         $products = Product::where('place_id',$place_id)->with('product_categories');
         if($request->has('product_category_id')){

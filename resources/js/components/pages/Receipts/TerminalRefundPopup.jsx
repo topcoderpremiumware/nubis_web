@@ -13,7 +13,7 @@ export default function TerminalRefundPopup(props){
   const {t} = useTranslation();
   const [loading, setLoading] = useState(false)
   const [loadingRevert, setLoadingRevert] = useState(false)
-  const [loadingAbort, setLoadingAbort] = useState(false)
+  const [loadingAbort, setLoadingAbort] = useState(true)
   const [terminalErrors,  setTerminalErrors] = useState([])
   const [terminalDisplay,  setTerminalDisplay] = useState('Welcome')
   const [terminals, setTerminals] = useState([])
@@ -30,7 +30,7 @@ export default function TerminalRefundPopup(props){
         if(data['terminal'].id === selectedTerminalRef.current.id){
           setLoading(false)
           setLoadingRevert(false)
-          setLoadingAbort(false)
+          setLoadingAbort(true)
           setTerminalErrors(prev => ([...prev,{type: 'success', message: t(data['message'])}]))
         }
       })
@@ -38,7 +38,7 @@ export default function TerminalRefundPopup(props){
         if(data['terminal'].id === selectedTerminalRef.current.id){
           setLoading(false)
           setLoadingRevert(false)
-          setLoadingAbort(false)
+          setLoadingAbort(true)
           setTerminalErrors(prev => ([...prev,{type: 'success', message: t(data['message'])}]))
         }
       })
@@ -46,7 +46,7 @@ export default function TerminalRefundPopup(props){
         if(data['terminal'].id === selectedTerminalRef.current.id){
           setLoading(false)
           setLoadingRevert(false)
-          setLoadingAbort(false)
+          setLoadingAbort(true)
           setTerminalErrors(prev => ([...prev,{type: 'success', message: t(data['message'])}]))
         }
       })
@@ -54,7 +54,7 @@ export default function TerminalRefundPopup(props){
         if(data['terminal'].id === selectedTerminalRef.current.id){
           setLoading(false)
           setLoadingRevert(false)
-          setLoadingAbort(false)
+          setLoadingAbort(true)
           setTerminalErrors(prev => ([...prev,{type: 'error', message: t(data['message'])}]))
         }
       })
@@ -100,6 +100,8 @@ export default function TerminalRefundPopup(props){
 
   const sendTerminalRefund = () => {
     setLoading(true)
+    setLoadingAbort(false)
+    setLoadingRevert(true)
     axios.post(`${process.env.MIX_API_URL}/api/terminals/${selectedTerminal.id}/refund`, {
       amount: props.amount,
       check_id: props.check_id
@@ -115,6 +117,8 @@ export default function TerminalRefundPopup(props){
 
   const sendTerminalRevert = () => {
     setLoadingRevert(true)
+    setLoading(true)
+    setLoadingAbort(false)
     axios.post(`${process.env.MIX_API_URL}/api/terminals/${selectedTerminal.id}/revert`, {
       check_id: props.check_id
     }, {

@@ -26,6 +26,7 @@ import ChangeTablePopup from "./ChangeTablePopup";
 import ChangeOrder from "./ChangeOrder";
 import PaymentMethodPopup from "./PaymentMethodPopup";
 import {calcCheckTotal} from "./posHelper";
+import PrintProductsPopup from "./PrintProductsPopup";
 
 export default function PosCart(props){
   const {t} = useTranslation();
@@ -34,6 +35,8 @@ export default function PosCart(props){
   const [selectedCheckIndex, setSelectedCheckIndex] = useState(null)
   const [discountsOpen, setDiscountsOpen] = useState(false)
   const [splitCheckOpen, setSplitCheckOpen] = useState(false)
+  const [printProductsOpen, setPrintProductsOpen] = useState(false)
+  const [printProductsType, setPrintProductsType] = useState(null)
   const [changeTableOpen, setChangeTableOpen] = useState(false)
   const [paymentMethodOpen, setPaymentMethodOpen] = useState(false)
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -123,15 +126,20 @@ export default function PosCart(props){
     function openReceiptPDF(){
       openPDF()
     }
+    function madeReversal(){
+      correct()
+    }
     eventBus.on("addProductToCart", handleAddProductToCart)
     eventBus.on("removeProductToCart", handleRemoveProductToCart)
     eventBus.on("placeChanged", handlePlaceChanged)
     eventBus.on("openReceiptPDF", openReceiptPDF)
+    eventBus.on("madeReversal", madeReversal)
     return () => {
       eventBus.remove("addProductToCart", handleAddProductToCart)
       eventBus.remove("removeProductToCart", handleRemoveProductToCart)
       eventBus.remove("placeChanged", handlePlaceChanged)
       eventBus.remove("openReceiptPDF", openReceiptPDF)
+      eventBus.remove("madeReversal", madeReversal)
     }
   }, [props.orderId])
 
@@ -313,6 +321,20 @@ export default function PosCart(props){
     if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
       items.push(<MenuItem key="3" onClick={(e) => {setChangeTableOpen(true);handleMenuClose(event)}}>{t('Change table')}</MenuItem>)
     }
+    if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
+      items.push(<MenuItem key="4" onClick={(e) => {
+        setPrintProductsOpen(true)
+        setPrintProductsType('food')
+        handleMenuClose(event)
+      }}>{t('Print for kitchen')}</MenuItem>)
+    }
+    if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
+      items.push(<MenuItem key="5" onClick={(e) => {
+        setPrintProductsOpen(true)
+        setPrintProductsType('drink')
+        handleMenuClose(event)}
+      }>{t('Print for bar')}</MenuItem>)
+    }
     return items
   }
 
@@ -423,6 +445,11 @@ export default function PosCart(props){
         open={splitCheckOpen}
         onClose={() => setSplitCheckOpen(false)}
         onChange={onChangeSplitCheck}
+        check={checks[selectedCheckIndex]} />
+      <PrintProductsPopup
+        open={printProductsOpen}
+        onClose={() => setPrintProductsOpen(false)}
+        type={printProductsType}
         check={checks[selectedCheckIndex]} />
       <ChangeTablePopup
         open={changeTableOpen}

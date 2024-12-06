@@ -22,7 +22,7 @@
         $place = $check->place;
         $order = $check->order;
     @endphp
-    <div style="font-size: 16pt;text-align: center">{{__('Order board',[],$place->language)}}</div>
+    <div style="font-size: 16pt;text-align: center">@if($print_type === 'all'){{__('Order board',[],$place->language)}} @else {{__('Ready to go',[],$place->language)}}@endif</div>
     <div style="text-align: center">{{now()->setTimezone($place->country->timezone)->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
     <br>
     <div>{{__('Table',[],$place->language)}} {{implode(', ',$order->table_ids)}}</div>

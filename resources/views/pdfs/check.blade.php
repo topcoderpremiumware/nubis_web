@@ -46,7 +46,7 @@
     @if($place->tax_number)<div style="text-align: center">{{__('VAT number',[],$place->language)}}: {{$place->tax_number}}</div>@endif
     <hr>
     @if($check->place_check_id)
-        <div style="font-size: 16pt;text-align: center">@if($check->status === 'refund'){{__('Refund',[],$place->language)}}@endif {{__('Receipt',[],$place->language)}}</div>
+        <div style="font-size: 16pt;text-align: center">@if($check->status === 'refund'){{__('Refund',[],$place->language)}} @else {{__('Receipt',[],$place->language)}}@endif</div>
     @else
         <div style="font-size: 16pt;text-align: center">{{__('Proforma',[],$place->language)}}</div>
     @endif

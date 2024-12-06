@@ -168,15 +168,16 @@ class CheckController extends Controller
         ]);
 
         $check = Check::find($id);
+        if($request->print_type !== 'all'){
+            DB::table('check_product')
+                ->where('check_id', $id)
+                ->whereIn('product_id', array_map(function($el){
+                    return $el['id'];
+                },$request->products))
+                ->update(['is_printed' => 1]);
+        }
 
-        DB::table('check_product')
-            ->where('check_id', $id)
-            ->whereIn('product_id', array_map(function($el){
-                return $el['id'];
-            },$request->products))
-            ->update(['is_printed' => 1]);
-
-        $html = view('pdfs.check_products', ['check' => $check, 'products' => $request->products])->render();
+        $html = view('pdfs.check_products', ['check' => $check, 'products' => $request->products, 'print_type' => $request->print_type])->render();
         $this->generateCheckPDF($html);
     }
 

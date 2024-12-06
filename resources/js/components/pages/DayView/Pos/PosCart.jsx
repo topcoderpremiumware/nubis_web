@@ -321,14 +321,16 @@ export default function PosCart(props){
     if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
       items.push(<MenuItem key="3" onClick={(e) => {setChangeTableOpen(true);handleMenuClose(event)}}>{t('Change table')}</MenuItem>)
     }
-    if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
+    if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex] &&
+      checks[selectedCheckIndex].hasOwnProperty('id')){
       items.push(<MenuItem key="4" onClick={(e) => {
         setPrintProductsOpen(true)
         setPrintProductsType('food')
         handleMenuClose(event)
       }}>{t('Print for kitchen')}</MenuItem>)
     }
-    if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
+    if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex] &&
+      checks[selectedCheckIndex].hasOwnProperty('id')){
       items.push(<MenuItem key="5" onClick={(e) => {
         setPrintProductsOpen(true)
         setPrintProductsType('drink')

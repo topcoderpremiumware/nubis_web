@@ -256,6 +256,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('checks/{id}/refund',[CheckController::class, 'refund']);
     Route::post('checks/{id}/print',[CheckController::class, 'print']);
     Route::post('checks/{id}/proforma',[CheckController::class, 'createProforma']);
+    Route::post('checks/{id}/print_products',[CheckController::class, 'printProducts']);
     Route::post('checks/{data}/print_template',[CheckController::class, 'printTemplate']);
     Route::delete('checks/{id}',[CheckController::class, 'delete']);
 

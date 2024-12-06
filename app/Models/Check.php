@@ -98,7 +98,7 @@ class Check extends Model
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class)
-            ->withPivot('price', 'quantity')->withTrashed();
+            ->withPivot('price', 'quantity', 'is_printed')->withTrashed();
     }
 
     public function printed(): BelongsTo

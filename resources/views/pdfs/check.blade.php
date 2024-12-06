@@ -50,7 +50,7 @@
     @else
         <div style="font-size: 16pt;text-align: center">{{__('Proforma',[],$place->language)}}</div>
     @endif
-    <div style="text-align: center">{{$printed_at->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
+    <div style="text-align: center">{{$printed_at->setTimezone($place->country->timezone)->locale($place->language)->isoFormat('DD MMMM Y HH:mm')}}</div>
     @if($check->place_check_id)
         <div style="text-align: center">@if($check->status === 'refund'){{__('Refund',[],$place->language)}}@endif {{__('Receipt',[],$place->language)}} #{{$check->place_check_id}}</div>
     @endif

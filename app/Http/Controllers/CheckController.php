@@ -158,38 +158,26 @@ class CheckController extends Controller
         }
 
         $html = view('pdfs.check', compact('check'))->render();
-        $options = new Options();
-        $options->set('enable_remote', TRUE);
-        $options->set('enable_html5_parser', FALSE);
-        $options->set('dpi', 72);
+        $this->generateCheckPDF($html);
+    }
 
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper([0,0,5.7/2.54*72,3000]);
-
-        $GLOBALS['bodyHeight'] = 0;
-
-        $dompdf->setCallbacks([
-            'myCallbacks' => [
-                'event' => 'end_frame', 'f' => function ($frame) {
-                    $node = $frame->get_node();
-                    if (strtolower($node->nodeName) === "body") {
-                        $padding_box = $frame->get_padding_box();
-                        $GLOBALS['bodyHeight'] += $padding_box['h'];
-                    }
-                }
-            ]
+    public function printProducts($id, Request $request)
+    {
+        $request->validate([
+            'products' => 'required',
         ]);
 
-        $dompdf->render();
-        unset($dompdf);
-        $docHeight = $GLOBALS['bodyHeight'] + 30;
+        $check = Check::find($id);
 
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper([0,0,5.7/2.54*72,$docHeight]);
-        $dompdf->render();
-        $dompdf->stream('check.pdf', array("Attachment" => false,'compress' => false));
+        DB::table('check_product')
+            ->where('check_id', $id)
+            ->whereIn('product_id', array_map(function($el){
+                return $el['id'];
+            },$request->products))
+            ->update(['is_printed' => 1]);
+
+        $html = view('pdfs.check_products', ['check' => $check, 'products' => $request->products])->render();
+        $this->generateCheckPDF($html);
     }
 
     public function printTemplate($data, Request $request)
@@ -198,38 +186,7 @@ class CheckController extends Controller
 
         $text = $data['Merchant']['Optional']['ReceiptString'];
         $html = view('pdfs.check_template', compact('text'))->render();
-        $options = new Options();
-        $options->set('enable_remote', TRUE);
-        $options->set('enable_html5_parser', FALSE);
-        $options->set('dpi', 72);
-
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper([0,0,5.7/2.54*72,3000]);
-
-        $GLOBALS['bodyHeight'] = 0;
-
-        $dompdf->setCallbacks([
-            'myCallbacks' => [
-                'event' => 'end_frame', 'f' => function ($frame) {
-                    $node = $frame->get_node();
-                    if (strtolower($node->nodeName) === "body") {
-                        $padding_box = $frame->get_padding_box();
-                        $GLOBALS['bodyHeight'] += $padding_box['h'];
-                    }
-                }
-            ]
-        ]);
-
-        $dompdf->render();
-        unset($dompdf);
-        $docHeight = $GLOBALS['bodyHeight'] + 30;
-
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper([0,0,5.7/2.54*72,$docHeight]);
-        $dompdf->render();
-        $dompdf->stream('check.pdf', array("Attachment" => false,'compress' => false));
+        $this->generateCheckPDF($html);
     }
 
     public function delete($id, Request $request)
@@ -753,5 +710,41 @@ class CheckController extends Controller
         Log::add($request,'print-proforma','Printed proforma #'.$id.':'.$check->total, $request->printed_id);
 
         return response()->json(['message' => 'Proforma saved to the logs']);
+    }
+
+    private function generateCheckPDF($html): void
+    {
+        $options = new Options();
+        $options->set('enable_remote', TRUE);
+        $options->set('enable_html5_parser', FALSE);
+        $options->set('dpi', 72);
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper([0,0,5.7/2.54*72,3000]);
+
+        $GLOBALS['bodyHeight'] = 0;
+
+        $dompdf->setCallbacks([
+            'myCallbacks' => [
+                'event' => 'end_frame', 'f' => function ($frame) {
+                    $node = $frame->get_node();
+                    if (strtolower($node->nodeName) === "body") {
+                        $padding_box = $frame->get_padding_box();
+                        $GLOBALS['bodyHeight'] += $padding_box['h'];
+                    }
+                }
+            ]
+        ]);
+
+        $dompdf->render();
+        unset($dompdf);
+        $docHeight = $GLOBALS['bodyHeight'] + 30;
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper([0,0,5.7/2.54*72,$docHeight]);
+        $dompdf->render();
+        $dompdf->stream('check.pdf', array("Attachment" => false,'compress' => false));
     }
 }

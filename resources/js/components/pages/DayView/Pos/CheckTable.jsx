@@ -16,7 +16,7 @@ export default function CheckTable(props){
         <TableBody>
           {props.check ? <>
             {props.check.products && props.check.products.map((product, key) => {
-              return <StyledTableRow key={key}>
+              return <StyledTableRow key={key} style={props.showPrinted && product.pivot.is_printed ? { background: 'rgba(255,0,0,0.35)' } : {}}>
                 <TableCell size="small">{props.quantityButtons(product)}</TableCell>
                 <TableCell size="small" style={{width: '100%'}}>{product.name}</TableCell>
                 <TableCell size="small" align="right">{(product.pivot.price*product.pivot.quantity)?.toFixed(2)}</TableCell>

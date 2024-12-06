@@ -18,6 +18,9 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import {calcCheckTotal} from "./posHelper";
+import axios from "axios";
+import eventBus from "../../../../eventBus";
+import {simpleCatchError} from "../../../../helper";
 
 export default function PrintProductsPopup(props){
   const {t} = useTranslation();
@@ -26,7 +29,11 @@ export default function PrintProductsPopup(props){
 
   useEffect(() => {
     const deepCloneCheck = structuredClone(props.check);
-    setOldCheck({...deepCloneCheck,discount:null,discount_type:null,discount_name:null,discount_code:null})
+    const removeProductType = props.type === 'drink' ? 'food' : 'drink'
+    setOldCheck({
+      ...deepCloneCheck,
+      products: deepCloneCheck.products.filter(el => el.type !== removeProductType),
+      discount:null,discount_type:null,discount_name:null,discount_code:null})
     setNewCheck({
       place_id: deepCloneCheck.place_id,
       order_id: deepCloneCheck.order_id,
@@ -41,11 +48,28 @@ export default function PrintProductsPopup(props){
   }
 
   const handlePrint = (type) => {
-    if(type === 'all'){
-      //TODO: print all products
-    }else{
-      //TODO: print selected newCheck products
-    }
+    let check = type === 'all' ? props.check : newCheck
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${oldCheck.id}/print_products`, {
+      products: check.products,
+    }, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      },
+      responseType: 'blob'
+    }).then(response => {
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, '_blank');
+      URL.revokeObjectURL(pdfUrl);
+      if(window.ReactNativeWebView){
+        window.ReactNativeWebView.postMessage('print_receipt');
+      }
+      props.check.products = props.check.products.map(item => check.products.some(el => el.id === item.id) ?
+        { ...item, pivot: {...item.pivot, is_printed: 1} }
+        : item)
+    }).catch(error => {
+      simpleCatchError(error)
+    })
   }
 
   const moveToNew = (product, quantity) => {
@@ -130,6 +154,7 @@ export default function PrintProductsPopup(props){
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <CheckTable
+              showPrinted={true}
               check={oldCheck}
               quantityButtons={(product) => <Stack spacing={0} direction="row" alignItems="center">
                 <Box>{product.pivot.quantity}</Box>

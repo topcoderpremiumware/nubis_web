@@ -21,6 +21,7 @@ import {calcCheckTotal} from "./posHelper";
 import axios from "axios";
 import eventBus from "../../../../eventBus";
 import {simpleCatchError} from "../../../../helper";
+import {qzTrayPrint} from "../../../../qzTray";
 
 export default function PrintProductsPopup(props){
   const {t} = useTranslation();
@@ -60,12 +61,15 @@ export default function PrintProductsPopup(props){
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, '_blank');
-      URL.revokeObjectURL(pdfUrl);
-      if(window.ReactNativeWebView){
-        window.ReactNativeWebView.postMessage('print_receipt');
-      }
+      qzTrayPrint(props.type === 'drink' ? 'bar' : 'kitchen', pdfBlob, () => {
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        window.open(pdfUrl, '_blank');
+        URL.revokeObjectURL(pdfUrl);
+        if(window.ReactNativeWebView){
+          window.ReactNativeWebView.postMessage('print_receipt');
+        }
+      })
+
       props.check.products = props.check.products.map(item => check.products.some(el => el.id === item.id) ?
         { ...item, pivot: {...item.pivot, is_printed: 1} }
         : item)

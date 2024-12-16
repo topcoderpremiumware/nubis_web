@@ -1,6 +1,7 @@
 import {getBase64FromFile} from "./helper";
 const qz = require("qz-tray");
 import {KEYUTIL, KJUR, stob64, hextorstr} from "jsrsasign";
+import eventBus from "./eventBus";
 
 export function qzTrayPrint(printerName, blob, errorCallback) {
 
@@ -31,9 +32,11 @@ export function qzTrayPrint(printerName, blob, errorCallback) {
     }
   })
 
+  let printerCustomerName = ''
   qz.websocket.connect().then(() => {
     return qz.printers.find(printerName);
   }).then(async (printer) => {
+    printerCustomerName = printer
     let config = qz.configs.create(printer);
     let base64 = await getBase64FromFile(blob)
     return qz.print(config, [{
@@ -43,6 +46,7 @@ export function qzTrayPrint(printerName, blob, errorCallback) {
       data: base64.split(',')[1]
     }]);
   }).then(() => {
+    eventBus.dispatch("notification", {type: 'success', message: 'Document sent to the printer '+printerCustomerName})
     return qz.websocket.disconnect();
   }).catch((err) => {
     console.error('qzTray',err);

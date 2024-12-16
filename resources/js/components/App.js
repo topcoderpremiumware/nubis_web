@@ -47,6 +47,7 @@ const Receipt = React.lazy(() => import('./pages/Receipts/Receipt'))
 const POSReport = React.lazy(() => import('./pages/Receipts/Report'))
 const SignSettings = React.lazy(() => import('./pages/Receipts/SignSettings'))
 const TerminalSettings = React.lazy(() => import('./pages/Receipts/Terminals/Terminals'))
+const QZSettings = React.lazy(() => import('./pages/Receipts/QZSettings'))
 
 import eventBus from '../eventBus';
 
@@ -63,7 +64,13 @@ function App() {
       console.log('is_superadmin',window.is_superadmin)
     }).catch(error => {
       if (error.response.status === 401){
+        let lang = localStorage.getItem('i18nextLng')
+        let qz_cert = localStorage.getItem('qz_cert')
+        let qz_key = localStorage.getItem('qz_key')
         localStorage.clear()
+        localStorage.setItem('i18nextLng', lang)
+        localStorage.setItem('qz_cert', qz_cert)
+        localStorage.setItem('qz_key', qz_key)
         window.location.href="/admin/login"
       }
     })
@@ -190,6 +197,9 @@ function App() {
                 </Suspense>}/>
                 <Route path='/SignSettings' exact element={<Suspense fallback={<LoadingPage/>}>
                   <SignSettings/>
+                </Suspense>}/>
+                <Route path='/QZSettings' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <QZSettings/>
                 </Suspense>}/>
                 <Route path='/TerminalSettings' exact element={<Suspense fallback={<LoadingPage/>}>
                   <TerminalSettings/>

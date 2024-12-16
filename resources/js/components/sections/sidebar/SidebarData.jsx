@@ -216,6 +216,10 @@ export const SidebarData = (data) => { return [
         path: '/SignSettings',
       },
       {
+        title: 'QZ Settings',
+        path: '/QZSettings',
+      },
+      {
         title: 'Terminal Settings',
         path: '/TerminalSettings',
       }

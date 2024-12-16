@@ -19,8 +19,12 @@ const Navbar = () => {
       console.log('logout error: ', e)
     })
     let lang = localStorage.getItem('i18nextLng')
+    let qz_cert = localStorage.getItem('qz_cert')
+    let qz_key = localStorage.getItem('qz_key')
     localStorage.clear()
     localStorage.setItem('i18nextLng', lang)
+    localStorage.setItem('qz_cert', qz_cert)
+    localStorage.setItem('qz_key', qz_key)
     window.location.href = "/"
   }
 

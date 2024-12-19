@@ -71,7 +71,7 @@ export default function QZSettings() {
       <Box sx={{mt: 3}}>
         <p>Instruction for desktop:
           <ol>
-            <li>Go to the <a href="https://qz.io/download/">https://qz.io/download/</a>, download app and install it.
+            <li>Go to the <a href="https://qz.io/download/" target="_blank">https://qz.io/download/</a>, download app and install it.
             </li>
             <li>A printer icon will appear next to the date and time on the main menu bar of the operation system. Click
               on it in the menu and select Advanced -> Site manager...
@@ -84,12 +84,14 @@ export default function QZSettings() {
           </ol>
         </p>
 
-        <p>Instruction for mobile (<a href="https://qz.io/docs/print-server">https://qz.io/docs/print-server</a>):
+        <p>Instruction for mobile (<a href="https://qz.io/docs/print-server" target="_blank">https://qz.io/docs/print-server</a>):
           <ol>
             <li>The settings described in "Instruction for desktop" section must be made on a specific desktop in the local network. It will act as a Print server.</li>
             <li>You need to copy the certificate and key files that were generated on the desktop to the phone.</li>
             <li>You need to find out the IP address of the desktop in the local network and enter it on the phone in the form above in the Print server IP field.</li>
             <li>Also, in the same way as for desktop, you need to add the certificate and key files to the form for mobile. These should be the same keys, new ones do not need to be generated for mobile.</li>
+            <li>On the Chrome browser, you must setup a security exception. You need to go to the address <a target="_blank" href="chrome://flags/#unsafely-treat-insecure-origin-as-secure">chrome://flags/#unsafely-treat-insecure-origin-as-secure</a> on
+              the phone, enter the address "ws://192.168.0.100:8182" ("192.168.0.100" - should be replaced with your print server address) in the field and press the blue button so that Enabled is written on it.</li>
           </ol>
         </p>
       </Box>

@@ -33,7 +33,9 @@ export function qzTrayPrint(printerName, blob, errorCallback) {
   })
 
   let printerCustomerName = ''
-  qz.websocket.connect().then(() => {
+  let server_ip = localStorage.getItem('qz_print_server_ip')
+  let options = server_ip ? {host: server_ip, usingSecure: false} : null
+  qz.websocket.connect(options).then(() => {
     return qz.printers.find(printerName);
   }).then(async (printer) => {
     printerCustomerName = printer

@@ -8,7 +8,7 @@ export default function QZSettings() {
   const { t } = useTranslation();
   const [cert, setCert] = useState()
   const [key, setKey] = useState()
-  const [printServerIp, setPrintServerIp] = useState()
+  const [printServerIp, setPrintServerIp] = useState(localStorage.getItem("qz_print_server_ip"))
 
   useEffect(() => {
 
@@ -23,10 +23,7 @@ export default function QZSettings() {
   const onSave = (e) => {
     if(key) saveFile('qz_key',key)
     if(cert) saveFile('qz_cert',cert)
-    if(printServerIp){
-      localStorage.setItem('qz_print_server_ip', printServerIp)
-      eventBus.dispatch("notification", {type: 'success', message: 'Saved successfully'})
-    }
+    localStorage.setItem('qz_print_server_ip', printServerIp)
   }
 
   const saveFile = (name,file) => {
@@ -66,7 +63,7 @@ export default function QZSettings() {
           <TextField label={t('Print server IP')} size="small" fullWidth
                      type="text" id="print_server_ip" name="print_server_ip"
                      onChange={onChange}
-                     value={localStorage.getItem("qz_print_server_ip")}
+                     value={printServerIp}
           />
         </Grid>
       </Grid>

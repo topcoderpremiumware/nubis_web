@@ -24,7 +24,7 @@ class ForceOrderCompleted implements ShouldQueue
      */
     public function handle()
     {
-        $orders = Order::whereIn('status',['waiting','pending','arrived','confirmed'])
+        $orders = Order::whereIn('status',['pending','arrived','confirmed'])
             ->get();
         foreach ($orders as $order) {
             $order_to = $order->reservation_time->copy()->addMinutes($order->length);

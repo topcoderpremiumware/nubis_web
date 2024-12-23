@@ -154,10 +154,12 @@ export default function TerminalRefundPopup(props){
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, '_blank');
-      URL.revokeObjectURL(pdfUrl);
       if(window.ReactNativeWebView){
+        window.location.href = pdfUrl;
         window.ReactNativeWebView.postMessage('print_receipt');
+      }else{
+        window.open(pdfUrl, '_blank');
+        URL.revokeObjectURL(pdfUrl);
       }
     }).catch(error => {
       simpleCatchError(error)

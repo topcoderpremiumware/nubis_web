@@ -19,7 +19,7 @@ export default function QZSettings() {
     if(e.target.name === 'cert') setCert(e.target.files[0])
     if(e.target.name === 'key') setKey(e.target.files[0])
     if(e.target.name === 'print_server_ip') setPrintServerIp(e.target.value)
-    if(e.target.name === 'print_server_secure') setPrintServerSecure(e.target.checked)
+    if(e.target.name === 'print_server_secure') setPrintServerSecure(e.target.checked ? 1 : 0)
   }
 
   const onSave = (e) => {

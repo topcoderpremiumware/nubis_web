@@ -19,7 +19,7 @@ export default function QZSettings() {
     if(e.target.name === 'cert') setCert(e.target.files[0])
     if(e.target.name === 'key') setKey(e.target.files[0])
     if(e.target.name === 'print_server_ip') setPrintServerIp(e.target.value)
-    if(e.target.name === 'print_server_secure') setPrintServerSecure(e.target.value)
+    if(e.target.name === 'print_server_secure') setPrintServerSecure(e.target.checked)
   }
 
   const onSave = (e) => {
@@ -38,12 +38,18 @@ export default function QZSettings() {
     reader.readAsText(file)
   }
 
+  const toBoolean = (value) => {
+    if(typeof value === "string") value = parseInt(value)
+    if(typeof value != "boolean") value = Boolean(value)
+    return value
+  }
+
   return (
     <div className='pages__container'>
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
         <h2>{t('QZ Settings')}</h2>
       </Stack>
-      <Grid container>
+      <Grid container spacing={2}>
         <Grid item xs={12} md={6} sx={{mb:3}}>
           <Stack spacing={1} direction="row" alignItems="center">
             <Button variant="contained" component="label">
@@ -73,7 +79,7 @@ export default function QZSettings() {
           <FormControlLabel label={t('Secure mode')} labelPlacement="end"
                             control={
                               <Switch onChange={onChange}
-                                      name="customer_deny_register"
+                                      name="print_server_secure"
                                       checked={toBoolean(printServerSecure)} />
                             }/>
         </Grid>

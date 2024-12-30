@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useTranslation} from "react-i18next";
-import {Button, Grid, Stack, TextField} from "@mui/material";
+import {Button, FormControlLabel, Grid, Stack, Switch, TextField} from "@mui/material";
 import eventBus from "../../../eventBus";
 import Box from "@mui/material/Box";
 
@@ -9,6 +9,7 @@ export default function QZSettings() {
   const [cert, setCert] = useState()
   const [key, setKey] = useState()
   const [printServerIp, setPrintServerIp] = useState(localStorage.getItem("qz_print_server_ip"))
+  const [printServerSecure, setPrintServerSecure] = useState(localStorage.getItem("qz_print_server_secure"))
 
   useEffect(() => {
 
@@ -18,12 +19,14 @@ export default function QZSettings() {
     if(e.target.name === 'cert') setCert(e.target.files[0])
     if(e.target.name === 'key') setKey(e.target.files[0])
     if(e.target.name === 'print_server_ip') setPrintServerIp(e.target.value)
+    if(e.target.name === 'print_server_secure') setPrintServerSecure(e.target.value)
   }
 
   const onSave = (e) => {
     if(key) saveFile('qz_key',key)
     if(cert) saveFile('qz_cert',cert)
     localStorage.setItem('qz_print_server_ip', printServerIp)
+    localStorage.setItem('qz_print_server_secure', printServerSecure)
   }
 
   const saveFile = (name,file) => {
@@ -65,6 +68,14 @@ export default function QZSettings() {
                      onChange={onChange}
                      value={printServerIp}
           />
+        </Grid>
+        <Grid item xs={12} md={6} sx={{mb:3}}>
+          <FormControlLabel label={t('Secure mode')} labelPlacement="end"
+                            control={
+                              <Switch onChange={onChange}
+                                      name="customer_deny_register"
+                                      checked={toBoolean(printServerSecure)} />
+                            }/>
         </Grid>
       </Grid>
       <Button variant="contained" onClick={onSave}>{t('Save')}</Button>

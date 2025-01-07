@@ -62,14 +62,16 @@ export default function PrintProductsPopup(props){
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       qzTrayPrint(props.type === 'drink' ? 'bar' : 'kitchen', pdfBlob, () => {
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-        if(window.ReactNativeWebView){
-          window.location.href = pdfUrl;
-          window.ReactNativeWebView.postMessage('print_receipt');
-        }else{
-          window.open(pdfUrl, '_blank');
-          URL.revokeObjectURL(pdfUrl);
-        }
+        qzTrayPrint('all_prints', pdfBlob, () => {
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          if(window.ReactNativeWebView){
+            window.location.href = pdfUrl;
+            window.ReactNativeWebView.postMessage('print_receipt');
+          }else{
+            window.open(pdfUrl, '_blank');
+            URL.revokeObjectURL(pdfUrl);
+          }
+        })
       })
 
       props.check.products = props.check.products.map(item => check.products.some(el => el.id === item.id) ?

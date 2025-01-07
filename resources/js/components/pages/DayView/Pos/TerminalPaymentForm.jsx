@@ -9,6 +9,7 @@ import React, {useEffect, useState} from "react";
 import {simpleCatchError} from "../../../../helper";
 import axios from "axios";
 import eventBus from "../../../../eventBus";
+import {qzTrayPrint} from "../../../../qzTray";
 
 export default function TerminalPaymentForm(props){
   const {t} = useTranslation();
@@ -131,14 +132,18 @@ export default function TerminalPaymentForm(props){
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      if(window.ReactNativeWebView){
-        window.location.href = pdfUrl;
-        window.ReactNativeWebView.postMessage('print_receipt');
-      }else{
-        window.open(pdfUrl, '_blank');
-        URL.revokeObjectURL(pdfUrl);
-      }
+      qzTrayPrint('receipts', pdfBlob, () => {
+        qzTrayPrint('all_prints', pdfBlob, () => {
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          if(window.ReactNativeWebView){
+            window.location.href = pdfUrl;
+            window.ReactNativeWebView.postMessage('print_receipt');
+          }else{
+            window.open(pdfUrl, '_blank');
+            URL.revokeObjectURL(pdfUrl);
+          }
+        })
+      })
     }).catch(error => {
       simpleCatchError(error)
     })

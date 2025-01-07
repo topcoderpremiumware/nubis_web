@@ -19,6 +19,7 @@ import Box from "@mui/material/Box";
 import SplitCheckPopup from "../DayView/Pos/SplitCheckPopup";
 import eventBus from "../../../eventBus";
 import TerminalRefundPopup from "./TerminalRefundPopup";
+import {qzTrayPrint} from "../../../qzTray";
 
 const Receipt = () => {
   const { t } = useTranslation();
@@ -66,9 +67,18 @@ const Receipt = () => {
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, '_blank');
-      URL.revokeObjectURL(pdfUrl);
+      qzTrayPrint('receipts', pdfBlob, () => {
+        qzTrayPrint('all_prints', pdfBlob, () => {
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          if(window.ReactNativeWebView){
+            window.location.href = pdfUrl;
+            window.ReactNativeWebView.postMessage('print_receipt');
+          }else{
+            window.open(pdfUrl, '_blank');
+            URL.revokeObjectURL(pdfUrl);
+          }
+        })
+      })
     }).catch(error => {
       simpleCatchError(error)
     })

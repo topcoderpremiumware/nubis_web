@@ -8,6 +8,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import React, {useEffect, useRef, useState} from "react";
 import {simpleCatchError} from "../../../helper";
 import axios from "axios";
+import {qzTrayPrint} from "../../../qzTray";
 
 export default function TerminalRefundPopup(props){
   const {t} = useTranslation();
@@ -153,14 +154,18 @@ export default function TerminalRefundPopup(props){
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      if(window.ReactNativeWebView){
-        window.location.href = pdfUrl;
-        window.ReactNativeWebView.postMessage('print_receipt');
-      }else{
-        window.open(pdfUrl, '_blank');
-        URL.revokeObjectURL(pdfUrl);
-      }
+      qzTrayPrint('receipts', pdfBlob, () => {
+        qzTrayPrint('all_prints', pdfBlob, () => {
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          if(window.ReactNativeWebView){
+            window.location.href = pdfUrl;
+            window.ReactNativeWebView.postMessage('print_receipt');
+          }else{
+            window.open(pdfUrl, '_blank');
+            URL.revokeObjectURL(pdfUrl);
+          }
+        })
+      })
     }).catch(error => {
       simpleCatchError(error)
     })

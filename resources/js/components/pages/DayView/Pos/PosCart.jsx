@@ -27,6 +27,7 @@ import ChangeOrder from "./ChangeOrder";
 import PaymentMethodPopup from "./PaymentMethodPopup";
 import {calcCheckTotal} from "./posHelper";
 import PrintProductsPopup from "./PrintProductsPopup";
+import {qzTrayPrint} from "../../../../qzTray";
 
 export default function PosCart(props){
   const {t} = useTranslation();
@@ -293,14 +294,16 @@ export default function PosCart(props){
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      if(window.ReactNativeWebView){
-        window.location.href = pdfUrl;
-        window.ReactNativeWebView.postMessage('print_receipt');
-      }else{
-        window.open(pdfUrl, '_blank');
-        URL.revokeObjectURL(pdfUrl);
-      }
+      qzTrayPrint(['receipts','all_prints'], pdfBlob, () => {
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        if(window.ReactNativeWebView){
+          window.location.href = pdfUrl;
+          window.ReactNativeWebView.postMessage('print_receipt');
+        }else{
+          window.open(pdfUrl, '_blank');
+          URL.revokeObjectURL(pdfUrl);
+        }
+      })
 
       if(checksRef.current.printed_id){
         let tempChecks = checksRef.current

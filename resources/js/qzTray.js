@@ -33,8 +33,10 @@ export async function qzTrayPrint(printerNames, blob, errorCallback) {
   })
 
   let server_ip = localStorage.getItem('qz_print_server_ip')
+  server_ip = (server_ip && server_ip !== 'null') ? server_ip : 'localhost'
   let server_secure = localStorage.getItem('qz_print_server_secure') || false
-  let options = {host: (server_ip && server_ip !== 'null') ? server_ip : 'localhost', usingSecure: !!server_secure}
+  server_secure = server_secure === '0' ? false : !!server_secure
+  let options = {host: server_ip, usingSecure: server_secure}
   console.log('qz_options',options)
   if (!qz.websocket.isActive()) await qz.websocket.connect(options).catch((err) => {
     console.error('qzTray connection', err);

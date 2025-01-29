@@ -28,6 +28,8 @@ import PaymentMethodPopup from "./PaymentMethodPopup";
 import {calcCheckTotal} from "./posHelper";
 import PrintProductsPopup from "./PrintProductsPopup";
 import {qzTrayPrint} from "../../../../qzTray";
+import {localPrint} from "../../../../localPrint";
+const printFunction = window.ipcRenderer ? localPrint : qzTrayPrint;
 
 export default function PosCart(props){
   const {t} = useTranslation();
@@ -294,7 +296,7 @@ export default function PosCart(props){
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      qzTrayPrint(['receipts','all_prints'], pdfBlob, () => {
+      printFunction(['receipts','all_prints'], pdfBlob, () => {
         const pdfUrl = URL.createObjectURL(pdfBlob);
         if(window.ReactNativeWebView){
           window.location.href = pdfUrl;

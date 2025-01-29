@@ -22,6 +22,8 @@ import axios from "axios";
 import eventBus from "../../../../eventBus";
 import {simpleCatchError} from "../../../../helper";
 import {qzTrayPrint} from "../../../../qzTray";
+import {localPrint} from "../../../../localPrint";
+const printFunction = window.ipcRenderer ? localPrint : qzTrayPrint;
 
 export default function PrintProductsPopup(props){
   const {t} = useTranslation();
@@ -61,7 +63,7 @@ export default function PrintProductsPopup(props){
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      qzTrayPrint([props.type === 'drink' ? 'bar' : 'kitchen','all_prints'], pdfBlob, () => {
+      printFunction([props.type === 'drink' ? 'bar' : 'kitchen','all_prints'], pdfBlob, () => {
         const pdfUrl = URL.createObjectURL(pdfBlob);
         if(window.ReactNativeWebView){
           window.location.href = pdfUrl;

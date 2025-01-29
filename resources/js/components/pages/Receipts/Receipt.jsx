@@ -20,6 +20,8 @@ import SplitCheckPopup from "../DayView/Pos/SplitCheckPopup";
 import eventBus from "../../../eventBus";
 import TerminalRefundPopup from "./TerminalRefundPopup";
 import {qzTrayPrint} from "../../../qzTray";
+import {localPrint} from "../../../localPrint";
+const printFunction = window.ipcRenderer ? localPrint : qzTrayPrint;
 
 const Receipt = () => {
   const { t } = useTranslation();
@@ -67,7 +69,7 @@ const Receipt = () => {
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      qzTrayPrint(['receipts','all_prints'], pdfBlob, () => {
+      printFunction(['receipts','all_prints'], pdfBlob, () => {
         const pdfUrl = URL.createObjectURL(pdfBlob);
         if(window.ReactNativeWebView){
           window.location.href = pdfUrl;

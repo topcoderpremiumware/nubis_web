@@ -10,6 +10,8 @@ import {simpleCatchError} from "../../../../helper";
 import axios from "axios";
 import eventBus from "../../../../eventBus";
 import {qzTrayPrint} from "../../../../qzTray";
+import {localPrint} from "../../../../localPrint";
+const printFunction = window.ipcRenderer ? localPrint : qzTrayPrint;
 
 export default function TerminalPaymentForm(props){
   const {t} = useTranslation();
@@ -132,7 +134,7 @@ export default function TerminalPaymentForm(props){
       responseType: 'blob'
     }).then(response => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      qzTrayPrint(['receipts','all_prints'], pdfBlob, () => {
+      printFunction(['receipts','all_prints'], pdfBlob, () => {
         const pdfUrl = URL.createObjectURL(pdfBlob);
         if(window.ReactNativeWebView){
           window.location.href = pdfUrl;

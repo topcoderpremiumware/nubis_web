@@ -331,16 +331,16 @@ export default function PosCart(props){
     if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex] &&
       checks[selectedCheckIndex].hasOwnProperty('id')){
       items.push(<MenuItem key="4" onClick={(e) => {
-        setPrintProductsOpen(true)
         setPrintProductsType('food')
+        setPrintProductsOpen(true)
         handleMenuClose(event)
       }}>{t('Print for kitchen')}</MenuItem>)
     }
     if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex] &&
       checks[selectedCheckIndex].hasOwnProperty('id')){
       items.push(<MenuItem key="5" onClick={(e) => {
-        setPrintProductsOpen(true)
         setPrintProductsType('drink')
+        setPrintProductsOpen(true)
         handleMenuClose(event)}
       }>{t('Print for bar')}</MenuItem>)
     }

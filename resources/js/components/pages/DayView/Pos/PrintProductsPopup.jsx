@@ -29,7 +29,13 @@ export default function PrintProductsPopup(props){
   const {t} = useTranslation();
   const [oldCheck, setOldCheck] = useState({})
   const [newCheck, setNewCheck] = useState({})
-  const [removeProductType, setRemoveProductType] = useState(props.type === 'drink' ? 'food' : 'drink')
+  const [removeProductType, setRemoveProductType] = useState()
+
+  useEffect(() => {
+    if(props.open){
+      setRemoveProductType(props.type === 'drink' ? 'food' : 'drink')
+    }
+  },[props.open,props.check])
 
   useEffect(() => {
     const deepCloneCheck = structuredClone(props.check);
@@ -44,8 +50,7 @@ export default function PrintProductsPopup(props){
       total: 0,
       products: []
     })
-    setRemoveProductType(props.type === 'drink' ? 'food' : 'drink')
-  },[props.check,props.open])
+  },[removeProductType])
 
   const handleClose = () => {
     props.onClose()
@@ -53,8 +58,9 @@ export default function PrintProductsPopup(props){
 
   const handlePrint = (type) => {
     let check = type === 'all' ? props.check : newCheck
+    check.products = check.products.filter(el => el.type !== removeProductType)
     axios.post(`${process.env.MIX_API_URL}/api/checks/${oldCheck.id}/print_products`, {
-      products: check.products.filter(el => el.type !== removeProductType),
+      products: check.products,
       print_type: type
     }, {
       headers: {
@@ -74,9 +80,11 @@ export default function PrintProductsPopup(props){
         }
       })
 
-      props.check.products = props.check.products.map(item => check.products.some(el => el.id === item.id) ?
-        { ...item, pivot: {...item.pivot, is_printed: 1} }
-        : item)
+      if(type !== 'all'){
+        props.check.products = props.check.products.map(item => check.products.some(el => el.id === item.id) ?
+          { ...item, pivot: {...item.pivot, is_printed: 1} }
+          : item)
+      }
     }).catch(error => {
       simpleCatchError(error)
     })

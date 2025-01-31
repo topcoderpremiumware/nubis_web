@@ -10,6 +10,7 @@ import {simpleCatchError} from "../../../helper";
 import axios from "axios";
 import {qzTrayPrint} from "../../../qzTray";
 import {localPrint} from "../../../localPrint";
+import {localBankTerminal} from "../../../localBankTerminal";
 const printFunction = window.ipcRenderer ? localPrint : qzTrayPrint;
 
 export default function TerminalRefundPopup(props){
@@ -105,47 +106,59 @@ export default function TerminalRefundPopup(props){
     setLoading(true)
     setLoadingAbort(false)
     setLoadingRevert(true)
-    axios.post(`${process.env.MIX_API_URL}/api/terminals/${selectedTerminal.id}/refund`, {
-      amount: props.amount,
-      check_id: props.check_id
-    }, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    }).then(response => {
-    }).catch(error => {
-      simpleCatchError(error)
-    })
+    if(window.ipcRenderer){
+      localBankTerminal('refund', props.check_id, selectedTerminal, window.user_id, props.amount)
+    }else {
+      axios.post(`${process.env.MIX_API_URL}/api/terminals/${selectedTerminal.id}/refund`, {
+        amount: props.amount,
+        check_id: props.check_id
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+      }).catch(error => {
+        simpleCatchError(error)
+      })
+    }
   }
 
   const sendTerminalRevert = () => {
     setLoadingRevert(true)
     setLoading(true)
     setLoadingAbort(false)
-    axios.post(`${process.env.MIX_API_URL}/api/terminals/${selectedTerminal.id}/revert`, {
-      check_id: props.check_id
-    }, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    }).then(response => {
-    }).catch(error => {
-      simpleCatchError(error)
-    })
+    if(window.ipcRenderer){
+      localBankTerminal('revert', props.check_id, selectedTerminal, window.user_id)
+    }else {
+      axios.post(`${process.env.MIX_API_URL}/api/terminals/${selectedTerminal.id}/revert`, {
+        check_id: props.check_id
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+      }).catch(error => {
+        simpleCatchError(error)
+      })
+    }
   }
 
   const sendTerminalAbort = () => {
     setLoadingAbort(true)
-    axios.post(`${process.env.MIX_API_URL}/api/terminals/${selectedTerminal.id}/abort`, {
-      check_id: props.check_id
-    }, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    }).then(response => {
-    }).catch(error => {
-      simpleCatchError(error)
-    })
+    if(window.ipcRenderer){
+      localBankTerminal('abort', props.check_id, selectedTerminal, window.user_id)
+    }else {
+      axios.post(`${process.env.MIX_API_URL}/api/terminals/${selectedTerminal.id}/abort`, {
+        check_id: props.check_id
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+      }).catch(error => {
+        simpleCatchError(error)
+      })
+    }
   }
 
   const openTerminalReceipt = (url) => {
@@ -201,9 +214,9 @@ export default function TerminalRefundPopup(props){
         {terminals.length > 1 ?
           <FormControl size="small" fullWidth sx={{mb: 2}}>
             <InputLabel id="label_terminal">{t('Terminal')}</InputLabel>
-            <Select label={t('Terminal')} value={selectedTerminal}
+            <Select label={t('Terminal')} value={selectedTerminal.id}
                     labelId="label_terminal" id="terminal" name="terminal"
-                    onChange={(e) => setSelectedTerminal(e.target.value)}>
+                    onChange={(e) => setSelectedTerminal(terminals.find(o => o.id === e.target.value))}>
               {terminals.map((el,key) => {
                 return <MenuItem key={key} value={el.id}>{el.serial}</MenuItem>
               })}
@@ -229,7 +242,7 @@ export default function TerminalRefundPopup(props){
           </CardActions>
         </Card>
         {terminalErrors.length > 0 ?
-          <>{terminalErrors.map((e,i) => <Alert severity={e.type} action={
+          <>{terminalErrors.map((e,i) => <Alert key={i} severity={e.type} action={
             <IconButton aria-label="close" color="inherit" size="small" onClick={() => removeError(i)}>
               <CloseIcon fontSize="inherit" />
             </IconButton>

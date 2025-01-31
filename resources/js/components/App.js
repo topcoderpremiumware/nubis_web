@@ -61,6 +61,7 @@ function App() {
       }
     }).then(response => {
       window.is_superadmin = response.data.is_superadmin
+      window.user_id = response.data.id
       console.log('is_superadmin',window.is_superadmin)
     }).catch(error => {
       if (error.response.status === 401){

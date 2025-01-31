@@ -257,6 +257,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('checks/{id}/print',[CheckController::class, 'print']);
     Route::post('checks/{id}/proforma',[CheckController::class, 'createProforma']);
     Route::post('checks/{id}/print_products',[CheckController::class, 'printProducts']);
+    Route::post('checks/{id}/update_bank_log',[CheckController::class, 'updateBankLog']);
     Route::post('checks/{data}/print_template',[CheckController::class, 'printTemplate']);
     Route::delete('checks/{id}',[CheckController::class, 'delete']);
 
@@ -279,6 +280,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('terminals/{id}/abort',[TerminalController::class, 'sendAbort']);
     Route::post('terminals/{id}/input',[TerminalController::class, 'sendInput']);
     Route::post('terminals/{id}/refund',[TerminalController::class, 'sendRefund']);
+    Route::post('websocket/from_client',[TerminalController::class, 'sendFromClient']);
 
 
     Route::get('customers/all',[CustomerController::class, 'allCustomers']);

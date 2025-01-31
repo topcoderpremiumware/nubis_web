@@ -11,6 +11,7 @@ import axios from "axios";
 import eventBus from "../../../../eventBus";
 import {qzTrayPrint} from "../../../../qzTray";
 import {localPrint} from "../../../../localPrint";
+import {localBankTerminal} from "../../../../localBankTerminal";
 const printFunction = window.ipcRenderer ? localPrint : qzTrayPrint;
 
 export default function TerminalPaymentForm(props){
@@ -83,47 +84,59 @@ export default function TerminalPaymentForm(props){
     setLoading(true)
     setLoadingAbort(false)
     setLoadingRevert(true)
-    axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/pay`, {
-      amount: props.amount,
-      check_id: props.check_id
-    }, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    }).then(response => {
-    }).catch(error => {
-      simpleCatchError(error)
-    })
+    if(window.ipcRenderer){
+      localBankTerminal('payment', props.check_id, props.selectedTerminal, window.user_id, props.amount)
+    }else{
+      axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/pay`, {
+        amount: props.amount,
+        check_id: props.check_id
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+      }).catch(error => {
+        simpleCatchError(error)
+      })
+    }
   }
 
   const sendTerminalRevert = () => {
     setLoadingRevert(true)
     setLoading(true)
     setLoadingAbort(false)
-    axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/revert`, {
-      check_id: props.check_id
-    }, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    }).then(response => {
-    }).catch(error => {
-      simpleCatchError(error)
-    })
+    if(window.ipcRenderer){
+      localBankTerminal('revert', props.check_id, props.selectedTerminal, window.user_id)
+    }else{
+      axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/revert`, {
+        check_id: props.check_id
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+      }).catch(error => {
+        simpleCatchError(error)
+      })
+    }
   }
 
   const sendTerminalAbort = () => {
     setLoadingAbort(true)
-    axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/abort`, {
-      check_id: props.check_id
-    }, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    }).then(response => {
-    }).catch(error => {
-      simpleCatchError(error)
-    })
+    if(window.ipcRenderer){
+      localBankTerminal('abort', props.check_id, props.selectedTerminal, window.user_id)
+    }else {
+      axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/abort`, {
+        check_id: props.check_id
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+      }).catch(error => {
+        simpleCatchError(error)
+      })
+    }
   }
 
   const openTerminalReceipt = (url) => {
@@ -191,7 +204,7 @@ export default function TerminalPaymentForm(props){
     </CardActions>
     </Card>
     {terminalErrors.length > 0 ?
-      <>{terminalErrors.map((e,i) => <Alert severity={e.type} action={e.type === 'warning' ?
+      <>{terminalErrors.map((e,i) => <Alert key={i} severity={e.type} action={e.type === 'warning' ?
         <>
           <Button color="inherit" size="small" onClick={() => sendResponse(true,i)}>{t('Yes')}</Button>
           <Button color="inherit" size="small" onClick={() => sendResponse(false,i)}>{t('No')}</Button>

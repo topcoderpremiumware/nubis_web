@@ -132,7 +132,7 @@ class CheckController extends Controller
             $check = Check::find($id);
             return response()->json($check);
         }else{
-            return response()->json(['message' => 'Product category not updated'],400);
+            return response()->json(['message' => 'Check not updated'],400);
         }
     }
 
@@ -747,5 +747,17 @@ class CheckController extends Controller
         $dompdf->setPaper([0,0,5.7/2.54*72,$docHeight]);
         $dompdf->render();
         $dompdf->stream('check.pdf', array("Attachment" => false,'compress' => false));
+    }
+
+    public function updateBankLog($id, Request $request)
+    {
+        $request->validate([
+            'bank_log' => 'required',
+        ]);
+        $check = Check::find($id);
+        $check->bank_log = $request->bank_log;
+        $check->save();
+
+        return response()->json(['message' => 'Check updated']);
     }
 }

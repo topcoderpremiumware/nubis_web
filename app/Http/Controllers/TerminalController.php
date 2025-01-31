@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FromClient;
 use App\Jobs\SwedbankAbort;
 use App\Jobs\SwedbankInput;
 use App\Jobs\SwedbankPayment;
@@ -157,5 +158,11 @@ class TerminalController extends Controller
 
         dispatch(new SwedbankInput($request->value,$request->check_id, $id, Auth::user()->id));
         return response()->json(['message' => 'The abort has been sent to the terminal']);
+    }
+
+    public function sendFromClient(Request $request)
+    {
+        event(new FromClient($request->channel, $request->event, $request->data));
+        return response()->json(['message' => 'The message has been sent to the clients']);
     }
 }

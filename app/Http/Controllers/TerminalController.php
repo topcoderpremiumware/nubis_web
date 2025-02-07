@@ -8,8 +8,8 @@ use App\Jobs\SwedbankInput;
 use App\Jobs\SwedbankPayment;
 use App\Jobs\SwedbankRefund;
 use App\Jobs\SwedbankRevert;
-use App\Models\Area;
 use App\Models\Log;
+use App\Models\Place;
 use App\Models\Terminal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,10 +34,12 @@ class TerminalController extends Controller
             ], 400);
         }
 
+        $place = Place::find($request->place_id);
         $terminal = Terminal::create([
             'serial' => $request->serial,
             'place_id' => $request->place_id,
-            'url' => $request->url
+            'url' => $request->url,
+            'currency' => $place->setting('online-payment-currency')
         ]);
 
         Log::add($request,'create-terminal','Created terminal #'.$terminal->id);
@@ -69,7 +71,8 @@ class TerminalController extends Controller
         $res = $terminal->update([
             'serial' => $request->serial,
             'place_id' => $request->place_id,
-            'url' => $request->url
+            'url' => $request->url,
+            'currency' => $terminal->place->setting('online-payment-currency')
         ]);
 
         Log::add($request,'change-terminal','Changed terminal #'.$id);

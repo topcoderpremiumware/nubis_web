@@ -12,7 +12,7 @@ import eventBus from "../../../../eventBus";
 import {qzTrayPrint} from "../../../../qzTray";
 import {localPrint} from "../../../../localPrint";
 import {localBankTerminal} from "../../../../localBankTerminal";
-const printFunction = window.ipcRenderer ? localPrint : qzTrayPrint;
+const printFunction = (window.ipcRenderer || window.ReactNativeWebView) ? localPrint : qzTrayPrint;
 
 export default function TerminalPaymentForm(props){
   const {t} = useTranslation();
@@ -84,7 +84,7 @@ export default function TerminalPaymentForm(props){
     setLoading(true)
     setLoadingAbort(false)
     setLoadingRevert(true)
-    if(window.ipcRenderer){
+    if(window.ipcRenderer || window.ReactNativeWebView){
       localBankTerminal('payment', props.check_id, props.selectedTerminal, window.user_id, props.amount)
     }else{
       axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/pay`, {
@@ -105,7 +105,7 @@ export default function TerminalPaymentForm(props){
     setLoadingRevert(true)
     setLoading(true)
     setLoadingAbort(false)
-    if(window.ipcRenderer){
+    if(window.ipcRenderer || window.ReactNativeWebView){
       localBankTerminal('revert', props.check_id, props.selectedTerminal, window.user_id)
     }else{
       axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/revert`, {
@@ -123,7 +123,7 @@ export default function TerminalPaymentForm(props){
 
   const sendTerminalAbort = () => {
     setLoadingAbort(true)
-    if(window.ipcRenderer){
+    if(window.ipcRenderer || window.ReactNativeWebView){
       localBankTerminal('abort', props.check_id, props.selectedTerminal, window.user_id)
     }else {
       axios.post(`${process.env.MIX_API_URL}/api/terminals/${props.selectedTerminal.id}/abort`, {

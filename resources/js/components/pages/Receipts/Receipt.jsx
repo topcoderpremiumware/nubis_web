@@ -21,7 +21,7 @@ import eventBus from "../../../eventBus";
 import TerminalRefundPopup from "./TerminalRefundPopup";
 import {qzTrayPrint} from "../../../qzTray";
 import {localPrint} from "../../../localPrint";
-const printFunction = window.ipcRenderer ? localPrint : qzTrayPrint;
+const printFunction = (window.ipcRenderer || window.ReactNativeWebView) ? localPrint : qzTrayPrint;
 
 const Receipt = () => {
   const { t } = useTranslation();

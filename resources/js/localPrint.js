@@ -23,7 +23,13 @@ export async function localPrint(printerNames, blob, errorCallback) {
       }
     }
   }
-  // TODO: use logic for iPhone and Android
+  // For react native
+  if(window.ReactNativeWebView){
+    const base64 = await getBase64FromFile(blob)
+    window.ReactNativeWebView.postMessage({action: 'print-document', printers: printerNames, base64: base64})
+    eventBus.dispatch("notification", {type: 'success', message: 'Document sent to the printer'})
+    printed = true
+  }
 
   if(!printed) errorCallback()
 }

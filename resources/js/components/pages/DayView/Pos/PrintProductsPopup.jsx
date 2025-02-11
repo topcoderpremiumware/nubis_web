@@ -73,7 +73,7 @@ export default function PrintProductsPopup(props){
         const pdfUrl = URL.createObjectURL(pdfBlob);
         if(window.ReactNativeWebView){
           window.location.href = pdfUrl;
-          window.ReactNativeWebView.postMessage('print_receipt');
+          window.ReactNativeWebView.postMessage({action: 'print_receipt'});
         }else{
           window.open(pdfUrl, '_blank');
           URL.revokeObjectURL(pdfUrl);

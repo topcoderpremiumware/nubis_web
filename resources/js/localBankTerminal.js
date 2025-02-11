@@ -10,8 +10,22 @@ export async function localBankTerminal(method, checkId, terminal, userId, amoun
       data = await window.ipcRenderer.invoke(method, checkId, terminal, userId)
     }
   }
-  // TODO: use logic for iPhone and Android to get data value
+  // For react native
+  if(window.ReactNativeWebView){
+    console.log('send action',method)
+    if(amount){
+      window.ReactNativeWebView.postMessage({action: method, amount: amount, checkId: checkId, terminal: terminal, userId: userId})
+    }else{
+      window.ReactNativeWebView.postMessage({action: method, checkId: checkId, terminal: terminal, userId: userId})
+    }
+  }
 
+  if(window.ipcRenderer) {
+    window.terminalAnswer(method, data)
+  }
+}
+
+window.terminalAnswer = (method, data) => {
   if(data){
     if(['payment','refund'].includes(method)){
       // 'Success' | 'Failure'
@@ -49,7 +63,7 @@ export async function localBankTerminal(method, checkId, terminal, userId, amoun
         }
       }
     }else if(['abort','revert'].includes(method)){
-        event(`terminal-${method === 'abort' ? 'aborted' : 'reverted'}`,{terminal: terminal, message: `The payment has been ${method === 'abort' ? 'aborted' : 'reverted'} by the terminal`});
+      event(`terminal-${method === 'abort' ? 'aborted' : 'reverted'}`,{terminal: terminal, message: `The payment has been ${method === 'abort' ? 'aborted' : 'reverted'} by the terminal`});
     }
   }else{
     event('terminal-error',{terminal: terminal, message: `Unknown ${method} error`});

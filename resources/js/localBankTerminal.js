@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export async function localBankTerminal(method, checkId, terminal, userId, amount = 0) {
+  console.log('localBankTerminal',method,checkId,terminal,userId,amount)
   // For Electron
   let data
   if(window.ipcRenderer){
@@ -12,7 +13,7 @@ export async function localBankTerminal(method, checkId, terminal, userId, amoun
   }
   // For react native
   if(window.ReactNativeWebView){
-    console.log('send action',method)
+    console.log('send action to react native',method)
     if(amount){
       window.ReactNativeWebView.postMessage({action: method, amount: amount, checkId: checkId, terminal: terminal, userId: userId})
     }else{
@@ -26,6 +27,7 @@ export async function localBankTerminal(method, checkId, terminal, userId, amoun
 }
 
 window.terminalAnswer = (method, data) => {
+  console.log('get action from react native',method,data)
   if(data){
     if(['payment','refund'].includes(method)){
       // 'Success' | 'Failure'

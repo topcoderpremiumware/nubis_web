@@ -36,7 +36,7 @@ export default function BottomPanel({ selectedOrder, setSelectedOrder }) {
   const exportPdf = () => {
     console.log('exportPdf clicked')
     if(window.ReactNativeWebView){
-      window.ReactNativeWebView.postMessage({action: 'button_aiailable'});
+      window.ReactNativeWebView.postMessage(JSON.stringify({action: 'button_aiailable'}));
     }
   }
 

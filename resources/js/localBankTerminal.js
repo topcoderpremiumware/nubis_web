@@ -15,9 +15,9 @@ export async function localBankTerminal(method, checkId, terminal, userId, amoun
   if(window.ReactNativeWebView){
     console.log('send action to react native',method)
     if(amount){
-      window.ReactNativeWebView.postMessage({action: method, amount: amount, checkId: checkId, terminal: terminal, userId: userId})
+      window.ReactNativeWebView.postMessage(JSON.stringify({action: method, amount: amount, checkId: checkId, terminal: terminal, userId: userId}))
     }else{
-      window.ReactNativeWebView.postMessage({action: method, checkId: checkId, terminal: terminal, userId: userId})
+      window.ReactNativeWebView.postMessage(JSON.stringify({action: method, checkId: checkId, terminal: terminal, userId: userId}))
     }
   }
 

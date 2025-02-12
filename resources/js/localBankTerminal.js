@@ -22,11 +22,11 @@ export async function localBankTerminal(method, checkId, terminal, userId, amoun
   }
 
   if(window.ipcRenderer) {
-    window.terminalAnswer(method, data)
+    window.terminalAnswer(method, checkId, terminal, data)
   }
 }
 
-window.terminalAnswer = (method, data) => {
+window.terminalAnswer = (method, checkId, terminal, data) => {
   console.log('get action from react native',method,data)
   if(data){
     if(['payment','refund'].includes(method)){

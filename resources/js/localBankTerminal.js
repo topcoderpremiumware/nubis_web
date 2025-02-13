@@ -36,10 +36,11 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
         let receipt_text = '';
         data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
           console.log('SwedbankPayment::handle',{
-            [paymentReceipt['@attributes']?.DocumentQualifier]: Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64')
+            [paymentReceipt['@attributes']?.DocumentQualifier]: JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'))
           })
           if(paymentReceipt['@attributes']?.DocumentQualifier === 'CashierReceipt'){
             let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'));
+            console.log('SwedbankPayment SignatureBlock',merchant_receipt_text?.Cardholder?.Mandatory?.Payment?.SignatureBlock)
             if(merchant_receipt_text?.Cardholder?.Mandatory?.Payment?.SignatureBlock){
               requestPrint(merchant_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId)
             }

@@ -40,9 +40,9 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
           })
           if(paymentReceipt['@attributes']?.DocumentQualifier === 'CashierReceipt'){
             let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'));
-            console.log('SwedbankPayment SignatureBlock',merchant_receipt_text?.Cardholder?.Mandatory?.Payment?.SignatureBlock)
-            if(merchant_receipt_text?.Cardholder?.Mandatory?.Payment?.SignatureBlock){
-              requestPrint(merchant_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId)
+            console.log('SwedbankPayment SignatureBlock',merchant_receipt_text?.CashierReceipt?.Merchant?.Mandatory?.Payment?.SignatureBlock)
+            if(merchant_receipt_text?.CashierReceipt?.Merchant?.Mandatory?.Payment?.SignatureBlock){
+              requestPrint(merchant_receipt_text?.CashierReceipt?.Merchant?.Optional?.ReceiptString, terminal, userId)
             }
           }
           if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){

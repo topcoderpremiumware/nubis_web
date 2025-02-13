@@ -36,10 +36,13 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
         let receipt_text = '';
         data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
           console.log('SwedbankPayment::handle',{
-            [paymentReceipt['@attributes']?.DocumentQualifier]: JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'))
+            [paymentReceipt['@attributes']?.DocumentQualifier]: JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString())
           })
           if(paymentReceipt['@attributes']?.DocumentQualifier === 'CashierReceipt'){
-            let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'));
+            console.log('SwedbankPayment text',paymentReceipt.OutputContent?.OutputText?.['#text'])
+            console.log('SwedbankPayment buffer',Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString())
+            let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
+            console.log('SwedbankPayment merchant_receipt_text',merchant_receipt_text)
             console.log('SwedbankPayment CashierReceipt',merchant_receipt_text?.CashierReceipt)
             console.log('SwedbankPayment Merchant',merchant_receipt_text?.CashierReceipt?.Merchant)
             console.log('SwedbankPayment Mandatory',merchant_receipt_text?.CashierReceipt?.Merchant?.Mandatory)

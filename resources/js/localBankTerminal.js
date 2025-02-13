@@ -43,13 +43,12 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
             console.log('SwedbankPayment buffer',Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString())
             let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
             console.log('SwedbankPayment merchant_receipt_text',merchant_receipt_text)
-            console.log('SwedbankPayment CashierReceipt',merchant_receipt_text?.CashierReceipt)
-            console.log('SwedbankPayment Merchant',merchant_receipt_text?.CashierReceipt?.Merchant)
-            console.log('SwedbankPayment Mandatory',merchant_receipt_text?.CashierReceipt?.Merchant?.Mandatory)
-            console.log('SwedbankPayment Payment',merchant_receipt_text?.CashierReceipt?.Merchant?.Mandatory?.Payment)
-            console.log('SwedbankPayment SignatureBlock',merchant_receipt_text?.CashierReceipt?.Merchant?.Mandatory?.Payment?.SignatureBlock)
-            if(merchant_receipt_text?.CashierReceipt?.Merchant?.Mandatory?.Payment?.SignatureBlock){
-              requestPrint(merchant_receipt_text?.CashierReceipt?.Merchant?.Optional?.ReceiptString, terminal, userId)
+            console.log('SwedbankPayment Merchant',merchant_receipt_text?.Merchant)
+            console.log('SwedbankPayment Mandatory',merchant_receipt_text?.Merchant?.Mandatory)
+            console.log('SwedbankPayment Payment',merchant_receipt_text?.Merchant?.Mandatory?.Payment)
+            console.log('SwedbankPayment SignatureBlock',merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock)
+            if(merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock){
+              requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId)
             }
           }
           if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
@@ -80,6 +79,14 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
       }
     }else if(['abort','revert'].includes(method)){
       event(`terminal-${method === 'abort' ? 'aborted' : 'reverted'}`,{terminal: terminal, message: `The payment has been ${method === 'abort' ? 'aborted' : 'reverted'} by the terminal`});
+    }
+    if(data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt){
+      data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
+        if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
+          let c_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
+          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId)
+        }
+      })
     }
   }else{
     event('terminal-error',{terminal: terminal, message: `Unknown ${method} error`});

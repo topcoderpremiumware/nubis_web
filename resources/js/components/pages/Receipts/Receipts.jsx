@@ -75,7 +75,7 @@ const Receipts = () => {
       renderCell: (params) => <>{paymentMethod['online-payment-currency']} {params.value.toFixed(2)}</>})
     cols.push({ field: 'actions', headerName: t('Actions'), width: 80, filterable: false, sortable: false, renderCell: (params) =>
         <span>
-          <IconButton onClick={e => { window.open(`/admin/Receipts/${params.row.status === 'refund' ? params.row.parent_id : params.row.id}`, '_blank') }} size="small">
+          <IconButton onClick={e => { window.open(`/admin/Receipts/${params.row.status === 'refund' ? params.row.parent_id : params.row.id}`, '_self') }} size="small">
             <ReceiptIcon fontSize="small"/>
           </IconButton>
         </span>, })

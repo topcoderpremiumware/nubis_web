@@ -199,6 +199,10 @@ const PaymentSettings = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'is-online-payment',
       value: prepayment
+    }, {
+      headers:{
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Online payment saved'});
     }).catch(error => {})
@@ -207,6 +211,10 @@ const PaymentSettings = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'online-payment-amount',
       value: amount
+    }, {
+      headers:{
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Online payment amount saved'});
     }).catch(error => {})
@@ -215,6 +223,10 @@ const PaymentSettings = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'online-payment-currency',
       value: currency
+    }, {
+      headers:{
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Online payment currency saved'});
     }).catch(error => {})
@@ -223,6 +235,10 @@ const PaymentSettings = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'online-payment-method',
       value: method
+    }, {
+      headers:{
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Online payment method saved'});
     }).catch(error => {})
@@ -231,6 +247,10 @@ const PaymentSettings = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'online-payment-cancel-deadline',
       value: cancelDeadline
+    }, {
+      headers:{
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Online payment cancellation deadline saved'});
     }).catch(error => {})

@@ -55,4 +55,7 @@ Route::get('/video-guide', function(){
     $guides = VideoGuide::where('language',app()->getLocale())->get();
     return view('videoGuide', ['guides' => $guides]);
 })->name('videoGuide');
+Route::get('/privacy-policy', function(){
+    return view('privacy');
+})->name('privacy');
 Route::view('/admin/{path?}/{path2?}', 'app')->name('admin');

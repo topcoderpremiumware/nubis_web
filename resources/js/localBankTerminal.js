@@ -22,11 +22,11 @@ export async function localBankTerminal(method, checkId, terminal, userId, amoun
   }
 
   if(window.ipcRenderer) {
-    window.terminalAnswer(method, checkId, terminal, data)
+    window.terminalAnswer(method, checkId, terminal, userId, data)
   }
 }
 
-window.terminalAnswer = (method, checkId, terminal, data) => {
+window.terminalAnswer = (method, checkId, terminal, userId, data) => {
   console.log('get action from react native',method,data)
   if(data){
     if(['payment','refund'].includes(method)){
@@ -38,6 +38,12 @@ window.terminalAnswer = (method, checkId, terminal, data) => {
           console.log('SwedbankPayment::handle',{
             [paymentReceipt['@attributes']?.DocumentQualifier]: Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64')
           })
+          if(paymentReceipt['@attributes']?.DocumentQualifier === 'CashierReceipt'){
+            let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'));
+            if(merchant_receipt_text?.Cardholder?.Mandatory?.Payment?.SignatureBlock){
+              requestPrint(merchant_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId)
+            }
+          }
           if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
             receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'));
             updateBankLog(checkId,receipt_text)
@@ -92,4 +98,13 @@ function updateBankLog(checkId,log){
       Authorization: 'Bearer ' + localStorage.getItem('token')
     }
   })
+}
+
+function requestPrint(text, terminal, userId){
+  if(window.ipcRenderer){
+    window.ipcRenderer.invoke('terminal_print', text, terminal, userId)
+  }
+  if(window.ReactNativeWebView){
+    window.ReactNativeWebView.postMessage(JSON.stringify({action: terminal_print, text: text, terminal: terminal, userId: userId}))
+  }
 }

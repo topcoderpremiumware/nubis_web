@@ -48,7 +48,7 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
             console.log('SwedbankPayment Payment',merchant_receipt_text?.Merchant?.Mandatory?.Payment)
             console.log('SwedbankPayment SignatureBlock',merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock)
             if(merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock){
-              requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId)
+              requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId,1000)
             }
           }
           if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
@@ -84,13 +84,14 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
       data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
         if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
           let c_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
-          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId)
+          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 3000)
         }
       })
     }
   }else{
     event('terminal-error',{terminal: terminal, message: `Unknown ${method} error`});
   }
+  return true;
 }
 
 function event(name, data){
@@ -115,7 +116,7 @@ function updateBankLog(checkId,log){
   })
 }
 
-function requestPrint(text, terminal, userId){
+function requestPrint(text, terminal, userId, sec){
   setTimeout(function(){
     if(window.ipcRenderer){
       window.ipcRenderer.invoke('terminal_print', text, terminal, userId)
@@ -123,5 +124,5 @@ function requestPrint(text, terminal, userId){
     if(window.ReactNativeWebView){
       window.ReactNativeWebView.postMessage(JSON.stringify({action: terminal_print, text: text, terminal: terminal, userId: userId}))
     }
-  },3000)
+  },sec)
 }

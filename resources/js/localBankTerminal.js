@@ -48,7 +48,7 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
             console.log('SwedbankPayment Payment',merchant_receipt_text?.Merchant?.Mandatory?.Payment)
             console.log('SwedbankPayment SignatureBlock',merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock)
             if(merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock){
-              requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId,1000)
+              requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId,3000)
             }
           }
           if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
@@ -84,7 +84,7 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
       data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
         if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
           let c_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
-          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 3000)
+          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 13000)
         }
       })
     }

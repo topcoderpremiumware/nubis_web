@@ -26,6 +26,7 @@ export default function TerminalPaymentForm(props){
 
   useEffect(() => {
     channelName = `place-${localStorage.getItem('place_id')}`
+    Echo.leave(channelName)
     Echo.channel(channelName)
       .listen('.terminal-paid', function(data) {
         if(data['terminal'].id === props.selectedTerminal.id){

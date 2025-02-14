@@ -84,7 +84,7 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
       data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
         if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
           let c_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
-          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 6000)
+          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 9000)
         }
       })
     }

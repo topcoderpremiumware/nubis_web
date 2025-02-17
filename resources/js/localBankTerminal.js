@@ -89,9 +89,13 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
       })
     }
     if(data.SaleToPOIResponse?.ReversalResponse?.PaymentReceipt){
+      console.log('found ReversalResponse PaymentReceipt')
       data.SaleToPOIResponse?.ReversalResponse?.PaymentReceipt.forEach(paymentReceipt => {
+        console.log('paymentReceipt',paymentReceipt)
         if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
+          console.log('found ReversalResponse CustomerReceipt')
           let c_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
+          console.log('CustomerReceipt',c_receipt_text,c_receipt_text?.Cardholder?.Optional?.ReceiptString)
           requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 9000)
         }
       })

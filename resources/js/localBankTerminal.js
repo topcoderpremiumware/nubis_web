@@ -134,7 +134,7 @@ function requestPrint(text, terminal, userId, sec){
       window.ipcRenderer.invoke('terminal_print', text, terminal, userId)
     }
     if(window.ReactNativeWebView){
-      window.ReactNativeWebView.postMessage(JSON.stringify({action: terminal_print, text: text, terminal: terminal, userId: userId}))
+      window.ReactNativeWebView.postMessage(JSON.stringify({action: 'terminal_print', text: text, terminal: terminal, userId: userId}))
     }
   },sec)
 }

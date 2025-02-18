@@ -1,20 +1,25 @@
 import './Pos.scss'
-import {useTranslation} from "react-i18next";
+import {Trans, useTranslation} from "react-i18next";
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
-  IconButton, InputAdornment, InputLabel, MenuItem, Select, TextField
+  FormControl, Grid,
+  InputAdornment, InputLabel, MenuItem, Select, TextField
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import React, {useEffect, useState} from "react";
 import {round, simpleCatchError} from "../../../../helper";
 import axios from "axios";
 import TerminalPaymentForm from "./TerminalPaymentForm";
 import eventBus from "../../../../eventBus";
+import Box from "@mui/material/Box";
+import PaymentIcon from "../../../components/icons/PaymentIcon";
+import ProformaIcon from "../../../components/icons/ProformaIcon";
+import CardIcon from "../../../components/icons/CardIcon";
+import CardCashIcon from "../../../components/icons/CardCashIcon";
+import CashIcon from "../../../components/icons/CashIcon";
 
 export default function PaymentMethodPopup(props){
   const {t} = useTranslation();
@@ -93,7 +98,7 @@ export default function PaymentMethodPopup(props){
   }
 
   return (
-    <Dialog onClose={props.onClose} open={props.open} fullWidth maxWidth="sm"
+    <Dialog onClose={props.onClose} open={props.open} fullWidth maxWidth="md"
             scroll="paper"
             PaperProps={{
               style: {
@@ -105,53 +110,53 @@ export default function PaymentMethodPopup(props){
     >
       <DialogTitle sx={{m: 0, p: 2}}>
         <>{t('Print receipt')}</>
-        <IconButton onClick={props.onClose} sx={{
-          position: 'absolute',
-          right: 8,
-          top: 8,
-          color: (theme) => theme.palette.grey[500],
-        }}><CloseIcon/></IconButton>
       </DialogTitle>
-      <DialogContent dividers>
-        <FormControl size="small" fullWidth sx={{mb: 2}}>
-          <InputLabel id="label_print_type">{t('Print type')}</InputLabel>
-          <Select label={t('Print type')} value={printType}
-                  labelId="label_print_type" id="print_type" name="print_type"
-                  onChange={(e) => setPrintType(e.target.value)}>
-            {['proforma','payment'].map((el,key) => {
-              return <MenuItem key={key} value={el}>{el}</MenuItem>
-            })}
-          </Select>
-        </FormControl>
+      <DialogContent>
+        <Box sx={{mb:3}}>
+          <Trans i18nKey="PrintFormDescription">Print a receipt for your transaction directly from this modal for your records or documentation needs</Trans>
+        </Box>
+        <Box sx={{mb:1}}>{t('Print type')}</Box>
+        <Grid container spacing={2} sx={{mb: 3}}>
+          <Grid item xs={6}>
+            <div className={`paymentButton ${printType === 'proforma' ? 'active' : ''}`}
+                 onClick={() => setPrintType('proforma')}>
+              <div className="label">{t('Proforma')}</div>
+              <ProformaIcon/>
+            </div>
+          </Grid>
+          <Grid item xs={6}>
+            <div className={`paymentButton ${printType === 'payment' ? 'active' : ''}`}
+                 onClick={() => setPrintType('payment')}>
+              <div className="label">{t('Payment')}</div>
+              <PaymentIcon/>
+            </div>
+          </Grid>
+        </Grid>
         {printType === 'payment' ? <>
-          <FormControl size="small" fullWidth sx={{mb: 2}}>
-            <InputLabel id="label_payment_method">{t('Payment method')}</InputLabel>
-            <Select label={t('Payment method')} value={data.payment_method}
-                    labelId="label_payment_method" id="payment_method" name="payment_method"
-                    onChange={onChange}>
-              {methods.map((el,key) => {
-                return <MenuItem key={key} value={el.value}>{el.label}</MenuItem>
-              })}
-            </Select>
-          </FormControl>
-          {data.payment_method === 'card/cash' && <>
-            <TextField label={t('Card amount')} size="small" fullWidth sx={{mb: 2}}
-                       type="text" id="card_amount" name="card_amount" required
-                       onChange={onChange}
-                       value={data.card_amount}
-                       InputProps={{
-                         startAdornment: <InputAdornment position="start">{props.currency}</InputAdornment>,
-                       }}
-            />
-            <TextField label={t('Cash amount')} size="small" fullWidth sx={{mb: 2}}
-                       type="text" id="cash_amount" name="cash_amount" required
-                       onChange={onChange}
-                       value={data.cash_amount}
-                       InputProps={{
-                         startAdornment: <InputAdornment position="start">{props.currency}</InputAdornment>,
-                       }}
-            />
-          </>}
+          <Box sx={{mb:1}}>{t('Payment method')}</Box>
+          <Grid container spacing={2} sx={{mb: 3}}>
+            <Grid item xs={12} sm={4}>
+              <div className={`paymentButton ${data.payment_method === 'card' ? 'active' : ''}`}
+                   onClick={() => onChange({target: {name: 'payment_method', value: 'card'}})}>
+                <div className="label">{t('Card')}</div>
+                <CardIcon/>
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <div className={`paymentButton ${data.payment_method === 'card/cash' ? 'active' : ''}`}
+                   onClick={() => onChange({target: {name: 'payment_method', value: 'card/cash'}})}>
+                <div className="label">{t('Card and Cash')}</div>
+                <CardCashIcon/>
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <div className={`paymentButton ${data.payment_method === 'cash' ? 'active' : ''}`}
+                   onClick={() => onChange({target: {name: 'payment_method', value: 'cash'}})}>
+                <div className="label">{t('Cash')}</div>
+                <CashIcon/>
+              </div>
+            </Grid>
+          </Grid>
           {['card/cash','card'].includes(data.payment_method) ? <>
             {terminals.length > 1 ?
               <FormControl size="small" fullWidth sx={{mb: 2}}>
@@ -170,6 +175,24 @@ export default function PaymentMethodPopup(props){
               amount={data.payment_method === 'card' ? props.check.total : data.card_amount}
             /> : null}
           </> : null}
+          {data.payment_method === 'card/cash' && <>
+            <TextField label={t('Card amount')} size="small" fullWidth sx={{mb: 2}}
+                       type="text" id="card_amount" name="card_amount" required
+                       onChange={onChange}
+                       value={data.card_amount}
+                       InputProps={{
+                         startAdornment: <InputAdornment position="start">{props.currency}</InputAdornment>,
+                       }}
+            />
+            <TextField label={t('Cash amount')} size="small" fullWidth sx={{mb: 2}}
+                       type="text" id="cash_amount" name="cash_amount" required
+                       onChange={onChange}
+                       value={data.cash_amount}
+                       InputProps={{
+                         startAdornment: <InputAdornment position="start">{props.currency}</InputAdornment>,
+                       }}
+            />
+          </>}
         </> : null}
         <FormControl size="small" fullWidth sx={{mb: 2}}>
           <InputLabel id="label_printed_id">{t('Cashier')}</InputLabel>
@@ -188,6 +211,7 @@ export default function PaymentMethodPopup(props){
         />}
       </DialogContent>
       <DialogActions sx={{p:2}}>
+        <Button variant="outlined" onClick={props.onClose}>{t('Cancel')}</Button>
         {printType === 'proforma' ?
           <Button variant="contained" onClick={printProforma}>{t('Print')}</Button>
           :

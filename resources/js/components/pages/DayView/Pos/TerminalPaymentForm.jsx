@@ -1,7 +1,7 @@
 import {useTranslation} from "react-i18next";
 import {
   Alert,
-  Button, Card, CardActions, CardContent,
+  Button, Grid,
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -12,6 +12,9 @@ import eventBus from "../../../../eventBus";
 import {qzTrayPrint} from "../../../../qzTray";
 import {localPrint} from "../../../../localPrint";
 import {localBankTerminal} from "../../../../localBankTerminal";
+import PayIcon from "../../../components/icons/PayIcon";
+import ReversalIcon from "../../../components/icons/ReversalIcon";
+import AbortIcon from "../../../components/icons/AbortIcon";
 const printFunction = (window.ipcRenderer || window.ReactNativeWebView) ? localPrint : qzTrayPrint;
 
 export default function TerminalPaymentForm(props){
@@ -81,7 +84,25 @@ export default function TerminalPaymentForm(props){
     }
   },[props.selectedTerminal])
 
+  const checkData = () => {
+    if(!props.selectedTerminal){
+      eventBus.dispatch("notification", {type: 'error', message: 'Terminal is not selected'});
+      return false
+    }
+    if(!props.check_id){
+      eventBus.dispatch("notification", {type: 'error', message: 'Check is not selected'});
+      return false
+    }
+    if(!props.amount){
+      eventBus.dispatch("notification", {type: 'error', message: 'Amount is not set'});
+      return false
+    }
+    return true
+  }
+
   const sendTerminalPay = () => {
+    if(loading) return
+    if(!checkData()) return
     setLoading(true)
     setLoadingAbort(false)
     setLoadingRevert(true)
@@ -103,6 +124,8 @@ export default function TerminalPaymentForm(props){
   }
 
   const sendTerminalRevert = () => {
+    if(loadingRevert) return
+    if(!checkData()) return
     setLoadingRevert(true)
     setLoading(true)
     setLoadingAbort(false)
@@ -123,6 +146,8 @@ export default function TerminalPaymentForm(props){
   }
 
   const sendTerminalAbort = () => {
+    if(loadingAbort) return
+    if(!checkData()) return
     setLoadingAbort(true)
     if(window.ipcRenderer || window.ReactNativeWebView){
       localBankTerminal('abort', props.check_id, props.selectedTerminal, window.user_id)
@@ -185,28 +210,33 @@ export default function TerminalPaymentForm(props){
   }
 
   return (<>
-   <Card sx={{mb: 2}}>
-    <CardContent>{terminalDisplay}</CardContent>
-    <CardActions>
-      <Button
-        variant="contained"
-        disabled={loading}
-        onClick={() => sendTerminalPay()}>{t('Pay')}</Button>
-      <Button
-        variant="contained"
-        color="warning"
-        disabled={loadingRevert}
-        onClick={() => sendTerminalRevert()}>{t('Revert')}</Button>
-      <Button
-        variant="contained"
-        color="error"
-        disabled={loadingAbort}
-        onClick={() => sendTerminalAbort()}>{t('Abort')}</Button>
-    </CardActions>
-    </Card>
-    {terminalErrors.length > 0 ?
-      <>{terminalErrors.map((e,i) => <Alert key={i} severity={e.type} action={e.type === 'warning' ?
+    <Grid container spacing={2} sx={{mb: 3}}>
+      <Grid item xs={12} sm={4}>
+        <div className={`paymentButton success ${loading ? 'disabled' : ''}`}
+             onClick={() => sendTerminalPay()}>
+          <div className="label">{t('Pay')}</div>
+          <PayIcon/>
+        </div>
+      </Grid>
+      <Grid item xs={12} sm={4}>
+        <div className={`paymentButton warning ${loadingRevert ? 'disabled' : ''}`}
+             onClick={() => sendTerminalRevert()}>
+          <div className="label">{t('Reversal')}</div>
+          <ReversalIcon/>
+        </div>
+      </Grid>
+      <Grid item xs={12} sm={4}>
+        <div className={`paymentButton error ${loadingAbort ? 'disabled' : ''}`}
+             onClick={() => sendTerminalAbort()}>
+          <div className="label">{t('Abort')}</div>
+          <AbortIcon/>
+        </div>
+      </Grid>
+    </Grid>
+    {terminalErrors.length > 0 ? <>
+        {terminalErrors.map((e,i) => <Alert key={i} severity={e.type} action={e.type === 'warning' ?
         <>
+          <div>{terminalDisplay}</div>
           <Button color="inherit" size="small" onClick={() => sendResponse(true,i)}>{t('Yes')}</Button>
           <Button color="inherit" size="small" onClick={() => sendResponse(false,i)}>{t('No')}</Button>
         </> :

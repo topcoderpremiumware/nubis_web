@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export async function localBankTerminal(method, checkId, terminal, userId, amount = 0) {
-  console.log('localBankTerminal',method,checkId,terminal,userId,amount)
   // For Electron
   let data
   if(window.ipcRenderer){
@@ -13,7 +12,6 @@ export async function localBankTerminal(method, checkId, terminal, userId, amoun
   }
   // For react native
   if(window.ReactNativeWebView){
-    console.log('send action to react native',method)
     if(amount){
       window.ReactNativeWebView.postMessage(JSON.stringify({action: method, amount: amount, checkId: checkId, terminal: terminal, userId: userId}))
     }else{
@@ -27,7 +25,6 @@ export async function localBankTerminal(method, checkId, terminal, userId, amoun
 }
 
 window.terminalAnswer = (method, checkId, terminal, userId, data) => {
-  console.log('get action from react native',method,data)
   if(data){
     if(['payment','refund'].includes(method)){
       // 'Success' | 'Failure'
@@ -39,14 +36,7 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
             [paymentReceipt['@attributes']?.DocumentQualifier]: JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString())
           })
           if(paymentReceipt['@attributes']?.DocumentQualifier === 'CashierReceipt'){
-            console.log('SwedbankPayment text',paymentReceipt.OutputContent?.OutputText?.['#text'])
-            console.log('SwedbankPayment buffer',Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString())
             let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
-            console.log('SwedbankPayment merchant_receipt_text',merchant_receipt_text)
-            console.log('SwedbankPayment Merchant',merchant_receipt_text?.Merchant)
-            console.log('SwedbankPayment Mandatory',merchant_receipt_text?.Merchant?.Mandatory)
-            console.log('SwedbankPayment Payment',merchant_receipt_text?.Merchant?.Mandatory?.Payment)
-            console.log('SwedbankPayment SignatureBlock',merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock)
             if(merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock){
               requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId,3000)
             }
@@ -60,25 +50,18 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
       }else{
         // 'Cancel' | 'Refusal' | 'NotAllowed'
         let condition = data.SaleToPOIResponse?.PaymentResponse?.Response?.['@attributes']?.ErrorCondition
-        switch (condition){
-          case 'Cancel':
-            event('terminal-error',{terminal: terminal, message: `The ${method} was cancelled`});
-            break;
-          case 'Refusal':
-            event('terminal-error',{terminal: terminal, message: `The ${method} was refused`});
-            break;
-          case 'NotAllowed':
-            event('terminal-error',{terminal: terminal, message: `The ${method} was not allowed without auth`});
-            break;
-          case 'Aborted':
-            event('terminal-error',{terminal: terminal, message: `The ${method} was aborted`});
-            break;
-          default:
-            event('terminal-error',{terminal: terminal, message: `Unknown ${method} error: ${condition}`});
-        }
+        errorCondition(condition,method,terminal)
       }
-    }else if(['abort','revert'].includes(method)){
-      event(`terminal-${method === 'abort' ? 'aborted' : 'reverted'}`,{terminal: terminal, message: `The payment has been ${method === 'abort' ? 'aborted' : 'reverted'} by the terminal`});
+    }else if(['revert'].includes(method)){
+      let result = data.SaleToPOIResponse?.ReversalResponse?.Response?.['@attributes']?.Result
+      if(result === 'Success'){
+        event(`terminal-reverted`,{terminal: terminal, message: `The payment has been reversed by the terminal`});
+      }else{
+        let condition = data.SaleToPOIResponse?.ReversalResponse?.Response?.['@attributes']?.ErrorCondition
+        errorCondition(condition,method,terminal)
+      }
+    }else if(['abort'].includes(method)){
+      event(`terminal-aborted`,{terminal: terminal, message: `The payment has been aborted by the terminal`});
     }
     if(data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt){
       data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
@@ -89,13 +72,9 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
       })
     }
     if(data.SaleToPOIResponse?.ReversalResponse?.PaymentReceipt){
-      console.log('found ReversalResponse PaymentReceipt')
       data.SaleToPOIResponse?.ReversalResponse?.PaymentReceipt.forEach(paymentReceipt => {
-        console.log('paymentReceipt',paymentReceipt)
         if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
-          console.log('found ReversalResponse CustomerReceipt')
           let c_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
-          console.log('CustomerReceipt',c_receipt_text,c_receipt_text?.Cardholder?.Optional?.ReceiptString)
           requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 9000)
         }
       })
@@ -137,4 +116,26 @@ function requestPrint(text, terminal, userId, sec){
       window.ReactNativeWebView.postMessage(JSON.stringify({action: 'terminal_print', text: text, terminal: terminal, userId: userId}))
     }
   },sec)
+}
+
+function errorCondition(condition,method,terminal){
+  switch (condition){
+    case 'Cancel':
+      event('terminal-error',{terminal: terminal, message: `The ${method} was cancelled`});
+      break;
+    case 'Refusal':
+      event('terminal-error',{terminal: terminal, message: `The ${method} was refused`});
+      break;
+    case 'NotAllowed':
+      event('terminal-error',{terminal: terminal, message: `The ${method} was not allowed without auth`});
+      break;
+    case 'NotFound':
+      event('terminal-error',{terminal: terminal, message: `The ${method === 'revert' ? 'reversal' : method} was not found`});
+      break;
+    case 'Aborted':
+      event('terminal-error',{terminal: terminal, message: `The ${method} was aborted`});
+      break;
+    default:
+      event('terminal-error',{terminal: terminal, message: `Unknown ${method} error: ${condition}`});
+  }
 }

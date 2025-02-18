@@ -236,3 +236,73 @@ a.css-sghohy-MuiButtonBase-root-MuiButton-root:hover{
     padding-bottom: 100px;
   }
 }
+
+.paymentButton{
+  padding: 16px;
+  border-radius: 8px;
+  border: 2px solid rgba(238, 238, 238, 1);
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100px;
+  cursor: pointer;
+  user-select: none;
+}
+.paymentButton.active{
+  border: 2px solid rgba(99, 154, 255, 1);
+}
+.paymentButton .label{
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 18px;
+  text-transform: none;
+  color: rgba(66, 66, 66, 1);
+}
+.paymentButton svg{
+  stroke: rgba(66, 66, 66, 1);
+  fill: none;
+  width: 32px;
+}
+.paymentButton.active svg{
+  stroke: rgba(99, 154, 255, 1);
+}
+.paymentButton.success{
+  background: rgba(209, 250, 223, 1);
+}
+.paymentButton.success .label{
+  color: rgba(2, 122, 72, 1);
+}
+.paymentButton.success svg{
+  stroke: rgba(2, 122, 72, 1);
+}
+.paymentButton.warning{
+  background: rgba(254, 240, 199, 1);
+}
+.paymentButton.warning .label{
+  color: rgba(181, 71, 8, 1);
+}
+.paymentButton.warning svg{
+  stroke: rgba(181, 71, 8, 1);
+}
+.paymentButton.error{
+  background: rgba(255, 200, 200, 1);
+}
+.paymentButton.error .label{
+  color: rgba(255, 0, 0, 1);
+}
+.paymentButton.error svg{
+  stroke: rgba(255, 0, 0, 1);
+}
+.paymentButton.disabled{
+  opacity: 0.5;
+  cursor: default;
+  background: transparent;
+}
+.paymentButton.disabled .label{
+  color: rgba(66, 66, 66, 1);
+}
+.paymentButton.disabled svg{
+  stroke: rgba(66, 66, 66, 1);
+}

@@ -1,7 +1,7 @@
 import {useTranslation} from "react-i18next";
 import {
   Alert,
-  Button, Card, CardActions, CardContent, Dialog, DialogContent, DialogTitle, FormControl,
+  Button, Card, CardActions, CardContent, Dialog, DialogContent, DialogTitle, FormControl, Grid,
   IconButton, InputLabel, MenuItem, Select,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -11,6 +11,10 @@ import axios from "axios";
 import {qzTrayPrint} from "../../../qzTray";
 import {localPrint} from "../../../localPrint";
 import {localBankTerminal} from "../../../localBankTerminal";
+import eventBus from "../../../eventBus";
+import PayIcon from "../../components/icons/PayIcon";
+import ReversalIcon from "../../components/icons/ReversalIcon";
+import AbortIcon from "../../components/icons/AbortIcon";
 const printFunction = (window.ipcRenderer || window.ReactNativeWebView) ? localPrint : qzTrayPrint;
 
 export default function TerminalRefundPopup(props){
@@ -90,6 +94,22 @@ export default function TerminalRefundPopup(props){
     props.onClose()
   }
 
+  const checkData = () => {
+    if(!selectedTerminal.hasOwnProperty('id')){
+      eventBus.dispatch("notification", {type: 'error', message: 'Terminal is not selected'});
+      return false
+    }
+    if(!props.check_id){
+      eventBus.dispatch("notification", {type: 'error', message: 'Check is not selected'});
+      return false
+    }
+    if(!props.amount){
+      eventBus.dispatch("notification", {type: 'error', message: 'Amount is not set'});
+      return false
+    }
+    return true
+  }
+
   const getTerminals = () => {
     axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/terminals`,{
       headers: {
@@ -103,6 +123,8 @@ export default function TerminalRefundPopup(props){
   }
 
   const sendTerminalRefund = () => {
+    if(loading) return
+    if(!checkData()) return
     setLoading(true)
     setLoadingAbort(false)
     setLoadingRevert(true)
@@ -124,6 +146,8 @@ export default function TerminalRefundPopup(props){
   }
 
   const sendTerminalRevert = () => {
+    if(loadingRevert) return
+    if(!checkData()) return
     setLoadingRevert(true)
     setLoading(true)
     setLoadingAbort(false)
@@ -144,6 +168,8 @@ export default function TerminalRefundPopup(props){
   }
 
   const sendTerminalAbort = () => {
+    if(loadingAbort) return
+    if(!checkData()) return
     setLoadingAbort(true)
     if(window.ipcRenderer || window.ReactNativeWebView){
       localBankTerminal('abort', props.check_id, selectedTerminal, window.user_id)
@@ -222,25 +248,29 @@ export default function TerminalRefundPopup(props){
               })}
             </Select>
           </FormControl> : null}
-        <Card sx={{mb: 2}}>
-          <CardContent>{terminalDisplay}</CardContent>
-          <CardActions>
-            <Button
-              variant="contained"
-              disabled={loading}
-              onClick={() => sendTerminalRefund()}>{t('Refund')}</Button>
-            <Button
-              variant="contained"
-              color="warning"
-              disabled={loadingRevert}
-              onClick={() => sendTerminalRevert()}>{t('Revert')}</Button>
-            <Button
-              variant="contained"
-              color="error"
-              disabled={loadingAbort}
-              onClick={() => sendTerminalAbort()}>{t('Abort')}</Button>
-          </CardActions>
-        </Card>
+        <Grid container spacing={2} sx={{mb: 3}}>
+          <Grid item xs={12} sm={4}>
+            <div className={`paymentButton success ${loading ? 'disabled' : ''}`}
+                 onClick={() => sendTerminalRefund()}>
+              <div className="label">{t('Refund')}</div>
+              <PayIcon/>
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <div className={`paymentButton warning ${loadingRevert ? 'disabled' : ''}`}
+                 onClick={() => sendTerminalRevert()}>
+              <div className="label">{t('Reversal')}</div>
+              <ReversalIcon/>
+            </div>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <div className={`paymentButton error ${loadingAbort ? 'disabled' : ''}`}
+                 onClick={() => sendTerminalAbort()}>
+              <div className="label">{t('Abort')}</div>
+              <AbortIcon/>
+            </div>
+          </Grid>
+        </Grid>
         {terminalErrors.length > 0 ?
           <>{terminalErrors.map((e,i) => <Alert key={i} severity={e.type} action={
             <IconButton aria-label="close" color="inherit" size="small" onClick={() => removeError(i)}>

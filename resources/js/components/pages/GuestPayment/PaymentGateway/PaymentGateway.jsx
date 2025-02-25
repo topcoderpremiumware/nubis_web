@@ -55,7 +55,7 @@ const PaymentGateway = () => {
 
   const getWebhookUrl = () => {
     // return `${process.env.MIX_APP_URL}/api/places/${localStorage.getItem('place_id')}/webhook`
-    return `https://nubisreservation.com/api/places/${localStorage.getItem('place_id')}/webhook`
+    return `https://tablebookingpos.com/api/places/${localStorage.getItem('place_id')}/webhook`
   }
 
   useEffect(() => {
@@ -143,7 +143,7 @@ const PaymentGateway = () => {
               </div>
               <div className="row">
                 <div className="col-lg-6">
-                  <p>{t('In order to receive credit card payments and deposits from your guests, Nubisreservation must be connected to a Stripe account.')}</p>
+                  <p>{t('In order to receive credit card payments and deposits from your guests, Table Booking POS must be connected to a Stripe account.')}</p>
                   <p>
                     {t('With Stripe, you can quickly start receiving payments via credit card - without costs for creation or subscription. You can read more at ')}
                     <a href="https://stripe.com">https://stripe.com</a>

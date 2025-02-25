@@ -98,7 +98,7 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal, setOrderRespo
           }}
         />
         &nbsp;
-        <Trans>By checking the box below, you acknowledge that you have read and agree to the terms and conditions of NubisReservation.</Trans>
+        <Trans>By checking the box below, you acknowledge that you have read and agree to the terms and conditions of Table Booking POS.</Trans>
       </label>
       <button
         className="button-main prepayment-button"

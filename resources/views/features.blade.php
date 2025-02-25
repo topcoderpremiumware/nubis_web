@@ -19,7 +19,7 @@
       <section class="features-hero">
         <div class="container">
           <h1 class="title">{{__('One booking system. One fixed price.')}}</h1>
-          <p class="features-hero-text">{{__('Easy to install. Use Nubis acadami videos to install Nubis reservations for your restaurant ore we can due a complete setup online for you for only € 149')}}</p>
+          <p class="features-hero-text">{{__('Easy to install. Use Nubis acadami videos to install Table Booking POSs for your restaurant ore we can due a complete setup online for you for only € 149')}}</p>
           <a href="#" class="link">{{__('Try one month free')}}</a>
         </div>
       </section>
@@ -31,7 +31,7 @@
       <div class="features-detail">
         <div class="container">
           <h2 class="title">{{__('Manage all restaurant reservations with ease.')}}</h2>
-          <p class="features-detail-text">{{__('Straightforward Nubis reservation management tools allow you to quickly view, add or edit reservations, move them around the day, and control reservation times. You can even control multiple restaurants from one single account!')}}</p>
+          <p class="features-detail-text">{{__('Straightforward Table Booking POS management tools allow you to quickly view, add or edit reservations, move them around the day, and control reservation times. You can even control multiple restaurants from one single account!')}}</p>
           <div class="features-detail-wrapper">
             <div class="features-detail-item">
               <span class="features-detail-item-title">{{__('Increase revenue and improve service.')}}</span>
@@ -144,7 +144,7 @@
       <div class="features-detail">
         <div class="container">
           <h2 class="title">{{__('Time management settings')}}</h2>
-          <p class="features-detail-text">{{__('Simple and efficient Nubis reservation tools allow you to manage reservation times effectively. Increase guest capacity, control kitchen load, and block unnecessary times in seconds. ')}}</p>
+          <p class="features-detail-text">{{__('Simple and efficient Table Booking POS tools allow you to manage reservation times effectively. Increase guest capacity, control kitchen load, and block unnecessary times in seconds. ')}}</p>
           <div class="features-detail-wrapper">
             <div class="features-detail-item">
               <span class="features-detail-item-title">{{__('Custom business hours')}}</span>
@@ -222,7 +222,7 @@
       <div class="features-detail">
         <div class="container">
           <h2 class="title">{{__('Quick action tools')}}</h2>
-          <p class="features-detail-text">{{__('Organise your daily schedule by using advanced Nubis reservation tools. No matter how many restaurants you have on the account, you can easily switch between them and manage all of your reservations smoothly.')}}</p>
+          <p class="features-detail-text">{{__('Organise your daily schedule by using advanced Table Booking POS tools. No matter how many restaurants you have on the account, you can easily switch between them and manage all of your reservations smoothly.')}}</p>
           <div class="features-detail-wrapper">
             <div class="features-detail-item">
               <span class="features-detail-item-title">{{__('Guest search')}}</span>
@@ -255,19 +255,19 @@
       <div class="features-detail">
         <div class="container">
           <h2 class="title">{{__('Mobile Version')}}</h2>
-          <p class="features-detail-text">{{__('Reservation management with Nubis reservation tool does not require an app. You can choose any device, log in to your account via any web browser and access your booking calendar, even on the go. ')}}</p>
+          <p class="features-detail-text">{{__('Reservation management with Table Booking POS tool does not require an app. You can choose any device, log in to your account via any web browser and access your booking calendar, even on the go. ')}}</p>
           <div class="features-detail-wrapper">
             <div class="features-detail-item">
               <span class="features-detail-item-title">{{__('Adaptive layout')}}</span>
-              <p>{{__('Use from any device whether it is iOS or Android – Nubis reservation works on both of them.')}}</p>
+              <p>{{__('Use from any device whether it is iOS or Android – Table Booking POS works on both of them.')}}</p>
             </div>
             <div class="features-detail-item">
               <span class="features-detail-item-title">{{__('Automatic updates')}}</span>
-              <p>{{__('Manage your reservations on the latest, automatically updated Nubis reservation version.')}}</p>
+              <p>{{__('Manage your reservations on the latest, automatically updated Table Booking POS version.')}}</p>
             </div>
             <div class="features-detail-item">
               <span class="features-detail-item-title">{{__('App-free solution')}}</span>
-              <p>{{__('Access the mobile version of Nubis reservation through any smartphone browser.')}}</p>
+              <p>{{__('Access the mobile version of Table Booking POS through any smartphone browser.')}}</p>
             </div>
             <div class="features-detail-item">
               <span class="features-detail-item-title">{{__('Desktop version')}}</span>

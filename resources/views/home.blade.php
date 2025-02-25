@@ -32,7 +32,7 @@
         <div class="container hero-wrapper">
           <div>
             <h1 class="title">{{__('One booking system – One fixed low price including all features.')}}</h1>
-            <p class="hero-text">{{__('Nubis reservation makes it easy to manage your restaurant`s table reservations. Stop wasting your time on daily tasks such as email replies, social media chats or phone calls. Allow guests to book a table online 24/7 and Nubis reservation will take care of the rest! The system is easy implemented to your website and there are no start up-fees ore extra costs.')}}</p>
+            <p class="hero-text">{{__('Table Booking POS makes it easy to manage your restaurant`s table reservations. Stop wasting your time on daily tasks such as email replies, social media chats or phone calls. Allow guests to book a table online 24/7 and Table Booking POS will take care of the rest! The system is easy implemented to your website and there are no start up-fees ore extra costs.')}}</p>
             <a href="/pricing" class="link">{{__('Try one month free')}}</a>
           </div>
           <iframe
@@ -96,7 +96,7 @@
             <div>
               <p class="advantages-subtitle">{{__('Save more time')}}</p>
               <h3 class="title">{{__('Accept online reservations and save your time.')}}</h3>
-              <p class="advantages-text">{{__('Stop wasting your valuable time on day-to-day email replies, social media chats or phone calls by choosing an automatic booking solution instead! Allow your guests to book a table online 24/7 and Nubis reservation will take care of the rest! Low fixed price, easy to set up and free try period.')}}</p>
+              <p class="advantages-text">{{__('Stop wasting your valuable time on day-to-day email replies, social media chats or phone calls by choosing an automatic booking solution instead! Allow your guests to book a table online 24/7 and Table Booking POS will take care of the rest! Low fixed price, easy to set up and free try period.')}}</p>
               <a href="/pricing" class="link">{{__('Try one month free')}}</a>
             </div>
             <img src="/images/advantages-1.png" alt="Picture">

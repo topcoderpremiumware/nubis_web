@@ -69,7 +69,7 @@
               >{{__('Try one month free')}}</div>
             </div>
           </div>
-          <p class="price-text">{{__('Tied into another solution? If you have a notice period on your current booking system, you will receive Nubis reservation for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system for free using our Nubis Academy videos or let us set it up for you for')}} € 149</p>
+          <p class="price-text">{{__('Tied into another solution? If you have a notice period on your current booking system, you will receive Table Booking POS for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system for free using our Nubis Academy videos or let us set it up for you for')}} € 149</p>
           <div class="price-benefits">
             <h3 class="price-title">{{__('Benefits')}}</h3>
             <ul class="price-list">

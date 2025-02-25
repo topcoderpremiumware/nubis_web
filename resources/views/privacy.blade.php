@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Privacy Policy - NubisReservation</title>
-    <meta name="description" content="Privacy Policy for NubisReservation">
+    <title>Privacy Policy - Table Booking POS</title>
+    <meta name="description" content="Privacy Policy for Table Booking POS">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
@@ -43,9 +43,9 @@
 <h1>Privacy Policy</h1>
 <p class="last-updated">Last Updated: [DATE]</p>
 
-<p>Welcome to NubisReservation (<strong>“Company”</strong>, <strong>“we”</strong>, <strong>“us”</strong>, or <strong>“our”</strong>). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, store, and disclose your information when you use our website located at <a href="https://nubisreservation.com">nubisreservation.com</a> (the <strong>“Site”</strong>) and related services (collectively, the <strong>“Services”</strong>).</p>
+<p>Welcome to Table Booking POS (<strong>“Company”</strong>, <strong>“we”</strong>, <strong>“us”</strong>, or <strong>“our”</strong>). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, store, and disclose your information when you use our website located at <a href="https://tablebookingpos.com">tablebookingpos.com</a> (the <strong>“Site”</strong>) and related services (collectively, the <strong>“Services”</strong>).</p>
 
-<p>If you have any questions or concerns about our policy or practices regarding your personal information, please contact us at <a href="mailto:info@nubisreservation.com">info@nubisreservation.com</a>.</p>
+<p>If you have any questions or concerns about our policy or practices regarding your personal information, please contact us at <a href="mailto:info@tablebookingpos.com">info@tablebookingpos.com</a>.</p>
 
 <h2>1. Information We Collect</h2>
 <p>We may collect personal information that you provide directly to us when you use our Services, such as:</p>
@@ -99,25 +99,25 @@
     <li>Object to or restrict the processing of your personal data.</li>
     <li>Withdraw your consent at any time (where we rely on your consent to process your information).</li>
 </ul>
-<p>If you wish to exercise any of these rights or have questions about them, please contact us at <a href="mailto:info@nubisreservation.com">info@nubisreservation.com</a>.</p>
+<p>If you wish to exercise any of these rights or have questions about them, please contact us at <a href="mailto:info@tablebookingpos.com">info@tablebookingpos.com</a>.</p>
 
 <h2>8. International Data Transfers</h2>
 <p>Your personal information may be transferred to and processed in countries other than the country in which you are resident. These countries may have data protection laws different from those of your country. We take appropriate measures to ensure that your personal information remains protected in accordance with this Privacy Policy.</p>
 
 <h2>9. Children’s Privacy</h2>
-<p>Our Services are not intended for use by individuals under the age of 13 (or such other age as required by local law). We do not knowingly collect personal information from children under 13. If you become aware that a child has provided us with personal data, please contact us at <a href="mailto:info@nubisreservation.com">info@nubisreservation.com</a>.</p>
+<p>Our Services are not intended for use by individuals under the age of 13 (or such other age as required by local law). We do not knowingly collect personal information from children under 13. If you become aware that a child has provided us with personal data, please contact us at <a href="mailto:info@tablebookingpos.com">info@tablebookingpos.com</a>.</p>
 
 <h2>10. Changes to This Privacy Policy</h2>
 <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the “Last Updated” date at the top. You are advised to review this Privacy Policy periodically for any changes.</p>
 
 <h2>11. Contact Us</h2>
 <p>If you have any questions about this Privacy Policy or our practices, please contact us at:</p>
-<p><strong>Email:</strong> <a href="mailto:info@nubisreservation.com">info@nubisreservation.com</a><br>
-    <strong>Website:</strong> <a href="https://nubisreservation.com">nubisreservation.com</a></p>
+<p><strong>Email:</strong> <a href="mailto:info@tablebookingpos.com">info@tablebookingpos.com</a><br>
+    <strong>Website:</strong> <a href="https://tablebookingpos.com">tablebookingpos.com</a></p>
 
 <p>By using our Site and Services, you signify that you have read, understood, and agree to our collection, storage, use, and disclosure of your personal information as described in this Privacy Policy.</p>
 
-<p>For more details, please review our <a href="https://nubisreservation.com/terms">Terms of Service</a>.</p>
+<p>For more details, please review our <a href="https://tablebookingpos.com/terms">Terms of Service</a>.</p>
 
 </body>
 </html>

@@ -5,6 +5,7 @@
     <title>Privacy Policy - Table Booking POS</title>
     <meta name="description" content="Privacy Policy for Table Booking POS">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/logo.ico">
     <style>
         body {
             font-family: Arial, sans-serif;

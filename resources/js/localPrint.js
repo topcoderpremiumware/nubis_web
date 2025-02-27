@@ -30,11 +30,15 @@ export async function localPrint(printerNames, blob, errorCallback) {
     window.ReactNativeWebView.postMessage(JSON.stringify({action: 'print-document', printers: printerNames, base64: base64}))
 
     window.addEventListener("message", function handleMessage(event) {
+      alert(event)
       try {
         const response = JSON.parse(event.data);
+        alert(response)
         if (response.success) {
           eventBus.dispatch("notification", { type: 'success', message: 'Document sent to the printer' })
+          alert(true)
         } else {
+          alert(false)
           errorCallback()
         }
         window.removeEventListener("message", handleMessage)

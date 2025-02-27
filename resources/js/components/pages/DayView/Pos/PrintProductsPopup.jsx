@@ -23,7 +23,7 @@ import eventBus from "../../../../eventBus";
 import {simpleCatchError} from "../../../../helper";
 import {qzTrayPrint} from "../../../../qzTray";
 import {localPrint} from "../../../../localPrint";
-const printFunction = window.ipcRenderer ? localPrint : qzTrayPrint;
+const printFunction = (window.ipcRenderer || window.ReactNativeWebView) ? localPrint : qzTrayPrint;
 
 export default function PrintProductsPopup(props){
   const {t} = useTranslation();

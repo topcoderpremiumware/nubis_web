@@ -29,7 +29,7 @@ import {calcCheckTotal} from "./posHelper";
 import PrintProductsPopup from "./PrintProductsPopup";
 import {qzTrayPrint} from "../../../../qzTray";
 import {localPrint} from "../../../../localPrint";
-const printFunction = window.ipcRenderer ? localPrint : qzTrayPrint;
+const printFunction = (window.ipcRenderer || window.ReactNativeWebView) ? localPrint : qzTrayPrint;
 
 export default function PosCart(props){
   const {t} = useTranslation();

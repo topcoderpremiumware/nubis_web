@@ -28,23 +28,5 @@ export async function localPrint(printerNames, blob, errorCallback) {
   if(window.ReactNativeWebView){
     const base64 = await getBase64FromFile(blob)
     window.ReactNativeWebView.postMessage(JSON.stringify({action: 'print-document', printers: printerNames, base64: base64}))
-
-    window.addEventListener("message", function handleMessage(event) {
-      alert(event)
-      try {
-        const response = JSON.parse(event.data);
-        alert(response)
-        if (response.success) {
-          eventBus.dispatch("notification", { type: 'success', message: 'Document sent to the printer' })
-          alert(true)
-        } else {
-          alert(false)
-          errorCallback()
-        }
-        window.removeEventListener("message", handleMessage)
-      } catch (err) {
-        console.error("Error parsing message from React Native:", err)
-      }
-    });
   }
 }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import eventBus from "./eventBus";
 
 export async function localBankTerminal(method, checkId, terminal, userId, amount = 0) {
   // For Electron
@@ -27,30 +28,13 @@ export async function localBankTerminal(method, checkId, terminal, userId, amoun
 window.terminalAnswer = (method, checkId, terminal, userId, data) => {
   if(data){
     if(['payment','refund'].includes(method)){
-      // 'Success' | 'Failure'
-      let result = data.SaleToPOIResponse?.PaymentResponse?.Response?.['@attributes']?.Result
+      paymentLogic(method, checkId, terminal, userId, data)
+    }else if(['transaction'].includes(method)){
+      let result = data.SaleToPOIResponse?.TransactionStatusResponse?.Response?.['@attributes']?.Result
       if(result === 'Success'){
-        let receipt_text = '';
-        data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
-          console.log('SwedbankPayment::handle',{
-            [paymentReceipt['@attributes']?.DocumentQualifier]: JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString())
-          })
-          if(paymentReceipt['@attributes']?.DocumentQualifier === 'CashierReceipt'){
-            let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
-            if(merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock){
-              requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId,3000)
-            }
-          }
-          if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
-            receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'));
-            updateBankLog(checkId,receipt_text)
-            event('terminal-paid',{terminal: terminal, message: `The order has been ${method === 'payment' ? 'paid' : 'refund'} by the terminal`});
-          }
-        })
-      }else{
-        // 'Cancel' | 'Refusal' | 'NotAllowed'
-        let condition = data.SaleToPOIResponse?.PaymentResponse?.Response?.['@attributes']?.ErrorCondition
-        errorCondition(condition,method,terminal)
+        let paymentResult = {SaleToPOIResponse: data?.SaleToPOIResponse?.TransactionStatusResponse?.RepeatedMessageResponse}
+        let checkId = paymentResult?.SaleToPOIResponse?.PaymentResponse?.SaleData?.SaleTransactionID?.['@attributes']?.TransactionID
+        paymentLogic('payment',checkId,terminal,userId,paymentResult)
       }
     }else if(['revert'].includes(method)){
       let result = data.SaleToPOIResponse?.ReversalResponse?.Response?.['@attributes']?.Result
@@ -83,6 +67,34 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
     event('terminal-error',{terminal: terminal, message: `Unknown ${method} error`});
   }
   return true;
+}
+
+function paymentLogic(method, checkId, terminal, userId, data){
+  // 'Success' | 'Failure'
+  let result = data.SaleToPOIResponse?.PaymentResponse?.Response?.['@attributes']?.Result
+  if(result === 'Success'){
+    data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
+      console.log('SwedbankPayment::handle',{
+        [paymentReceipt['@attributes']?.DocumentQualifier]: JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString())
+      })
+      if(paymentReceipt['@attributes']?.DocumentQualifier === 'CashierReceipt'){
+        let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
+        if(merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock){
+          eventBus.dispatch("receiptNeedSignature")
+          requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId,3000)
+        }
+      }
+      if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
+        let receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'));
+        updateBankLog(checkId,receipt_text)
+        event('terminal-paid',{terminal: terminal, message: `The order has been ${method === 'payment' ? 'paid' : 'refund'} by the terminal`});
+      }
+    })
+  }else{
+    // 'Cancel' | 'Refusal' | 'NotAllowed'
+    let condition = data.SaleToPOIResponse?.PaymentResponse?.Response?.['@attributes']?.ErrorCondition
+    errorCondition(condition,method,terminal)
+  }
 }
 
 function event(name, data){

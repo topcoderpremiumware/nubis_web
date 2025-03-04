@@ -20,6 +20,7 @@ import ProformaIcon from "../../../components/icons/ProformaIcon";
 import CardIcon from "../../../components/icons/CardIcon";
 import CardCashIcon from "../../../components/icons/CardCashIcon";
 import CashIcon from "../../../components/icons/CashIcon";
+import {localBankTerminal} from "../../../../localBankTerminal";
 
 export default function PaymentMethodPopup(props){
   const {t} = useTranslation();
@@ -34,6 +35,13 @@ export default function PaymentMethodPopup(props){
     getUsers()
     getTerminals()
   },[props.open])
+
+  const handleClose = () => {
+    if(window.ipcRenderer || window.ReactNativeWebView){
+      localBankTerminal('abort', props.check.id, selectedTerminal, window.user_id)
+    }
+    props.onClose()
+  }
 
   const methods = [
     {value:'card',label:t('Card')},
@@ -98,7 +106,7 @@ export default function PaymentMethodPopup(props){
   }
 
   return (
-    <Dialog onClose={props.onClose} open={props.open} fullWidth maxWidth="md"
+    <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="md"
             scroll="paper"
             PaperProps={{
               style: {
@@ -211,7 +219,7 @@ export default function PaymentMethodPopup(props){
         />}
       </DialogContent>
       <DialogActions sx={{p:2}}>
-        <Button variant="outlined" onClick={props.onClose}>{t('Cancel')}</Button>
+        <Button variant="outlined" onClick={handleClose}>{t('Cancel')}</Button>
         {printType === 'proforma' ?
           <Button variant="contained" onClick={printProforma}>{t('Print')}</Button>
           :

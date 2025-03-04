@@ -56,7 +56,7 @@ export default function TerminalEditPopup(props) {
       <DialogContent dividers>
         <Grid container spacing={2} sx={{pb: 2}}>
           <Grid item xs={12} sm={6}>
-            <TextField label={t('Serial')} size="small" fullWidth
+            <TextField label={t('POIID')} size="small" fullWidth
                        type="text" id="serial" name="serial" required
                        onChange={onChange} value={terminal.serial}
             />

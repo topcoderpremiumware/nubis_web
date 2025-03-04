@@ -17,6 +17,8 @@ import TerminalEditPopup from "./TerminalEditPopup"
 import { useNavigate } from "react-router-dom";
 import {StyledTableRow} from "../../../components/StyledTableRow";
 import {simpleCatchError} from "../../../../helper";
+import {localBankTerminal} from "../../../../localBankTerminal";
+import SecurityUpdateIcon from '@mui/icons-material/SecurityUpdate';
 
 export default function Terminals() {
   const {t} = useTranslation();
@@ -76,6 +78,14 @@ export default function Terminals() {
     setEditPopupOpened(true)
   }
 
+  const pullTerminalTransaction = (terminal) => {
+    if (terminal.hasOwnProperty('id')) {
+      if(window.ipcRenderer || window.ReactNativeWebView){
+        localBankTerminal('transaction', null, terminal, window.user_id)
+      }
+    }
+  }
+
   const deleteTerminal = (terminal) => {
     if (terminal.hasOwnProperty('id')) {
       if (window.confirm(t('Are you sure you want to delete this terminal?'))) {
@@ -105,7 +115,7 @@ export default function Terminals() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell size="small">{t('Serial')}</TableCell>
+                  <TableCell size="small">{t('POIID')}</TableCell>
                   <TableCell size="small">{t('Url')}</TableCell>
                   <TableCell size="small" style={{minWidth: '100px'}}>{t('Actions')}</TableCell>
                 </TableRow>
@@ -120,6 +130,11 @@ export default function Terminals() {
                         openEditPopup(item)
                       }} size="small">
                         <EditIcon fontSize="small"/>
+                      </IconButton>
+                      <IconButton onClick={e => {
+                         pullTerminalTransaction(item)
+                      }} size="small">
+                        <SecurityUpdateIcon fontSize="small"/>
                       </IconButton>
                       <IconButton onClick={e => {
                         deleteTerminal(item)

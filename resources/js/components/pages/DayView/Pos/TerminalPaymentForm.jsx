@@ -5,7 +5,7 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {simpleCatchError} from "../../../../helper";
 import axios from "axios";
 import eventBus from "../../../../eventBus";
@@ -24,8 +24,14 @@ export default function TerminalPaymentForm(props){
   const [loadingAbort, setLoadingAbort] = useState(true)
   const [terminalErrors,  setTerminalErrors] = useState([])
   const [terminalDisplay,  setTerminalDisplay] = useState('Welcome')
+  const terminalErrorsRef = useRef([])
 
   let channelName
+
+  useEffect(() => {
+    terminalErrorsRef.current = terminalErrors
+    console.log('terminalErrorsRef.current',terminalErrorsRef.current.length)
+  },[terminalErrors])
 
   useEffect(() => {
     channelName = `place-${localStorage.getItem('place_id')}`
@@ -76,11 +82,26 @@ export default function TerminalPaymentForm(props){
         console.log('terminal-print-data',data)
         if(data['terminal'].id === props.selectedTerminal.id){
           openTerminalReceipt(data['url'])
-          setTerminalErrors(prev => ([...prev,{type: 'warning', message: t('Is customer signature OK?')}]))
+          let index = terminalErrorsRef.current.length
+          setTerminalErrors(prev => ([...prev,{type: 'warning', message: t('Is customer signature OK?'), action: <>
+              <div>{terminalDisplay}</div>
+              <Button color="inherit" size="small" onClick={() => sendResponse(true,index)}>{t('Yes')}</Button>
+              <Button color="inherit" size="small" onClick={() => sendResponse(false,index)}>{t('No')}</Button>
+            </>
+          }]))
         }
       })
+      function receiptNeedSignature(){
+        let index = terminalErrorsRef.current.length
+        setTerminalErrors(prev => ([...prev,{type: 'warning', message: t('Is customer signature OK?'), action: <>
+            <Button color="inherit" size="small" onClick={() => removeError(index)}>{t('OK')}</Button>
+          </>
+        }]))
+      }
+      eventBus.on("receiptNeedSignature",receiptNeedSignature)
     return () => {
       Echo.leave(channelName)
+      eventBus.remove("receiptNeedSignature",receiptNeedSignature)
     }
   },[props.selectedTerminal])
 
@@ -189,7 +210,8 @@ export default function TerminalPaymentForm(props){
   }
 
   const removeError = (index) => {
-    let errors = terminalErrors
+    console.log('removeError',index,terminalErrorsRef.current.length)
+    let errors = terminalErrorsRef.current
     errors.splice(index, 1)
     setTerminalErrors(prev => ([...errors]))
   }
@@ -235,11 +257,7 @@ export default function TerminalPaymentForm(props){
     </Grid>
     {terminalErrors.length > 0 ? <>
         {terminalErrors.map((e,i) => <Alert key={i} severity={e.type} action={e.type === 'warning' ?
-        <>
-          <div>{terminalDisplay}</div>
-          <Button color="inherit" size="small" onClick={() => sendResponse(true,i)}>{t('Yes')}</Button>
-          <Button color="inherit" size="small" onClick={() => sendResponse(false,i)}>{t('No')}</Button>
-        </> :
+        e.action :
         <IconButton aria-label="close" color="inherit" size="small" onClick={() => removeError(i)}>
           <CloseIcon fontSize="inherit" />
         </IconButton>

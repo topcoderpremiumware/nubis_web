@@ -91,6 +91,9 @@ export default function TerminalRefundPopup(props){
   },[selectedTerminal])
 
   const handleClose = () => {
+    if(window.ipcRenderer || window.ReactNativeWebView){
+      localBankTerminal('abort', props.check_id, selectedTerminal, window.user_id)
+    }
     props.onClose()
   }
 
@@ -217,7 +220,7 @@ export default function TerminalRefundPopup(props){
   }
 
   return (
-    <Dialog onClose={props.onClose} open={props.open} fullWidth maxWidth="sm"
+    <Dialog onClose={handleClose} open={props.open} fullWidth maxWidth="sm"
             scroll="paper"
             PaperProps={{
               style: {
@@ -229,7 +232,7 @@ export default function TerminalRefundPopup(props){
     >
       <DialogTitle sx={{m: 0, p: 2}}>
         <>{t('Refund by terminal')}</>
-        <IconButton onClick={props.onClose} sx={{
+        <IconButton onClick={handleClose} sx={{
           position: 'absolute',
           right: 8,
           top: 8,

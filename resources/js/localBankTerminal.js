@@ -47,17 +47,22 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
     }else if(['abort'].includes(method)){
       event(`terminal-aborted`,{terminal: terminal, message: `The payment has been aborted by the terminal`});
     }
+    console.log('data after all',data)
     if(data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt){
+      console.log('PaymentResponse print')
       data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
         if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
+          console.log('CustomerReceipt print')
           let c_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
           requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 9000)
         }
       })
     }
     if(data.SaleToPOIResponse?.ReversalResponse?.PaymentReceipt){
+      console.log('ReversalResponse print')
       data.SaleToPOIResponse?.ReversalResponse?.PaymentReceipt.forEach(paymentReceipt => {
         if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
+          console.log('CustomerReceipt print')
           let c_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
           requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 9000)
         }

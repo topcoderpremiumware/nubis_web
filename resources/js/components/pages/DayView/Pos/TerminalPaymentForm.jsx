@@ -92,7 +92,7 @@ export default function TerminalPaymentForm(props){
         }
       })
       function receiptNeedSignature(){
-        alert(t('Is customer signature OK?'))
+        alert(t('The receipt requires a customer signature. Please ensure the client has signed the receipt before proceeding.'))
         // let index = terminalErrorsRef.current.length
         // setTerminalErrors(prev => ([...prev,{type: 'warning', message: t('Is customer signature OK?'), action: <>
         //     <Button color="inherit" size="small" onClick={() => removeError(index)}>{t('OK')}</Button>

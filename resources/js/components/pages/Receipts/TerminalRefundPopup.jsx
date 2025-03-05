@@ -81,8 +81,13 @@ export default function TerminalRefundPopup(props){
           setTerminalErrors(prev => ([...prev,{type: 'warning', message: t('Is customer signature OK?')}]))
         }
       })
+    function receiptNeedSignature(){
+      alert(t('The receipt requires a customer signature. Please ensure the client has signed the receipt before proceeding.'))
+    }
+    eventBus.on("receiptNeedSignature",receiptNeedSignature)
     return () => {
       Echo.leave(channelName)
+      eventBus.remove("receiptNeedSignature",receiptNeedSignature)
     }
   },[props.open])
 

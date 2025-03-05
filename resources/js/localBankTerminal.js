@@ -35,6 +35,7 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
         data = {SaleToPOIResponse: data?.SaleToPOIResponse?.TransactionStatusResponse?.RepeatedMessageResponse}
         let checkId = data?.SaleToPOIResponse?.PaymentResponse?.SaleData?.SaleTransactionID?.['@attributes']?.TransactionID
         paymentLogic('payment',checkId,terminal,userId,data)
+        console.log('After paymentLogic')
       }
     }else if(['revert'].includes(method)){
       let result = data.SaleToPOIResponse?.ReversalResponse?.Response?.['@attributes']?.Result
@@ -83,16 +84,22 @@ function paymentLogic(method, checkId, terminal, userId, data){
         [paymentReceipt['@attributes']?.DocumentQualifier]: JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString())
       })
       if(paymentReceipt['@attributes']?.DocumentQualifier === 'CashierReceipt'){
+        console.log('CashierReceipt')
         let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
         if(merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock){
+          console.log('CashierReceipt print')
           eventBus.dispatch("receiptNeedSignature")
           requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId,3000)
         }
       }
       if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
+        console.log('CustomerReceipt')
         let receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'));
+        console.log('CustomerReceipt',receipt_text)
         updateBankLog(checkId,receipt_text)
+        console.log('CustomerReceipt after updateBankLog')
         event('terminal-paid',{terminal: terminal, message: `The order has been ${method === 'payment' ? 'paid' : 'refund'} by the terminal`});
+        console.log('CustomerReceipt after event')
       }
     })
   }else{

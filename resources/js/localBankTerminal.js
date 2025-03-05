@@ -32,9 +32,9 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
     }else if(['transaction'].includes(method)){
       let result = data.SaleToPOIResponse?.TransactionStatusResponse?.Response?.['@attributes']?.Result
       if(result === 'Success'){
-        let paymentResult = {SaleToPOIResponse: data?.SaleToPOIResponse?.TransactionStatusResponse?.RepeatedMessageResponse}
-        let checkId = paymentResult?.SaleToPOIResponse?.PaymentResponse?.SaleData?.SaleTransactionID?.['@attributes']?.TransactionID
-        paymentLogic('payment',checkId,terminal,userId,paymentResult)
+        data = {SaleToPOIResponse: data?.SaleToPOIResponse?.TransactionStatusResponse?.RepeatedMessageResponse}
+        let checkId = data?.SaleToPOIResponse?.PaymentResponse?.SaleData?.SaleTransactionID?.['@attributes']?.TransactionID
+        paymentLogic('payment',checkId,terminal,userId,data)
       }
     }else if(['revert'].includes(method)){
       let result = data.SaleToPOIResponse?.ReversalResponse?.Response?.['@attributes']?.Result

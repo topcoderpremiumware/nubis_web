@@ -92,11 +92,12 @@ export default function TerminalPaymentForm(props){
         }
       })
       function receiptNeedSignature(){
-        let index = terminalErrorsRef.current.length
-        setTerminalErrors(prev => ([...prev,{type: 'warning', message: t('Is customer signature OK?'), action: <>
-            <Button color="inherit" size="small" onClick={() => removeError(index)}>{t('OK')}</Button>
-          </>
-        }]))
+        alert(t('Is customer signature OK?'))
+        // let index = terminalErrorsRef.current.length
+        // setTerminalErrors(prev => ([...prev,{type: 'warning', message: t('Is customer signature OK?'), action: <>
+        //     <Button color="inherit" size="small" onClick={() => removeError(index)}>{t('OK')}</Button>
+        //   </>
+        // }]))
       }
       eventBus.on("receiptNeedSignature",receiptNeedSignature)
     return () => {

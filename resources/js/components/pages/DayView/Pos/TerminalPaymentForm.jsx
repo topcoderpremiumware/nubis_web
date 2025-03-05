@@ -92,7 +92,10 @@ export default function TerminalPaymentForm(props){
         }
       })
       function receiptNeedSignature(){
-        alert(t('The receipt requires a customer signature. Please ensure the client has signed the receipt before proceeding.'))
+        if (confirm(t('Please review the client\'s signature. If it matches and you are ready to proceed, click \'OK\' to complete the transaction. If the signature is not correct, click \'Cancel\'.'))) {
+        } else {
+          localBankTerminal('revert', props.check_id, props.selectedTerminal, window.user_id)
+        }
         // let index = terminalErrorsRef.current.length
         // setTerminalErrors(prev => ([...prev,{type: 'warning', message: t('Is customer signature OK?'), action: <>
         //     <Button color="inherit" size="small" onClick={() => removeError(index)}>{t('OK')}</Button>

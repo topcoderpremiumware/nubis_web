@@ -75,37 +75,40 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
   return true;
 }
 
-function paymentLogic(method, checkId, terminal, userId, data){
+async function paymentLogic(method, checkId, terminal, userId, data) {
   // 'Success' | 'Failure'
   let result = data.SaleToPOIResponse?.PaymentResponse?.Response?.['@attributes']?.Result
-  if(result === 'Success'){
-    data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt.forEach(paymentReceipt => {
-      console.log('SwedbankPayment::handle',{
-        [paymentReceipt['@attributes']?.DocumentQualifier]: JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString())
+  if (result === 'Success') {
+    for (const paymentReceipt of data.SaleToPOIResponse?.PaymentResponse?.PaymentReceipt) {
+      console.log('SwedbankPayment::handle', {
+        [paymentReceipt['@attributes']?.DocumentQualifier]: JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'], 'base64').toString())
       })
-      if(paymentReceipt['@attributes']?.DocumentQualifier === 'CashierReceipt'){
+      if (paymentReceipt['@attributes']?.DocumentQualifier === 'CashierReceipt') {
         console.log('CashierReceipt')
-        let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
-        if(merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock){
+        let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'], 'base64').toString());
+        if (merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock) {
           console.log('CashierReceipt print')
+          await requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId, 3000)
           eventBus.dispatch("receiptNeedSignature")
-          requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId,3000)
         }
       }
-      if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
+      if (paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt') {
         console.log('CustomerReceipt')
-        let receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64'));
-        console.log('CustomerReceipt',receipt_text)
-        updateBankLog(checkId,receipt_text)
+        let receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'], 'base64'));
+        console.log('CustomerReceipt', receipt_text)
+        updateBankLog(checkId, receipt_text)
         console.log('CustomerReceipt after updateBankLog')
-        event('terminal-paid',{terminal: terminal, message: `The order has been ${method === 'payment' ? 'paid' : 'refund'} by the terminal`});
+        event('terminal-paid', {
+          terminal: terminal,
+          message: `The order has been ${method === 'payment' ? 'paid' : 'refund'} by the terminal`
+        });
         console.log('CustomerReceipt after event')
       }
-    })
-  }else{
+    }
+  } else {
     // 'Cancel' | 'Refusal' | 'NotAllowed'
     let condition = data.SaleToPOIResponse?.PaymentResponse?.Response?.['@attributes']?.ErrorCondition
-    errorCondition(condition,method,terminal)
+    errorCondition(condition, method, terminal)
   }
 }
 
@@ -131,15 +134,22 @@ function updateBankLog(checkId,log){
   })
 }
 
-function requestPrint(text, terminal, userId, sec){
-  setTimeout(function(){
-    if(window.ipcRenderer){
-      window.ipcRenderer.invoke('terminal_print', text, terminal, userId)
-    }
-    if(window.ReactNativeWebView){
-      window.ReactNativeWebView.postMessage(JSON.stringify({action: 'terminal_print', text: text, terminal: terminal, userId: userId}))
-    }
-  },sec)
+async function requestPrint(text, terminal, userId, sec) {
+  return await new Promise((resolve) => {
+    setTimeout(async () => {
+      if (window.ipcRenderer) {
+        resolve(await window.ipcRenderer.invoke('terminal_print', text, terminal, userId))
+      }
+      if (window.ReactNativeWebView) {
+        resolve(window.ReactNativeWebView.postMessage(JSON.stringify({
+          action: 'terminal_print',
+          text: text,
+          terminal: terminal,
+          userId: userId
+        })))
+      }
+    }, sec)
+  })
 }
 
 function errorCondition(condition,method,terminal){

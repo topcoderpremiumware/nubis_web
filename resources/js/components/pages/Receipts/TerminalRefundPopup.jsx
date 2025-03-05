@@ -82,7 +82,10 @@ export default function TerminalRefundPopup(props){
         }
       })
     function receiptNeedSignature(){
-      alert(t('The receipt requires a customer signature. Please ensure the client has signed the receipt before proceeding.'))
+      if (confirm(t('Please review the client\'s signature. If it matches and you are ready to proceed, click \'OK\' to complete the transaction. If the signature is not correct, click \'Cancel\'.'))) {
+      } else {
+        localBankTerminal('revert', props.check_id, selectedTerminal, window.user_id)
+      }
     }
     eventBus.on("receiptNeedSignature",receiptNeedSignature)
     return () => {

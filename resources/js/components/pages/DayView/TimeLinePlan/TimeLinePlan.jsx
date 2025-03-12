@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {useTranslation} from 'react-i18next';
 import Timeline from 'react-calendar-timeline'
 import 'react-calendar-timeline/lib/Timeline.css'
-import moment from 'moment'
 import {Button, Tooltip} from "@mui/material";
 import TimelineHeaders from "react-calendar-timeline/lib/lib/headers/TimelineHeaders";
 import DateHeader from "react-calendar-timeline/lib/lib/headers/DateHeader";
@@ -14,13 +13,13 @@ import eventBus from "../../../../eventBus";
 export default function TimeLinePlan(props) {
   const { t } = useTranslation();
 
-  const selectedDate = localStorage.getItem('date') || moment.utc().format('YYYY-MM-DD')
+  const selectedDate = localStorage.getItem('date') || Moment.utc().format('YYYY-MM-DD')
   const selectedTime = JSON.parse(localStorage.getItem('time'))
 
   const [groups, setGroups] = useState([])
   const [items, setItems] = useState([])
-  const [lineFrom, setLineFrom] = useState(moment.utc(selectedDate+' '+(selectedTime.from || '00:00:00'),'YYYY-MM-DD HH:mm:ss'))
-  const [lineTo, setLineTo] = useState(moment.utc(selectedDate+' '+(selectedTime.to || '22:59:59'),'YYYY-MM-DD HH:mm:ss').add(1,'hour'))
+  const [lineFrom, setLineFrom] = useState(Moment(selectedDate+' '+(selectedTime.from || '00:00:00'),'YYYY-MM-DD HH:mm:ss'))
+  const [lineTo, setLineTo] = useState(Moment(selectedDate+' '+(selectedTime.to || '22:59:59'),'YYYY-MM-DD HH:mm:ss').add(1,'hour'))
 
   let channelName
 
@@ -136,7 +135,8 @@ export default function TimeLinePlan(props) {
           it.push({
             id: item.id+'_'+t,
             group: t,
-            title_name:  '#'+item.id+', ('+item.seats + ') ' +(item.customer_id ? item.customer.first_name+' '+item.customer.last_name : 'Walk in'),
+            title_name:  '#'+item.id+', ('+item.seats + ') ' +(item.customer_id ? item.customer.first_name+' '+item.customer.last_name :
+              (item?.first_name ? item.first_name+' '+item.last_name : 'Walk in')),
             tip: tableTip(item),
             canMove: false,
             canResize: false,

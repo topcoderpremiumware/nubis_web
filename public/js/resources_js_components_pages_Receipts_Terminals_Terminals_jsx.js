@@ -4060,7 +4060,7 @@ function TerminalEditPopup(props) {
             xs: 12,
             sm: 6,
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], {
-              label: t('Serial'),
+              label: t('POIID'),
               size: "small",
               fullWidth: true,
               type: "text",
@@ -4288,7 +4288,7 @@ function Terminals() {
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_13__["default"], {
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_14__["default"], {
                   size: "small",
-                  children: t('Serial')
+                  children: t('POIID')
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_14__["default"], {
                   size: "small",
                   children: t('Url')

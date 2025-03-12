@@ -121,8 +121,8 @@ export default function TimeLinePlan(props) {
       let tempLineTo = lineTo;
       let orders = response.data.map(item => {
         if(item.status === 'waiting' || item.is_take_away) return false
-        item.from = Moment.utc(item.reservation_time)
-        item.to = Moment.utc(item.reservation_time).add(item.length, 'minutes')
+        item.from = Moment(Moment.utc(item.reservation_time).format('YYYY-MM-DD HH:mm:ss'))
+        item.to = Moment(Moment.utc(item.reservation_time).format('YYYY-MM-DD HH:mm:ss')).add(item.length, 'minutes')
         if(tempLineFrom.isAfter(item.from)) tempLineFrom = item.from.clone()
         if(tempLineTo.isBefore(item.to)) tempLineTo = item.to.clone().add(1,'hours')
         return item
@@ -140,8 +140,8 @@ export default function TimeLinePlan(props) {
             tip: tableTip(item),
             canMove: false,
             canResize: false,
-            start_time: Moment(item.from.format('YYYY-MM-DD HH:mm:ss')),
-            end_time: Moment(item.to.format('YYYY-MM-DD HH:mm:ss'))
+            start_time: item.from.valueOf(),
+            end_time: item.to.valueOf()
           })
         })
       })

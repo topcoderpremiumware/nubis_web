@@ -55,7 +55,7 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
         if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
           console.log('CustomerReceipt print')
           let c_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
-          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 9000)
+          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 0)
         }
       })
     }
@@ -65,7 +65,7 @@ window.terminalAnswer = (method, checkId, terminal, userId, data) => {
         if(paymentReceipt['@attributes']?.DocumentQualifier === 'CustomerReceipt'){
           console.log('CustomerReceipt print')
           let c_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'],'base64').toString());
-          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 9000)
+          requestPrint(c_receipt_text?.Cardholder?.Optional?.ReceiptString, terminal, userId, 0)
         }
       })
     }
@@ -88,7 +88,7 @@ async function paymentLogic(method, checkId, terminal, userId, data) {
         let merchant_receipt_text = JSON.parse(Buffer.from(paymentReceipt.OutputContent?.OutputText?.['#text'], 'base64').toString());
         if (merchant_receipt_text?.Merchant?.Mandatory?.Payment?.SignatureBlock) {
           console.log('CashierReceipt print')
-          await requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId, 3000)
+          await requestPrint(merchant_receipt_text?.Merchant?.Optional?.ReceiptString, terminal, userId, 0)
           eventBus.dispatch("receiptNeedSignature")
         }
       }

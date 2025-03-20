@@ -38,7 +38,7 @@ const Navbar = () => {
     <ul className="navbar-nav w-100">
       <li className="nav-item ms-lg-auto">
         {localStorage.getItem('token') ?
-          <Link className='nav-link' to="/VideoGuides">{t('Nubis Academy')}</Link>
+          <Link className='nav-link' to="/VideoGuides">{t('Table Booking POS Academy')}</Link>
           : null
         }
       </li>

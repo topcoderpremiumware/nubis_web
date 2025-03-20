@@ -174,7 +174,7 @@ export default function CustomBookingLength() {
           size="sm"
           type="button"
           onClick={() => navigate('/VideoGuides')}
-        >{t('See Nubis Academy')}</Button>
+        >{t('See Table Booking POS Academy')}</Button>
       </Stack>
       <div className="container-fluid">
         <div className="row">

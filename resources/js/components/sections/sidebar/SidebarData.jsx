@@ -233,7 +233,7 @@ export const SidebarData = (data) => { return [
     subNav: [
       {
         title: 'Pricing',
-        path: '/pricing'
+        path: '/pricing-new'
       },
       {
         title: 'Billing Report',

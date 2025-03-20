@@ -67,7 +67,8 @@ class BillingController extends Controller
                 'place_id' => $place->id,
                 'duration' => $duration,
                 'name' => $product->name,
-                'tax_number' => $place->tax_number
+                'tax_number' => $place->tax_number,
+                'category' => $request->category
             ],
             'automatic_tax' => [
                 'enabled' => true
@@ -245,6 +246,7 @@ class BillingController extends Controller
             $stripe = new StripeClient(env('STRIPE_SECRET'));
             $object = $event->data->object;
             $customer_id = $object->customer;
+            $subscription_id = $object->lines->data[0]->subscription;
             $place_id = false;
 
 //            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
@@ -255,23 +257,26 @@ class BillingController extends Controller
                     $duration = $metadata->duration;
                     $product_name = $metadata->name;
                     $tax_number = $metadata->tax_number;
+                    $category = $metadata->category;
                     $place_id = $metadata->place_id;
 
-                    $stripe->customers->update($customer_id, [
+                    $stripe->subscriptions->update($subscription_id, [
                         'metadata' => [
                             'place_id' => $place_id,
                             'duration' => $duration,
                             'product_name' => $product_name,
-                            'tax_number' => $tax_number
+                            'tax_number' => $tax_number,
+                            'category' => $category
                         ]
                     ]);
                 }
             }else{
-                $customer = $stripe->customers->retrieve($customer_id);
-                if(array_key_exists('place_id',$customer->metadata->toArray())) {
-                    $place_id = $customer->metadata->place_id;
-                    $duration = $customer->metadata->duration;
-                    $product_name = $customer->metadata->product_name;
+                $subscriptions = $stripe->subscriptions->retrieve($subscription_id);
+                if(array_key_exists('place_id',$subscriptions->metadata->toArray())) {
+                    $place_id = $subscriptions->metadata->place_id;
+                    $duration = $subscriptions->metadata->duration;
+                    $product_name = $subscriptions->metadata->product_name;
+                    $category = $subscriptions->metadata->category ?? 'full';
                 }
             }
             if($place_id){
@@ -284,7 +289,8 @@ class BillingController extends Controller
                     'duration' => $duration,
                     'expired_at' => \Carbon\Carbon::now()->addMonths($duration),
                     'payment_intent_id' => $object->id,
-                    'receipt_url' => $object->invoice_pdf
+                    'receipt_url' => $object->invoice_pdf,
+                    'category' => $category
                 ]);
             }
         }

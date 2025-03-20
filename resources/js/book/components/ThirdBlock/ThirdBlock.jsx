@@ -39,12 +39,12 @@ function ThirdBlock(props) {
           </button>
 
           <div className="second-info">
-            {t('By creating a Nubis profile I accept the')}{" "}
+            {t('By creating a Table Booking POS profile I accept the')}{" "}
             <a className="no-border" href="/#">
               {t('general terms')}
             </a>
             . <Trans>I <br />
-            further accept that Nubis can collect and process <br />
+            further accept that Table Booking POS can collect and process <br />
             personal information bases on our</Trans>{" "}
             <a className="no-border" href="/terms">
               {t('privacy policy.')}

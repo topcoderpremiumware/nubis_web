@@ -134,12 +134,12 @@ export default function TablePlanSetup() {
     <div className='pages__container'>
       <Stack spacing={10} mb={2} direction="row" alignItems="center">
         <h2>{t('Table Plan Setup')} - {selectedName}</h2>
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           size="sm"
           type="button"
           onClick={() => navigate('/VideoGuides')}
-        >{t('See Nubis Academy')}</Button>
+        >{t('See Table Booking POS Academy')}</Button>
       </Stack>
       <div className="container-fluid">
         <Stack spacing={2} sx={{mb:2}} direction="row">

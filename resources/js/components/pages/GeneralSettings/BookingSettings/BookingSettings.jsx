@@ -144,7 +144,7 @@ export default function BookingSettings() {
           size="sm"
           type="button"
           onClick={() => navigate('/VideoGuides')}
-        >{t('See Nubis Academy')}</Button>
+        >{t('See Table Booking POS Academy')}</Button>
       </Stack>
       <ListSubheader className="my-3" component="div">{t('Online booking picture')}</ListSubheader>
       <div className="row">

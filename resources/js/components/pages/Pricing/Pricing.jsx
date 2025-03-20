@@ -229,7 +229,7 @@ const Pricing = () => {
           >{t('Pay trial (for superadmin only)')}</button>}
           </div>}
         <p
-          className="price-text">{t('Tied into another solution? If you have a notice period on your current booking system, you will receive Table Booking POS for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system for free using our Nubis Academy videos or let us set it up for you for')} € 149</p>
+          className="price-text">{t('Tied into another solution? If you have a notice period on your current booking system, you will receive Table Booking POS for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system for free using our Table Booking POS Academy videos or let us set it up for you for')} € 149</p>
       <div style={{marginTop: '15px', display: 'flex', justifyContent: 'center'}}>
         <button
           type="button"

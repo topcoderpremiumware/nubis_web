@@ -177,7 +177,7 @@ export default function PaymentMethodPopup(props){
                   })}
                 </Select>
               </FormControl> : null}
-            {selectedTerminal ? <TerminalPaymentForm
+            {selectedTerminal.id ? <TerminalPaymentForm
               selectedTerminal={selectedTerminal}
               check_id={props.check.id}
               amount={data.payment_method === 'card' ? props.check.total : data.card_amount}

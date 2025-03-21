@@ -218,7 +218,7 @@ class GiftcardController extends Controller
         return response()->json();
     }
 
-    public function save($id, Request $request)
+    public function save($giftcard_id, Request $request)
     {
         if(!Auth::user()->tokenCan('admin')) return response()->json([
             'message' => 'Unauthorized.'
@@ -232,7 +232,7 @@ class GiftcardController extends Controller
             'email' => 'required|email',
         ]);
 
-        $giftcard = Giftcard::find($id);
+        $giftcard = Giftcard::find($giftcard_id);
 
         if(!Auth::user()->places->contains($request->place_id) ||
             !Auth::user()->places->contains($giftcard->place_id)){
@@ -262,20 +262,20 @@ class GiftcardController extends Controller
         Log::add($request,'change-giftcard','Changed giftcard #'.$giftcard->id);
 
         if($res){
-            $giftcard = Giftcard::find($id);
+            $giftcard = Giftcard::find($giftcard_id);
             return response()->json($giftcard);
         }else{
             return response()->json(['message' => 'Giftcard not updated'],400);
         }
     }
 
-    public function getId($id, Request $request)
+    public function getId($giftcard_id, Request $request)
     {
         if(!Auth::user()->tokenCan('admin')) return response()->json([
             'message' => 'Unauthorized.'
         ], 401);
 
-        $giftcard = Giftcard::find($id);
+        $giftcard = Giftcard::find($giftcard_id);
 
         if(!Auth::user()->places->contains($giftcard->place_id)){
             return response()->json([
@@ -398,13 +398,13 @@ class GiftcardController extends Controller
         $dompdf->stream('giftcard.pdf', array("Attachment" => false,'compress' => false));
     }
 
-    public function delete($id, Request $request)
+    public function delete($giftcard_id, Request $request)
     {
         if(!Auth::user()->tokenCan('admin')) return response()->json([
             'message' => 'Unauthorized.'
         ], 401);
 
-        $giftcard = Giftcard::find($id);
+        $giftcard = Giftcard::find($giftcard_id);
         $giftcard->delete_comment = $request->delete_comment;
         $giftcard->save();
 

@@ -33,6 +33,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $last_name
  * @property string $email
  * @property string $phone
+ *
+ * @property Place $place
+ * @method static Order find(mixed $order_id)
  */
 class Order extends Model
 {

@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Storage;
  * @property GiftcardMenu $giftcard_menu
  * @property string $url
  * @property string $background_image_url
- * @method Giftcard|null find($id)
+ * @method static Giftcard find(mixed $order_id)
  */
 class Giftcard extends Model
 {

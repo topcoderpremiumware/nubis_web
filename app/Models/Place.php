@@ -141,11 +141,14 @@ class Place extends Model
         return $this->hasMany(PaidMessage::class);
     }
 
-    public function is_bill_paid()
+    public function is_bill_paid($categories = ['full'])
     {
-        $bill = $this->paid_bills()->orderByDesc('expired_at')->first();
-        if(!$bill) return false;
-        return $bill->expired_at > \Carbon\Carbon::now();
+        $bill = $this->paid_bills()
+            ->whereIn('category',array_merge($categories, ['full']))
+            ->orderByDesc('expired_at')
+            ->first();
+
+        return $bill && $bill->expired_at > \Carbon\Carbon::now();
     }
 
     public function admins()

@@ -10,6 +10,7 @@ import eventBus from "../../../../eventBus";
 import axios from "axios";
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import moment from "moment/moment";
+import {isBills} from "../../../../helper";
 
 export default function DayViewTableBookings({ setSelectedOrder }) {
   const {t} = useTranslation();
@@ -61,8 +62,37 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     }
   }, [])
 
-  const columns = [
-    { field: 'id', headerName: t('Booking id'), width: 100 },
+  const columns = () => {
+    let out = []
+    out.push({ field: 'id', headerName: t('Booking id'), width: 100 })
+    if(isBills(['full'])){
+      out.push({ field: 'pos', headerName: t('POS'), width: 100, renderCell: (params) =>
+          <span style={{cursor: "pointer"}} onClick={(e) => openPos(e,params.row)}>{t('POS')}</span>, type: 'actions', })
+    }
+    out.push({ field: 'status', headerName: t('Status'), width: 100 })
+    out.push({ field: 'from', headerName: t('From'), width: 70 })
+    out.push({ field: 'to', headerName: t('To'), width: 70 })
+    out.push({ field: 'table_first_name', headerName: t('First name'), width: 130 })
+    out.push({ field: 'table_last_name', headerName: t('Last name'), width: 130 })
+    out.push({ field: 'seats', headerName: t('Seats'), width: 10 })
+    // out.push({ field: 'take_away', headerName: t('Take away'), width: 100 })
+    out.push({ field: 'drag', headerName: t('Drag'), width: 20, renderCell: (params) => <DragIndicatorIcon style={{cursor: "pointer"}}/>})
+    out.push({ field: 'tables', headerName: t('Tables'), width: 70, editable: true })
+    out.push({ field: 'length', headerName: t('Booking Length'), width: 100 })
+    out.push({ field: 'source', headerName: t('Source'), width: 70 })
+    out.push({ field: 'comment', headerName: t('Note'), width: 200})
+    out.push({ field: 'amount', headerName: t('Amount'), width: 100})
+    out.push({ field: 'code', headerName: t('Code'), width: 100})
+    out.push({ field: 'menu', headerName: t('Menu'), width: 100})
+    out.push({ field: 'order_date', headerName: t('Order date'), width: 140 })
+    out.push({ field: 'area_name', headerName: t('Area'), width: 160 })
+    out.push({ field: 'tableplan_name', headerName: t('Tableplan'), width: 160 })
+    out.push({ field: 'author_name', headerName: t('Admin'), width: 160 })
+    return out
+  }
+
+    [
+    ,
     { field: 'pos', headerName: t('POS'), width: 100, renderCell: (params) =>
         <span style={{cursor: "pointer"}} onClick={(e) => openPos(e,params.row)}>{t('POS')}</span>, type: 'actions', },
     { field: 'status', headerName: t('Status'), width: 100 },
@@ -130,13 +160,13 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
 
         setOrders(orders)
         eventBus.dispatch('loadedOrders',orders)
-        eventBus.dispatch("dayViewOrdersLoaded",{orders: orders, columns: columns, pdfTitle: t('Bookings')});
+        eventBus.dispatch("dayViewOrdersLoaded",{orders: orders, columns: columns(), pdfTitle: t('Bookings')});
         setLoading(false)
       }).catch(error => {
       })
     }else{
       setOrders([])
-      eventBus.dispatch("dayViewOrdersLoaded",{orders: [], columns: columns, pdfTitle: t('Bookings')});
+      eventBus.dispatch("dayViewOrdersLoaded",{orders: [], columns: columns(), pdfTitle: t('Bookings')});
       setLoading(false)
     }
   }
@@ -240,7 +270,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     <div style={{ height: '100%', width: '100%' }}>
       <DataGrid
         rows={orders}
-        columns={columns}
+        columns={columns()}
         pageSize={50}
         rowsPerPageOptions={[50]}
         onRowDoubleClick={doubleClickHandler}

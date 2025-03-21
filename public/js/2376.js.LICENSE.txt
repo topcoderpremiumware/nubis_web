@@ -26,7 +26,3 @@
  * Connects a web client to the QZ Tray software.
  * Enables printing and device communication from javascript.
  */
-
-//! moment.js
-
-//! moment.js locale configuration

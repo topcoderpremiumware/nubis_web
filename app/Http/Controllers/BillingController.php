@@ -7,6 +7,7 @@ use App\Models\Log;
 use App\Models\PaidBill;
 use App\Models\PaidMessage;
 use App\Models\Place;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -32,6 +33,27 @@ class BillingController extends Controller
         $billings = PaidBill::where('place_id',$place_id)
             ->orderBy('payment_date','desc')
             ->get();
+
+        return response()->json($billings);
+    }
+
+    public function getActiveByPlace($place_id,Request $request)
+    {
+        Validator::make([
+            'place_id' => $place_id
+        ],[
+            'place_id' => 'required|exists:places,id'
+        ])->validate();
+
+        if(!Auth::user()->places->contains($place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $billings = PaidBill::where('place_id',$place_id)
+            ->where('expired_at','>',Carbon::now())
+            ->pluck('category');
 
         return response()->json($billings);
     }
@@ -173,7 +195,8 @@ class BillingController extends Controller
             'duration' => $months_duration,
             'expired_at' => \Carbon\Carbon::now()->addMonths($months_duration),
             'payment_intent_id' => '',
-            'receipt_url' => ''
+            'receipt_url' => '',
+            'category' => 'full'
         ]);
 
         return response()->json(['result'=> 'OK']);

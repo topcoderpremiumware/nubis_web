@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
+import {isBills} from "../../../helper";
 
 const BookingLinkGuide = () => {
   const { t } = useTranslation();
@@ -53,7 +54,7 @@ const BookingLinkGuide = () => {
           >{t('Copy to clipboard')}</Button>
         </Box>
       </div>
-      <div className='mt-3'>
+      {isBills(['full','giftcards']) && <div className='mt-3'>
         <h4>{t('Gift cards')}:</h4>
         <Box sx={{display: 'flex', gap: '40px'}}>
           <a href={getGiftCardUrl()} target="_blank">{getGiftCardUrl()}</a>
@@ -63,8 +64,8 @@ const BookingLinkGuide = () => {
             onClick={() => window.navigator.clipboard.writeText(getGiftCardUrl())}
           >{t('Copy to clipboard')}</Button>
         </Box>
-      </div>
-      <div className='mt-3'>
+      </div>}
+      {isBills(['full','booking']) && <><div className='mt-3'>
         <h4>{t('Booking page')}:</h4>
         <Box sx={{display: 'flex', gap: '40px'}}>
           <a href={getBookUrl()} target="_blank">{getBookUrl()}</a>
@@ -85,7 +86,7 @@ const BookingLinkGuide = () => {
             onClick={() => window.navigator.clipboard.writeText(getFeedbacksUrl())}
           >{t('Copy to clipboard')}</Button>
         </Box>
-      </div>
+      </div></>}
     </div>
   )
 }

@@ -55,32 +55,32 @@ Route::post('customers/reset_password',[CustomerController::class, 'reset']);
 
 Route::get('places',[PlaceController::class, 'getAll']);
 
-Route::get('free_dates',[OrderController::class, 'freeDates']);
-Route::get('free_time',[OrderController::class, 'freeTime']);
-Route::get('free_tables',[OrderController::class, 'freeTables']);
-Route::get('work_dates',[OrderController::class, 'workDates']);
-Route::get('work_time',[OrderController::class, 'workTime']);
-Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace']);
-Route::get('places/{place_id}/lengths',[CustomBookingLengthController::class, 'getAllByParams']);
+Route::get('free_dates',[OrderController::class, 'freeDates'])->middleware('bill_paid:booking');
+Route::get('free_time',[OrderController::class, 'freeTime'])->middleware('bill_paid:booking');
+Route::get('free_tables',[OrderController::class, 'freeTables'])->middleware('bill_paid:booking');
+Route::get('work_dates',[OrderController::class, 'workDates'])->middleware('bill_paid:booking');
+Route::get('work_time',[OrderController::class, 'workTime'])->middleware('bill_paid:booking');
+Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace'])->middleware('bill_paid:booking');
+Route::get('places/{place_id}/lengths',[CustomBookingLengthController::class, 'getAllByParams'])->middleware('bill_paid:booking');
 Route::get('places/{place_id}/is_bill_paid',[PlaceController::class, 'isBillPaid']);
 Route::get('places/{place_id}/bill_paid_status',[PlaceController::class, 'getBillPaidStatus']);
 Route::get('places/{place_id}/message_limit',[PlaceController::class, 'getPaidMessages']);
-Route::get('places/{place_id}/alternative',[PlaceController::class, 'getAlternative']);
-Route::get('places/{place_id}/payment_method',[OrderController::class, 'getPlacePaymentMethod']);
-Route::get('places/{place_id}/max_available_seats',[PlaceController::class, 'getMaxAvailableSeats']);
-Route::get('places/{place_id}/online_booking_description',[OrderController::class, 'getPlaceOnlineBookingDescription']);
-Route::get('places/{place_id}/online_booking_title',[OrderController::class, 'getPlaceOnlineBookingTitle']);
+Route::get('places/{place_id}/alternative',[PlaceController::class, 'getAlternative'])->middleware('bill_paid:booking');
+Route::get('places/{place_id}/payment_method',[OrderController::class, 'getPlacePaymentMethod'])->middleware('bill_paid:booking');
+Route::get('places/{place_id}/max_available_seats',[PlaceController::class, 'getMaxAvailableSeats'])->middleware('bill_paid:booking');
+Route::get('places/{place_id}/online_booking_description',[OrderController::class, 'getPlaceOnlineBookingDescription'])->middleware('bill_paid:booking');
+Route::get('places/{place_id}/online_booking_title',[OrderController::class, 'getPlaceOnlineBookingTitle'])->middleware('bill_paid:booking');
 Route::post('places/{place_id}/send_contact',[PlaceController::class, 'sendContact']);
 
 Route::get('files_purpose',[FileController::class, 'getByPurpose']);
 Route::get('files_many_purposes',[FileController::class, 'getManyByPurpose']);
 Route::get('countries',[CountryController::class, 'getAll']);
 
-Route::get('custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByParams']);
+Route::get('custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByParams'])->middleware('bill_paid:booking');
 Route::get('giftcard_menus',[GiftcardMenuController::class, 'getAllByParams']);
 
-Route::post('feedbacks',[FeedbackController::class, 'create']);
-Route::post('feedbacks/is_exist',[FeedbackController::class, 'isFeedbackExist']);
+Route::post('feedbacks',[FeedbackController::class, 'create'])->middleware('bill_paid:booking');
+Route::post('feedbacks/is_exist',[FeedbackController::class, 'isFeedbackExist'])->middleware('bill_paid:booking');
 Route::post('send_admin_contact',[PlaceController::class, 'sendtoAdmin']);
 
 Route::get('settings',[SettingController::class, 'get']);
@@ -89,7 +89,7 @@ Route::get('settings/many',[SettingController::class, 'getMany']);
 Route::delete('cancel_order/{id}',[OrderController::class, 'cancel']);
 
 Route::middleware(['optional_auth:customer_api'])->group(function() {
-    Route::post('make_order',[OrderController::class, 'makeOrder']);
+    Route::post('make_order',[OrderController::class, 'makeOrder'])->middleware('bill_paid:booking');
 });
 
 Route::middleware('auth:customer_api')->group(function(){
@@ -123,16 +123,17 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('places/send_support',[PlaceController::class, 'sendSupport']);
     Route::post('places/{id}',[PlaceController::class, 'save']);
     Route::get('places/{place_id}/menus',[MenuController::class, 'getAllByPlace']);
-    Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace']);
-    Route::get('places/{place_id}/timetables',[TimetableController::class, 'getAllByPlace']);
-    Route::get('places/{place_id}/custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByPlace']);
-    Route::get('places/{place_id}/customers',[PlaceController::class, 'getCustomers']);
+    Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace'])->middleware('bill_paid:booking');
+    Route::get('places/{place_id}/timetables',[TimetableController::class, 'getAllByPlace'])->middleware('bill_paid:booking');
+    Route::get('places/{place_id}/custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByPlace'])->middleware('bill_paid:booking');
+    Route::get('places/{place_id}/customers',[PlaceController::class, 'getCustomers'])->middleware('bill_paid:booking');
     Route::get('places/{place_id}/users',[PlaceController::class, 'getUsers']);
     Route::get('places/{place_id}/is_trial_paid',[PlaceController::class, 'isTrialBillPaid']);
     Route::post('places/{place_id}/pay_trial',[BillingController::class, 'payTrial']);
     Route::get('places/{place_id}/get_last_active_trial',[BillingController::class, 'getLastActiveTrial']);
     Route::delete('billings/{id}',[BillingController::class, 'delete']);
     Route::get('places/{place_id}/billings',[BillingController::class, 'getAllByPlace']);
+    Route::get('places/{place_id}/active_billings',[BillingController::class, 'getActiveByPlace']);
     Route::post('places/{place_id}/pay_messages_trial',[PaidMessageController::class, 'payTrial']);
     Route::get('places/{place_id}/paid_messages',[PaidMessageController::class, 'getAllByPlace']);
     Route::delete('places/{id}',[PlaceController::class, 'delete']);
@@ -142,23 +143,23 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('roles',[RoleController::class, 'create']);
     Route::get('roles',[RoleController::class, 'getAll']);
 
-    Route::post('tableplans',[TableplanController::class, 'create']);
+    Route::post('tableplans',[TableplanController::class, 'create'])->middleware('bill_paid:booking');
     Route::get('tableplans/{id}',[TableplanController::class, 'getId']);
     Route::post('tableplans/{id}',[TableplanController::class, 'save']);
     Route::delete('tableplans/{id}',[TableplanController::class, 'delete']);
 
-    Route::post('areas',[AreaController::class, 'create']);
+    Route::post('areas',[AreaController::class, 'create'])->middleware('bill_paid:booking');
     Route::get('areas/{id}',[AreaController::class, 'getId']);
     Route::post('areas/{id}',[AreaController::class, 'save']);
     Route::get('areas/{area_id}/working',[TimetableController::class, 'getWorkingByAreaAndDate']);
     Route::delete('areas/{id}',[AreaController::class, 'delete']);
 
-    Route::post('timetables',[TimetableController::class, 'create']);
+    Route::post('timetables',[TimetableController::class, 'create'])->middleware('bill_paid:booking');
     Route::get('timetables/{id}',[TimetableController::class, 'getId']);
     Route::post('timetables/{id}',[TimetableController::class, 'save']);
     Route::delete('timetables/{id}',[TimetableController::class, 'delete']);
 
-    Route::post('orders',[OrderController::class, 'create']);
+    Route::post('orders',[OrderController::class, 'create'])->middleware('bill_paid:booking');
     Route::get('orders/{id}',[OrderController::class, 'getId']);
     Route::post('orders/{id}',[OrderController::class, 'save']);
     Route::get('orders',[OrderController::class, 'getAllByParams']);
@@ -185,11 +186,11 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('message_tempates_test_sms',[MessageTemplateController::class, 'sendTestSms']);
     Route::post('message_tempates_test_email',[MessageTemplateController::class, 'sendTestEmail']);
 
-    Route::get('giftcards/{id}',[GiftcardController::class, 'getId']);
-    Route::post('giftcards/{id}',[GiftcardController::class, 'save']);
-    Route::delete('giftcards/{id}',[GiftcardController::class, 'delete']);
-    Route::get('giftcards',[GiftcardController::class, 'getAllByPlace']);
-    Route::post('giftcards_admin',[GiftcardController::class, 'createAdmin']);
+    Route::get('giftcards/{giftcard_id}',[GiftcardController::class, 'getId'])->middleware('bill_paid:giftcards');
+    Route::post('giftcards/{giftcard_id}',[GiftcardController::class, 'save'])->middleware('bill_paid:giftcards');
+    Route::delete('giftcards/{giftcard_id}',[GiftcardController::class, 'delete'])->middleware('bill_paid:giftcards');
+    Route::get('giftcards',[GiftcardController::class, 'getAllByPlace'])->middleware('bill_paid:giftcards');
+    Route::post('giftcards_admin',[GiftcardController::class, 'createAdmin'])->middleware('bill_paid:giftcards');
 
     Route::post('coupons',[CouponController::class, 'create']);
     Route::get('coupons/{id}',[CouponController::class, 'getId']);
@@ -209,7 +210,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('files_find',[FileController::class, 'findByPurpose']);
     Route::delete('files/{id}',[FileController::class, 'delete']);
 
-    Route::post('custom_booking_lengths',[CustomBookingLengthController::class, 'create']);
+    Route::post('custom_booking_lengths',[CustomBookingLengthController::class, 'create'])->middleware('bill_paid:booking');
     Route::get('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'getId']);
     Route::post('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'save']);
     Route::delete('custom_booking_lengths/{id}',[CustomBookingLengthController::class, 'delete']);
@@ -225,15 +226,15 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('get_bulk_count',[MessageTemplateController::class, 'getBulkCount']);
     Route::post('send_bulk_sms',[MessageTemplateController::class, 'sendBulkSms']);
 
-    Route::post('stop_booking',[TimetableController::class, 'stop_booking']);
-    Route::post('unblock_booking',[TimetableController::class, 'unblock_booking']);
-    Route::get('is_booking_stopped',[TimetableController::class, 'is_booking_stopped']);
+    Route::post('stop_booking',[TimetableController::class, 'stop_booking'])->middleware('bill_paid:booking');
+    Route::post('unblock_booking',[TimetableController::class, 'unblock_booking'])->middleware('bill_paid:booking');
+    Route::get('is_booking_stopped',[TimetableController::class, 'is_booking_stopped'])->middleware('bill_paid:booking');
 
-    Route::post('customers/{id}/black_list',[CustomerController::class, 'addBlackList']);
-    Route::delete('customers/{id}/black_list',[CustomerController::class, 'removeBlackList']);
+    Route::post('customers/{id}/black_list',[CustomerController::class, 'addBlackList'])->middleware('bill_paid:booking');
+    Route::delete('customers/{id}/black_list',[CustomerController::class, 'removeBlackList'])->middleware('bill_paid:booking');
 
-    Route::post('giftcard_menus',[GiftcardMenuController::class, 'create']);
-    Route::post('giftcard_menus/{id}',[GiftcardMenuController::class, 'save']);
+    Route::post('giftcard_menus',[GiftcardMenuController::class, 'create'])->middleware('bill_paid:giftcards');
+    Route::post('giftcard_menus/{id}',[GiftcardMenuController::class, 'save'])->middleware('bill_paid:giftcards');
     Route::get('giftcard_menus/{id}',[GiftcardMenuController::class, 'getId']);
     Route::get('places/{place_id}/giftcard_menus',[GiftcardMenuController::class, 'getAllByPlace']);
     Route::delete('giftcard_menus/{id}',[GiftcardMenuController::class, 'delete']);
@@ -244,15 +245,15 @@ Route::middleware('auth:user_api')->group(function(){
     Route::get('places/{place_id}/product_categories',[ProductCategoryController::class, 'getAllByPlace']);
     Route::post('product_categories/set_position',[ProductCategoryController::class, 'setPosition']);
 
-    Route::post('products',[ProductController::class, 'create']);
-    Route::post('products/{id}',[ProductController::class, 'save']);
+    Route::post('products',[ProductController::class, 'create'])->middleware('bill_paid:pos,pos_terminal');
+    Route::post('products/{id}',[ProductController::class, 'save'])->middleware('bill_paid:pos,pos_terminal');
     Route::delete('products/{id}',[ProductController::class, 'delete']);
-    Route::get('places/{place_id}/products',[ProductController::class, 'getAllByPlace']);
+    Route::get('places/{place_id}/products',[ProductController::class, 'getAllByPlace'])->middleware('bill_paid:pos,pos_terminal');
     Route::post('product_categories/{id}/products/set_position',[ProductController::class, 'setPosition']);
 
-    Route::get('orders/{order_id}/checks',[CheckController::class, 'getAllByOrder']);
-    Route::post('checks',[CheckController::class, 'create']);
-    Route::post('checks/{id}',[CheckController::class, 'save']);
+    Route::get('orders/{order_id}/checks',[CheckController::class, 'getAllByOrder'])->middleware('bill_paid:pos,pos_terminal');
+    Route::post('checks',[CheckController::class, 'create'])->middleware('bill_paid:pos,pos_terminal');
+    Route::post('checks/{id}',[CheckController::class, 'save'])->middleware('bill_paid:pos,pos_terminal');
     Route::post('checks/{id}/refund',[CheckController::class, 'refund']);
     Route::post('checks/{id}/print',[CheckController::class, 'print']);
     Route::post('checks/{id}/proforma',[CheckController::class, 'createProforma']);
@@ -261,19 +262,19 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('checks/{data}/print_template',[CheckController::class, 'printTemplate']);
     Route::delete('checks/{id}',[CheckController::class, 'delete']);
 
-    Route::get('receipts',[CheckController::class, 'getAllReceipts']);
+    Route::get('receipts',[CheckController::class, 'getAllReceipts'])->middleware('bill_paid:pos,pos_terminal');
     Route::get('receipts/{id}',[CheckController::class, 'getReceipt'])->where('id', '[0-9]+');
-    Route::get('receipts/export_csv',[CheckController::class, 'exportCSV']);
-    Route::get('receipts/export_pdf',[CheckController::class, 'exportPDF']);
-    Route::get('receipts_report', [CheckController::class, 'getReceiptsReport']);
-    Route::get('receipts_category_report', [CheckController::class, 'getReceiptsCategoryReport']);
+    Route::get('receipts/export_csv',[CheckController::class, 'exportCSV'])->middleware('bill_paid:pos,pos_terminal');
+    Route::get('receipts/export_pdf',[CheckController::class, 'exportPDF'])->middleware('bill_paid:pos,pos_terminal');
+    Route::get('receipts_report', [CheckController::class, 'getReceiptsReport'])->middleware('bill_paid:pos,pos_terminal');
+    Route::get('receipts_category_report', [CheckController::class, 'getReceiptsCategoryReport'])->middleware('bill_paid:pos,pos_terminal');
 
     Route::get('has_key', [SettingController::class, 'hasKey']);
     Route::post('save_key',[SettingController::class, 'saveKey']);
 
-    Route::get('places/{place_id}/terminals',[TerminalController::class, 'getAllByPlace']);
-    Route::post('terminals',[TerminalController::class, 'create']);
-    Route::post('terminals/{id}',[TerminalController::class, 'save']);
+    Route::get('places/{place_id}/terminals',[TerminalController::class, 'getAllByPlace'])->middleware('bill_paid:pos_terminal');
+    Route::post('terminals',[TerminalController::class, 'create'])->middleware('bill_paid:pos_terminal');
+    Route::post('terminals/{id}',[TerminalController::class, 'save'])->middleware('bill_paid:pos_terminal');
     Route::delete('terminals/{id}',[TerminalController::class, 'delete']);
     Route::post('terminals/{id}/pay',[TerminalController::class, 'sendPayment']);
     Route::post('terminals/{id}/revert',[TerminalController::class, 'sendRevert']);
@@ -283,18 +284,18 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('websocket/from_client',[TerminalController::class, 'sendFromClient']);
 
 
-    Route::get('customers/all',[CustomerController::class, 'allCustomers']);
+    Route::get('customers/all',[CustomerController::class, 'allCustomers'])->middleware('bill_paid:booking');
 });
 
-Route::post('giftcards',[GiftcardController::class, 'create']);
-Route::get('giftcards_check',[GiftcardController::class, 'getByCode']);
+Route::post('giftcards',[GiftcardController::class, 'create'])->middleware('bill_paid:giftcards');
+Route::get('giftcards_check',[GiftcardController::class, 'getByCode'])->middleware('bill_paid:giftcards');
 Route::post('giftcards_spend',[GiftcardController::class, 'spend']);
-Route::post('giftcard_pdf_preview',[GiftcardController::class, 'pdfPreview']);
+Route::post('giftcard_pdf_preview',[GiftcardController::class, 'pdfPreview'])->middleware('bill_paid:giftcards');
 
 Route::get('places/{id}',[PlaceController::class, 'getId']);
-Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic']);
+Route::get('feedbacks_public',[FeedbackController::class, 'getAllPublic'])->middleware('bill_paid:booking');
 
 Route::post('billing/webhook',[BillingController::class, 'webhook']);
-Route::post('places/{place_id}/webhook',[OrderWebhookController::class, 'webhook']);
+Route::post('places/{place_id}/webhook',[OrderWebhookController::class, 'webhook'])->middleware('bill_paid:booking');
 
 Route::get('receipts/saft',[CheckController::class, 'generateSaftReport']);

@@ -13,7 +13,7 @@ class VideoGuideController extends Controller
 {
     public function save(Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
+        if(!Auth::user()->is_superadmin) return response()->json([
             'message' => 'Unauthorized.'
         ], 401);
 
@@ -59,7 +59,7 @@ class VideoGuideController extends Controller
 
     public function delete($id, Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
+        if(!Auth::user()->is_superadmin) return response()->json([
             'message' => 'Unauthorized.'
         ], 401);
 

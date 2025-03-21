@@ -42,7 +42,7 @@ class GiftcardMenuController extends Controller
             $content = $file_upload->getContent();
             Storage::disk('public')->put($filename,$content);
         }else{
-            abort(400,'Image is ton set');
+            abort(400,'Image is not set');
         }
 
         $giftcard_menu = GiftcardMenu::create([

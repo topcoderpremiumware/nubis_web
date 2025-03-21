@@ -79,13 +79,22 @@ function App() {
   }
 
   useEffect(() => {
-    eventBus.on('toggleSidebar', () => {
-      setSidebarIsVisible(prev => !prev)
-    })
     getRole()
-    eventBus.on("placeChanged",  () => {
+    getBills()
+    function toggleSidebar(){
+      setSidebarIsVisible(prev => !prev)
+    }
+    function placeChanged(){
       getRole()
-    })
+      getBills()
+    }
+    eventBus.on('toggleSidebar', toggleSidebar)
+    eventBus.on("placeChanged",  placeChanged)
+
+    return () => {
+      eventBus.remove('toggleSidebar', toggleSidebar)
+      eventBus.remove("placeChanged",  placeChanged)
+    }
   }, [])
 
   const getRole = () => {
@@ -105,6 +114,19 @@ function App() {
       eventBus.dispatch('roleChanged')
     }).catch(error => {
       console.log('role error',error.response)
+    })
+  }
+
+  const getBills = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/active_billings`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      window.bills = response.data
+      eventBus.dispatch('roleChanged')
+    }).catch(error => {
+      console.log('bills error',error.response)
     })
   }
 

@@ -112,3 +112,7 @@ export const round = (value) => {
 export const currency_format = (number) => {
   return (number).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
 }
+
+export const isBills = (bills, data = window) => {
+  return data.bills && bills.some(b => data.bills.includes(b))
+}

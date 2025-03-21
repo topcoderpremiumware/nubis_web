@@ -3,6 +3,7 @@ import { FeaturedPlayListOutlined, SettingsOutlined, CalendarMonthOutlined, Emai
 import { TiMessages} from 'react-icons/ti';
 import { BsCreditCard } from 'react-icons/bs';
 import { MdOutlineContactSupport } from "react-icons/md";
+import {isBills} from "../../../helper";
 
 export const SidebarData = (data) => { return [
   {
@@ -18,32 +19,39 @@ export const SidebarData = (data) => { return [
       {
         title: 'Table Plan Setup',
         path: '/TablePlanSetup',
+        show: isBills(['full','booking']),
       },
       {
         title: 'Booking Settings',
         path: '/BookingSettings',
+        show: isBills(['full','booking']),
       },
       {
         title: 'Areas',
         path: '/Areas',
+        show: isBills(['full','booking']),
       },
       {
         title: 'Opening Times',
         path: '/OpeningTimes',
+        show: isBills(['full','booking']),
       },
       {
         title: 'Menus setup',
-        path: '/CustomBookingLength'
+        path: '/CustomBookingLength',
+        show: isBills(['full','booking']),
       },
       {
         title: 'Notification Settings',
         path: '/NotificationsSettings',
-        cName: 'sub-nav'
+        cName: 'sub-nav',
+        show: isBills(['full','booking','pos','pos_terminal']),
       },
       {
         title: 'Roles',
         path: '/Roles',
-        cName: 'sub-nav'
+        cName: 'sub-nav',
+        show: isBills(['full','booking','pos','pos_terminal']),
       },
     ]
   },
@@ -51,6 +59,7 @@ export const SidebarData = (data) => { return [
     title: 'Daily Use',
     path: '#',
     icon: <FeaturedPlayListOutlined  className='dailyuse-icon'/>,
+    show: isBills(['full','booking']),
     subNav: [
       {
         title: 'Day View',
@@ -76,7 +85,7 @@ export const SidebarData = (data) => { return [
     title: 'Guest Payment',
     path: '#',
     icon: <BsCreditCard />,
-    show: ['admin','manager'].includes(data.role),
+    show: ['admin','manager'].includes(data.role) && isBills(['full','booking']),
     subNav: [
       {
         title: 'Payment Gateaway',
@@ -96,7 +105,7 @@ export const SidebarData = (data) => { return [
     title: 'Online Booking',
     path: '#',
     icon: <CalendarMonthOutlined />,
-    show: ['admin','manager'].includes(data.role),
+    show: ['admin','manager'].includes(data.role) && isBills(['full','booking','giftcards']),
     subNav: [
       {
         title: 'Booking Link Guide',
@@ -108,7 +117,7 @@ export const SidebarData = (data) => { return [
     title: 'Gift card Settings',
     path: '#',
     icon: <Redeem />,
-    show: ['admin','manager'].includes(data.role),
+    show: ['admin','manager'].includes(data.role) && isBills(['full','giftcards']),
     subNav: [
       {
         title: 'General Settings',
@@ -129,7 +138,7 @@ export const SidebarData = (data) => { return [
     title: 'SMS Templates',
     path: '#',
     icon: <TiMessages/>,
-    show: ['admin','manager'].includes(data.role),
+    show: ['admin','manager'].includes(data.role) && isBills(['full','booking']),
     subNav: [
       {
         title: 'Confirmation',
@@ -165,7 +174,7 @@ export const SidebarData = (data) => { return [
     title: 'Email Templates',
     path: '#',
     icon: <EmailOutlined/>,
-    show: ['admin','manager'].includes(data.role),
+    show: ['admin','manager'].includes(data.role) && isBills(['full','booking']),
     subNav: [
       {
         title: 'Confirmation',
@@ -201,7 +210,7 @@ export const SidebarData = (data) => { return [
     title: 'POS',
     path: '#',
     icon: <PointOfSale />,
-    show: ['admin','manager'].includes(data.role),
+    show: ['admin','manager'].includes(data.role) && isBills(['full','pos','pos_terminal']),
     subNav: [
       {
         title: 'Receipts',
@@ -222,6 +231,7 @@ export const SidebarData = (data) => { return [
       {
         title: 'Terminal Settings',
         path: '/TerminalSettings',
+        show: isBills(['full','pos_terminal']),
       }
     ]
   },

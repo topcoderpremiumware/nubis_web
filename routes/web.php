@@ -33,11 +33,11 @@ Route::get('/change_lang/{locale}', function ($locale = null) {
     session()->put('locale', $locale);
     return redirect()->back();
 });
-Route::view('/giftcard/{place_id}', 'new_giftcard')->name('giftcard');
-Route::view('/feedback/{order_id}', 'feedback')->name('feedback');
-Route::view('/feedbacks/{place_id}', 'feedbacks')->name('feedbacks');
+Route::view('/giftcard/{place_id}', 'new_giftcard')->name('giftcard')->middleware('bill_paid:giftcards');
+Route::view('/feedback/{order_id}', 'feedback')->name('feedback')->middleware('bill_paid:booking');
+Route::view('/feedbacks/{place_id}', 'feedbacks')->name('feedbacks')->middleware('bill_paid:booking');
 Route::view('/terms', 'terms')->name('terms');
-Route::view('/book/{place_id}', 'book')->name('book')->middleware('bill_paid');
+Route::view('/book/{place_id}', 'book')->name('book')->middleware('bill_paid:booking');
 Route::view('/', 'home')->name('home');
 Route::view('/pricing', 'pricing')->name('pricing');
 Route::view('/features', 'features')->name('features');

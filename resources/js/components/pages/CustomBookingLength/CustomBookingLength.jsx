@@ -33,10 +33,15 @@ export default function CustomBookingLength() {
   useEffect(async () => {
     await getAreas()
     await getCustomBookingLength()
-    eventBus.on("placeChanged", async () => {
-      await getAreas()
-      await getCustomBookingLength()
-    })
+    function placeChanged(){
+      getAreas().then(()=>{
+        getCustomBookingLength()
+      })
+    }
+    eventBus.on("placeChanged", placeChanged)
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const getCustomBookingLength = async () => {

@@ -50,9 +50,13 @@ function SecondBlock(props) {
       getExtraTime(selectedDay)
       getNonWorkingDayReason()
       getAlternativeRestaurants()
-      eventBus.on("langChanged", () => {
+      function langChanged(){
         getExtraTime(selectedDay)
-      })
+      }
+      eventBus.on("langChanged", langChanged)
+    }
+    return () =>{
+      eventBus.remove("langChanged", langChanged)
     }
   }, [props.blockType]);
 

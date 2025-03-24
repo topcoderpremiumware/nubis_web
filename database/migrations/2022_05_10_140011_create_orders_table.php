@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('place_id')->constrained()->onDelete('cascade');
-            $table->foreignId('tableplan_id')->constrained()->onDelete('cascade');
-            $table->foreignId('area_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tableplan_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('area_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('table_ids')->default('[]');
-            $table->unsignedTinyInteger('seats');
+            $table->unsignedTinyInteger('seats')->nullable();
             $table->timestamp('reservation_time')->nullable();
             $table->text('comment');
             $table->string('status');

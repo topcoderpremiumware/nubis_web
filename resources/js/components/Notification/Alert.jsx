@@ -9,7 +9,7 @@ export default function Alert() {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
-    eventBus.on("notification", (data) => {
+    function notification(data){
       let temp = errors
       temp.push(data)
       setErrors([...temp])
@@ -17,7 +17,11 @@ export default function Alert() {
       setTimeout(()=>{
         removeMessage(temp.length-1)
       },3000)
-    });
+    }
+    eventBus.on("notification", notification);
+    return () => {
+      eventBus.remove("notification", notification);
+    }
   },[])
 
 

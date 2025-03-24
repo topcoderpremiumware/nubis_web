@@ -213,6 +213,11 @@ export const SidebarData = (data) => { return [
     show: ['admin','manager'].includes(data.role) && isBills(['full','pos','pos_terminal']),
     subNav: [
       {
+        title: 'POS',
+        path: '/POS',
+        show: !data.is_superadmin && isBills(['pos','pos_terminal']) && !isBills(['booking','full']),
+      },
+      {
         title: 'Receipts',
         path: '/Receipts',
       },

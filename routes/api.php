@@ -160,14 +160,15 @@ Route::middleware('auth:user_api')->group(function(){
     Route::delete('timetables/{id}',[TimetableController::class, 'delete']);
 
     Route::post('orders',[OrderController::class, 'create'])->middleware('bill_paid:booking');
-    Route::get('orders/{id}',[OrderController::class, 'getId']);
-    Route::post('orders/{id}',[OrderController::class, 'save']);
+    Route::get('orders/{id}',[OrderController::class, 'getId'])->where('id', '[0-9]+');
+    Route::post('orders/{id}',[OrderController::class, 'save'])->where('id', '[0-9]+');
     Route::get('orders',[OrderController::class, 'getAllByParams']);
-    Route::delete('orders/{id}',[OrderController::class, 'delete']);
-    Route::post('orders/{id}/restore',[OrderController::class, 'restore']);
-    Route::post('orders/{id}/status',[OrderController::class, 'setStatus']);
+    Route::delete('orders/{id}',[OrderController::class, 'delete'])->where('id', '[0-9]+');
+    Route::post('orders/{id}/restore',[OrderController::class, 'restore'])->where('id', '[0-9]+');
+    Route::post('orders/{id}/status',[OrderController::class, 'setStatus'])->where('id', '[0-9]+');
     Route::post('orders_switch_tables',[OrderController::class, 'switchTables']);
-    Route::get('orders/{id}/neighbors',[OrderController::class, 'neighbors']);
+    Route::get('orders/{id}/neighbors',[OrderController::class, 'neighbors'])->where('id', '[0-9]+');
+    Route::post('pos_orders/',[OrderController::class, 'pos_create'])->middleware('bill_paid:pos,pos_terminal');
 
     Route::post('dishes',[DishController::class, 'create']);
     Route::get('dishes/{id}',[DishController::class, 'getId']);

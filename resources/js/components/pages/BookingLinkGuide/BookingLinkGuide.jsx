@@ -33,9 +33,13 @@ const BookingLinkGuide = () => {
 
   useEffect(() => {
     getPlace()
-    eventBus.on("placeChanged",  () => {
+    function placeChanged(){
       getPlace()
-    })
+    }
+    eventBus.on("placeChanged",  placeChanged)
+    return () => {
+      eventBus.remove("placeChanged",  placeChanged)
+    }
   }, [])
 
   return (

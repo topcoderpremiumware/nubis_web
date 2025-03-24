@@ -7,7 +7,7 @@ import {
   CircularProgress,
   IconButton, Menu, MenuItem,
   Stack,
-  TextField,
+  TextField, Tooltip,
 } from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -18,7 +18,7 @@ import axios from "axios";
 import eventBus from "../../../../eventBus";
 import Box from "@mui/material/Box";
 import NumberButtons from "../../../components/NumberButtons";
-import {simpleCatchError} from "../../../../helper";
+import {isBills, simpleCatchError} from "../../../../helper";
 import DiscountPopup from "./DiscountPopup";
 import SplitCheckPopup from "./SplitCheckPopup";
 import CheckTable from "./CheckTable";
@@ -30,6 +30,7 @@ import PrintProductsPopup from "./PrintProductsPopup";
 import {qzTrayPrint} from "../../../../qzTray";
 import {localPrint} from "../../../../localPrint";
 const printFunction = (window.ipcRenderer || window.ReactNativeWebView) ? localPrint : qzTrayPrint;
+import AddIcon from '@mui/icons-material/Add';
 
 export default function PosCart(props){
   const {t} = useTranslation();
@@ -373,10 +374,15 @@ export default function PosCart(props){
   return (<>
     <Stack spacing={2} mb={2} direction="row" alignItems="center">
       <h5>{t('Shopping cart')}</h5>
-      <ChangeOrder orderId={props.orderId} />
+      <Stack direction="row">
+        <ChangeOrder orderId={props.orderId} />
+        {isBills(['pos','pos_terminal']) && <IconButton onClick={e => {eventBus.dispatch('pos_create_order')}}>
+          <Tooltip title={t('New order')}><AddIcon/></Tooltip>
+        </IconButton>}
+      </Stack>
       <span style={{marginLeft: 'auto'}}></span>
       <IconButton onClick={e => {addCart()}}>
-        <AddShoppingCartIcon/>
+        <Tooltip title={t('New cart')}><AddShoppingCartIcon/></Tooltip>
       </IconButton>
     </Stack>
     {loading ? <div><CircularProgress/></div> :

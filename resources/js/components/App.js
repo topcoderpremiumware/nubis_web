@@ -49,6 +49,7 @@ const SignSettings = React.lazy(() => import('./pages/Receipts/SignSettings'))
 const TerminalSettings = React.lazy(() => import('./pages/Receipts/Terminals/Terminals'))
 const QZSettings = React.lazy(() => import('./pages/Receipts/QZSettings'))
 const PricingNew = React.lazy(() => import('./pages/Pricing/PricingNew'))
+const PosPage = React.lazy(() => import('./pages/Receipts/PosPage'))
 
 import eventBus from '../eventBus';
 
@@ -210,6 +211,9 @@ function App() {
                   <BookingLinkGuide/>
                 </Suspense>}/>
 
+                <Route path='/POS' exact element={<Suspense fallback={<LoadingPage/>}>
+                  <PosPage/>
+                </Suspense>}/>
                 <Route path='/Receipts' exact element={<Suspense fallback={<LoadingPage/>}>
                   <Receipts/>
                 </Suspense>}/>

@@ -16,7 +16,14 @@ export default function ChangeOrder(props){
 
   useEffect(() => {
     getOrders()
-},[])
+    function pos_create_order(){
+      getOrders()
+    }
+    eventBus.on("pos_create_order",pos_create_order)
+    return () => {
+      eventBus.remove("pos_create_order",pos_create_order)
+    }
+  },[])
 
   useEffect(() => {
     setOrderId(props.orderId)
@@ -28,7 +35,7 @@ export default function ChangeOrder(props){
     axios.get(`${process.env.MIX_API_URL}/api/orders`, {
       params: {
         place_id: localStorage.getItem('place_id'),
-        area_id: localStorage.getItem('area_id'),
+        area_id: localStorage.getItem('area_id') || 'all',
         reservation_from: date+' '+time.from,
         reservation_to: date+' '+time.to
       },
@@ -48,13 +55,13 @@ export default function ChangeOrder(props){
 
   return (
     <>{orders.length > 0 &&
-        <FormControl size="small">
+        <FormControl size="small" style={{minWidth:"115px"}}>
           <InputLabel id="label_order">{t('Order (tables)')}</InputLabel>
           <Select label={t('Order (tables)')} value={orderId}
                   labelId="label_order" id="order" name="order"
                   onChange={(e) => onChangeOrder(e.target.value)}>
             {orders.map((el, key) => {
-              return <MenuItem key={key} value={el.id}>#{el.id} ({el.table_ids.join(', ')})</MenuItem>
+              return <MenuItem key={key} value={el.id}>#{el.id} {el.table_ids.length > 0 ? `(${el.table_ids.join(', ')})` : null}</MenuItem>
             })}
           </Select>
         </FormControl>

@@ -181,7 +181,7 @@ class PlaceController extends Controller
     public function isBillPaid($place_id, Request $request)
     {
         $place = Place::find($request->place_id);
-        return response()->json($place->is_bill_paid());
+        return response()->json($place->is_bill_paid(['booking','pos','pos_terminal','giftcards']));
     }
 
     public function getPaidMessages($place_id, Request $request)
@@ -344,7 +344,7 @@ class PlaceController extends Controller
 
         Log::add($request,'delete-place','Deleted place #'.$id);
 
-        if($place->is_bill_paid()){
+        if($place->is_bill_paid(['booking','pos','pos_terminal','giftcards'])){
             try{
                 \Illuminate\Support\Facades\Mail::html('The place #'.$id.' '.$place->name.' was deleted by admin. Maybe you need to unsubscribe this place from the Stripe.', function($msg) use ($id) {
                     $msg->to(env('MAIL_FROM_ADDRESS'))->subject('Place was deleted #'.$id);

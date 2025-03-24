@@ -50,7 +50,7 @@ class OrderController extends Controller
         ]);
 
         $place = Place::find($request->place_id);
-        if(!$place->is_bill_paid()) return response()->json([
+        if(!$place->is_bill_paid(['booking'])) return response()->json([
             'message' => 'Your place\'s bill has not been paid'
         ], 401);
 
@@ -906,7 +906,7 @@ class OrderController extends Controller
             'message' => 'Non-working day'
         ], 400);
 
-        if(!$place->is_bill_paid()) return response()->json([
+        if(!$place->is_bill_paid(['booking'])) return response()->json([
             'message' => 'Your place\'s bill has not been paid'
         ], 401);
 
@@ -1566,5 +1566,32 @@ class OrderController extends Controller
             ->get();
 
         return response()->json($orders);
+    }
+
+    public function pos_create(Request $request): JsonResponse
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+        ]);
+
+        $place = Place::find($request->place_id);
+        if(!$place->is_bill_paid(['pos','pos_terminal'])) return response()->json([
+            'message' => 'Your place\'s bill has not been paid'
+        ], 401);
+
+        $order = Order::create([
+            'place_id' => $request->place_id,
+            'comment' => '',
+            'status' => 'completed',
+            'is_take_away' => 0,
+            'source' => 'internal',
+            'marks' => [],
+            'reservation_time' => now(),
+            'length' => 100
+        ]);
+
+        Log::add($request,'create-order','Created order #'.$order->id);
+
+        return response()->json($order);
     }
 }

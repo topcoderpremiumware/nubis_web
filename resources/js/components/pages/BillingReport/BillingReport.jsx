@@ -19,9 +19,13 @@ export default function BillingReport() {
 
   useEffect( () => {
     getData()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getData()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const columns = [

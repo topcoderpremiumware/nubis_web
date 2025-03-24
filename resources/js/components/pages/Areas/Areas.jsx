@@ -30,9 +30,13 @@ export default function Areas() {
 
   useEffect( () => {
     getAreas()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getAreas()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const getAreas = () => {

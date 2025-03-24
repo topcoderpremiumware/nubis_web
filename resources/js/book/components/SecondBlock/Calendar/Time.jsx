@@ -12,9 +12,13 @@ function Time(props) {
   const sliderRef = React.createRef();
 
   useEffect(() => {
-    eventBus.on("changeTimeButton",function({indentif}){
+    function changeTimeButton({indentif}){
       if(indentif !== props.indentif) setActiveButton(null)
-    })
+    }
+    eventBus.on("changeTimeButton",changeTimeButton)
+    return () => {
+      eventBus.remove("changeTimeButton",changeTimeButton)
+    }
   },[])
 
   const buttonRight = () => {

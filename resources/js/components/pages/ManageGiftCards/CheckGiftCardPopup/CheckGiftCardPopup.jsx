@@ -34,13 +34,20 @@ export default function CheckGiftCardPopup({ open, handleClose }) {
 
   useEffect(() => {
     getCurrency()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getCurrency()
-    })
-    eventBus.on('openCheckGiftCardPopup',(data) => {
+    }
+    function openCheckGiftCardPopup(data){
       setCode(data.code)
       setAutoOpen(true)
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+    eventBus.on('openCheckGiftCardPopup',openCheckGiftCardPopup)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+      eventBus.remove('openCheckGiftCardPopup',openCheckGiftCardPopup)
+    }
   },[])
 
   useEffect(() => {

@@ -25,9 +25,14 @@ export default function TablePlanSetup() {
 
   useEffect(() => {
     getTableplans()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getTableplans()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   },[])
 
   const onChange = (e) => {

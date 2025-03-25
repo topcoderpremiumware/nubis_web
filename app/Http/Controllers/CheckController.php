@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\User;
 use App\Services\SafTService;
+use App\SMS\SMS;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Collection;
@@ -159,6 +160,40 @@ class CheckController extends Controller
 
         $html = view('pdfs.check', compact('check'))->render();
         $this->generateCheckPDF($html);
+    }
+
+    public function publicPrint($base64_id, Request $request)
+    {
+        $check = Check::find(base64_decode($base64_id));
+        $html = view('pdfs.check', compact('check'))->render();
+        $this->generateCheckPDF($html);
+    }
+
+    public function send($id, Request $request)
+    {
+        $request->validate([
+            'email' => 'nullable|email',
+            'phone' => 'nullable',
+            'type' => 'required',
+        ]);
+        $check = Check::find($id);
+        $place = $check->place;
+        $message = env('APP_URL').'/receipts/'.base64_decode($id);
+        if($request->type === 'sms' && $place->allow_send_sms()){
+            $place->decrease_sms_limit();
+            $result = SMS::send([$request->phone], $message, env('APP_SHORT_NAME'));
+        }
+        if($request->type === 'email'){
+            $email = $request->email;
+            try{
+                \Illuminate\Support\Facades\Mail::html($message, function ($msg) use ($place, $email) {
+                    $msg->to($email)->subject('Receipt link');
+                    $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
+                });
+            }catch (\Exception $e){}
+        }
+
+        return response()->json(['message' => 'Receipt link sent']);
     }
 
     public function printProducts($id, Request $request)

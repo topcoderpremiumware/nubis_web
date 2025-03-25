@@ -18,7 +18,7 @@ export default function DayViewTableWaiting({ setSelectedOrder }) {
 
   useEffect( () => {
     getOrders()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getOrders()
       Echo.leave(channelName)
       channelName = `place-${localStorage.getItem('place_id')}`
@@ -27,16 +27,20 @@ export default function DayViewTableWaiting({ setSelectedOrder }) {
           console.log('echo order-deleted',data)
           getOrders()
         })
-    });
-    eventBus.on("areaChanged",  () => {
+    }
+    function areaChanged(){
       getOrders()
-    });
-    eventBus.on("timeChanged",  () => {
+    }
+    function timeChanged(){
       getOrders()
-    });
-    eventBus.on("dateChanged",  () => {
+    }
+    function dateChanged(){
       getOrders()
-    });
+    }
+    eventBus.on("placeChanged", placeChanged);
+    eventBus.on("areaChanged",  areaChanged);
+    eventBus.on("timeChanged",  timeChanged);
+    eventBus.on("dateChanged",  dateChanged);
     channelName = `place-${localStorage.getItem('place_id')}`
     Echo.channel(channelName)
       .listen('.order-created', function(data) {
@@ -53,6 +57,10 @@ export default function DayViewTableWaiting({ setSelectedOrder }) {
       })
     return () => {
       Echo.leave(channelName)
+      eventBus.remove("placeChanged", placeChanged);
+      eventBus.remove("areaChanged",  areaChanged);
+      eventBus.remove("timeChanged",  timeChanged);
+      eventBus.remove("dateChanged",  dateChanged);
     }
   }, [])
 

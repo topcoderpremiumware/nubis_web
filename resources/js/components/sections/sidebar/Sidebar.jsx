@@ -13,9 +13,14 @@ const Sidebar = (props) => {
   const [sidebarData, setSidebarData] = useState(false)
 
   useEffect(() => {
-    eventBus.on('roleChanged', () => {
+    function roleChanged(){
       setSidebarData(SidebarData(window))
-    })
+    }
+    eventBus.on('roleChanged', roleChanged)
+
+    return () => {
+      eventBus.remove('roleChanged', roleChanged)
+    }
   }, [])
 
   return (

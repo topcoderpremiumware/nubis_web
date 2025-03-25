@@ -84,9 +84,14 @@ export default function EmailTemplate() {
   const select = useRef()
 
   useEffect(() => {
-    eventBus.on("placeChanged",  () => {
+    function placeChanged(){
       getTemplate()
-    })
+    }
+    eventBus.on("placeChanged",  placeChanged)
+
+    return () =>{
+      eventBus.remove("placeChanged",  placeChanged)
+    }
   },[])
 
   useEffect(() => {

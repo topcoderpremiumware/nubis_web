@@ -41,17 +41,25 @@ export default function Pos(props){
       getProducts()
     }
     init()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       init()
       setSelectedCategory(false)
-    })
-    eventBus.on("updateCategories", (categoryId) => {
+    }
+    function updateCategories(categoryId){
       getCategories(categoryId)
       getAllCategories()
-    })
-    eventBus.on("updateProducts", (categoryId) => {
+    }
+    function updateProducts(categoryId){
       getProducts(categoryId)
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+    eventBus.on("updateCategories", updateCategories)
+    eventBus.on("updateProducts", updateProducts)
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+      eventBus.remove("updateCategories", updateCategories)
+      eventBus.remove("updateProducts", updateProducts)
+    }
   }, [])
 
   useEffect( () => {

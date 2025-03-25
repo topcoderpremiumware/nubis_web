@@ -23,10 +23,14 @@ export default function FindBookingPopUp({setSelectedOrder}) {
     setOpen(false);
   }
 
-  useEffect(async () => {
-    eventBus.on("findBookingOpen",  (data) => {
+  useEffect( () => {
+    function findBookingOpen(data){
       setOpen(true);
-    });
+    }
+    eventBus.on("findBookingOpen",  findBookingOpen);
+    return () => {
+      eventBus.remove("findBookingOpen",  findBookingOpen);
+    }
   }, [])
 
   const getOrder = () => {

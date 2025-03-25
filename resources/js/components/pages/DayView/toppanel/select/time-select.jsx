@@ -12,22 +12,31 @@ export default function TimeSelect() {
   const [times, setTimes] = React.useState([]);
   const [time, setTime] = React.useState('0');
 
-  useEffect(async () => {
-    await getTime()
-    if(localStorage.getItem('time'))
-      setTime(localStorage.getItem('time'))
-
-    eventBus.on("placeChanged", () => {
+  useEffect( () => {
+    getTime().then(() => {
+      if(localStorage.getItem('time'))
+        setTime(localStorage.getItem('time'))
+    })
+    function placeChanged(){
       setTimes([])
       setTime('0')
       localStorage.removeItem('time')
-    });
-    eventBus.on("areaChanged", async () => {
-      await getTime()
-    });
-    eventBus.on("dateChanged", async () => {
-      await getTime()
-    });
+    }
+    function areaChanged(){
+      getTime()
+    }
+    function dateChanged(){
+      getTime()
+    }
+    eventBus.on("placeChanged", placeChanged);
+    eventBus.on("areaChanged", areaChanged);
+    eventBus.on("dateChanged", dateChanged);
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged);
+      eventBus.remove("areaChanged", areaChanged);
+      eventBus.remove("dateChanged", dateChanged);
+    }
   }, [])
 
   useEffect(async () => {

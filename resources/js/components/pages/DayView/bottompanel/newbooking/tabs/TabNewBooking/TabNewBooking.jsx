@@ -48,9 +48,13 @@ export default function TabNewBooking(props) {
     getTableplans()
     getCustomers()
 
-    eventBus.on('customersChanged',() => {
+    function customersChanged(){
       getCustomers()
-    })
+    }
+    eventBus.on('customersChanged',customersChanged)
+    return () => {
+      eventBus.remove('customersChanged',customersChanged)
+    }
   }, [])
 
   useEffect(() => {

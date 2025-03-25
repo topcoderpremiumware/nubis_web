@@ -27,11 +27,16 @@ export default function ExperienceSettings() {
   const [selectedMenu, setSelectedMenu] = useState({})
   const [loading, setLoading] = useState(true)
 
-  useEffect(async () => {
+  useEffect(() => {
     getMenus()
-    eventBus.on("placeChanged", async () => {
+    function placeChanged(){
       getMenus()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const getMenus = async () => {

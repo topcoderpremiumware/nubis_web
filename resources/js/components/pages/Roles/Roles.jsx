@@ -31,9 +31,14 @@ export default function Roles() {
 
   useEffect( () => {
     getUsers()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getUsers()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const getUsers = () => {

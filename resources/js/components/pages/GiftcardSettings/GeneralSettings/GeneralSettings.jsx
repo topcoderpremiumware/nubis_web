@@ -15,9 +15,14 @@ export default function GeneralSettings() {
 
   useEffect(() => {
     getPictures()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getPictures()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   },[])
 
   const onChange = (e) => {

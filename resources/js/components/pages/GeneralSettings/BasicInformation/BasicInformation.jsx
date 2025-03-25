@@ -15,9 +15,14 @@ export default function BasicInformation() {
   useEffect(() => {
     getCountries()
     getPlace()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getPlace()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   },[])
 
   const getPlace = () => {

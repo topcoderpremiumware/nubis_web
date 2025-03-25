@@ -35,11 +35,18 @@ export default function OpeningTimes() {
     await getAreas()
     await getTableplans()
     await getTimetables()
-    eventBus.on("placeChanged", async () => {
-      await getAreas()
-      await getTableplans()
-      await getTimetables()
-    })
+    function placeChanged(){
+      getAreas().then(() => {
+        getTableplans().then(() => {
+          getTimetables()
+        })
+      })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const getTimetables = async () => {

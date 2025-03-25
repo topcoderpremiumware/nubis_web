@@ -46,10 +46,15 @@ const Receipts = () => {
   useEffect(() => {
     getReceipts()
     getPaymentMethod()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getReceipts()
       getPaymentMethod()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   useEffect(() => {

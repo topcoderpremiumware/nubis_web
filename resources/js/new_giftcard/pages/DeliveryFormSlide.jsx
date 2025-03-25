@@ -15,9 +15,14 @@ export default function DeliveryFormSlide(props) {
 
   useEffect(() => {
     getCountries()
-    eventBus.on('notification',function(){
+    function notification(){
       setLoading(false)
-    })
+    }
+    eventBus.on('notification',notification)
+
+    return () => {
+      eventBus.remove('notification',notification)
+    }
   },[])
 
   const getCountries = () => {

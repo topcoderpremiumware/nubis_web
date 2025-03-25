@@ -17,10 +17,15 @@ export default function BookingSettings() {
   useEffect(() => {
     getPictures()
     getOtherSettings()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getPictures()
       getOtherSettings()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   },[])
 
   const onChange = (e) => {

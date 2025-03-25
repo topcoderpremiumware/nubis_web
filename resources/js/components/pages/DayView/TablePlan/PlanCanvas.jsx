@@ -40,7 +40,7 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
     getPlan()
     getOrders()
     getTimesList()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getOrders()
       Echo.leave(channelName)
       channelName = `place-${localStorage.getItem('place_id')}`
@@ -49,19 +49,24 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
           console.log('echo order-deleted',data)
           getOrders()
         })
-    });
-    eventBus.on("timeChanged",  () => {
+    }
+    function timeChanged(){
       redrawComponent()
-    });
-    eventBus.on("areaChanged",  () => {
+    }
+    function areaChanged(){
       redrawComponent()
-    });
-    eventBus.on("dateChanged",  () => {
+    }
+    function dateChanged(){
       redrawComponent()
-    });
-    eventBus.on("orderEdited",  () => {
+    }
+    function orderEdited(){
       getOrders()
-    });
+    }
+    eventBus.on("placeChanged", placeChanged);
+    eventBus.on("timeChanged",  timeChanged);
+    eventBus.on("areaChanged",  areaChanged);
+    eventBus.on("dateChanged",  dateChanged);
+    eventBus.on("orderEdited",  orderEdited);
     channelName = `place-${localStorage.getItem('place_id')}`
     Echo.channel(channelName)
       .listen('.order-created', function(data) {
@@ -78,6 +83,11 @@ export default function PlanCanvas({ setSelectedOrder, isFullWidth, setFullWidth
       })
     return () => {
       Echo.leave(channelName)
+      eventBus.remove("placeChanged", placeChanged);
+      eventBus.remove("timeChanged",  timeChanged);
+      eventBus.remove("areaChanged",  areaChanged);
+      eventBus.remove("dateChanged",  dateChanged);
+      eventBus.remove("orderEdited",  orderEdited);
     }
   },[])
 

@@ -12,9 +12,14 @@ export default function ExperienceQtySlide(props) {
   const [language, setLanguage] = useState(localStorage.getItem('i18nextLng') || props.place.language)
 
   useEffect( () => {
-    eventBus.on("langChanged",(lang) => {
+    function langChanged(lang){
       setLanguage(lang)
-    })
+    }
+    eventBus.on("langChanged",langChanged)
+
+    return () => {
+      eventBus.remove("langChanged",langChanged)
+    }
   }, [])
 
   return (<>

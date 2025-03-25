@@ -21,9 +21,14 @@ export default function ManageFeedback() {
 
   useEffect( () => {
     getFeedbacks()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getFeedbacks()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const columns = [

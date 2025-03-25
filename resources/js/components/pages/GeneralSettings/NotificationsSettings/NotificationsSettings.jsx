@@ -21,16 +21,17 @@ const NotificationsSettings = () => {
     getSmsTime()
     getEmailTime()
     getNumber()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getSmsTime()
       getEmailTime()
       getNumber()
-    })
-  },[])
+    }
+    eventBus.on("placeChanged", placeChanged)
 
-  useEffect(() => {
-    console.log('numbers',numbers)
-  },[numbers])
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
+  },[])
 
   const onSave = async (e) => {
     e.preventDefault()

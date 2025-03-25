@@ -9,9 +9,14 @@ const SmsPricing = () => {
 
   useEffect(() => {
     getSmsLimitCount()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getSmsLimitCount()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const getPaymentLink = (price_id) => {

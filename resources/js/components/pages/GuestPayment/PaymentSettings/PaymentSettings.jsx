@@ -29,13 +29,19 @@ const PaymentSettings = () => {
     getStripeKey()
     getStripeSecret()
     getStripeWebhookSecret()
-    eventBus.on("placeChanged", () => {
+
+    function placeChanged(){
       getPrepayment()
       getAmount()
       getCurrency()
       getMethod()
       getCancelDeadline()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   },[])
 
   const currencies = ['AUD','CAD','CHF','DKK','EUR','GBP','HKD','HUF','ISK','JPY','NOK','RON','SEK','SGD','USD']

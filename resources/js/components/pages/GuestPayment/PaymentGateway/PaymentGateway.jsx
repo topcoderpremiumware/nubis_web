@@ -62,11 +62,16 @@ const PaymentGateway = () => {
     getStripeKey()
     getStripeSecret()
     getStripeWebhookSecret()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getStripeKey()
       getStripeSecret()
       getStripeWebhookSecret()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const getStripeKey = () => {

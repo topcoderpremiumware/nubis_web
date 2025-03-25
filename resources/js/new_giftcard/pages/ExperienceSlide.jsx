@@ -13,9 +13,14 @@ export default function ExperienceSlide(props) {
 
   useEffect( () => {
     getMenus()
-    eventBus.on("langChanged",(lang) => {
+    function langChanged(lang){
       setLanguage(lang)
-    })
+    }
+    eventBus.on("langChanged",langChanged)
+
+    return () => {
+      eventBus.remove("langChanged",langChanged)
+    }
   }, [])
 
   const getMenus = async () => {

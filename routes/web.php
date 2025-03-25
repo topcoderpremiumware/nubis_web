@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckController;
 use App\Http\Controllers\SwedbankWebhookController;
 use App\Jobs\SwedbankPayment;
 use App\Models\Giftcard;
@@ -58,4 +59,5 @@ Route::get('/video-guide', function(){
 Route::get('/privacy-policy', function(){
     return view('privacy');
 })->name('privacy');
+Route::get('receipts/{base64_id}', [CheckController::class, 'publicPrint']);
 Route::view('/admin/{path?}/{path2?}', 'app')->name('admin');

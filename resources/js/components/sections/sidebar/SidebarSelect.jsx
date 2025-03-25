@@ -13,9 +13,14 @@ export default function SidebarSelect() {
   useEffect( () => {
     getPlaces()
     setPlace(localStorage.getItem('place_id'))
-    eventBus.on("roleChanged",  () => {
+    function roleChanged(){
       getPlaces()
-    })
+    }
+    eventBus.on("roleChanged",  roleChanged)
+
+    return () => {
+      eventBus.remove("roleChanged",  roleChanged)
+    }
   }, [])
 
   const getPlaces = () => {

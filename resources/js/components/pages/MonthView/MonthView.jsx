@@ -20,15 +20,24 @@ const MonthView = () => {
 
   useEffect(() => {
     getEvents()
-    eventBus.on("areaChanged", (data) => {
+    function areaChanged(data){
       getEvents()
-    })
-    eventBus.on("placeChanged", (data) => {
+    }
+    function placeChanged(data){
       getEvents()
-    })
-    eventBus.on("langChanged", (data) => {
+    }
+    function langChanged(data){
       getEvents()
-    })
+    }
+    eventBus.on("areaChanged", areaChanged)
+    eventBus.on("placeChanged", placeChanged)
+    eventBus.on("langChanged", langChanged)
+
+    return () => {
+      eventBus.remove("areaChanged", areaChanged)
+      eventBus.remove("placeChanged", placeChanged)
+      eventBus.remove("langChanged", langChanged)
+    }
   }, [])
 
   useEffect(() => {

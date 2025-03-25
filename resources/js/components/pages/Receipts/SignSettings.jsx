@@ -12,9 +12,14 @@ export default function SingSettings() {
 
   useEffect(() => {
     getData()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getData()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   },[])
 
   const onChange = (e) => {

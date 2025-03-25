@@ -12,16 +12,22 @@ export default function AreasSelect() {
   const [areas, setAreas] = useState([])
   const [area, setArea] = useState('')
 
-  useEffect(async () => {
-    await getArea()
-    if(localStorage.getItem('area_id'))
-      setArea(localStorage.getItem('area_id'))
+  useEffect(() => {
+    getArea().then(() => {
+      if(localStorage.getItem('area_id'))
+        setArea(localStorage.getItem('area_id'))
+    })
+    function placeChanged(){
+      getArea().then(() => {
+        setArea('')
+        localStorage.removeItem('area_id')
+      })
+    }
+    eventBus.on("placeChanged",  placeChanged);
 
-    eventBus.on("placeChanged", async () => {
-      await getArea()
-      setArea('')
-      localStorage.removeItem('area_id')
-    });
+    return () => {
+      eventBus.remove("placeChanged",  placeChanged);
+    }
   }, [])
 
   const getArea = async () => {

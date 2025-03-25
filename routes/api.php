@@ -257,6 +257,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('checks/{id}',[CheckController::class, 'save'])->middleware('bill_paid:pos,pos_terminal');
     Route::post('checks/{id}/refund',[CheckController::class, 'refund']);
     Route::post('checks/{id}/print',[CheckController::class, 'print']);
+    Route::post('checks/{id}/send',[CheckController::class, 'send']);
     Route::post('checks/{id}/proforma',[CheckController::class, 'createProforma']);
     Route::post('checks/{id}/print_products',[CheckController::class, 'printProducts']);
     Route::post('checks/{id}/update_bank_log',[CheckController::class, 'updateBankLog']);

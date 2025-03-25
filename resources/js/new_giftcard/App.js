@@ -36,9 +36,14 @@ function App() {
     getPlace()
     getPictures()
     getPaymentMethod()
-    eventBus.on('seeExample',(data) => {
+    function seeExample(data){
       openPdf(data)
-    })
+    }
+    eventBus.on('seeExample',seeExample)
+
+    return () => {
+      eventBus.remove('seeExample',seeExample)
+    }
   }, [])
 
   useEffect( () => {

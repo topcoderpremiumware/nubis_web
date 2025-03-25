@@ -13,11 +13,16 @@ const Pricing = () => {
     getIsBillPaid()
     getPlace()
     getTrialBill()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getIsBillPaid()
       getPlace()
       getTrialBill()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const getPlace = () => {

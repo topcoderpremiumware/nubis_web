@@ -31,6 +31,7 @@ import {qzTrayPrint} from "../../../../qzTray";
 import {localPrint} from "../../../../localPrint";
 const printFunction = (window.ipcRenderer || window.ReactNativeWebView) ? localPrint : qzTrayPrint;
 import AddIcon from '@mui/icons-material/Add';
+import SendReceiptPopup from "./SendReceiptPopup";
 
 export default function PosCart(props){
   const {t} = useTranslation();
@@ -43,6 +44,7 @@ export default function PosCart(props){
   const [printProductsType, setPrintProductsType] = useState(null)
   const [changeTableOpen, setChangeTableOpen] = useState(false)
   const [paymentMethodOpen, setPaymentMethodOpen] = useState(false)
+  const [sendReceiptOpen, setSendReceiptOpen] = useState(false)
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const openMenu = Boolean(menuAnchorEl);
   const [selectedMenuCheck, setSelectedMenuCheck] = useState(null)
@@ -277,6 +279,7 @@ export default function PosCart(props){
 
   const onChangePaymentMethod = async (data) => {
     let tempChecks = checks
+    setSendReceiptOpen(true)
     if (tempChecks[selectedCheckIndex].status === 'closed') {
       openPDF()
     } else {
@@ -287,6 +290,19 @@ export default function PosCart(props){
         if(res) openPDF()
       })
     }
+  }
+
+  const onChangeSendReceipt = (data) => {
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${checksRef.current[selectedCheckIndexRef.current].id}/send`,data, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      },
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: `Receipt link sent by ${data.type}`})
+      setSendReceiptOpen(false)
+    }).catch(error => {
+      simpleCatchError(error)
+    })
   }
 
   const openPDF = () => {
@@ -477,6 +493,11 @@ export default function PosCart(props){
         onChange={onChangePaymentMethod}
         check={checks[selectedCheckIndex]}
         currency={props.currency} />
+      <SendReceiptPopup
+        open={sendReceiptOpen}
+        onClose={() => setSendReceiptOpen(false)}
+        onChange={onChangeSendReceipt}
+        check={checks[selectedCheckIndex]} />
     </>}
     <Menu
       id={`cart_menu`}

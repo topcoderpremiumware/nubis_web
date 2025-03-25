@@ -103,15 +103,24 @@ const ManageGiftCards = () => {
 
   useEffect(() => {
     getCards()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getCards()
-    })
-    eventBus.on("newGiftCard", () => {
+    }
+    function newGiftCard(){
       getCards()
-    })
-    eventBus.on("spendGiftCard", () => {
+    }
+    function spendGiftCard(){
       getCards()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+    eventBus.on("newGiftCard", newGiftCard)
+    eventBus.on("spendGiftCard", spendGiftCard)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+      eventBus.remove("newGiftCard", newGiftCard)
+      eventBus.remove("spendGiftCard", spendGiftCard)
+    }
   }, [])
 
   const CustomGridFooter = () => {

@@ -10,19 +10,29 @@ export default function StopBookingButton() {
 
   useEffect( () => {
     getIsBookingStopped()
+    function placeChanged(){
+      getIsBookingStopped()
+    }
+    function areaChanged(){
+      getIsBookingStopped()
+    }
+    function dateChanged(){
+      getIsBookingStopped()
+    }
+    function timeChanged(){
+      getIsBookingStopped()
+    }
+    eventBus.on("placeChanged",  placeChanged);
+    eventBus.on("areaChanged",  areaChanged);
+    eventBus.on("dateChanged",  dateChanged);
+    eventBus.on("timeChanged",  timeChanged);
 
-    eventBus.on("placeChanged",  () => {
-      getIsBookingStopped()
-    });
-    eventBus.on("areaChanged",  () => {
-      getIsBookingStopped()
-    });
-    eventBus.on("dateChanged",  () => {
-      getIsBookingStopped()
-    });
-    eventBus.on("timeChanged",  () => {
-      getIsBookingStopped()
-    });
+    return () => {
+      eventBus.remove("placeChanged",  placeChanged);
+      eventBus.remove("areaChanged",  areaChanged);
+      eventBus.remove("dateChanged",  dateChanged);
+      eventBus.remove("timeChanged",  timeChanged);
+    }
   }, [])
 
   const isAllData = () => {

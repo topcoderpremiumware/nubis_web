@@ -49,10 +49,15 @@ export default function NewGiftCardPopup({ open, handleClose }) {
   useEffect(() => {
     getExperiences()
     getPictures()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getExperiences()
       getPictures()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   },[])
 
   const onClose = () => {

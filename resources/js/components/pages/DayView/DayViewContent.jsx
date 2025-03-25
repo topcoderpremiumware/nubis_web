@@ -61,27 +61,35 @@ export default function DayViewContent() {
   const [posOpen, setPosOpen] = useState(false)
 
   useEffect(() => {
-    eventBus.on("openTableSidebar",(data) => {
-      if(!data.type) setIsFullWidth(false)
-      if(window.innerWidth <= 1024 && data.type) setIsFullWidth(true)
-      setTableSidebar(data.type)
-    })
-    eventBus.on("placeChanged",(data) => {
-      setIsFullWidth(false)
-      setTableSidebar('')
-    })
-    eventBus.on("loadedOrders",(data) => {
-      setOrders(data)
-    })
-    eventBus.on("changedSelectedOrder",(order) => {
-      setSelectedOrder(order)
-    })
     function handleOpenPosPopUp (){
       setPosOpen(true)
     }
+    function changedSelectedOrder(order){
+      setSelectedOrder(order)
+    }
+    function loadedOrders(data){
+      setOrders(data)
+    }
+    function placeChanged(data){
+      setIsFullWidth(false)
+      setTableSidebar('')
+    }
+    function openTableSidebar(data){
+      if(!data.type) setIsFullWidth(false)
+      if(window.innerWidth <= 1024 && data.type) setIsFullWidth(true)
+      setTableSidebar(data.type)
+    }
+    eventBus.on("openTableSidebar",openTableSidebar)
+    eventBus.on("placeChanged",placeChanged)
+    eventBus.on("loadedOrders",loadedOrders)
+    eventBus.on("changedSelectedOrder",changedSelectedOrder)
     eventBus.on("openPosPopUp",  handleOpenPosPopUp)
     return () => {
       eventBus.remove("openPosPopUp",  handleOpenPosPopUp)
+      eventBus.remove("openTableSidebar",openTableSidebar)
+      eventBus.remove("placeChanged",placeChanged)
+      eventBus.remove("loadedOrders",loadedOrders)
+      eventBus.remove("changedSelectedOrder",changedSelectedOrder)
     }
   },[])
 

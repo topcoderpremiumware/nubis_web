@@ -24,9 +24,14 @@ export default function SendBulkSMS() {
   const [recipientCount, setRecipientCount] = useState(0)
 
   useEffect(() => {
-    eventBus.on("placeChanged",  () => {
+    function placeChanged(){
 
-    })
+    }
+    eventBus.on("placeChanged",  placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged",  placeChanged)
+    }
   },[])
 
   useEffect(() => {

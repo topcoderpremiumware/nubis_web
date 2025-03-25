@@ -26,11 +26,15 @@ export default function BottomPanel({ selectedOrder, setSelectedOrder }) {
   }
 
   useEffect(async () => {
-    eventBus.on("dayViewOrdersLoaded", (data) => {
+    function dayViewOrdersLoaded(data){
       setOrders(data.orders)
       setColumns(data.columns)
       setPdfTitle(data.pdfTitle)
-    });
+    }
+    eventBus.on("dayViewOrdersLoaded", dayViewOrdersLoaded);
+    return () => {
+      eventBus.remove("dayViewOrdersLoaded", dayViewOrdersLoaded);
+    }
   }, [])
 
   const exportPdf = () => {

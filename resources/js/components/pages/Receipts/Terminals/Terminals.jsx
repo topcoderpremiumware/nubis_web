@@ -31,9 +31,14 @@ export default function Terminals() {
 
   useEffect( () => {
     getTerminals()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getTerminals()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   const getTerminals = () => {

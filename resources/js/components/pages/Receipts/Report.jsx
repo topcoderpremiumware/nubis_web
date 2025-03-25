@@ -52,12 +52,17 @@ const Report = () => {
   useEffect(() => {
     // getReport()
     getPaymentMethod()
-    eventBus.on("placeChanged", () => {
+    function placeChanged(){
       getReport()
       getCategoriesReport()
       getPaymentMethod()
-    })
+    }
+    eventBus.on("placeChanged", placeChanged)
     Moment.locale(localStorage.getItem('i18nextLng'))
+
+    return () => {
+      eventBus.remove("placeChanged", placeChanged)
+    }
   }, [])
 
   useEffect(() => {

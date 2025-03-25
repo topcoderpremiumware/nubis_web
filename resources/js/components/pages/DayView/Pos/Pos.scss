@@ -73,3 +73,14 @@
   color: rgba(0, 0, 0, 0.26);
   background-color: rgba(0, 0, 0, 0.12);
 }
+.qr_code_wrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+.qr_code_wrapper svg{
+  width: 100%;
+  max-width: 190px;
+  height: auto;
+}

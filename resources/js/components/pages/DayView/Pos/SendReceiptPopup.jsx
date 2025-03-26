@@ -97,7 +97,7 @@ export default function SendReceiptPopup(props){
         />}
         {data.type === 'qr' ? <>
           <div className="qr_code_wrapper">
-            <QRCode value={`${process.env.MIX_API_URL}/receipts/${btoa(props.check.id)}`} />
+            <QRCode value={`${process.env.MIX_APP_URL}/receipts/${btoa(props.check.id)}`} />
             <p>{t('Scan this QR code to get a digital receipt')}</p>
           </div>
         </> : null}

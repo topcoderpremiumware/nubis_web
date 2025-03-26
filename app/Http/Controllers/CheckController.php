@@ -178,16 +178,18 @@ class CheckController extends Controller
         ]);
         $check = Check::find($id);
         $place = $check->place;
-        $message = env('APP_URL').'/receipts/'.base64_decode($id);
+        $link = env('APP_URL').'/receipts/'.base64_encode($id);
         if($request->type === 'sms' && $place->allow_send_sms()){
+            $message = "Thank you for your payment. View your receipt here: ".$link.". Let me know if you'd like any further tweaks!";
             $place->decrease_sms_limit();
             $result = SMS::send([$request->phone], $message, env('APP_SHORT_NAME'));
         }
         if($request->type === 'email'){
+            $message = "Dear Customer,<br>Thank you for your payment! Your transaction has been successfully processed.<br>You can view and download your receipt here: ".$link."<br>If you have any questions, feel free to contact us.<br><br>Best regards,".$place->name;
             $email = $request->email;
             try{
                 \Illuminate\Support\Facades\Mail::html($message, function ($msg) use ($place, $email) {
-                    $msg->to($email)->subject('Receipt link');
+                    $msg->to($email)->subject('Payment Receipt for Your Recent Transaction');
                     $msg->from(env('MAIL_FROM_ADDRESS'), $place->name);
                 });
             }catch (\Exception $e){}

@@ -61,6 +61,10 @@ export default function PosCart(props){
   const checksRef = useRef(checks);
   const selectedCheckIndexRef = useRef(selectedCheckIndex);
 
+  useEffect(() => {
+    console.log('sendReceiptOpen',sendReceiptOpen)
+  },[sendReceiptOpen])
+
   useEffect( () => {
     function init(){
       getChecks()
@@ -130,6 +134,7 @@ export default function PosCart(props){
       setChecks(prev => ([...tempChecks]))
     }
     function openReceiptPDF(){
+      setSendReceiptOpen(true)
       openPDF()
     }
     function madeReversal(){

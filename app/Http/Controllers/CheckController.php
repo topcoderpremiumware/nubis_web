@@ -166,7 +166,7 @@ class CheckController extends Controller
     {
         $check = Check::find(base64_decode($base64_id));
         $html = view('pdfs.check', compact('check'))->render();
-        $this->generateCheckPDF($html);
+        $this->generateCheckPDF($html,$check->place->name.'_'.now()->format('Y-m-d_H:i:s'));
     }
 
     public function send($id, Request $request)
@@ -750,7 +750,7 @@ class CheckController extends Controller
         return response()->json(['message' => 'Proforma saved to the logs']);
     }
 
-    private function generateCheckPDF($html): void
+    private function generateCheckPDF($html, $name = 'check'): void
     {
         $options = new Options();
         $options->set('enable_remote', TRUE);
@@ -783,7 +783,7 @@ class CheckController extends Controller
         $dompdf->loadHtml($html);
         $dompdf->setPaper([0,0,5.7/2.54*72,$docHeight]);
         $dompdf->render();
-        $dompdf->stream('check.pdf', array("Attachment" => false,'compress' => false));
+        $dompdf->stream($name.'.pdf', array("Attachment" => false,'compress' => false));
     }
 
     public function updateBankLog($id, Request $request)

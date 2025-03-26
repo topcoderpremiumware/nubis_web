@@ -366,6 +366,10 @@ export default function PosCart(props){
         handleMenuClose(event)}
       }>{t('Print for bar')}</MenuItem>)
     }
+    if(selectedMenuCheck && selectedMenuCheck === checks[selectedCheckIndex] &&
+      checks[selectedCheckIndex].hasOwnProperty('id')){
+      items.push(<MenuItem key="6" onClick={(e) => setSendReceiptOpen(true)}>{t('Send receipt')}</MenuItem>)
+    }
     return items
   }
 
@@ -424,7 +428,7 @@ export default function PosCart(props){
                              onChange={onChangeDiscount}
                              value={check.name}
                   /> : <> {check.name}</>}
-                {check.status !== 'closed' && <IconButton
+                <IconButton
                   aria-label="more"
                   id={`menu_button`}
                   aria-controls={openMenu ? `cart_menu` : undefined}
@@ -435,7 +439,7 @@ export default function PosCart(props){
                   sx={{padding: "0 5px",marginLeft: "auto"}}
                 >
                   <MoreVertIcon fontSize="small" />
-                </IconButton>}
+                </IconButton>
               </Box>
             </AccordionSummary>
             <AccordionDetails sx={{p: 0}}>

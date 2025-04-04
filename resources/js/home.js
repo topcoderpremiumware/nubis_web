@@ -74,7 +74,17 @@ if(acc?.length) {
         panel.style.maxHeight = null;
       } else {
         panel.style.maxHeight = panel.scrollHeight + "px";
-      } 
+      }
     })
   })
+}
+
+window.togglePricePeriod = (event) => {
+  if(event.target.checked){
+    document.querySelector('.categories_wrapper.annually').style.display = 'none'
+    document.querySelector('.categories_wrapper.monthly').style.display = 'flex'
+  }else{
+    document.querySelector('.categories_wrapper.annually').style.display = 'flex'
+    document.querySelector('.categories_wrapper.monthly').style.display = 'none'
+  }
 }

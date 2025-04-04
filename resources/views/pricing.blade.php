@@ -1,113 +1,202 @@
 <!DOCTYPE html>
 {{--<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">--}}
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, width=device-width"/>
-      <link rel="icon" href="/images/logo.ico">
+    <link rel="icon" href="/images/logo.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="/css/home.css">
     <title>{{ env('APP_NAME') }}</title>
-      @include('partials/meta')
-  </head>
+    @include('partials/meta')
+</head>
 
-  <body>
-    @include('partials/header')
+<body>
+@include('partials/header')
 
-    <main class="main">
-      <div class="price">
-        <div class="container">
-          <h2 class="price-title price-top-title">{{__('The right pricing plans for you')}}</h2>
-          <div class="price-wrapper">
-            <div class="price-card">
-              <div class="price-card-top">
-                <span>€55</span>/{{__('month')}}
-              </div>
-              <p class="price-card-title">{{__('Monthly')}}</p>
-              <a
-                href="/admin/register"
-                class="price-card-btn"
-              >{{__('Choose plan')}}</a>
-              <div
-                class="price-card-trial"
-                onClick={payTrial}
-              >{{__('Try one month free')}}</div>
+<main class="main">
+    <div class="container">
+        <div class="pricing_page">
+            <div class="mini_title">{{__('Pricing')}}</div>
+            <div class="title">{{__('Flexible Pricing for Your Business Needs')}}</div>
+            <div>{{__('Find the right solution that fits your business and helps you achieve success effortlessly.')}}</div>
+            <div class="payment_wrapper">
+                <label class="switch" style="--switch-width: 357px; --switch-height: 48px; --switch-color: #FF9763">
+                    <input type="checkbox" onchange="window.togglePricePeriod(event)"/>
+                    <span class="slider">
+                    <span class="text off">{{__('Price annually')}}</span>
+                    <span class="text on">{{__('Price monthly')}}</span>
+                  </span>
+                </label>
+                <div class="categories_wrapper annually">
+                    <div class="price_category">
+                        <div class="save">Save -25%</div>
+                        <div class="prev">1195 DKK/Mo.</div>
+                        <div class="price">895 DKK<span>/month</span></div>
+                        <hr>
+                        <div class="title">{{__('Full Package')}}</div>
+                        <div class="subtitle">{{__('Billed annually.')}}</div>
+                        <ul class="description">
+                            <li>{{__('Complete Solution (POS, Booking, Gift Cards)')}}</li>
+                            <li>{{__('Tax Authority Approved')}}</li>
+                            <li>{{__('Easy Online Reservations')}}</li>
+                            <li>{{__('Direct Gift Card Payments')}}</li>
+                            <li>{{__('Integrated Payment System')}}</li>
+                            <li>{{__('Automated SMS &amp; Email')}}</li>
+                            <li>{{__('Full Online Reporting')}}</li>
+                        </ul>
+                        <a class="price_btn" href="/admin/register">{{__('Get started')}}</a>
+                    </div>
+                    <div class="price_category">
+                        <div class="save">Save -17%</div>
+                        <div class="prev">595 DKK/Mo.</div>
+                        <div class="price">495 DKK<span>/month</span></div>
+                        <hr>
+                        <div class="title">{{__('Booking System')}}</div>
+                        <div class="subtitle">{{__('Billed annually.')}}</div>
+                        <ul class="description">
+                            <li>2{{__('4/7 Online Booking')}}</li>
+                            <li>{{__('Automatic SMS &amp; Emails')}}</li>
+                            <li>{{__('Custom Table Layouts')}}</li>
+                            <li>{{__('Guest Payment Integrated')}}</li>
+                            <li>{{__('Custom Menus per Table')}}</li>
+                        </ul>
+                        <a class="price_btn" href="/admin/register">{{__('Get started')}}</a>
+                    </div>
+                    <div class="price_category">
+                        <div class="save">Save -20%</div>
+                        <div class="prev">495 DKK/Mo.</div>
+                        <div class="price">395 DKK<span>/month</span></div>
+                        <hr>
+                        <div class="title">{{__('POS')}}</div>
+                        <div class="subtitle">{{__('Billed annually.')}}</div>
+                        <ul class="description">
+                            <li>{{__('Fast Order Handling')}}</li>
+                            <li>{{__('Flexible Payment Methods')}}</li>
+                            <li>{{__('Tax Authority Approved')}}</li>
+                            <li>{{__('Receipt Printing Included')}}</li>
+                            <li>{{__('Easy Setup with Photos')}}</li>
+                            <li>{{__('Free Reporting App')}}</li>
+                        </ul>
+                        <a class="price_btn" href="/admin/register">{{__('Get started')}}</a>
+                    </div>
+                    <div class="price_category">
+                        <div class="save">Save -14%</div>
+                        <div class="prev">695 DKK/Mo.</div>
+                        <div class="price">595 DKK<span>/month</span></div>
+                        <hr>
+                        <div class="title">{{__('POS + Terminal')}}</div>
+                        <div class="subtitle">{{__('Billed annually.')}}</div>
+                        <ul class="description">
+                            <li>{{__('Secure Payment Processing')}}</li>
+                            <li>{{__('Low Fees (from 0.6%)')}}</li>
+                            <li>{{__('Quick Payment Process')}}</li>
+                            <li>{{__('Partial &amp; Group Payments')}}</li>
+                            <li>{{__('Swedbank Compatible')}}</li>
+                        </ul>
+                        <a class="price_btn" href="/admin/register">{{__('Get started')}}</a>
+                    </div>
+                    <div class="price_category">
+                        <div class="save">Save -22%</div>
+                        <div class="prev">185 DKK/Mo.</div>
+                        <div class="price">145 DKK<span>/month</span></div>
+                        <hr>
+                        <div class="title">{{__('Gift Cards')}}</div>
+                        <div class="subtitle">{{__('Billed annually.')}}</div>
+                        <ul class="description">
+                            <li>{{__('Direct Payments to Account')}}</li>
+                            <li>{{__('Unique Gift Experiences')}}</li>
+                            <li>{{__('Easy Balance Management')}}</li>
+                            <li>{{__('Online &amp; Physical Sales')}}</li>
+                            <li>{{__('Integrated POS Redemption')}}</li>
+                        </ul>
+                        <a class="price_btn" href="/admin/register">{{__('Get started')}}</a>
+                    </div>
+                </div>
+                <div class="categories_wrapper monthly">
+                    <div class="price_category">
+                        <div class="price">1195 DKK<span>/month</span></div>
+                        <hr>
+                        <div class="title">{{__('Full Package')}}</div>
+                        <div class="subtitle">{{__('Billed monthly.')}}</div>
+                        <ul class="description">
+                            <li>{{__('Complete Solution (POS, Booking, Gift Cards)')}}</li>
+                            <li>{{__('Tax Authority Approved')}}</li>
+                            <li>{{__('Easy Online Reservations')}}</li>
+                            <li>{{__('Direct Gift Card Payments')}}</li>
+                            <li>{{__('Integrated Payment System')}}</li>
+                            <li>{{__('Automated SMS &amp; Email')}}</li>
+                            <li>{{__('Full Online Reporting')}}</li>
+                        </ul>
+                        <a class="price_btn" href="/admin/register">{{__('Get started')}}</a>
+                    </div>
+                    <div class="price_category">
+                        <div class="price">595 DKK<span>/month</span></div>
+                        <hr>
+                        <div class="title">{{__('Booking System')}}</div>
+                        <div class="subtitle">{{__('Billed monthly.')}}</div>
+                        <ul class="description">
+                            <li>{{__('24/7 Online Booking')}}</li>
+                            <li>{{__('Automatic SMS &amp; Emails')}}</li>
+                            <li>{{__('Custom Table Layouts')}}</li>
+                            <li>{{__('Guest Payment Integrated')}}</li>
+                            <li>{{__('Custom Menus per Table')}}</li>
+                        </ul>
+                        <a class="price_btn" href="/admin/register">{{__('Get started')}}</a>
+                    </div>
+                    <div class="price_category">
+                        <div class="price">495 DKK<span>/month</span></div>
+                        <hr>
+                        <div class="title">{{__('POS')}}</div>
+                        <div class="subtitle">{{__('Billed monthly.')}}</div>
+                        <ul class="description">
+                            <li>{{__('Fast Order Handling')}}</li>
+                            <li>{{__('Flexible Payment Methods')}}</li>
+                            <li>{{__('Tax Authority Approved')}}</li>
+                            <li>{{__('Receipt Printing Included')}}</li>
+                            <li>{{__('Easy Setup with Photos')}}</li>
+                            <li>{{__('Free Reporting App')}}</li>
+                        </ul>
+                        <a class="price_btn" href="/admin/register">{{__('Get started')}}</a>
+                    </div>
+                    <div class="price_category">
+                        <div class="price">695 DKK<span>/month</span></div>
+                        <hr>
+                        <div class="title">{{__('POS + Terminal')}}</div>
+                        <div class="subtitle">{{__('Billed monthly.')}}</div>
+                        <ul class="description">
+                            <li>{{__('Secure Payment Processing')}}</li>
+                            <li>{{__('Low Fees (from 0.6%)')}}</li>
+                            <li>{{__('Quick Payment Process')}}</li>
+                            <li>{{__('Partial &amp; Group Payments')}}</li>
+                            <li>{{__('Swedbank Compatible')}}</li>
+                        </ul>
+                        <a class="price_btn" href="/admin/register">{{__('Get started')}}</a>
+                    </div>
+                    <div class="price_category">
+                        <div class="price">185 DKK<span>/month</span></div>
+                        <hr>
+                        <div class="title">{{__('Gift Cards')}}</div>
+                        <div class="subtitle">{{__('Billed monthly.')}}</div>
+                        <ul class="description">
+                            <li>{{__('Direct Payments to Account')}}</li>
+                            <li>{{__('Unique Gift Experiences')}}</li>
+                            <li>{{__('Easy Balance Management')}}</li>
+                            <li>{{__('Online &amp; Physical Sales')}}</li>
+                            <li>{{__('Integrated POS Redemption')}}</li>
+                        </ul>
+                        <a class="price_btn" href="/admin/register">{{__('Get started')}}</a>
+                    </div>
+                </div>
             </div>
-
-            <div class="price-card">
-              <div class="price-card-badge">{{__('Save')}} 15%</div>
-              <div class="price-card-top">
-                <span>€294</span>/{{__('semiannual')}}
-              </div>
-              <div class="price-card-per-month"><span>€49</span>/{{__('month')}}</div>
-              <p class="price-card-title">{{__('semiannual')}}</p>
-              <a
-                href="/admin/register"
-                class="price-card-btn"
-              >{{__('Choose plan')}}</a>
-              <div
-                class="price-card-trial"
-                onClick={payTrial}
-              >{{__('Try one month free')}}</div>
-            </div>
-
-            <div class="price-card">
-              <div class="price-card-badge">{{__('Save')}} 30%</div>
-              <div class="price-card-top">
-                <span>€468</span>/{{__('yearly')}}
-              </div>
-              <div class="price-card-per-month"><span>€39</span>/{{__('month')}}</div>
-              <p class="price-card-title">{{__('yearly')}}</p>
-              <a
-                href="/admin/register"
-                class="price-card-btn"
-              >{{__('Choose plan')}}</a>
-              <div
-                class="price-card-trial"
-                onClick={payTrial}
-              >{{__('Try one month free')}}</div>
-            </div>
-          </div>
-          <p class="price-text">{{__('Tied into another solution? If you have a notice period on your current booking system, you will receive Table Booking POS for free throughout that period, so you won’t have to pay for two subscriptions. You can set up the system for free using our Nubis Academy videos or let us set it up for you for')}} € 149</p>
-          <div class="price-benefits">
-            <h3 class="price-title">{{__('Benefits')}}</h3>
-            <ul class="price-list">
-              <li class="price-list-item">{{__('Fully integrated booking system')}}</li>
-{{--              <li class="price-list-item">{{__('Takeaway module with its own payment')}}</li>--}}
-              <li class="price-list-item">{{__('Giftcard module with direct payment to own account via stripe')}}</li>
-              <li class="price-list-item">{{__('Waiting list')}}</li>
-              <li class="price-list-item">{{__('Online payment via stripe for takeawey')}}</li>
-              <li class="price-list-item">{{__('Deposit for no-shows')}}</li>
-              <li class="price-list-item">{{__('Advance payment via own account via stripe')}}</li>
-              <li class="price-list-item">{{__('Pre-ordering a menu')}}</li>
-              <li class="price-list-item">{{__('Division of areas')}}</li>
-              <li class="price-list-item">{{__('Guest exclusivity')}}</li>
-              <li class="price-list-item">{{__('Reserve with Google partner')}}</li>
-              <li class="price-list-item">{{__('SMS reminder')}}</li>
-              <li class="price-list-item">{{__('Possibility of different setting times')}}</li>
-              <li class="price-list-item">{{__('Questionnaire after visit')}}</li>
-              <li class="price-list-item">{{__('Newsletter')}}</li>
-              <li class="price-list-item">{{__('Run on all platforms')}}</li>
-              <li class="price-list-item">{{__('Booking diagram')}}</li>
-              <li class="price-list-item">{{__('Print of today’s booking')}}</li>
-              <li class="price-list-item">{{__('Guest history')}}</li>
-              <li class="price-list-item">{{__('Possibility of combined tables when booking online')}}</li>
-              <li class="price-list-item">{{__('Concurrent users on the system')}}</li>
-              <li class="price-list-item">{{__('Price per SMS')}}</li>
-            </ul>
-          </div>
-          <p class="price-text">
-            {{__('Notice: License comes with a Free 30 day full version trial. Refer to our Terms Of Service here.')}} <br />
-            {{__('Support plan is available on paid licenses only and can be purchased separately or extended at a later time.')}}
-          </p>
         </div>
-      </div>
-    </main>
+    </div>
+</main>
 
-    @include('partials/footer')
+@include('partials/footer')
 
-    <script src="/js/home.js"></script>
-  </body>
+<script src="/js/home.js"></script>
+</body>
 </html>

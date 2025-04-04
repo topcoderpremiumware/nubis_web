@@ -18,7 +18,7 @@ import eventBus from "../../../eventBus";
 import ProductCategoryPopup from "./../DayView/Pos/ProductCategoryPopup";
 import PosCart from "./../DayView/Pos/PosCart";
 import Box from "@mui/material/Box";
-import {simpleCatchError} from "../../../helper";
+import {defaultPageRedirect, isBills, simpleCatchError} from "../../../helper";
 
 export default function PosPage(){
   const {t} = useTranslation();
@@ -41,6 +41,7 @@ export default function PosPage(){
 
   useEffect( () => {
     function init(){
+      if(!isBills(['pos','pos_terminal'])) window.location.href = "/admin/BasicInformation"
       getPaymentMethod()
       getCategories()
       getAllCategories()
@@ -48,6 +49,10 @@ export default function PosPage(){
     }
     checkOrderExist()
     init()
+    function placeChanged(){
+      init()
+      setSelectedCategory(false)
+    }
     function pos_create_order(){
       createPOSOrder()
     }
@@ -62,11 +67,13 @@ export default function PosPage(){
       setSelectedPOSOrderId(order.id)
       localStorage.setItem('selectedPOSOrderId',order.id)
     }
+    eventBus.on("placeChanged", placeChanged)
     eventBus.on("pos_create_order", pos_create_order)
     eventBus.on("updateCategories", updateCategories)
     eventBus.on("updateProducts", updateProducts)
     eventBus.on("changedSelectedOrder",changedSelectedOrder)
     return () => {
+      eventBus.remove("placeChanged", placeChanged)
       eventBus.remove("pos_create_order", pos_create_order)
       eventBus.remove("updateCategories", updateCategories)
       eventBus.remove("updateProducts", updateProducts)

@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import  './Login.scss';
 import { useTranslation } from 'react-i18next';
 import {TextField, Button, Stack} from "@mui/material";
+import {defaultPageRedirect} from "../../../helper";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ export default function Login() {
           localStorage.setItem('place_id', response.data[0].id)
         }
         if(localStorage.getItem('place_id')){
-          window.location.href = "/admin/DayView"
+          defaultPageRedirect()
         }else{
           window.location.href = "/admin"
         }

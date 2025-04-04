@@ -5,6 +5,7 @@ import {Select, TextField, MenuItem, InputLabel, FormControl, Button, Autocomple
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/material.css'
 import {useSearchParams} from "react-router-dom";
+import {defaultPageRedirect} from "../../../helper";
 
 export default function Register() {
   const { t } = useTranslation();
@@ -75,10 +76,10 @@ export default function Register() {
           }
         }).then(response => {
           localStorage.setItem('place_id',response.data.id)
-          window.location.href="/admin/DayView"
+          defaultPageRedirect()
         }).catch(error => {})
       }else{
-        window.location.href="/admin/DayView"
+        defaultPageRedirect()
       }
     }).catch(error => {
       setFirstNameError([])

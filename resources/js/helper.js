@@ -116,3 +116,18 @@ export const currency_format = (number) => {
 export const isBills = (bills, data = window) => {
   return data.bills && bills.some(b => data.bills.includes(b))
 }
+
+export const defaultPageRedirect = () => {
+  eventBus.dispatch('updateBills', () => {
+    console.log('defaultPageRedirect')
+    if(isBills(['full','booking'])){
+      window.location.href = "/admin/DayView"
+    }else if(isBills(['pos','pos_terminal'])){
+      window.location.href = "/admin/POS"
+    }else if(isBills(['giftcards'])){
+      window.location.href = "/admin/GiftcardSettings"
+    }else{
+      window.location.href = "/admin/BasicInformation"
+    }
+  })
+}

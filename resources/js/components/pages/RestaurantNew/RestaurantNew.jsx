@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/material.css'
 import '../Register/Register.scss'
+import {defaultPageRedirect} from "../../../helper";
 
 const RestaurantNew = () => {
   const { t } = useTranslation();
@@ -61,7 +62,7 @@ const RestaurantNew = () => {
       }
     }).then(response => {
       localStorage.setItem('place_id', response.data.id)
-      window.location.href = "/admin/DayView"
+      defaultPageRedirect()
     }).catch(error => { })
   }
 

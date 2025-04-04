@@ -2,11 +2,12 @@ import React, {useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
 import eventBus from "../../../eventBus";
 import { Autocomplete, Button, TextField } from "@mui/material";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {defaultPageRedirect} from "../../../helper";
 
 export default function SidebarSelect() {
   const {t} = useTranslation();
-
+  const navigate = useNavigate();
   const [places, setPlaces] = useState([])
   const [place, setPlace] = useState('')
 
@@ -73,6 +74,7 @@ export default function SidebarSelect() {
           setPlace(newValue.id)
           localStorage.setItem('place_id', newValue.id)
           eventBus.dispatch("placeChanged")
+          defaultPageRedirect()
         }}
         renderInput={(params) =>
           <TextField

@@ -89,10 +89,15 @@ function App() {
       getRole()
       getBills()
     }
+    function updateBills(callback){
+      getBills(callback)
+    }
+    eventBus.on('updateBills', updateBills)
     eventBus.on('toggleSidebar', toggleSidebar)
     eventBus.on("placeChanged",  placeChanged)
 
     return () => {
+      eventBus.remove('updateBills', updateBills)
       eventBus.remove('toggleSidebar', toggleSidebar)
       eventBus.remove("placeChanged",  placeChanged)
     }
@@ -118,7 +123,7 @@ function App() {
     })
   }
 
-  const getBills = () => {
+  const getBills = (callback = null) => {
     axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/active_billings`,{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -126,6 +131,7 @@ function App() {
     }).then(response => {
       window.bills = response.data
       eventBus.dispatch('roleChanged')
+      if(callback) callback()
     }).catch(error => {
       console.log('bills error',error.response)
     })

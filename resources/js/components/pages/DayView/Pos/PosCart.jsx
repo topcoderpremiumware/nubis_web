@@ -347,7 +347,7 @@ export default function PosCart(props){
     if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
       items.push(<MenuItem key="2" onClick={(e) => {setSplitCheckOpen(true);handleMenuClose(event)}}>{t('Split')}</MenuItem>)
     }
-    if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
+    if(!isBills(['pos','pos_terminal']) && selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex]){
       items.push(<MenuItem key="3" onClick={(e) => {setChangeTableOpen(true);handleMenuClose(event)}}>{t('Change table')}</MenuItem>)
     }
     if(selectedMenuCheck && selectedMenuCheck.status !== 'closed' && selectedMenuCheck === checks[selectedCheckIndex] &&

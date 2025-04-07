@@ -8,6 +8,7 @@ import React, {useEffect, useState} from "react";
 import eventBus from "../../../../eventBus";
 import axios from "axios";
 import Moment from "moment/moment";
+import {isBills} from "../../../../helper";
 
 export default function ChangeOrder(props){
   const {t} = useTranslation();
@@ -30,6 +31,11 @@ export default function ChangeOrder(props){
   },[props])
 
   const getOrders = async (category_id = false) => {
+    if(isBills(['pos','pos_terminal'])){
+      localStorage.setItem('date',null)
+      localStorage.setItem('time',null)
+      localStorage.setItem('area_id',null)
+    }
     let date = localStorage.getItem('date') || Moment.utc().format('YYYY-MM-DD')
     let time = JSON.parse(localStorage.getItem('time')) || {from: '00:00:00',to: '23:59:59'}
     axios.get(`${process.env.MIX_API_URL}/api/orders`, {

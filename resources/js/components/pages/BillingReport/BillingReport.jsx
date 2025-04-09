@@ -5,11 +5,13 @@ import eventBus from "../../../eventBus";
 import {
   CircularProgress,
   IconButton,
-  Stack,
+  Stack, Tooltip,
 } from "@mui/material";
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import Moment from "moment";
 import {DataGrid} from "@mui/x-data-grid";
+import {simpleCatchError} from "../../../helper";
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function BillingReport() {
   const {t} = useTranslation();
@@ -40,8 +42,24 @@ export default function BillingReport() {
           {params.value && <IconButton onClick={() => window.open(params.value, '_blank').focus()} size="small">
             <ReceiptIcon fontSize="small"/>
           </IconButton>}
+          {params.value ?
+            <IconButton onClick={() => editLink(params.row)} size="small">
+              <Tooltip title={t('Edit')}><EditIcon fontSize="small"/></Tooltip>
+            </IconButton> : null}
         </span>, },
   ];
+
+  const editLink = (billing) => {
+    axios.get(`${process.env.MIX_API_URL}/api/billings/${billing.id}/edit_link`,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      window.open(response.data, '_blank').focus()
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+  }
 
   const getData = () => {
     setLoading(true)

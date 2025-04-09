@@ -8,9 +8,11 @@ use App\Models\PaidBill;
 use App\Models\PaidMessage;
 use App\Models\Place;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Stripe\Invoice;
 use Stripe\StripeClient;
 use Stripe\Webhook;
 
@@ -366,5 +368,55 @@ class BillingController extends Controller
         }
 
         return response()->json(['result'=> 'OK']);
+    }
+
+    public function getEditLink($id, Request $request): JsonResponse
+    {
+        $billing = PaidBill::find($id);
+        if(!$billing->payment_intent_id) abort(400, 'Billing is not paid');
+
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        /* @var Invoice $invoice */
+        $invoice = $stripe->invoices->retrieve($billing->payment_intent_id);
+        $customer_id = $invoice->customer;
+
+        $configuration = $stripe->billingPortal->configurations->create([
+            'features' => [
+                'customer_update' => [
+                    'allowed_updates' => ['email'],
+                    'enabled' => true,
+                ],
+                'invoice_history' => ['enabled' => true],
+                'payment_method_update' => ['enabled' => true],
+                'subscription_cancel' => [
+                    'enabled' => true,
+                    'mode' => 'at_period_end',
+                    'proration_behavior' => 'none',
+                    'cancellation_reason' => [
+                        'enabled' => true,
+                        'options' => ['customer_service','low_quality','missing_features','other','switched_service','too_complex','too_expensive','unused']
+                    ]
+                ],
+//                'subscription_update' => [
+//                    'enabled' => true,
+//                    'proration_behavior' => 'always_invoice',
+//                    'default_allowed_updates' => ['quantity'],
+//                    'products' => [
+//                        [
+//                            'prices' => [$invoice->lines->data[0]->price->id],
+//                            'product' => $invoice->lines->data[0]->price->product
+//                        ]
+//                    ]
+//                ]
+            ],
+        ]);
+
+        $portal = $stripe->billingPortal->sessions->create([
+            'customer' => $customer_id,
+            'configuration' => $configuration->id,
+            'return_url' => env('APP_URL').'/admin/billingReport',
+        ]);
+
+        return response()->json($portal->url);
     }
 }

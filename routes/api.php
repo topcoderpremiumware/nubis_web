@@ -132,6 +132,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('places/{place_id}/pay_trial',[BillingController::class, 'payTrial']);
     Route::get('places/{place_id}/get_last_active_trial',[BillingController::class, 'getLastActiveTrial']);
     Route::delete('billings/{id}',[BillingController::class, 'delete']);
+    Route::get('billings/{id}/edit_link',[BillingController::class, 'getEditLink']);
     Route::get('places/{place_id}/billings',[BillingController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/active_billings',[BillingController::class, 'getActiveByPlace']);
     Route::post('places/{place_id}/pay_messages_trial',[PaidMessageController::class, 'payTrial']);

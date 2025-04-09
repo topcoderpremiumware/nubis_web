@@ -2,12 +2,12 @@ import './Pos.scss'
 import {useTranslation} from "react-i18next";
 import {
   Autocomplete,
-  Button,
+  Button, Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
+  FormControl, FormControlLabel,
   Grid,
   IconButton, InputAdornment, InputLabel, MenuItem, Select,
   TextField
@@ -63,6 +63,7 @@ export default function ProductCategoryPopup(props){
       formData.append('stock', item.stock)
       formData.append('tax', item.tax)
       formData.append('type', item.type)
+      formData.append('is_free_price', item.is_free_price)
       if(item.hasOwnProperty('product_category_ids')) formData.append('product_category_ids', item.product_category_ids)
     }
     if(type === 'category'){
@@ -147,6 +148,12 @@ export default function ProductCategoryPopup(props){
                   })}
                 </Select>
               </FormControl>
+              <FormControlLabel sx={{mb: 2}}
+                control={<Checkbox name="is_free_price" checked={parseInt(item?.is_free_price) === 1}
+                onChange={(e) => setItem(prev => ({...prev, is_free_price:e.target.checked ? 1 : 0}))}/>}
+                label={t('Free price')}
+                labelPlacement="end"
+              />
               <TextField label={t('Cost price')} size="small" fullWidth sx={{mb: 2}}
                          type="text" id="cost_price" name="cost_price" required
                          onChange={(e) => setItem(prev => ({...prev, cost_price:e.target.value}))}

@@ -396,6 +396,31 @@ export default function PosCart(props){
     })
   }
 
+  const onChangeProductPrice = (product,price) => {
+    let tempChecks = checksRef.current
+
+    if(tempChecks[selectedCheckIndexRef.current].status === 'closed'){
+      eventBus.dispatch("notification", {type: 'error', message: 'Cart is closed'});
+      return
+    }
+    let index = tempChecks[selectedCheckIndexRef.current].products.findIndex(e => e.id === product.id)
+    if (index >= 0) {
+      product = tempChecks[selectedCheckIndexRef.current].products[index]
+      tempChecks[selectedCheckIndexRef.current].products[index] = {
+        ...product,
+        pivot:{
+          ...product.pivot,
+          price: price
+        }
+      }
+
+      let totals = calcCheckTotal(tempChecks[selectedCheckIndexRef.current])
+      tempChecks[selectedCheckIndexRef.current].total = totals['total']
+      tempChecks[selectedCheckIndexRef.current].subtotal = totals['subtotal']
+      setChecks(prev => ([...tempChecks]))
+    }
+  }
+
   return (<>
     <Stack spacing={2} mb={2} direction="row" alignItems="center">
       <h5>{t('Shopping cart')}</h5>
@@ -444,6 +469,7 @@ export default function PosCart(props){
             </AccordionSummary>
             <AccordionDetails sx={{p: 0}}>
               <CheckTable
+                onChangeProductPrice={onChangeProductPrice}
                 check={check}
                 quantityButtons={(product) => <NumberButtons
                   value={product.pivot.quantity}

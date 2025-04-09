@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Storage;
  * @property float $tax
  * @property Carbon $deleted_at
  * @property string $type
+ * @property boolean $is_free_price
  *
  * @property Place $place
  * @property Collection<ProductCategory> $product_categories

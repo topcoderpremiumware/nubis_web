@@ -46,7 +46,8 @@ class ProductController extends Controller
             'selling_price' => $request->selling_price,
             'stock' => $request->stock,
             'tax' => $request->tax,
-            'type' => $request->type
+            'type' => $request->type,
+            'is_free_price' => $request->is_free_price
         ]);
 
         if($request->has('product_category_ids')){
@@ -113,7 +114,8 @@ class ProductController extends Controller
             'selling_price' => $request->selling_price,
             'stock' => $request->stock,
             'tax' => $request->tax,
-            'type' => $request->type
+            'type' => $request->type,
+            'is_free_price' => $request->is_free_price
         ]);
 
         if($request->has('product_category_ids')){

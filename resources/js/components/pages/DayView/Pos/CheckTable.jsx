@@ -6,6 +6,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import {StyledTableRow} from "../../../components/StyledTableRow";
+import ProductPriceInput from "../../../components/ProductPriceInput";
 
 export default function CheckTable(props){
   const {t} = useTranslation();
@@ -21,11 +22,7 @@ export default function CheckTable(props){
                 <TableCell size="small" style={{width: '100%'}}>{product.name}</TableCell>
                 {props.onChangeProductPrice && product.is_free_price ?
                   <TableCell size="small" align="right" style={{padding: '0px'}}>
-                    <TextField size="small" style={{minWidth: '105px'}}
-                               type="number" id="price" name="price"
-                               onChange={(e) => props.onChangeProductPrice(product,Number(e.target.value)/product.pivot.quantity || 0)}
-                               value={(product.pivot.price*product.pivot.quantity)?.toFixed(2)}
-                    />
+                    <ProductPriceInput onChangeProductPrice={props.onChangeProductPrice} product={product} />
                   </TableCell>
                   :
                   <TableCell size="small" align="right">{(product.pivot.price*product.pivot.quantity)?.toFixed(2)}</TableCell>

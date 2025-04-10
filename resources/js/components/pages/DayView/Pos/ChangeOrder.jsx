@@ -32,9 +32,9 @@ export default function ChangeOrder(props){
 
   const getOrders = async (category_id = false) => {
     if(isBills(['pos','pos_terminal'])){
-      localStorage.setItem('date',null)
-      localStorage.setItem('time',null)
-      localStorage.setItem('area_id',null)
+      localStorage.removeItem('date')
+      localStorage.removeItem('time')
+      localStorage.removeItem('area_id')
     }
     let date = localStorage.getItem('date') || Moment.utc().format('YYYY-MM-DD')
     let time = JSON.parse(localStorage.getItem('time')) || {from: '00:00:00',to: '23:59:59'}

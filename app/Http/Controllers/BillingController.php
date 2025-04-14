@@ -276,6 +276,7 @@ class BillingController extends Controller
 
 //            $sessions = $stripe->checkout->sessions->all([$object->object => $object->id]);
             $sessions = $stripe->checkout->sessions->all(['subscription' => $object->subscription]);
+            $category = null;
             if(count($sessions->data) > 0) {
                 $metadata = $sessions->data[0]->metadata;
                 if(array_key_exists('place_id',$metadata->toArray())) {
@@ -301,7 +302,7 @@ class BillingController extends Controller
                     $place_id = $subscriptions->metadata->place_id;
                     $duration = $subscriptions->metadata->duration;
                     $product_name = $subscriptions->metadata->product_name;
-                    $category = $subscriptions->metadata->category ?? 'full';
+                    $category = $subscriptions->metadata->category;
                 }
             }
             if($place_id){
@@ -315,7 +316,7 @@ class BillingController extends Controller
                     'expired_at' => \Carbon\Carbon::now()->addMonths($duration),
                     'payment_intent_id' => $object->id,
                     'receipt_url' => $object->invoice_pdf,
-                    'category' => $category
+                    'category' => $category ?? 'full'
                 ]);
             }
         }

@@ -235,7 +235,7 @@ class AuthApiController extends Controller
         ]);
 
         if(Auth::user()->is_superadmin) {
-            $roles = ['title' => 'admin'];
+            $roles = [['title' => 'admin']];
         }else{
             if(!Auth::user()->places->contains($request->place_id)){
                 return response()->json([

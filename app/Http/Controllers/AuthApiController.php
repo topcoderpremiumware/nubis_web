@@ -234,15 +234,20 @@ class AuthApiController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+        if(Auth::user()->is_superadmin) {
+            $roles = ['title' => 'admin'];
+        }else{
+            if(!Auth::user()->places->contains($request->place_id)){
+                return response()->json([
+                    'message' => 'It\'s not your place'
+                ], 400);
+            }
+
+            $roles = Auth::user()->roles()
+                ->wherePivot('place_id',$request->place_id)
+                ->get();
         }
 
-        $roles = Auth::user()->roles()
-            ->wherePivot('place_id',$request->place_id)
-            ->get();
         return response()->json($roles);
     }
 

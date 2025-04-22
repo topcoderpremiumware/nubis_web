@@ -234,8 +234,8 @@ class GiftcardController extends Controller
 
         $giftcard = Giftcard::find($giftcard_id);
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($giftcard->place_id)){
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($giftcard->place_id))){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -277,7 +277,7 @@ class GiftcardController extends Controller
 
         $giftcard = Giftcard::find($giftcard_id);
 
-        if(!Auth::user()->places->contains($giftcard->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($giftcard->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -296,7 +296,7 @@ class GiftcardController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -408,7 +408,7 @@ class GiftcardController extends Controller
         $giftcard->delete_comment = $request->delete_comment;
         $giftcard->save();
 
-        if(!Auth::user()->places->contains($giftcard->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($giftcard->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

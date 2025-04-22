@@ -28,7 +28,7 @@ class ProductController extends Controller
             'type' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         $filename = null;
         if($request->has('file')){
@@ -90,8 +90,8 @@ class ProductController extends Controller
 
         $product = Product::find($id);
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($product->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($product->place_id))) abort(400, 'It\'s not your place');
 
         if($request->has('file')){
             if($product->image){
@@ -157,7 +157,7 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
 
-        if(!Auth::user()->places->contains($product->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($product->place_id)) abort(400, 'It\'s not your place');
 
         Log::add($request,'delete-product','Deleted product #'.$product->id);
 

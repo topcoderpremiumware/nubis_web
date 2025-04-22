@@ -38,7 +38,7 @@ class CustomBookingLengthController extends Controller
             'min_time_before' => 'required|integer',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -107,8 +107,8 @@ class CustomBookingLengthController extends Controller
 
         $custom_booking_length = CustomBookingLength::find($id);
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($custom_booking_length->place_id)){
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($custom_booking_length->place_id))){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -170,7 +170,7 @@ class CustomBookingLengthController extends Controller
 
         $custom_booking_length = CustomBookingLength::find($id);
 
-        if(!Auth::user()->places->contains($custom_booking_length->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($custom_booking_length->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -191,7 +191,7 @@ class CustomBookingLengthController extends Controller
     {
         $custom_booking_length = CustomBookingLength::find($id);
 
-        if(!Auth::user()->places->contains($custom_booking_length->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($custom_booking_length->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -202,7 +202,7 @@ class CustomBookingLengthController extends Controller
 
     public function getAllByPlace($place_id, Request $request)
     {
-        if(!Auth::user()->places->contains($place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

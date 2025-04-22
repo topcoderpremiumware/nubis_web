@@ -99,7 +99,7 @@ class PlaceController extends Controller
             'country_id' => 'required|exists:countries,id'
         ]);
 
-        if(!Auth::user()->places->contains($id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -148,7 +148,7 @@ class PlaceController extends Controller
 
     public function getId($id, Request $request)
     {
-//        if(!Auth::user()->places->contains($id)){
+//        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($id)){
 //            return response()->json([
 //                'message' => 'It\'s not your place'
 //            ], 400);
@@ -340,7 +340,7 @@ class PlaceController extends Controller
     {
         $place = Place::find($id);
 
-        if(!Auth::user()->places->contains($id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

@@ -23,7 +23,7 @@ class SettingController extends Controller
             'name' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -75,7 +75,7 @@ class SettingController extends Controller
             'data.*.value' => 'nullable'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -142,7 +142,7 @@ class SettingController extends Controller
             'pass' => 'required|min:5',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

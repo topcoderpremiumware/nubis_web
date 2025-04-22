@@ -32,7 +32,7 @@ class CheckController extends Controller
             'total' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         $check = Check::create([
             'name' => $request->name,
@@ -77,8 +77,8 @@ class CheckController extends Controller
         $check = Check::find($id);
         if($check->status == 'closed') abort(400, 'This cart is closed');
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($check->place_id))) abort(400, 'It\'s not your place');
 
         if($request->payment_method === 'card/cash'){
             if(!$request->has('cash_amount') || !$request->has('card_amount')){
@@ -232,7 +232,7 @@ class CheckController extends Controller
         $check = Check::find($id);
         if($check->status === 'closed') abort(400, 'This cart is closed');
 
-        if(!Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
 
         Log::add($request,'delete-check','Deleted check #'.$check->id);
 
@@ -247,7 +247,7 @@ class CheckController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         $per_page = $request->has('per_page') ? $request->per_page : 10;
 
@@ -286,7 +286,7 @@ class CheckController extends Controller
     {
         $check = Check::where('id',$id)->with(['products','order','printed','refunds.products'])->first();
 
-        if(!Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
 
         return response()->json($check);
     }
@@ -299,7 +299,7 @@ class CheckController extends Controller
             'to' => 'required|date_format:Y-m-d'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         $incomes = Check::select(DB::raw('DATE(created_at) as date, SUM(CASE
                 WHEN status = "closed" THEN total
@@ -462,7 +462,7 @@ class CheckController extends Controller
             'to' => 'required|date_format:Y-m-d',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         /* @var Collection<Check> $checks */
         $checks = Check::where('place_id',$request->place_id)
@@ -509,7 +509,7 @@ class CheckController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         $checks = Check::where('place_id',$request->place_id)
             ->whereIn('status',['closed','refund'])->with('order');
@@ -570,7 +570,7 @@ class CheckController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         $checks = Check::where('place_id',$request->place_id)
             ->whereIn('status',['closed','refund'])->with('order');
@@ -633,7 +633,7 @@ class CheckController extends Controller
 
         $check = Check::find($id);
 
-        if(!Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
 
         $subtotal = 0;
         $total = 0;
@@ -727,8 +727,8 @@ class CheckController extends Controller
         $check = Check::find($id);
         if($check->status == 'closed') abort(400, 'This cart is closed');
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($check->place_id))) abort(400, 'It\'s not your place');
 
         if($request->payment_method === 'card/cash'){
             if(!$request->has('cash_amount') || !$request->has('card_amount')){

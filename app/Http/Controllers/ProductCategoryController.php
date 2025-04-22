@@ -23,7 +23,7 @@ class ProductCategoryController extends Controller
 //            'parent_id' => 'nullable|exists:product_categories,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)) abort(400, 'It\'s not your place');
 
         $filename = null;
         if($request->has('file')){
@@ -63,8 +63,8 @@ class ProductCategoryController extends Controller
 
         $category = ProductCategory::find($id);
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($category->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($category->place_id))) abort(400, 'It\'s not your place');
 
         if($request->has('file')){
             if($category->image){
@@ -121,7 +121,7 @@ class ProductCategoryController extends Controller
     {
         $category = ProductCategory::find($id);
 
-        if(!Auth::user()->places->contains($category->place_id)) abort(400, 'It\'s not your place');
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($category->place_id)) abort(400, 'It\'s not your place');
 
         Log::add($request,'delete-product_category','Deleted product category #'.$category->id);
 

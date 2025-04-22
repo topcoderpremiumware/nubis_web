@@ -182,7 +182,7 @@ class AuthApiController extends Controller
             'email' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -262,7 +262,7 @@ class AuthApiController extends Controller
             'email' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

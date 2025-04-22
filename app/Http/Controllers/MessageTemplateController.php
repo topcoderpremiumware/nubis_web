@@ -27,7 +27,7 @@ class MessageTemplateController extends Controller
             'language' => 'required',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -54,7 +54,7 @@ class MessageTemplateController extends Controller
             'language' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -74,7 +74,7 @@ class MessageTemplateController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -98,7 +98,7 @@ class MessageTemplateController extends Controller
             'phone' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -129,7 +129,7 @@ class MessageTemplateController extends Controller
             'type' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -153,7 +153,7 @@ class MessageTemplateController extends Controller
             'type' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -236,7 +236,7 @@ class MessageTemplateController extends Controller
             'mail' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

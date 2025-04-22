@@ -21,7 +21,7 @@ class MenuController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -50,8 +50,8 @@ class MenuController extends Controller
 
         $menu = Menu::find($id);
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($menu->place_id)){
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($menu->place_id))){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -76,7 +76,7 @@ class MenuController extends Controller
     {
         $menu = Menu::with('dishes')->find($id);
 
-        if(!Auth::user()->places->contains($menu->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($menu->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -87,7 +87,7 @@ class MenuController extends Controller
 
     public function getAllByPlace($place_id, Request $request)
     {
-        if(!Auth::user()->places->contains($place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -106,7 +106,7 @@ class MenuController extends Controller
 
         $menu = Menu::findOrFail($id);
 
-        if(!Auth::user()->places->contains($menu->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($menu->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

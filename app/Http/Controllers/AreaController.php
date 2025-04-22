@@ -24,7 +24,7 @@ class AreaController extends Controller
 
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -59,8 +59,8 @@ class AreaController extends Controller
 
         $area = Area::find($id);
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($area->place_id)){
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($area->place_id))){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -88,7 +88,7 @@ class AreaController extends Controller
     {
         $area = Area::find($id);
 
-        if(!Auth::user()->places->contains($area->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($area->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -112,7 +112,7 @@ class AreaController extends Controller
     {
         $area = Area::find($id);
 
-        if(!Auth::user()->places->contains($area->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($area->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

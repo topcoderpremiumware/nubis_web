@@ -23,7 +23,7 @@ class FileController extends Controller
             'file' => 'required|file|max:1024'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -73,7 +73,7 @@ class FileController extends Controller
             'files.*' => 'required|mimes:jpg,png|max:1024'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -106,7 +106,7 @@ class FileController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -166,7 +166,7 @@ class FileController extends Controller
 
         $file = File::findOrFail($id);
 
-        if(!Auth::user()->places->contains($file->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($file->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

@@ -141,8 +141,8 @@ class OrderController extends Controller
 
         $order = Order::find($id);
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($order->place_id)){
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($order->place_id))){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -227,7 +227,7 @@ class OrderController extends Controller
 
         if(!$order) abort(404, "Order not found");
 
-        if(!Auth::user()->places->contains($order->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($order->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -245,7 +245,7 @@ class OrderController extends Controller
             'reservation_to' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

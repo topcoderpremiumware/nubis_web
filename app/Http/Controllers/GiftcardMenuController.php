@@ -28,7 +28,7 @@ class GiftcardMenuController extends Controller
             'price' => 'required'
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -75,8 +75,8 @@ class GiftcardMenuController extends Controller
 
         $giftcard_menu = GiftcardMenu::find($id);
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($giftcard_menu->place_id)){
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($giftcard_menu->place_id))){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -126,7 +126,7 @@ class GiftcardMenuController extends Controller
 
         $giftcard_menu = GiftcardMenu::find($id);
 
-        if(!Auth::user()->places->contains($giftcard_menu->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($giftcard_menu->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -147,7 +147,7 @@ class GiftcardMenuController extends Controller
     {
         $giftcard_menu = GiftcardMenu::find($id);
 
-        if(!Auth::user()->places->contains($giftcard_menu->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($giftcard_menu->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -158,7 +158,7 @@ class GiftcardMenuController extends Controller
 
     public function getAllByPlace($place_id, Request $request)
     {
-        if(!Auth::user()->places->contains($place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

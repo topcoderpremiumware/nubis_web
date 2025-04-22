@@ -19,7 +19,7 @@ class FeedbackController extends Controller
 //            'message' => 'Unauthorized.'
 //        ], 401);
 
-//        if(!Auth::user()->orders || !Auth::user()->orders->contains($request->order_id)){
+//        if(!Auth::user()->is_superadmin && (!Auth::user()->orders || !Auth::user()->orders->contains($request->order_id))){
 //            return response()->json([
 //                'message' => 'It\'s not your order'
 //            ], 400);
@@ -89,8 +89,8 @@ class FeedbackController extends Controller
 
         $feedback = Feedback::find($id);
 
-        if(!Auth::user()->places->contains($request->place_id) ||
-            !Auth::user()->places->contains($feedback->place_id)){
+        if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
+            !Auth::user()->places->contains($feedback->place_id))){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -125,7 +125,7 @@ class FeedbackController extends Controller
     {
         $feedback = Feedback::find($id);
 
-        if(!Auth::user()->places->contains($feedback->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($feedback->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -140,7 +140,7 @@ class FeedbackController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-        if(!Auth::user()->places->contains($request->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);
@@ -159,7 +159,7 @@ class FeedbackController extends Controller
             'place_id' => 'required|exists:places,id',
         ]);
 
-//        if(!Auth::user()->places->contains($request->place_id)){
+//        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
 //            return response()->json([
 //                'message' => 'It\'s not your place'
 //            ], 400);
@@ -185,7 +185,7 @@ class FeedbackController extends Controller
 
         $feedback = Feedback::find($id);
 
-        if(!Auth::user()->places->contains($feedback->place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($feedback->place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

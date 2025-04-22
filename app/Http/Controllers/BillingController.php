@@ -47,7 +47,7 @@ class BillingController extends Controller
             'place_id' => 'required|exists:places,id'
         ])->validate();
 
-        if(!Auth::user()->places->contains($place_id)){
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($place_id)){
             return response()->json([
                 'message' => 'It\'s not your place'
             ], 400);

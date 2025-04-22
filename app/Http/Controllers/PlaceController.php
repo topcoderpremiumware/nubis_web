@@ -137,7 +137,11 @@ class PlaceController extends Controller
 
     public function getAllMine(Request $request)
     {
-        $places = Auth::user()->places;
+        if(Auth::user()->is_superadmin){
+            $places = Place::all();
+        }else{
+            $places = Auth::user()->places;
+        }
 
         return response()->json($places);
     }

@@ -114,7 +114,7 @@ export const currency_format = (number) => {
 }
 
 export const isBills = (bills, data = window) => {
-  return data.bills && bills.some(b => data.bills.includes(b))
+  return data.is_superadmin || (data.bills && bills.some(b => data.bills.includes(b)))
 }
 
 export const defaultPageRedirect = () => {

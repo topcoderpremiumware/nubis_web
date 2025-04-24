@@ -5,7 +5,9 @@ import { BsCreditCard } from 'react-icons/bs';
 import { MdOutlineContactSupport } from "react-icons/md";
 import {isBills} from "../../../helper";
 
-export const SidebarData = (data) => { return [
+export const SidebarData = (data) => {
+  console.log('show POS',data.is_superadmin || (isBills(['pos','pos_terminal']) && !isBills(['booking','full'])))
+  return [
   {
     title: 'Restaurant Setup',
     path: '#',

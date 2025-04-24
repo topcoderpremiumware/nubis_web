@@ -233,6 +233,7 @@ export const SidebarData = (data) => {
       {
         title: 'QZ Settings',
         path: '/QZSettings',
+        show: false
       },
       {
         title: 'Terminal Settings',

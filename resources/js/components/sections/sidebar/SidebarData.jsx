@@ -215,7 +215,7 @@ export const SidebarData = (data) => { return [
       {
         title: 'POS',
         path: '/POS',
-        show: isBills(['pos','pos_terminal']) && !isBills(['booking','full']),
+        show: data.is_superadmin || (isBills(['pos','pos_terminal']) && !isBills(['booking','full'])),
       },
       {
         title: 'Receipts',

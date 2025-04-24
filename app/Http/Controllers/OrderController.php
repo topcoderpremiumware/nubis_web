@@ -50,7 +50,7 @@ class OrderController extends Controller
         ]);
 
         $place = Place::find($request->place_id);
-        if(!$place->is_bill_paid(['booking'])) return response()->json([
+        if(!Auth::user()->is_superadmin && !$place->is_bill_paid(['booking'])) return response()->json([
             'message' => 'Your place\'s bill has not been paid'
         ], 401);
 
@@ -906,7 +906,7 @@ class OrderController extends Controller
             'message' => 'Non-working day'
         ], 400);
 
-        if(!$place->is_bill_paid(['booking'])) return response()->json([
+        if(!Auth::user()->is_superadmin && !$place->is_bill_paid(['booking'])) return response()->json([
             'message' => 'Your place\'s bill has not been paid'
         ], 401);
 
@@ -1575,7 +1575,7 @@ class OrderController extends Controller
         ]);
 
         $place = Place::find($request->place_id);
-        if(!$place->is_bill_paid(['pos','pos_terminal'])) return response()->json([
+        if(!Auth::user()->is_superadmin && !$place->is_bill_paid(['pos','pos_terminal'])) return response()->json([
             'message' => 'Your place\'s bill has not been paid'
         ], 401);
 

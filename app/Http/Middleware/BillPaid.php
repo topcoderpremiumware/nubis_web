@@ -6,12 +6,15 @@ use App\Models\Giftcard;
 use App\Models\Order;
 use App\Models\Place;
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class BillPaid
 {
 //->middleware('bill_paid:pos,pos_terminal')
     public function handle($request, Closure $next, ...$categories)
     {
+        if(Auth::check() && Auth::user()->is_superadmin) return $next($request);
+
         $place = false;
         if($request->has('place_id') || $request->route('place_id')){
             $place_id = $request->route('place_id') ?? $request->place_id;

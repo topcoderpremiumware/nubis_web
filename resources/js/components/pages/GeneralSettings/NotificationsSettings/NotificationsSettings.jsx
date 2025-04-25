@@ -1,4 +1,4 @@
-import {Button, FormControl, InputLabel, MenuItem, Select, Stack} from '@mui/material'
+import {Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField} from '@mui/material'
 import React, {useEffect} from 'react'
 import { useState } from 'react'
 import eventBus from "../../../../eventBus";
@@ -14,6 +14,7 @@ const NotificationsSettings = () => {
   const navigate = useNavigate();
 
   const [numbers, setNumbers] = useState([])
+  const [emails, setEmails] = useState([])
   const [smsTime, setSmsTime] = useState(0)
   const [emailTime, setEmailTime] = useState(0)
 
@@ -21,10 +22,11 @@ const NotificationsSettings = () => {
     getSmsTime()
     getEmailTime()
     getNumber()
+    getEmail()
     function placeChanged(){
       getSmsTime()
       getEmailTime()
-      getNumber()
+      getEmail()
     }
     eventBus.on("placeChanged", placeChanged)
 
@@ -39,6 +41,10 @@ const NotificationsSettings = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'sms-remind-hours-before',
       value: smsTime
+    },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'SMS Settings saved'});
     }).catch(error => {})
@@ -47,6 +53,10 @@ const NotificationsSettings = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'email-remind-hours-before',
       value: emailTime
+    },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Email Settings saved'});
     }).catch(error => {})
@@ -55,8 +65,24 @@ const NotificationsSettings = () => {
       place_id: localStorage.getItem('place_id'),
       name: 'sms-notification-number',
       value: numbers.join(',')
+    },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
     }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'SMS notification number saved'});
+    }).catch(error => {})
+
+    axios.post(`${process.env.MIX_API_URL}/api/settings`, {
+      place_id: localStorage.getItem('place_id'),
+      name: 'email-notification-address',
+      value: emails.join(',')
+    },{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Email notification address saved'});
     }).catch(error => {})
   }
 
@@ -108,6 +134,22 @@ const NotificationsSettings = () => {
     })
   }
 
+  const getEmail = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/settings`,{
+      params: {
+        place_id: localStorage.getItem('place_id'),
+        name: 'email-notification-address'
+      },
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      setEmails(response.data.value.split(','))
+    }).catch(error => {
+      setEmails([])
+    })
+  }
+
   const options = () => {
     let output = []
     for(let i=1;i<=48;i++){
@@ -126,6 +168,18 @@ const NotificationsSettings = () => {
     let tempNumbers = numbers
     tempNumbers[key] = phone
     setNumbers(prev => ([...tempNumbers]))
+  }
+
+  const removeEmail = (key) => {
+    let tempEmails = emails
+    tempEmails.splice(key, 1)
+    setEmails(prev => ([...tempEmails]))
+  }
+
+  const changeEmail = (key, email) => {
+    let tempEmails = emails
+    tempEmails[key] = email
+    setEmails(prev => ([...tempEmails]))
   }
 
   return (
@@ -196,6 +250,25 @@ const NotificationsSettings = () => {
               <div className="mb-3">
                 <Button variant="contained" type="button" color="success" onClick={() => {setNumbers(prev => ([...prev,'']))}}>
                   {t('Add admin SMS number')}
+                </Button>
+              </div>
+              {emails.length > 0 && emails.map((email, key) => {
+                return <div className="mb-3" key={key}>
+                  <Stack spacing={2} direction="row">
+                    <TextField label={t('Admin email address')} size="small" fullWidth
+                               type="email"
+                               onChange={e => changeEmail(key,e.target.value)}
+                               value={email}
+                    />
+                    <Button variant="contained" color="error" type="button" onClick={() => {removeEmail(key)}}>
+                      <DeleteIcon />
+                    </Button>
+                  </Stack>
+                </div>
+              })}
+              <div className="mb-3">
+                <Button variant="contained" type="button" color="success" onClick={() => {setEmails(prev => ([...prev,'']))}}>
+                  {t('Add admin email address')}
                 </Button>
               </div>
               <Button variant="contained" type="submit">{t('Save')}</Button>

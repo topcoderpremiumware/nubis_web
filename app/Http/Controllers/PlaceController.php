@@ -275,9 +275,14 @@ class PlaceController extends Controller
             }
         }
 
+        $place_email = $place->email;
+        if($place->setting('email-notification-address')){
+            $place_email = $place->setting('email-notification-address');
+        }
+
         try{
-            \Illuminate\Support\Facades\Mail::html($request->message.'<br><br>Phone: '.$request->phone.'<br>Email: '.$request->email, function($msg) use ($customer_name, $place, $request) {
-                $msg->to($place->email)->subject('Customer Message: '.$customer_name);
+            \Illuminate\Support\Facades\Mail::html($request->message.'<br><br>Phone: '.$request->phone.'<br>Email: '.$request->email, function($msg) use ($customer_name, $place_email, $request) {
+                $msg->to($place_email)->subject('Customer Message: '.$customer_name);
             });
         }catch (\Exception $e){
 

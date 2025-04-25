@@ -906,7 +906,7 @@ class OrderController extends Controller
             'message' => 'Non-working day'
         ], 400);
 
-        if(!Auth::user()->is_superadmin && !$place->is_bill_paid(['booking'])) return response()->json([
+        if(!$place->is_bill_paid(['booking'])) return response()->json([
             'message' => 'Your place\'s bill has not been paid'
         ], 401);
 

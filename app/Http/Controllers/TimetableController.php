@@ -193,6 +193,7 @@ class TimetableController extends Controller
         $area = Area::find($area_id);
         if(!$area) return [];
         $default_tableplan = $area->place->tableplans()->first();
+        if(!$default_tableplan) return [];
         $date_arr = explode('-',$date);
         $without_year = $date_arr[1].'-'.$date_arr[2];
         $week_day = date('w',strtotime($date));

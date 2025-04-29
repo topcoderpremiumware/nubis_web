@@ -3,7 +3,7 @@ import {useTranslation} from "react-i18next";
 import {
   CircularProgress,
   Grid,
-  IconButton,
+  IconButton, MenuItem, Select,
   Stack,
   TextField
 } from "@mui/material";
@@ -19,6 +19,7 @@ import ProductCategoryPopup from "./../DayView/Pos/ProductCategoryPopup";
 import PosCart from "./../DayView/Pos/PosCart";
 import Box from "@mui/material/Box";
 import {defaultPageRedirect, isBills, simpleCatchError} from "../../../helper";
+import StraightIcon from '@mui/icons-material/Straight';
 
 export default function PosPage(){
   const {t} = useTranslation();
@@ -35,6 +36,7 @@ export default function PosPage(){
   const [productCategoryOpen, setProductCategoryOpen] = useState(false)
   const [editItem, setEditItem] = useState({})
   const [search, setSearch] = useState('')
+  const [sort, setSort] = useState('id_asc')
 
   const dragItem = useRef(null)
   const draggedOverItem = useRef(null)
@@ -90,6 +92,10 @@ export default function PosPage(){
     loadAll()
   }, [selectedCategory])
 
+  useEffect( () => {
+    setProducts(prev => ([...prev.sort(sortProducts)]))
+  }, [sort])
+
   const getPaymentMethod = async () => {
     const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/payment_method`,{
       headers: {
@@ -141,10 +147,24 @@ export default function PosPage(){
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setProducts(prev => ([...response.data]))
+      setProducts(prev => ([...response.data.sort(sortProducts)]))
       setLoadingProducts(false)
     }).catch(error => {
     })
+  }
+
+  const sortProducts = (a,b) => {
+    let field = 'id'
+    let index = 1
+    if(sort.includes('az')){
+      field = 'name'
+    }else if(sort.includes('$')){
+      field = 'selling_price'
+    }
+    if(sort.includes('desc')) index = -1
+    if (a[field] < b[field]) return -1*index;
+    if (a[field] > b[field]) return 1*index;
+    return 0;
   }
 
   const addNew = () => {
@@ -308,6 +328,16 @@ export default function PosPage(){
                          onChange={onSearch}
                          value={search}
               />
+              <Select value={sort} size="small"
+                      id="sort" name="sort"
+                      onChange={(e) => setSort(e.target.value)}>
+                <MenuItem value="id_asc">ID<StraightIcon style={{transform:"rotate(180deg)"}}/></MenuItem>
+                <MenuItem value="id_desc">ID<StraightIcon/></MenuItem>
+                <MenuItem value="az_asc">AZ<StraightIcon style={{transform:"rotate(180deg)"}}/></MenuItem>
+                <MenuItem value="az_desc">AZ<StraightIcon/></MenuItem>
+                <MenuItem value="$_asc">$<StraightIcon style={{transform:"rotate(180deg)"}}/></MenuItem>
+                <MenuItem value="$_desc">$<StraightIcon/></MenuItem>
+              </Select>
               <span style={{marginLeft: 'auto'}}></span>
               {['admin'].includes(window.role) && <>{editMode ?
                 <>

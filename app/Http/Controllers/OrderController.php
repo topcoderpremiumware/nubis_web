@@ -1287,17 +1287,15 @@ class OrderController extends Controller
                 }
             }
 
-            $place_email = $place->email;
             if($place->setting('email-notification-address')){
                 $place_email = $place->setting('email-notification-address');
-            }
+                try{
+                    \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order, $sms_notification_template->text,$place->language), function($msg) use ($place_email) {
+                        $msg->to($place_email)->subject('New order notification');
+                    });
+                }catch (\Exception $e){
 
-            try{
-                \Illuminate\Support\Facades\Mail::html(TemplateHelper::setVariables($order, $sms_notification_template->text,$place->language), function($msg) use ($place_email) {
-                    $msg->to($place_email)->subject('New order notification');
-                });
-            }catch (\Exception $e){
-
+                }
             }
         }
     }

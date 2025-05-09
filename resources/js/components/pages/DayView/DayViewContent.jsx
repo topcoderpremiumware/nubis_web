@@ -117,15 +117,15 @@ export default function DayViewContent() {
               {statistic()}
             </Tabs>
           </Box>
-          <TabPanel className='DayView__BoxItem' value={value} index={0}>
+          {value === 0 && <TabPanel className='DayView__BoxItem' value={value} index={0}>
             <DayViewTableBookings setSelectedOrder={setSelectedOrder} />
-          </TabPanel>
-          <TabPanel className='DayView__BoxItem' value={value} index={1}>
+          </TabPanel>}
+          {value === 1 && <TabPanel className='DayView__BoxItem' value={value} index={1}>
             <DayViewTableWaiting setSelectedOrder={setSelectedOrder} />
-          </TabPanel>
-          <TabPanel className='DayView__BoxItem' value={value} index={2}>
+          </TabPanel>}
+          {value === 2 && <TabPanel className='DayView__BoxItem' value={value} index={2}>
             <DayViewTableDeleted/>
-          </TabPanel>
+          </TabPanel>}
         </Box>
         {tableSidebar === 'timePlan' && <div className="tablePlanSidebar">
           <TimeLinePlan

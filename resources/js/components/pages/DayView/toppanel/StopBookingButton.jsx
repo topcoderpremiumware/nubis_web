@@ -36,7 +36,9 @@ export default function StopBookingButton() {
   }, [])
 
   const isAllData = () => {
-    return (localStorage.getItem('area_id') && localStorage.getItem('area_id') != 'all') && localStorage.getItem('place_id') && localStorage.getItem('date')
+    return (localStorage.getItem('area_id') && localStorage.getItem('area_id') != 'all') &&
+      localStorage.getItem('place_id') && localStorage.getItem('date') && localStorage.getItem('time') &&
+      JSON.parse(localStorage.getItem('time'))
   }
 
   const getIsBookingStopped = async () => {

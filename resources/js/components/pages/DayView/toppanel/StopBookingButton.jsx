@@ -109,13 +109,13 @@ export default function StopBookingButton() {
   }
 
   return (
-    <>{isAllData() &&
+    <>{isAllData() ?
       <>{isBookingStopped ?
         <Button variant="contained" type="button" color="success"
                 onClick={unblockBooking}>{t('Unblock booking today')}</Button>
         :
         <Button variant="contained" type="button" color="error" onClick={stopBooking}>{t('Stop booking today')}</Button>
-      }</>
+      }</> : null
     }</>
   )
 }

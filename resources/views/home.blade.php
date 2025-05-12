@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" translate="no">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, width=device-width"/>
@@ -20,7 +20,7 @@
   <!-- End Google Tag Manager -->
   </head>
 
-  <body>
+  <body translate="no">
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-58X6C4W9
 "height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

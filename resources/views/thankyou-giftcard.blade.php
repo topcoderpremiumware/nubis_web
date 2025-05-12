@@ -3,7 +3,7 @@
     use Illuminate\Support\Collection;
 @endphp
     <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" translate="no">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, width=device-width"/>
@@ -16,7 +16,7 @@
     @include('partials/meta')
 </head>
 
-<body>
+<body translate="no">
 <main class="main features-main">
     <section class="features thankyou">
         <div class="features-item thankyou-item">

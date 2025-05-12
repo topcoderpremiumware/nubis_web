@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" translate="no">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, width=device-width"/>
@@ -13,7 +13,7 @@
       @include('partials/meta')
   </head>
 
-  <body>
+  <body translate="no">
     @include('partials/header')
 
     <main class="main features-main">

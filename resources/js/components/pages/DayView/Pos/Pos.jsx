@@ -84,7 +84,9 @@ export default function Pos(props){
   }, [selectedCategory])
 
   useEffect( () => {
-    setProducts(prev => ([...prev.sort(sortProducts)]))
+    if(products){
+      setProducts(prev => ([...prev.sort(sortProducts)]))
+    }
   }, [sort])
 
   const getPaymentMethod = async () => {
@@ -138,7 +140,11 @@ export default function Pos(props){
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setProducts(prev => ([...response.data.sort(sortProducts)]))
+      if(response.data){
+        setProducts(prev => ([...response.data.sort(sortProducts)]))
+      }else{
+        setProducts([])
+      }
       setLoadingProducts(false)
     }).catch(error => {
     })

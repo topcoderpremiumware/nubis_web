@@ -140,6 +140,7 @@ export default function Pos(props){
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
+      console.log('getProducts sort',typeof response.data, response.data)
       if(response.data){
         setProducts(prev => ([...response.data.sort(sortProducts)]))
       }else{

@@ -137,7 +137,8 @@ export default function Pos(props){
     setLoadingProducts(true)
     await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/products${categoryParam('product_category_id',category_id)}`,{
       headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
+        Authorization: 'Bearer ' + localStorage.getItem('token'),
+        Accept: 'application/json'
       }
     }).then(response => {
       console.log('getProducts sort',typeof response.data, response.data)

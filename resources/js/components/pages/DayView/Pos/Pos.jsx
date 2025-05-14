@@ -138,15 +138,9 @@ export default function Pos(props){
     await axios.get(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}/products${categoryParam('product_category_id',category_id)}`,{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token'),
-        Accept: 'application/json'
       }
     }).then(response => {
-      console.log('getProducts sort',typeof response.data, response.data)
-      if(response.data){
-        setProducts(prev => ([...response.data.sort(sortProducts)]))
-      }else{
-        setProducts([])
-      }
+      setProducts(prev => ([...response.data.sort(sortProducts)]))
       setLoadingProducts(false)
     }).catch(error => {
     })

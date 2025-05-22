@@ -44,7 +44,26 @@ function HelloBlock(props) {
         purpose: "online_booking_background",
       },
     }).then((response) => {
-      console.log('online-booking-background',response.data);
+      if(response.data.url){
+        setBackground(response.data.url)
+        setBackgroundType('image')
+      }else{
+        getDefaultBackground()
+      }
+
+    }).catch((error) => {
+      getDefaultBackground()
+      console.log("Restaurant Info error: ", error);
+    });
+  }
+
+  const getDefaultBackground = () => {
+    axios.get(`${process.env.MIX_API_URL}/api/files_purpose`, {
+      params: {
+        place_id: getPlaceId(),
+        purpose: "online_booking_picture",
+      },
+    }).then((response) => {
       if(response.data.url) setBackground(response.data.url);
       setBackgroundType('image')
     }).catch((error) => {
@@ -59,7 +78,6 @@ function HelloBlock(props) {
         name: 'online-booking-background-video'
       }
     }).then(response => {
-      console.log('online-booking-background-video',response.data);
       if(response.data.value){
         setBackground(response.data.value)
         setBackgroundType('video')

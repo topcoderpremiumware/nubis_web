@@ -6,7 +6,7 @@ import axios from "axios";
 function HelloBlock(props) {
   const { t } = useTranslation()
   const [logo, setLogo] = useState('')
-  const [background, setBackground] = useState('')
+  const [background, setBackground] = useState('/images/default_place_image.png')
   const [backgroundType, setBackgroundType] = useState('')
 
   useEffect(() => {

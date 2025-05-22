@@ -17,13 +17,14 @@
 }
 
 .helloBlockWrapper .helloBlockBackground > iframe {
-  width: 177.77vh; /* 100vh * 16 / 9 */
   height: 100vh;
+  left: 50%;
+  pointer-events: none;
   position: absolute;
   top: 0;
-  left: 50%;
   transform: translateX(-50%);
-  pointer-events: none;
+  width: 100vw;
+  margin: 0;
 }
 
 .helloBlockWrapper .helloBlockBackground > img{

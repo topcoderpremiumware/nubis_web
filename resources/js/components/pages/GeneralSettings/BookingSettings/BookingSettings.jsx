@@ -6,12 +6,13 @@ import './BookingSettings.scss'
 import eventBus from "../../../../eventBus";
 import {Button, FormControlLabel, Stack, Switch, TextField} from "@mui/material";
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 export default function BookingSettings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [pictures, setPictures] = useState({});
+  const [pictures, setPictures] = useState([]);
   const [otherSettings, setOtherSettings] = useState([]);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export default function BookingSettings() {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
       }).then(response => {
-        setPictures(prev => ({...prev, [response.data.purpose]: response.data}))
+        getPictures()
       }).catch(error => {
         console.log('error',error.response.status)
         if (error.response && error.response.data && error.response.data.errors) {
@@ -67,6 +68,9 @@ export default function BookingSettings() {
     }
     if(e.target.name === 'customer_deny_register'){
       setOtherSettings(prev => ({...prev, "customer-deny-register": e.target.checked}))
+    }
+    if(e.target.name === 'online_booking_background_video'){
+      setOtherSettings(prev => ({...prev, "online-booking-background-video": e.target.value}))
     }
   }
 
@@ -98,7 +102,8 @@ export default function BookingSettings() {
           'online-booking-description',
           'online-booking-title',
           'customer-deny-register',
-          'non-working-day-reason'
+          'non-working-day-reason',
+          'online-booking-background-video'
         ]
       },
       headers: {
@@ -116,22 +121,26 @@ export default function BookingSettings() {
   }
 
   const getPictures = () => {
-    axios.get(`${process.env.MIX_API_URL}/api/files_purpose`, {
+    axios.get(`${process.env.MIX_API_URL}/api/files_many_purposes`, {
       params: {
         place_id: localStorage.getItem('place_id'),
-        purpose: "online_booking_picture",
+        purposes: ['online_booking_picture','online_booking_logo','online_booking_background'],
       },
     }).then((response) => {
-      let data = []
-      data[response.data.purpose] = response.data
-      setPictures(data)
+      setPictures(response.data)
     }).catch((error) => {
       setPictures({})
     });
   }
 
-  const getPicture = (purpose) => {
-    return pictures.hasOwnProperty(purpose) ? pictures[purpose].url : ''
+  const getPicture = (purpose, is_array= false) => {
+    let picture = pictures.filter(el => el.purpose === purpose)
+    if(picture.length === 0) return ''
+    if(is_array){
+      return picture
+    }else{
+      return picture[0].url
+    }
   }
 
   const toBoolean = (value) => {
@@ -151,6 +160,29 @@ export default function BookingSettings() {
           onClick={() => navigate('/VideoGuides')}
         >{t('See Table Booking POS Academy')}</Button>
       </Stack>
+      <ListSubheader className="my-3" component="div">{t('Online booking logo')}</ListSubheader>
+      <div className="row">
+        <div className="col-md-6 mb-3">
+          <PictureUploadButton name="online_booking_logo" onChange={e => {onChange(e)}}/>
+        </div>
+        <div className="col-md-6 mb-3">
+          <img className="added_picture" alt="" src={getPicture('online_booking_logo')} />
+        </div>
+      </div>
+      <ListSubheader className="my-3" component="div">{t('Online booking background')}</ListSubheader>
+      <div className="row">
+        <div className="col-md-6 mb-3">
+          <PictureUploadButton name="online_booking_background" onChange={e => {onChange(e)}}/>
+          <TextField label={t('Online Booking Background Video')} size="small" fullWidth className="my-3"
+                     type="text" id="online_booking_background_video" name="online_booking_background_video"
+                     onChange={onChange}
+                     value={otherSettings['online-booking-background-video'] || ''}
+          />
+        </div>
+        <div className="col-md-6 mb-3">
+          <img className="added_picture" alt="" src={getPicture('online_booking_background')} />
+        </div>
+      </div>
       <ListSubheader className="my-3" component="div">{t('Online booking picture')}</ListSubheader>
       <div className="row">
         <div className="col-md-6 mb-3">

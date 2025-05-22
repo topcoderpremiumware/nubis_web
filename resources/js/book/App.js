@@ -17,6 +17,7 @@ import axios from "axios";
 import i18n from "i18next";
 import eventBus from "../eventBus";
 import Alert from "../components/Notification/Alert";
+import HelloBlock from "./components/HelloBlock/HelloBlock";
 
 const App = () => {
   const ref = useRef(null);
@@ -51,7 +52,7 @@ const App = () => {
   });
   const [modalActive, setModalActive] = useState(false);
   const [defaultModal, setDefaultModal] = useState("email");
-  const [blockType, setBlockType] = useState("mainblock");
+  const [blockType, setBlockType] = useState("helloblock");
   const [restaurantInfo, setRestaurantInfo] = useState({
     address: "",
     city: "",
@@ -448,6 +449,13 @@ const App = () => {
           autoPlay={false}
           ref={ref}
         >
+          <div>
+            <HelloBlock
+              handleChangeItem={handleChangeItem}
+              blockType={blockType}
+              setBlockType={setBlockType}
+            />
+          </div>
           <div>
             <MainBlock
               handleChangeItem={handleChangeItem}

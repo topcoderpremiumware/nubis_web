@@ -173,7 +173,7 @@ export default function PaymentMethodPopup(props){
                         labelId="label_terminal" id="terminal" name="terminal"
                         onChange={(e) => setSelectedTerminal(terminals.find(o => o.id === e.target.value))}>
                   {terminals.map((el,key) => {
-                    return <MenuItem key={key} value={el.id}>{el.serial}</MenuItem>
+                    return <MenuItem key={key} value={el.id}>{el.name}</MenuItem>
                   })}
                 </Select>
               </FormControl> : null}

@@ -24,6 +24,8 @@ class TerminalController extends Controller
 
         $request->validate([
             'serial' => 'required',
+            'name' => 'required',
+            'provider' => 'required',
             'place_id' => 'required|exists:places,id',
             'url' => 'required',
         ]);
@@ -39,7 +41,9 @@ class TerminalController extends Controller
             'serial' => $request->serial,
             'place_id' => $request->place_id,
             'url' => $request->url,
-            'currency' => $place->setting('online-payment-currency')
+            'currency' => $place->setting('online-payment-currency'),
+            'name' => $request->name,
+            'provider' => $request->provider
         ]);
 
         Log::add($request,'create-terminal','Created terminal #'.$terminal->id);
@@ -55,6 +59,8 @@ class TerminalController extends Controller
 
         $request->validate([
             'serial' => 'required',
+            'name' => 'required',
+            'provider' => 'required',
             'place_id' => 'required|exists:places,id',
             'url' => 'required'
         ]);
@@ -72,7 +78,9 @@ class TerminalController extends Controller
             'serial' => $request->serial,
             'place_id' => $request->place_id,
             'url' => $request->url,
-            'currency' => $terminal->place->setting('online-payment-currency')
+            'currency' => $terminal->place->setting('online-payment-currency'),
+            'name' => $request->name,
+            'provider' => $request->provider
         ]);
 
         Log::add($request,'change-terminal','Changed terminal #'.$id);

@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $place_id
  * @property string $serial
  * @property string $url
+ * @property string $provider // swedbank/verifone
+ * @property string $name
  *
  * @property Place $place
  * @method static Terminal find($terminal_id)

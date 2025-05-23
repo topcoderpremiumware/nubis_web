@@ -7,9 +7,9 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
+  DialogTitle, FormControl,
   Grid,
-  IconButton, TextField,
+  IconButton, InputLabel, MenuItem, Select, TextField,
 } from "@mui/material";
 
 export default function TerminalEditPopup(props) {
@@ -24,6 +24,8 @@ export default function TerminalEditPopup(props) {
 
   const onChange = (e) => {
     if(e.target.name === 'serial') setTerminal(prev => ({...prev, serial: e.target.value}))
+    if(e.target.name === 'name') setTerminal(prev => ({...prev, name: e.target.value}))
+    if(e.target.name === 'provider') setTerminal(prev => ({...prev, provider: e.target.value}))
     if(e.target.name === 'url') setTerminal(prev => ({...prev, url: e.target.value}))
   }
 
@@ -55,6 +57,23 @@ export default function TerminalEditPopup(props) {
       </DialogTitle>
       <DialogContent dividers>
         <Grid container spacing={2} sx={{pb: 2}}>
+          <Grid item xs={12} sm={6}>
+            <TextField label={t('Name')} size="small" fullWidth
+                       type="text" id="name" name="name" required
+                       onChange={onChange} value={terminal.name}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl size="small" fullWidth>
+              <InputLabel id="label_provider">{t('Provider')}</InputLabel>
+              <Select label={t('Provider')} value={terminal.provider}
+                      labelId="label_provider" id="provider" name="provider"
+                      onChange={onChange}>
+                <MenuItem value="swedbank">swedbank</MenuItem>
+                <MenuItem value="verifone">verifone</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
           <Grid item xs={12} sm={6}>
             <TextField label={t('POIID')} size="small" fullWidth
                        type="text" id="serial" name="serial" required

@@ -120,6 +120,8 @@ export default function Terminals() {
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell size="small">{t('Name')}</TableCell>
+                  <TableCell size="small">{t('Provider')}</TableCell>
                   <TableCell size="small">{t('POIID')}</TableCell>
                   <TableCell size="small">{t('Url')}</TableCell>
                   <TableCell size="small" style={{minWidth: '100px'}}>{t('Actions')}</TableCell>
@@ -128,6 +130,8 @@ export default function Terminals() {
               <TableBody>
                 {terminals.map((item, key) => {
                   return <StyledTableRow key={key}>
+                    <TableCell size="small">{item.name}</TableCell>
+                    <TableCell size="small">{item.provider}</TableCell>
                     <TableCell size="small">{item.serial}</TableCell>
                     <TableCell size="small">{item.url}</TableCell>
                     <TableCell size="small">

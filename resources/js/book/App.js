@@ -105,7 +105,7 @@ const App = () => {
 
   const handleChangeItem = () => {
     if(blockType === 'mainblock' && !showSelectAreas) {
-      ref.current?.moveTo(2)
+      ref.current?.moveTo(3)
     } else {
       ref.current?.increment();
     }
@@ -114,7 +114,7 @@ const App = () => {
   const handlePrevItem = (e) => {
     e.preventDefault()
     if(blockType === 'secondblock' && !showSelectAreas) {
-      ref.current?.moveTo(0)
+      ref.current?.moveTo(1)
     } else {
       ref.current?.decrement();
     }

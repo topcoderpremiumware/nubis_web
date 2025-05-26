@@ -55,7 +55,7 @@ function MainBlock(props) {
   };
 
   const getMaxSeats = () => {
-    axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/max_available_seats`).then(response => {
+    axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/max_available_seats${window.location.search}`).then(response => {
       setMaxSeats(response.data)
     }).catch(error => {
       console.log("Error: ", error);

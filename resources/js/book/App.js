@@ -224,7 +224,7 @@ const App = () => {
   };
 
   const getPaymentMethod = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/payment_method`)
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/payment_method${window.location.search}`)
     setPaymentMethod(res.data)
   }
 
@@ -278,7 +278,7 @@ const App = () => {
 
   const getDatesTimeInfo = (day) => {
     myAxios
-      .get(`/api/work_dates`, {
+      .get(`/api/work_dates${window.location.search}`, {
         params: {
           place_id: getPlaceId(),
           area_id: localStorage.getItem('area_id'),
@@ -298,7 +298,7 @@ const App = () => {
         console.log(`error: `, error);
       });
     myAxios
-      .get(`/api/free_dates`, {
+      .get(`/api/free_dates${window.location.search}`, {
         params: {
           place_id: getPlaceId(),
           area_id: localStorage.getItem('area_id'),
@@ -352,7 +352,7 @@ const App = () => {
   };
 
   const getAreas = async () => {
-    await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/areas`).then(response => {
+    await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/areas${window.location.search}`).then(response => {
       const availableAreas = response.data.filter(i => !!i.online_available)
       setAreas(availableAreas)
       if(availableAreas.length > 1) {

@@ -29,7 +29,9 @@ class BillPaid
             $place = $giftcard->place;
         }
 
-        if(!$place || !$place->is_bill_paid($categories)){
+        if(!$place || (!$place->is_bill_paid($categories)
+                && (!$request->has('s') || $request->s !== 'superadmin')
+            )){
             return redirect()->route('home');
         }
 

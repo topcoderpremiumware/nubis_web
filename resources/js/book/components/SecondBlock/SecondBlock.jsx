@@ -136,7 +136,7 @@ function SecondBlock(props) {
   }
 
   const getAlternativeRestaurants = async () => {
-    axios.get(`${process.env.MIX_API_URL}/api/places/${props.getPlaceId()}/alternative`)
+    axios.get(`${process.env.MIX_API_URL}/api/places/${props.getPlaceId()}/alternative${window.location.search}`)
       .then((response) => {
         setAlternativeRestaurants(response.data)
       })
@@ -146,7 +146,7 @@ function SecondBlock(props) {
   }
 
   const getExtraTime = (date,clicked=false) => {
-    axios.get(`${process.env.MIX_API_URL}/api/custom_booking_lengths`, {
+    axios.get(`${process.env.MIX_API_URL}/api/custom_booking_lengths${window.location.search}`, {
       params: {
         place_id: props.getPlaceId(),
         area_id: localStorage.getItem('area_id'),

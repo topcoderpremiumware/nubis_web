@@ -19,11 +19,11 @@ function Title(props) {
   };
 
   const getOnlineBookingDescription = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/online_booking_description`)
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/online_booking_description${window.location.search}`)
     setOnlineBookingDescription(res.data['online-booking-description'])
   }
   const getOnlineBookingTitle = async () => {
-    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/online_booking_title`)
+    const res = await axios.get(`${process.env.MIX_API_URL}/api/places/${getPlaceId()}/online_booking_title${window.location.search}`)
     setOnlineBookingTitle(res.data['online-booking-title'])
   }
 

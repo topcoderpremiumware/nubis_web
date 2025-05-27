@@ -73,7 +73,6 @@
         "prop-types": "^15.8.1",
         "qz-tray": "^2.2.4",
         "react-big-calendar": "^1.5.2",
-        "react-booking-calendar": "^1.0.3",
         "react-calendar-timeline": "^0.28.0",
         "react-datepicker": "^4.8.0",
         "react-hook-form": "^7.40.0",

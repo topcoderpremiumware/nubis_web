@@ -7,6 +7,7 @@ import eventBus from "../../../../eventBus";
 import {Button, FormControlLabel, Stack, Switch, TextField} from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import WYSIWYG from "../../../components/WYSIWYG";
 
 export default function BookingSettings() {
   const { t } = useTranslation();
@@ -71,6 +72,22 @@ export default function BookingSettings() {
     }
     if(e.target.name === 'online_booking_background_video'){
       setOtherSettings(prev => ({...prev, "online-booking-background-video": e.target.value}))
+    }
+  }
+
+  const deleteFile = (e,file) => {
+    if (window.confirm(t('Are you sure you want to delete this file?'))) {
+      axios.delete(`${process.env.MIX_API_URL}/api/files/${file.id}`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(response => {
+        getPictures()
+        eventBus.dispatch("notification", {type: 'success', message: 'File deleted successfully'});
+      }).catch(error => {
+        eventBus.dispatch("notification", {type: 'error', message: error.message});
+        console.log('Error', error)
+      })
     }
   }
 
@@ -163,7 +180,12 @@ export default function BookingSettings() {
       <ListSubheader className="my-3" component="div">{t('Online booking logo')}</ListSubheader>
       <div className="row">
         <div className="col-md-6 mb-3">
-          <PictureUploadButton name="online_booking_logo" onChange={e => {onChange(e)}}/>
+          <Stack spacing={2} direction="row" alignItems="center">
+            {getPicture('online_booking_logo') && <Button variant="contained" color="error"
+              onClick={(e) => deleteFile(e,getPicture('online_booking_logo',true)[0])}
+            >{t('Delete')}</Button>}
+            <PictureUploadButton name="online_booking_logo" onChange={e => {onChange(e)}}/>
+          </Stack>
         </div>
         <div className="col-md-6 mb-3">
           <img className="added_picture" alt="" src={getPicture('online_booking_logo')} />
@@ -172,7 +194,12 @@ export default function BookingSettings() {
       <ListSubheader className="my-3" component="div">{t('Online booking background')}</ListSubheader>
       <div className="row">
         <div className="col-md-6 mb-3">
-          <PictureUploadButton name="online_booking_background" onChange={e => {onChange(e)}}/>
+          <Stack spacing={2} direction="row" alignItems="center">
+            {getPicture('online_booking_background') && <Button variant="contained" color="error"
+              onClick={(e) => deleteFile(e,getPicture('online_booking_background',true)[0])}
+            >{t('Delete')}</Button>}
+            <PictureUploadButton name="online_booking_background" onChange={e => {onChange(e)}}/>
+          </Stack>
           <TextField label={t('Online Booking Background Video')} size="small" fullWidth className="my-3"
                      type="text" id="online_booking_background_video" name="online_booking_background_video"
                      onChange={onChange}
@@ -186,17 +213,19 @@ export default function BookingSettings() {
       <ListSubheader className="my-3" component="div">{t('Online booking picture')}</ListSubheader>
       <div className="row">
         <div className="col-md-6 mb-3">
-          <PictureUploadButton name="online_booking_picture" onChange={e => {onChange(e)}}/>
-
-          <TextField label={t('Online Booking Title')} size="small" fullWidth className="my-3"
-                     type="text" id="online_booking_title" name="online_booking_title"
-                     onChange={onChange}
-                     value={otherSettings['online-booking-title'] || ''}
+          <Stack spacing={2} direction="row" alignItems="center">
+            {getPicture('online_booking_picture') && <Button variant="contained" color="error"
+              onClick={(e) => deleteFile(e,getPicture('online_booking_picture',true)[0])}
+            >{t('Delete')}</Button>}
+            <PictureUploadButton name="online_booking_picture" onChange={e => {onChange(e)}}/>
+          </Stack>
+          <WYSIWYG label={t('Online Booking Title')} className="my-3"
+                   name="online_booking_title" onChange={onChange}
+                   value={otherSettings['online-booking-title'] || ''}
           />
-          <TextField label={t('Online Booking Description')} size="small" fullWidth multiline rows="3" className="my-3"
-                     type="text" id="online_booking_description" name="online_booking_description"
-                     onChange={onChange}
-                     value={otherSettings['online-booking-description'] || ''}
+          <WYSIWYG label={t('Online Booking Description')} className="my-3"
+                   name="online_booking_description" onChange={onChange}
+                   value={otherSettings['online-booking-description'] || ''}
           />
           <TextField label={t('The reason for the non-working day')} size="small" fullWidth multiline rows="3" className="my-3"
                      type="text" id="non_working_day_reason" name="non_working_day_reason"

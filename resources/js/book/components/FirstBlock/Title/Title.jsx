@@ -33,14 +33,10 @@ function Title(props) {
       <div className="overhead">
         {t('Welcome to the online booking for')} {props.restaurantInfo.name}
       </div>
-      <div className="description">
-        {onlineBookingDescription}
-      </div>
-      <div className="title">
-        {onlineBookingTitle ? onlineBookingTitle : <Trans i18nKey="select_number_of_guests">
+      <div className="description" dangerouslySetInnerHTML={{ __html: onlineBookingDescription}} />
+      <div className="title" dangerouslySetInnerHTML={{ __html: onlineBookingTitle ? onlineBookingTitle : <Trans i18nKey="select_number_of_guests">
           Select number <br /> of Guests
-        </Trans>}
-      </div>
+        </Trans> }} />
     </div>
   );
 }

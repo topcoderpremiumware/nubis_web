@@ -45,7 +45,11 @@ export default function BasicInformation() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}`, place).then(response => {
+    axios.post(`${process.env.MIX_API_URL}/api/places/${localStorage.getItem('place_id')}`, place,{
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
       eventBus.dispatch("notification", {type: 'success', message: 'Information saved'});
     }).catch(error => {
       if (error.response && error.response.data && error.response.data.errors) {

@@ -28,6 +28,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('giftcards', function (Blueprint $table) {
+            $table->dropForeign(['giftcard_menu_id']);
             $table->dropColumn(['background_image','greetings','giftcard_menu_id']);
         });
     }

@@ -122,6 +122,10 @@ export default function CustomBookingLength() {
             formData.append(key+'['+lang_key+']['+data_key+']', data_value)
           }
         }
+      }else if(key == 'payment_settings'){
+        for (const [p_key, p_value] of Object.entries(value)) {
+          formData.append(key+'['+p_key+']', p_value)
+        }
       }else{
         formData.append(key, value)
       }

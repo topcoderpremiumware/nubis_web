@@ -433,7 +433,7 @@ class OrderController extends Controller
         return response()->json(['message' => 'Order is canceled']);
     }
 
-    private function paymentAfterOrderCancel($order,$status)
+    private function paymentAfterOrderCancel(Order $order,$status)
     {
         $place = $order->place;
         $stripe_secret = $place->setting('stripe-secret');
@@ -1044,20 +1044,32 @@ class OrderController extends Controller
             'phone' => $request->phone
         ]);
 
-        if(intval($place->setting('is-online-payment')) === 1) {
-            if ($place->setting('online-payment-method') === 'deduct') {
+        if($order->custom_booking_length && $order->custom_booking_length->payment_settings &&
+            $order->custom_booking_length->payment_settings['enabled'] === '1'){
+            $payment_enabled = $order->custom_booking_length->payment_settings['enabled'] === '1';
+            $payment_method = $order->custom_booking_length->payment_settings['method'];
+            $payment_amount = $order->custom_booking_length->payment_settings['amount'];
+            $payment_cancel_deadline =  $order->custom_booking_length->payment_settings['cancel_deadline'];
+        }else{
+            $payment_enabled = intval($place->setting('is-online-payment')) === 1;
+            $payment_method = $place->setting('online-payment-method');
+            $payment_amount = $place->setting('online-payment-amount');
+            $payment_cancel_deadline = $place->setting('online-payment-cancel-deadline');
+        }
+
+        if($payment_enabled) {
+            if ($payment_method === 'deduct') {
                 $currency = $place->setting('online-payment-currency');
-                $amount = $place->setting('online-payment-amount');
                 $prepayment_url = $this->getPrepaymentUrl($request, $order);
                 if ($prepayment_url) {
                     $order->status = 'pending';
                     $order->marks = array_merge($order->marks,[
                         'method' => 'deduct',
-                        'amount' => self::getAmountAfterDiscount($amount * $request->seats,$request->giftcard_code,$currency,$request->place_id),
-                        'amountWithoutDiscount' => $amount * $request->seats,
+                        'amount' => self::getAmountAfterDiscount($payment_amount * $request->seats,$request->giftcard_code,$currency,$request->place_id),
+                        'amountWithoutDiscount' => $payment_amount * $request->seats,
                         'giftcard_code' => $request->giftcard_code,
                         'currency' => $currency,
-                        'cancel_deadline' => $place->setting('online-payment-cancel-deadline')
+                        'cancel_deadline' => $payment_cancel_deadline
                     ]);
                     $order->timestamps = false;
                     $order->save();
@@ -1098,7 +1110,13 @@ class OrderController extends Controller
         $url = '';
         $place = Place::find($request->place_id);
 
-        $online_payment_amount = $place->setting('online-payment-amount') * $order->seats;
+        if($order->custom_booking_length && $order->custom_booking_length->payment_settings &&
+            $order->custom_booking_length->payment_settings['enabled'] === '1') {
+            $online_payment_amount = $order->custom_booking_length->payment_settings['amount'] * $order->seats;
+        }else{
+            $online_payment_amount = $place->setting('online-payment-amount') * $order->seats;
+        }
+
         $online_payment_currency = $place->setting('online-payment-currency');
         $stripe_secret = $place->setting('stripe-secret');
         $stripe_webhook_secret = $place->setting('stripe-webhook-secret');
@@ -1148,25 +1166,32 @@ class OrderController extends Controller
         return $url;
     }
 
-    private function processPaymentAlgorithm($request,$order): array
+    private function processPaymentAlgorithm($request,Order $order): array
     {
         $place = Place::find($request->place_id);
-        $method = $place->setting('online-payment-method');
-        $amount = $place->setting('online-payment-amount') * $request->seats;
+        if($order->custom_booking_length && $order->custom_booking_length->payment_settings &&
+            $order->custom_booking_length->payment_settings['enabled'] === '1'){
+            $payment_method = $order->custom_booking_length->payment_settings['method'];
+            $payment_amount = $order->custom_booking_length->payment_settings['amount'] * $request->seats;
+            $payment_cancel_deadline =  $order->custom_booking_length->payment_settings['cancel_deadline'];
+        }else{
+            $payment_method = $place->setting('online-payment-method');
+            $payment_amount = $place->setting('online-payment-amount') * $request->seats;
+            $payment_cancel_deadline = $place->setting('online-payment-cancel-deadline');
+        }
         $currency = $place->setting('online-payment-currency');
-        $cancel_deadline = $place->setting('online-payment-cancel-deadline');
         $marks = [
-            'method' => $method,
-            'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency,$request->place_id),
-            'amountWithoutDiscount' => $amount,
+            'method' => $payment_method,
+            'amount' => self::getAmountAfterDiscount($payment_amount,$request->giftcard_code,$currency,$request->place_id),
+            'amountWithoutDiscount' => $payment_amount,
             'giftcard_code' => $request->giftcard_code,
             'currency' => $currency,
-            'cancel_deadline' => $cancel_deadline
+            'cancel_deadline' => $payment_cancel_deadline
         ];
         $stripe_secret = $place->setting('stripe-secret');
         $stripe = new StripeClient($stripe_secret);
 
-        if($method === 'reserve'){ // 2) Перший метод вже є для другого треба блокувати гроші
+        if($payment_method === 'reserve'){ // 2) Перший метод вже є для другого треба блокувати гроші
             $order->status = 'pending';
             $order->timestamps = false;
             $order->save();
@@ -1178,7 +1203,7 @@ class OrderController extends Controller
                 $setup_intent = $stripe->setupIntents->retrieve($request->setup_intent_id);
                 try {
                     $payment_intent = $stripe->paymentIntents->create([
-                        'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency,$request->place_id) * 100,
+                        'amount' => self::getAmountAfterDiscount($payment_amount,$request->giftcard_code,$currency,$request->place_id) * 100,
                         'currency' => $currency,
                         'confirm' => true,
                         'off_session' => true,
@@ -1202,11 +1227,11 @@ class OrderController extends Controller
                 $marks['payment_intent_id'] = $payment_intent->id;
                 $marks['need_capture'] = true;
             }
-        }elseif($method === 'no_show'){ // 3) для третього методу треба створити card_token і його ід записати в marks
+        }elseif($payment_method === 'no_show'){ // 3) для третього методу треба створити card_token і його ід записати в marks
             $setup_intent = $stripe->setupIntents->retrieve($request->setup_intent_id);
             try {
                 $payment_intent = $stripe->paymentIntents->create([
-                    'amount' => self::getAmountAfterDiscount($amount,$request->giftcard_code,$currency,$request->place_id) * 100,
+                    'amount' => self::getAmountAfterDiscount($payment_amount,$request->giftcard_code,$currency,$request->place_id) * 100,
                     'currency' => $currency,
                     'confirm' => true,
                     'off_session' => true,

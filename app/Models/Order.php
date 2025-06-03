@@ -35,6 +35,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $phone
  *
  * @property Place $place
+ * @property CustomBookingLength $custom_booking_length
  * @method static Order find(mixed $order_id)
  */
 class Order extends Model

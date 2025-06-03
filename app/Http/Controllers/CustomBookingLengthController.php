@@ -70,7 +70,9 @@ class CustomBookingLengthController extends Controller
             'spec_dates' => $request->has('spec_dates') && $request->spec_dates != 'null' ? $request->spec_dates : [],
             'time_intervals' => $request->has('time_intervals') && $request->time_intervals != 'null' ? $request->time_intervals : [],
             'image' => $filename,
-            'min_time_before' => $request->min_time_before
+            'min_time_before' => $request->min_time_before,
+            'is_overwrite' => $request->is_overwrite,
+            'payment_settings' => $request->payment_settings
         ]);
 
         Log::add($request,'create-custom_booking_length','Created custom booking length #'.$custom_booking_length->id);
@@ -148,7 +150,9 @@ class CustomBookingLengthController extends Controller
             'spec_dates' => $request->has('spec_dates') && $request->spec_dates != 'null' ? $request->spec_dates : [],
             'time_intervals' => $request->has('time_intervals') && $request->time_intervals != 'null' ? $request->time_intervals : [],
             'image' => $filename ? $filename : $custom_booking_length->image,
-            'min_time_before' => $request->min_time_before
+            'min_time_before' => $request->min_time_before,
+            'is_overwrite' => $request->is_overwrite,
+            'payment_settings' => $request->payment_settings
         ]);
 
         Log::add($request,'change-custom_booking_length','Changed custom booking length #'.$id);
@@ -251,6 +255,7 @@ class CustomBookingLengthController extends Controller
             ->whereHas('areas', function ($q) use ($request){
                 $q->where('areas.id', $request->area_id);
             })
+            ->where('is_overwrite',1)
             ->where('active', 1)
             ->where('start_date', '<=', $request->reservation_date)
             ->where('end_date', '>=', $request->reservation_date)
@@ -258,6 +263,20 @@ class CustomBookingLengthController extends Controller
             ->where('min', '<=', $request->seats)
             ->orderBy('priority', 'desc')
             ->get();
+
+        if(!$custom_lengths || count($custom_lengths) == 0){
+            $custom_lengths = CustomBookingLength::where('place_id',$request->place_id)
+                ->whereHas('areas', function ($q) use ($request){
+                    $q->where('areas.id', $request->area_id);
+                })
+                ->where('active', 1)
+                ->where('start_date', '<=', $request->reservation_date)
+                ->where('end_date', '>=', $request->reservation_date)
+                ->where('max', '>=', $request->seats)
+                ->where('min', '<=', $request->seats)
+                ->orderBy('priority', 'desc')
+                ->get();
+        }
 
         $lengths_data = [];
         foreach ($custom_lengths as $custom_length){

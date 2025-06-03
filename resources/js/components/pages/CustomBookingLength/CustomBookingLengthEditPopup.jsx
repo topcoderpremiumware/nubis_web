@@ -13,7 +13,7 @@ import {
   DialogTitle, FormControl,
   FormControlLabel, FormGroup, FormLabel,
   Grid,
-  IconButton, InputLabel, MenuItem, Select, TextField,
+  IconButton, InputLabel, MenuItem, Select, Switch, TextField,
 } from "@mui/material";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
@@ -23,6 +23,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PictureUploadButton from "../../components/PictureUploadButton";
 import Box from '@mui/material/Box';
+import PaymentSettings from "./PaymentSettings";
 
 export default function CustomBookingLengthEditPopup(props) {
   const { t } = useTranslation();
@@ -140,6 +141,7 @@ export default function CustomBookingLengthEditPopup(props) {
     if(e.target.name === 'min_time_before') setLengths(prev => ({...prev, min_time_before: e.target.value}))
     if(e.target.name === 'preparation_length') setLengths(prev => ({...prev, preparation_length: e.target.value}))
     if(e.target.name === 'active') setLengths(prev => ({...prev, active: e.target.checked ? 1 : 0}))
+    if(e.target.name === 'is_overwrite') setLengths(prev => ({...prev, is_overwrite: e.target.checked ? 1 : 0}))
     if(e.target.name === 'start_date') setLengths(prev => ({...prev, start_date: e.target.value}))
     if(e.target.name === 'end_date') setLengths(prev => ({...prev, end_date: e.target.value}))
     if(e.target.name === 'min') setLengths(prev => ({...prev, min: e.target.value}))
@@ -158,6 +160,18 @@ export default function CustomBookingLengthEditPopup(props) {
       labels[selectedLang]['description'] = e.target.value
       setLengths(prev => ({...prev, labels: labels}))
     }
+    if(e.target.name === 'payment_settings_enabled') setLengths(prev => ({...prev,
+      payment_settings: {...prev.payment_settings, enabled: e.target.checked ? 1 : 0}
+    }))
+    if(e.target.name === 'payment_settings_method') setLengths(prev => ({...prev,
+      payment_settings: {...prev.payment_settings, method: e.target.value}
+    }))
+    if(e.target.name === 'payment_settings_amount') setLengths(prev => ({...prev,
+      payment_settings: {...prev.payment_settings, amount: e.target.value}
+    }))
+    if(e.target.name === 'payment_settings_cancel_deadline') setLengths(prev => ({...prev,
+      payment_settings: {...prev.payment_settings, cancel_deadline: e.target.value}
+    }))
   }
 
   const handleClose = () => {
@@ -322,6 +336,13 @@ export default function CustomBookingLengthEditPopup(props) {
                 })}
               </Select>
             </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControlLabel
+              control={<Checkbox name="is_overwrite" checked={parseInt(lengths.is_overwrite) === 1} onChange={onChange}/>}
+              label={t('Is overwrite')}
+              labelPlacement="end"
+            />
           </Grid>
         </Grid>
         <ListSubheader component="div" disableSticky sx={{mb:2}}>{t('Calendar Selection')}</ListSubheader>
@@ -527,6 +548,9 @@ export default function CustomBookingLengthEditPopup(props) {
             </FormControl>
           </Grid>
         </Grid>
+
+        <PaymentSettings onChange={onChange} lengths={lengths}/>
+
         <ListSubheader component="div" disableSticky sx={{mb:2}}>{t('Translations')}</ListSubheader>
         <Grid container spacing={2} sx={{pb: 2}}>
           <Grid item xs={12} sm={6}>

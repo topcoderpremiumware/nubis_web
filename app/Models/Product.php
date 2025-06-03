@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
  * @property Place $place
  * @property Collection<ProductCategory> $product_categories
  * @property Collection<Check> $checks
+ * @property Collection<Course> $courses
  * @method static Product create(array $array)
  */
 class Product extends Model
@@ -56,6 +57,11 @@ class Product extends Model
     {
         return $this->belongsToMany(Check::class)
             ->withPivot('price', 'quantity');
+    }
+
+    public function courses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class);
     }
 
     public function getImageUrlAttribute(): string

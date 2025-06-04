@@ -81,6 +81,11 @@ function SecondBlock(props) {
   const setTimelineType = (type) => {
     setTimeline(type.length);
     console.log('setTimelineId', type)
+    if(type.hasOwnProperty('payment_settings')){
+      window.payment_settings = type.payment_settings
+    }else{
+      window.payment_settings = []
+    }
     setTimelineId(type.id)
     const extraTimesArray = (timereq) =>
       extraTimeReq

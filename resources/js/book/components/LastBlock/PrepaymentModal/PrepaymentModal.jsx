@@ -53,8 +53,16 @@ const PrepaymentModal = (props) => {
     clientSecret: stripeSecret
   };
 
-  const method = paymentInfo?.['online-payment-method']
-  const total = method === 'no_show' ? 0 : guestValue * paymentInfo['online-payment-amount']
+  let method, total, cancel_deadline;
+  if(window.payment_settings.hasOwnProperty('enabled') && window.payment_settings.enabled === '1'){
+    method = window.payment_settings.method
+    total = method === 'no_show' ? 0 : guestValue * window.payment_settings.amount
+    cancel_deadline = window.payment_settings.cancel_deadline
+  }else{
+    method =  paymentInfo?.['online-payment-method']
+    total = method === 'no_show' ? 0 : guestValue * paymentInfo['online-payment-amount']
+    cancel_deadline = paymentInfo['online-payment-cancel-deadline']
+  }
 
   return (
     <div
@@ -89,7 +97,7 @@ const PrepaymentModal = (props) => {
 
         <h5 className='prepayment-list-title'>Terms</h5>
         <ul className='prepayment-list'>
-          <li>The full amount is refunded for cancellation up to {cancelTimes.find(i => i.value === +paymentInfo['online-payment-cancel-deadline'])?.title} before reservation starts.</li>
+          <li>The full amount is refunded for cancellation up to {cancelTimes.find(i => i.value === +cancel_deadline)?.title} before reservation starts.</li>
           <li>No refund or deduction for absent guests.</li>
           <li>Only persons aged 18 or over may place orders.</li>
           <li>Your credit card information will not be stored.</li>

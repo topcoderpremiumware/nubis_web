@@ -23,6 +23,17 @@ function LastBlock(props) {
   const [appliedGift, setAppliedGift] = useState(null)
   const [discount, setDiscount] = useState(0)
 
+  let method, isOnline, amount;
+  if(window.payment_settings && window.payment_settings.hasOwnProperty('enabled') && window.payment_settings.enabled === '1'){
+    isOnline = true
+    method = window.payment_settings.method
+    amount = window.payment_settings.amount
+  }else{
+    isOnline = props.paymentMethod?.['is-online-payment'] === '1'
+    method = props.paymentMethod?.['online-payment-method']
+    amount = props.paymentMethod['online-payment-amount']
+  }
+
   const showModalWindow = (e) => {
     e.preventDefault();
     props.setDefaultModal("edit");
@@ -48,9 +59,6 @@ function LastBlock(props) {
   // }
 
   const makeOrderDone = async () => {
-    const isOnline = props.paymentMethod?.['is-online-payment'] === '1'
-    const method = props.paymentMethod?.['online-payment-method']
-
     try {
       if (!isOnline) {
         const response = await props.makeOrder()
@@ -146,7 +154,7 @@ function LastBlock(props) {
       setAppliedGift(res.data)
       props.setGiftCardCode(giftCode)
 
-      const orderTotal = props.guestValue * props.paymentMethod['online-payment-amount']
+      const orderTotal = props.guestValue * amount
       const currGiftAmount = res.data.initial_amount - res.data.spend_amount
 
       if (currGiftAmount) {
@@ -240,9 +248,9 @@ function LastBlock(props) {
                 />
               </div>
 
-              {props.paymentMethod?.['is-online-payment'] === '1' &&
-                (props.paymentMethod?.['online-payment-method'] === 'deduct' ||
-                  props.paymentMethod?.['online-payment-method'] === 'reserve') && (
+              {isOnline &&
+                (method === 'deduct' ||
+                  method === 'reserve') && (
                   <div>
                     <div className="client-title__comment">{t('Use giftcard')}</div>
                     <div className="discount-wrapper">

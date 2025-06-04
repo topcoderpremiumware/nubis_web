@@ -13,7 +13,14 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal, setOrderRespo
   const stripe = useStripe()
   const elements = useElements()
 
-  const method = paymentInfo?.['online-payment-method']
+  let method, amount;
+  if(window.payment_settings && window.payment_settings.hasOwnProperty('enabled') && window.payment_settings.enabled === '1'){
+    method = window.payment_settings.method
+    amount = window.payment_settings.amount
+  }else{
+    method = paymentInfo?.['online-payment-method']
+    amount = paymentInfo['online-payment-amount']
+  }
 
   const handleSubmit = async (ev) => {
     ev.preventDefault()
@@ -84,7 +91,7 @@ const PrepaymentForm = ({ paymentInfo, makeOrder, setDefaultModal, setOrderRespo
 
       {method === 'no_show' &&
         <p className="prepayment-text"><Trans>Saves credit card information and charges a fee
-          of <b>{{amount: paymentInfo?.['online-payment-amount']}}</b> per person in case of no-show or late
+          of <b>{{amount: amount}}</b> per person in case of no-show or late
           cancellation. The fee will only be deducted from the guest, if the booking is marked as a "No show/Not
           arrived"</Trans></p>
       }

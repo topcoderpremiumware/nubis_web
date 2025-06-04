@@ -400,7 +400,8 @@ class CustomBookingLengthController extends Controller
                     'image' => $custom_length->image ? Storage::disk('public')->url($custom_length->image) : '',
                     'length' => intval($custom_length->length)+intval($custom_length->preparation_length),
                     'time' => $times,
-                    'logs' => $logs
+                    'logs' => $logs,
+                    'payment_settings' => $custom_length->payment_settings,
                 ]);
             }
         }

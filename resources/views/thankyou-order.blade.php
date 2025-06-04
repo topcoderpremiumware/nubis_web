@@ -30,10 +30,12 @@
             <p><b>{{__('Guests')}}: </b> {{$order->seats}}</p>
             <p><b>{{__('Day/time')}}: </b> {{$order->reservation_time->format('d-m-Y H:i')}}</p>
             <p><b>{{__('Your contact information')}}: </b></p>
+            @if ($customer)
             <p>{{$customer->first_name}} {{$customer->last_name}}</p>
             <p>{{$customer->email}}</p>
             <p>{{$customer->phone}}</p>
             <p>{{$customer->zip_code}}</p>
+            @endif
             <p><b>{{__('Comment')}}: </b> {{$order->comment}}</p>
             <p><b>{{__('Type')}}: </b> {{$order->is_take_away ? __('Take away') : __('Eat here')}}</p>
             <p><a href="{{env('APP_URL')}}/book/{{$place->id}}"><u>{{__('Cancel a booking')}}</u></a></p>

@@ -52,7 +52,7 @@ export default function Courses(props) {
   }
 
   const addCourse = () => {
-    let c = courses;
+    let c = courses ?? []
     c.push({
       name: '',
       products: []
@@ -61,26 +61,26 @@ export default function Courses(props) {
   }
 
   const deleteCourse = (cIndex) => {
-    let c = courses;
+    let c = courses ?? []
     c.splice(cIndex, 1)
     props.onChange({target: {name: 'courses', value: c}});
   }
 
   const addProduct = (cIndex) => {
-    let c = courses;
+    let c = courses ?? [];
     c[cIndex].products.push({})
     props.onChange({target: {name: 'courses', value: c}});
   }
 
   const deleteProduct = (cIndex,pIndex) => {
-    let c = courses;
+    let c = courses ?? [];
     c[cIndex].products.splice(pIndex, 1)
     props.onChange({target: {name: 'courses', value: c}});
   }
 
   return (<>
     <ListSubheader component="div" disableSticky sx={{mb:2}}>{t('Courses')}</ListSubheader>
-    {courses.map((course,cIndex) => <div key={cIndex}>
+    {courses && courses.map((course,cIndex) => <div key={cIndex}>
       <Stack spacing={2} mb={2} direction="row" alignItems="center">
         <TextField label={t('Name')} size="small" fullWidth
                    type="text" id="name" name="name" required

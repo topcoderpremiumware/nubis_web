@@ -48,6 +48,8 @@ class CustomBookingLength extends Model
 
     protected $appends = ['area_ids','image_url'];
 
+    protected $with = ['courses'];
+
     protected $casts = [
         'max' => 'integer',
         'min' => 'integer',

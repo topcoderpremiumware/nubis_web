@@ -19,7 +19,7 @@ use Illuminate\Support\Collection;
  */
 class Course extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $guarded = [];
 
@@ -27,6 +27,8 @@ class Course extends Model
         'priority' => 'integer',
         'labels' => 'array',
     ];
+
+    protected $with = ['products'];
 
     public function custom_booking_lengths()
     {

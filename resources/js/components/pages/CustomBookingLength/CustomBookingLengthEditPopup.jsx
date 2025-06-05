@@ -24,6 +24,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PictureUploadButton from "../../components/PictureUploadButton";
 import Box from '@mui/material/Box';
 import PaymentSettings from "./PaymentSettings";
+import Courses from "./Courses";
 
 export default function CustomBookingLengthEditPopup(props) {
   const { t } = useTranslation();
@@ -171,6 +172,9 @@ export default function CustomBookingLengthEditPopup(props) {
     }))
     if(e.target.name === 'payment_settings_cancel_deadline') setLengths(prev => ({...prev,
       payment_settings: {...prev.payment_settings, cancel_deadline: e.target.value}
+    }))
+    if(e.target.name === 'courses') setLengths(prev => ({...prev,
+      courses: e.target.value
     }))
   }
 
@@ -550,6 +554,7 @@ export default function CustomBookingLengthEditPopup(props) {
         </Grid>
 
         <PaymentSettings onChange={onChange} lengths={lengths}/>
+        <Courses onChange={onChange} courses={lengths.courses}/>
 
         <ListSubheader component="div" disableSticky sx={{mb:2}}>{t('Translations')}</ListSubheader>
         <Grid container spacing={2} sx={{pb: 2}}>

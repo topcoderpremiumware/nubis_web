@@ -19,6 +19,7 @@ import CustomBookingLengthEditPopup from "./CustomBookingLengthEditPopup"
 import Moment from "moment";
 import { useNavigate } from "react-router-dom";
 import {StyledTableRow} from "../../components/StyledTableRow";
+import {generateFormData} from "../../../helper";
 
 export default function CustomBookingLength() {
   const {t} = useTranslation();
@@ -65,7 +66,7 @@ export default function CustomBookingLength() {
   }
 
   const updateCustomLength = async (customLength) => {
-    console.log('customLength', customLength)
+    console.log('customLength', JSON.stringify(customLength))
     let url = `${process.env.MIX_API_URL}/api/custom_booking_lengths`
     if (customLength.hasOwnProperty('id')) {
       url = `${process.env.MIX_API_URL}/api/custom_booking_lengths/${customLength.id}`
@@ -95,43 +96,77 @@ export default function CustomBookingLength() {
     })
   }
 
-  const generateFormData = (data) => {
-    const formData = new FormData()
-    for (const [key, value] of Object.entries(data)) {
-      if (['week_days','month_days','area_ids'].includes(key)) {
-        if(value.length){
-          value.forEach(i => {
-            formData.append(key+'[]', i)
-          })
-        }else{
-          formData.append(key, null)
-        }
-      }else if(['spec_dates','time_intervals'].includes(key)) {
-        if(value.length){
-          value.forEach((i,index) => {
-            for (const [data_key, data_value] of Object.entries(i)) {
-              formData.append(key + '['+index+']['+data_key+']', data_value)
-            }
-          })
-        }else{
-          formData.append(key, null)
-        }
-      }else if(key == 'labels'){
-        for (const [lang_key, lang_value] of Object.entries(value)) {
-          for (const [data_key, data_value] of Object.entries(lang_value)) {
-            formData.append(key+'['+lang_key+']['+data_key+']', data_value)
-          }
-        }
-      }else if(key == 'payment_settings'){
-        for (const [p_key, p_value] of Object.entries(value)) {
-          formData.append(key+'['+p_key+']', p_value)
-        }
-      }else{
-        formData.append(key, value)
-      }
-    }
-    return formData
-  }
+  // const generateFormData = (data) => {
+  //   const formData = new FormData()
+  //   for (const [key, value] of Object.entries(data)) {
+  //     if (['week_days','month_days','area_ids'].includes(key)) {
+  //       if(value.length){
+  //         value.forEach(i => {
+  //           formData.append(key+'[]', i)
+  //         })
+  //       }else{
+  //         formData.append(key, null)
+  //       }
+  //     }else if(['spec_dates','time_intervals'].includes(key)) {
+  //       if(value.length){
+  //         value.forEach((i,index) => {
+  //           for (const [data_key, data_value] of Object.entries(i)) {
+  //             formData.append(key + '['+index+']['+data_key+']', data_value)
+  //           }
+  //         })
+  //       }else{
+  //         formData.append(key, null)
+  //       }
+  //     }else if(key == 'labels'){
+  //       for (const [lang_key, lang_value] of Object.entries(value)) {
+  //         for (const [data_key, data_value] of Object.entries(lang_value)) {
+  //           formData.append(key+'['+lang_key+']['+data_key+']', data_value)
+  //         }
+  //       }
+  //     }else if(key == 'payment_settings') {
+  //       for (const [p_key, p_value] of Object.entries(value)) {
+  //         formData.append(key + '[' + p_key + ']', p_value)
+  //       }
+  //     }else if(key == 'courses'){
+  //       for (const [cIndex, c] of value) {
+  //         formData.append(key+'['+cIndex+'][name]', c.name)
+  //         for (const [pIndex, p] of c.products) {
+  //           formData.append(key+'['+cIndex+'][products]['+pIndex+']', p.id)
+  //         }
+  //       }
+  //     }else{
+  //       formData.append(key, value)
+  //     }
+  //   }
+  //   return formData
+  // }
+
+  // const generateFormData = (data,form = new FormData(), namespace = '') => {
+  //   for (let key in data) {
+  //     if (!data.hasOwnProperty(key)) continue;
+  //
+  //     const value = data[key];
+  //     const formKey = namespace ? `${namespace}[${key}]` : key;
+  //
+  //     if (value instanceof Date) {
+  //       form.append(formKey, value.toISOString());
+  //     } else if (value instanceof File || value instanceof Blob) {
+  //       form.append(formKey, value);
+  //     } else if (typeof value === 'object' && value !== null) {
+  //       if (Array.isArray(value)) {
+  //         value.forEach((item, index) => {
+  //           generateFormData(item, form, `${formKey}[${index}]`);
+  //         });
+  //       } else {
+  //         generateFormData(value, form, formKey);
+  //       }
+  //     } else if (value !== undefined) {
+  //       form.append(formKey, value);
+  //     }
+  //   }
+  //
+  //   return form;
+  // }
 
   const openEditPopup = (time) => {
     if (!time) time = {

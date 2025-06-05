@@ -3,33 +3,35 @@ import moment from "moment";
 
 export const normalizeNumber = (number) => (number < 10 ? `0${number}` : number);
 
-export const generateFormData = data => {
-  const formData = new FormData()
+export const generateFormData = (obj, form = new FormData(), namespace = '') => {
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
 
-  for (const [key, value] of Object.entries(data)) {
-    console.log('formData',key, value)
-    if (value !== undefined) {
-      if (Array.isArray(value)) {
-        if(value.length){
-          value.forEach(i => {
-            let i_temp = typeof i == 'object' ? JSON.stringify(i) : i
-            formData.append(key+'[]', i_temp)
-          })
-        }else{
-          formData.append(key+'[]', null)
+    const value = obj[key];
+    const formKey = namespace ? `${namespace}[${key}]` : key;
+
+    if (value instanceof Date) {
+      form.append(formKey, value.toISOString());
+    } else if (value instanceof File || value instanceof Blob) {
+      form.append(formKey, value);
+    } else if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        const arrayKey = `${formKey}[${index}]`;
+
+        if (typeof item === 'object' && item !== null) {
+          generateFormData(item, form, arrayKey);
+        } else {
+          form.append(arrayKey, item);
         }
-      } else {
-        let value_temp = typeof value == 'object' ? JSON.stringify(value) : value
-        formData.append(key, value_temp)
-      }
+      });
+    } else if (typeof value === 'object' && value !== null) {
+      generateFormData(value, form, formKey);
+    } else if (value !== undefined) {
+      form.append(formKey, value);
     }
   }
 
-  return formData
-}
-
-export function formatFormData(data) {
-  return Object.keys(data).map(d => `${d}: ${data[d]}`);
+  return form;
 }
 
 export function isMobile() {

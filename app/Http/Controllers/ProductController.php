@@ -47,7 +47,7 @@ class ProductController extends Controller
             'stock' => $request->stock,
             'tax' => $request->tax,
             'type' => $request->type,
-            'is_free_price' => $request->is_free_price
+            'is_free_price' => $request->is_free_price == 'undefined' ? 0 : $request->is_free_price
         ]);
 
         if($request->has('product_category_ids')){
@@ -115,7 +115,7 @@ class ProductController extends Controller
             'stock' => $request->stock,
             'tax' => $request->tax,
             'type' => $request->type,
-            'is_free_price' => $request->is_free_price
+            'is_free_price' => $request->is_free_price == 'undefined' ? 0 : $request->is_free_price
         ]);
 
         if($request->has('product_category_ids')){

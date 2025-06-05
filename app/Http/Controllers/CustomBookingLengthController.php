@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\CustomBookingLength;
 use App\Models\Log;
 use App\Models\Order;
@@ -9,6 +10,7 @@ use App\Models\Timetable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CustomBookingLengthController extends Controller
@@ -74,6 +76,8 @@ class CustomBookingLengthController extends Controller
             'is_overwrite' => $request->is_overwrite,
             'payment_settings' => $request->payment_settings
         ]);
+
+        $this->syncCourses($request, $custom_booking_length);
 
         Log::add($request,'create-custom_booking_length','Created custom booking length #'.$custom_booking_length->id);
 
@@ -155,6 +159,8 @@ class CustomBookingLengthController extends Controller
             'payment_settings' => $request->payment_settings
         ]);
 
+        $this->syncCourses($request, $custom_booking_length);
+
         Log::add($request,'change-custom_booking_length','Changed custom booking length #'.$id);
 
         if($res){
@@ -164,6 +170,35 @@ class CustomBookingLengthController extends Controller
         }else{
             return response()->json(['message' => 'Custom booking length not updated'],400);
         }
+    }
+
+    private function syncCourses($request, $custom_booking_length)
+    {
+        $courseIdsToKeep = [];
+        DB::transaction(function () use ($request, $custom_booking_length, &$courseIdsToKeep) {
+            foreach ($request->courses as $courseData) {
+                $course = Course::firstOrNew([
+                    'name' => $courseData['name'],
+                    'custom_booking_length_id' => $custom_booking_length->id,
+                ]);
+
+                if (!$course->exists) {
+                    $course->save();
+                }
+
+                $courseIdsToKeep[] = $course->id;
+
+                $productIds = collect($courseData['products'] ?? [])->pluck('id')->toArray();
+
+                $course->products()->sync($productIds);
+            }
+
+            $custom_booking_length->courses()
+                ->whereNotIn('id', $courseIdsToKeep)
+                ->each(function ($course) {
+                    $course->delete();
+                });
+        });
     }
 
     public function delete($id, Request $request)

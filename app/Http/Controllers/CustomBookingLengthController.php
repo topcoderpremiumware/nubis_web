@@ -73,8 +73,9 @@ class CustomBookingLengthController extends Controller
             'time_intervals' => $request->has('time_intervals') && $request->time_intervals != 'null' ? $request->time_intervals : [],
             'image' => $filename,
             'min_time_before' => $request->min_time_before,
-            'is_overwrite' => $request->is_overwrite,
-            'payment_settings' => $request->payment_settings
+            'is_overwrite' => $request->is_overwrite ?? 0,
+            'payment_settings' => $request->payment_settings,
+            'price' => $request->price
         ]);
 
         $this->syncCourses($request, $custom_booking_length);
@@ -155,8 +156,9 @@ class CustomBookingLengthController extends Controller
             'time_intervals' => $request->has('time_intervals') && $request->time_intervals != 'null' ? $request->time_intervals : [],
             'image' => $filename ? $filename : $custom_booking_length->image,
             'min_time_before' => $request->min_time_before,
-            'is_overwrite' => $request->is_overwrite,
-            'payment_settings' => $request->payment_settings
+            'is_overwrite' => $request->is_overwrite ?? 0,
+            'payment_settings' => $request->payment_settings,
+            'price' => $request->price
         ]);
 
         $this->syncCourses($request, $custom_booking_length);
@@ -176,21 +178,23 @@ class CustomBookingLengthController extends Controller
     {
         $courseIdsToKeep = [];
         DB::transaction(function () use ($request, $custom_booking_length, &$courseIdsToKeep) {
-            foreach ($request->courses as $courseData) {
-                $course = Course::firstOrNew([
-                    'name' => $courseData['name'],
-                    'custom_booking_length_id' => $custom_booking_length->id,
-                ]);
+            if($request->courses){
+                foreach ($request->courses as $courseData) {
+                    $course = Course::firstOrNew([
+                        'name' => $courseData['name'],
+                        'custom_booking_length_id' => $custom_booking_length->id,
+                    ]);
 
-                if (!$course->exists) {
-                    $course->save();
+                    if (!$course->exists) {
+                        $course->save();
+                    }
+
+                    $courseIdsToKeep[] = $course->id;
+
+                    $productIds = collect($courseData['products'] ?? [])->pluck('id')->toArray();
+
+                    $course->products()->sync($productIds);
                 }
-
-                $courseIdsToKeep[] = $course->id;
-
-                $productIds = collect($courseData['products'] ?? [])->pluck('id')->toArray();
-
-                $course->products()->sync($productIds);
             }
 
             $custom_booking_length->courses()
@@ -437,6 +441,7 @@ class CustomBookingLengthController extends Controller
                     'time' => $times,
                     'logs' => $logs,
                     'payment_settings' => $custom_length->payment_settings,
+                    'courses' => $custom_length->courses,
                 ]);
             }
         }

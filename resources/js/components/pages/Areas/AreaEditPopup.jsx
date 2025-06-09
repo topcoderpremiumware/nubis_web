@@ -123,6 +123,7 @@ export default function AreaEditPopup(props) {
           <Grid item xs={12}  sm={4}>
             <TextField label={t('Priority')} size="small" fullWidth
                        type="number" id="priority" name="priority" required
+                       onWheel={(e) => e.target.blur()}
                        onChange={onChange} value={area.priority}
             />
           </Grid>

@@ -143,6 +143,7 @@ export default function CustomBookingLengthEditPopup(props) {
     if(e.target.name === 'preparation_length') setLengths(prev => ({...prev, preparation_length: e.target.value}))
     if(e.target.name === 'active') setLengths(prev => ({...prev, active: e.target.checked ? 1 : 0}))
     if(e.target.name === 'is_overwrite') setLengths(prev => ({...prev, is_overwrite: e.target.checked ? 1 : 0}))
+    if(e.target.name === 'price') setLengths(prev => ({...prev, price: e.target.value}))
     if(e.target.name === 'start_date') setLengths(prev => ({...prev, start_date: e.target.value}))
     if(e.target.name === 'end_date') setLengths(prev => ({...prev, end_date: e.target.value}))
     if(e.target.name === 'min') setLengths(prev => ({...prev, min: e.target.value}))
@@ -348,6 +349,14 @@ export default function CustomBookingLengthEditPopup(props) {
               labelPlacement="end"
             />
           </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField label={t('Price')} size="small" fullWidth
+                       name="price"
+                       type="number" value={lengths.price}
+                       onWheel={(e) => e.target.blur()}
+                       onChange={onChange}
+            />
+          </Grid>
         </Grid>
         <ListSubheader component="div" disableSticky sx={{mb:2}}>{t('Calendar Selection')}</ListSubheader>
         <Grid container spacing={2} sx={{pb: 2}}>
@@ -523,12 +532,14 @@ export default function CustomBookingLengthEditPopup(props) {
           <Grid item xs={12} sm={4}>
             <TextField label={t('Min Seats')} size="small" fullWidth
                        type="number" id="min" name="min" required
+                       onWheel={(e) => e.target.blur()}
                        onChange={onChange} value={lengths.min}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField label={t('Max Seats')} size="small" fullWidth
                        type="number" id="max" name="max" required
+                       onWheel={(e) => e.target.blur()}
                        onChange={onChange} value={lengths.max}
             />
           </Grid>
@@ -591,6 +602,7 @@ export default function CustomBookingLengthEditPopup(props) {
           <Grid item xs={12}  sm={4}>
             <TextField label={t('Priority')} size="small" fullWidth
                        type="number" id="priority" name="priority" required
+                       onWheel={(e) => e.target.blur()}
                        onChange={onChange} value={lengths.priority}
             />
           </Grid>

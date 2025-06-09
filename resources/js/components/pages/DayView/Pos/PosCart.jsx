@@ -75,6 +75,7 @@ export default function PosCart(props){
     }
     function handleAddProductToCart(product){
       let tempChecks = checksRef.current
+      if(tempChecks[selectedCheckIndexRef.current].advance_id) return
       if(tempChecks.length === 0){
         tempChecks.push({
           place_id: localStorage.getItem('place_id'),
@@ -111,6 +112,7 @@ export default function PosCart(props){
     }
     function handleRemoveProductToCart(product){
       let tempChecks = checksRef.current
+      if(tempChecks[selectedCheckIndexRef.current].advance_id) return
       if(tempChecks[selectedCheckIndexRef.current].status === 'closed'){
         eventBus.dispatch("notification", {type: 'error', message: 'Cart is closed'});
         return
@@ -339,6 +341,22 @@ export default function PosCart(props){
     })
   }
 
+  const createRemainderCheck = () => {
+    console.log('createRemainderCheck')
+    let check = checks[selectedCheckIndex]
+    axios.post(`${process.env.MIX_API_URL}/api/checks/${check.id}/full_payment`, {
+    }, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Remainder receipt created successfully'});
+      getChecks()
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+  }
+
   const menuItems = () => {
     let items = [];
     if(selectedMenuCheck && selectedMenuCheck.status !== 'closed'){
@@ -369,6 +387,10 @@ export default function PosCart(props){
     if(selectedMenuCheck && selectedMenuCheck === checks[selectedCheckIndex] &&
       checks[selectedCheckIndex].hasOwnProperty('id')){
       items.push(<MenuItem key="6" onClick={(e) => setSendReceiptOpen(true)}>{t('Send receipt')}</MenuItem>)
+    }
+    if(selectedMenuCheck && selectedMenuCheck === checks[selectedCheckIndex] &&
+      checks[selectedCheckIndex].hasOwnProperty('id') && checks[selectedCheckIndex].payment_on_delivery && !checks[selectedCheckIndex].remainder){
+      items.push(<MenuItem key="7" onClick={(e) => createRemainderCheck()}>{t('Full payment')}</MenuItem>)
     }
     return items
   }

@@ -239,6 +239,7 @@ export default function NewGiftCardPopup({ open, handleClose }) {
 
               <TextField label={t('Count')} size="small" fullWidth sx={{mb: 2}}
                          type="number" id="count" name="count"
+                         onWheel={(e) => e.target.blur()}
                          InputProps={{inputProps: {min: 1, max: 100}}}
                          value={count}
                          onChange={ev => setCount(ev.target.value)}/>
@@ -253,6 +254,7 @@ export default function NewGiftCardPopup({ open, handleClose }) {
               {type === 'amount' &&
                 <TextField label={t('Amount')} size="small" fullWidth sx={{mb: 2}}
                            type="number" id="amount" name="amount"
+                           onWheel={(e) => e.target.blur()}
                            InputProps={{inputProps: {min: 100, max: 10000}}}
                            value={amount}
                            onChange={ev => setAmount(ev.target.value)}/>}

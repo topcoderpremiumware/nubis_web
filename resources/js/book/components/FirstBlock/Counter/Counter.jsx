@@ -6,13 +6,13 @@ function Counter(props) {
   const { t } = useTranslation();
 
   function increment() {
-    if(props.guestValue < props.maxSeats)
-    props.setGuestValue(props.guestValue + 1);
+    if(!props.max || props.value < props.max)
+    props.onChange(props.value + 1);
   }
 
   function decrement() {
-    if (props.guestValue !== 0) {
-      props.setGuestValue(props.guestValue - 1);
+    if (props.value !== 0) {
+      props.onChange(props.value - 1);
     }
   }
 
@@ -21,7 +21,7 @@ function Counter(props) {
       <button onClick={decrement} className="decrement">
         –
       </button>
-      <div className="title-counter">{props.guestValue}</div>
+      <div className="title-counter">{props.value}</div>
       <button onClick={increment} className="increment">
         +
       </button>

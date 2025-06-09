@@ -43,9 +43,15 @@ export default function CheckTable(props){
                   {parseFloat(props.check.discount)?.toFixed(2)}{props.check.discount_type.includes('percent') ? '%' : ''}
                 </TableCell>
               </StyledTableRow>}
+            {props.check.advance_id &&
             <StyledTableRow>
               <TableCell size="small"></TableCell>
-              <TableCell size="small"><b>{t('Total')}</b></TableCell>
+              <TableCell size="small"><b>{t('Prepayment')} #{props.check.advance?.place_check_id}</b></TableCell>
+              <TableCell size="small" align="right"><b>{(props.check.advance?.total*-1).toFixed(2) || '0.00'}</b></TableCell>
+            </StyledTableRow>}
+            <StyledTableRow>
+              <TableCell size="small"></TableCell>
+              <TableCell size="small"><b>{props.check.payment_on_delivery ? t('Prepayment') : t('Total')}</b></TableCell>
               <TableCell size="small" align="right"><b>{props.check.total?.toFixed(2) || '0.00'}</b></TableCell>
             </StyledTableRow>
           </>: <></>}

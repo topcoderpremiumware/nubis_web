@@ -139,7 +139,7 @@ class CheckController extends Controller
 
     public function getAllByOrder($order_id, Request $request)
     {
-        $checks = Check::with('products')
+        $checks = Check::with('products','advance','remainder')
             ->where('order_id',$order_id)
             ->whereIn('status',['open','closed'])
             ->get();
@@ -796,5 +796,36 @@ class CheckController extends Controller
         $check->save();
 
         return response()->json(['message' => 'Check updated']);
+    }
+
+    public function full_payment($id, Request $request)
+    {
+        $check = Check::find($id);
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($check->place_id)) abort(400, 'It\'s not your place');
+
+        $newCheck = Check::create([
+            'place_id' => $check->place_id,
+            'order_id' => $check->order_id,
+            'status' => 'open',
+            'subtotal' => $check->subtotal,
+            'total' => $check->payment_on_delivery,
+            'discount' => $check->discount,
+            'discount_type' => $check->discount_type,
+            'advance_id' => $check->id
+        ]);
+
+        $sync_array = [];
+        foreach ($check->products as $product) {
+            $sync_array[$product->id] = [
+                'price' => $product->pivot->price,
+                'quantity' => $product->pivot->quantity,
+            ];
+        }
+
+        $newCheck->products()->sync($sync_array);
+
+        Log::add($request,'create-check','Created check #'.$newCheck->id);
+
+        return response()->json($newCheck);
     }
 }

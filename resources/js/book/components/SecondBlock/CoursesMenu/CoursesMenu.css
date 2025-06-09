@@ -1,0 +1,105 @@
+.course_product{
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.course_product .image{
+  width: 62px;
+  height: 62px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.course_product .course_description{
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  flex: 1;
+}
+.course_product .course_description .title{
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  margin: 0;
+  letter-spacing: normal;
+  display: inline;
+  text-align: left;
+}
+
+.course_product .course_description .title-counter{
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+}
+.course_product .course_description .decrement,
+.course_product .course_description .increment{
+  width: 32px;
+  height: 32px;
+  background: #EEEEEE;
+  color: #2E2E2E;
+  border: none;
+  padding: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  margin: 0;
+  border-radius: 4px;
+  line-height: 1;
+  transition: all 0.2s;
+}
+.course_product .course_description .decrement:hover,
+.course_product .course_description .increment:hover{
+  background: #FF9763;
+  color: #fff;
+}
+.course_product .course_description .counter{
+  border: 0;
+  max-width: 105px;
+  padding: 0;
+  margin: 0;
+}
+.course_total{
+  margin-right: -8px;
+  margin-left: -8px;
+  margin-top: 20px;
+  background: #FF9763;
+  color: #ffffff;
+  padding: 20px 24px;
+}
+.course_total .course_total_title{
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+.course_total .course_total_line{
+  display: flex;
+  margin-bottom: 8px;
+}
+.course_total .course_total_line > div{
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+}
+.course_total .course_total_line > div:nth-child(2){
+  margin-left: auto;
+}
+.course_total .course_total_line .course_total_line_title{
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  color: #FFDCCA;
+}
+.course_total button{
+  border: 0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #FF9763;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  margin-top: 24px;
+  width: 100%;
+  padding: 10px;
+}

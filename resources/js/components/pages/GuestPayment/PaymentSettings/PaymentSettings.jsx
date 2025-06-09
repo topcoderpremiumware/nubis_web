@@ -342,6 +342,7 @@ const PaymentSettings = () => {
           <div className="d-flex gap-1">
             <TextField label={t('Amount')} size="small" fullWidth
               type="number" value={amount}
+               onWheel={(e) => e.target.blur()}
               onChange={ev => setAmount(ev.target.value)}
               disabled={!prepayment}
             />

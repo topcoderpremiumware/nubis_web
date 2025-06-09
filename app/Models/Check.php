@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
@@ -38,6 +39,8 @@ use Illuminate\Support\Collection;
  * @property integer $place_check_id
  * @property string $certificate
  * @property array $bank_log
+ * @property float $payment_on_delivery
+ * @property integer $advance_id // check_id of advance
  *
  * @property Place $place
  * @property Order $order
@@ -45,6 +48,8 @@ use Illuminate\Support\Collection;
  * @property User $printed
  * @property Check $parent
  * @property Collection<Check> $refunds
+ * @property Check $advance
+ * @property Check $remainder
  * @method static Check find($id)
  */
 class Check extends Model
@@ -52,6 +57,8 @@ class Check extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+//    protected $with = [];
 
     protected $casts = [
         'deleted_at' => 'datetime',
@@ -114,5 +121,15 @@ class Check extends Model
     public function refunds(): HasMany
     {
         return $this->hasMany(Check::class,'parent_id');
+    }
+
+    public function advance(): BelongsTo
+    {
+        return $this->belongsTo(Check::class, 'advance_id');
+    }
+
+    public function remainder(): HasOne
+    {
+        return $this->hasOne(Check::class, 'advance_id');
     }
 }

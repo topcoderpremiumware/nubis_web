@@ -86,9 +86,10 @@ export default function PaymentSettings(props) {
     </Grid>
     <Grid container spacing={2} sx={{pb: 2}}>
       <Grid item xs={12} sm={6}>
-        <TextField label={t('Price')} size="small" fullWidth
+        <TextField label={t('Payment Price')} size="small" fullWidth
          name="payment_settings_amount"
          type="number" value={props.lengths.payment_settings?.amount}
+         onWheel={(e) => e.target.blur()}
          onChange={props.onChange}
          disabled={!parseInt(props.lengths.payment_settings?.enabled)}
         />

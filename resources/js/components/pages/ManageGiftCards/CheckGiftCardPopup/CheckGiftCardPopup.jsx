@@ -163,6 +163,7 @@ export default function CheckGiftCardPopup({ open, handleClose }) {
               <div className="col-md-6">
                 <TextField label={t('Amount')} size="small" fullWidth sx={{ mb: 2 }}
                   type="number" id="amount" name="amount"
+                   onWheel={(e) => e.target.blur()}
                   InputProps={{ inputProps: { min: 1, max: 10000 } }}
                   value={amount}
                   onChange={ev => setAmount(ev.target.value)} />

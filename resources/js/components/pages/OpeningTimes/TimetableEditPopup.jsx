@@ -292,6 +292,7 @@ export default function TimetableEditPopup(props) {
           <Grid item xs={12} sm={4}>
             <TextField label={t('Max seats')} size="small" fullWidth
                        type="number" id="max" name="max" required
+                       onWheel={(e) => e.target.blur()}
                        onChange={onChange} value={timetable.max}
                        />
           </Grid>

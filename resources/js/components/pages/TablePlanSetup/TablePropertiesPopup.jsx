@@ -134,6 +134,7 @@ export default function TablePropertiesPopup(props) {
             <TextField label={t('Number')} size="small" fullWidth
                        type="number" id="number" name="number" required
                        onChange={onChange} value={table.data.number}
+                       onWheel={(e) => e.target.blur()}
                        error={numberError.length > 0}
                        helperText={
                          <>{numberError.map(el => {return t(el)})}</>

@@ -330,6 +330,7 @@ const App = () => {
           place_id: getPlaceId(),
           area_id: localStorage.getItem('area_id'),
           seats: guestValue,
+          courses: window.courses,
           reservation_time: `${selectedDay.year}-${normalizeNumber(
             selectedDay.month
           )}-${normalizeNumber(selectedDay.day)} ${selectedTime}`,

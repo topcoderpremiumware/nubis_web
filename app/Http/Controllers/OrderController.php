@@ -8,6 +8,7 @@ use App\Events\OrderRestored;
 use App\Events\OrderUpdated;
 use App\Helpers\TemplateHelper;
 use App\Models\BlackList;
+use App\Models\Check;
 use App\Models\Customer;
 use App\Models\Giftcard;
 use App\Models\Log;
@@ -1056,6 +1057,9 @@ class OrderController extends Controller
             $payment_amount = $place->setting('online-payment-amount');
             $payment_cancel_deadline = $place->setting('online-payment-cancel-deadline');
         }
+        $advance = in_array($payment_method,['deduct','reserve']) ? $payment_amount : 0;
+
+        $this->saveCoursesToCheck($request->courses,$order,$advance);
 
         if($payment_enabled) {
             if ($payment_method === 'deduct') {
@@ -1103,6 +1107,69 @@ class OrderController extends Controller
         $order->prepayment_url = $prepayment_url;
         event(new OrderCreated($order));
         return response()->json($order);
+    }
+
+    private function saveCoursesToCheck($courses, Order $order, $advance): void
+    {
+        if($courses && count($courses) > 0){
+            $total = 0;
+            $total_products = [];
+            // Рахування загальної вартості товарів і кількості по кожному товару
+            foreach ($courses as $course) {
+                if (!empty($course['products'])) {
+                    foreach ($course['products'] as $product) {
+                        if(array_key_exists('count',$product)) {
+                            $total += $product['count'] * $product['selling_price'];
+                            $index = array_search($product['id'], array_column($total_products, 'id'));
+                            if($index === false){
+                                $total_products[] = $product;
+                            }else{
+                                $total_products[$index]['count'] += $product['count'];
+                            }
+                        }
+                    }
+                }
+            }
+            $subtotal = $total;
+
+            $check_data = [
+                'place_id' => $order->place_id,
+                'order_id' => $order->id,
+                'status' => 'closed',
+                'subtotal' => number_format($subtotal,2), //сума кількості продуктів на ціну
+                'total' => number_format($total,2), // відняти від сабтотала знижку
+                'payment_method' => 'card'
+            ];
+
+            // Приведення тотал товарів до рівня ціни меню за допомогою знижки
+            if($order->custom_booking_length->price){
+                $discount = $total - $order->custom_booking_length->price;
+                if($discount != 0){
+                    $total = $order->custom_booking_length->price;
+                    $check_data['total'] = number_format($total,2);
+                    $check_data['discount'] = $discount;
+                    $check_data['discount_type'] = 'custom_amount';
+                }
+            }
+            // Використання авансу
+            if($advance && $advance < $total){
+                $check_data['total'] = number_format($advance,2);
+                $check_data['payment_on_delivery'] = number_format($total - $advance,2);
+            }
+
+            $check = Check::create($check_data);
+
+            if(!empty($course['products'])){
+                $sync_array = [];
+                foreach ($total_products as $product) {
+                    $sync_array[$product['id']] = [
+                        'price' => $product['selling_price'],
+                        'quantity' => $product['count']
+                    ];
+                }
+                $check->products()->sync($sync_array);
+            }
+        }
     }
 
     private function getPrepaymentUrl($request,$order): JsonResponse|string

@@ -34,9 +34,9 @@ function Title(props) {
         {t('Welcome to the online booking for')} {props.restaurantInfo.name}
       </div>
       <div className="description" dangerouslySetInnerHTML={{ __html: onlineBookingDescription}} />
-      {onlineBookingTitle ? <div className="title" dangerouslySetInnerHTML={{ __html: onlineBookingTitle }} /> : <Trans i18nKey="select_number_of_guests">
+      {onlineBookingTitle ? <div className="title" dangerouslySetInnerHTML={{ __html: onlineBookingTitle }} /> : <div className="title"><Trans i18nKey="select_number_of_guests">
         Select number <br /> of Guests
-      </Trans>}
+      </Trans></div>}
     </div>
   );
 }

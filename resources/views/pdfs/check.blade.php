@@ -23,8 +23,11 @@
         $order = $check->order;
         $currency = $place->setting('online-payment-currency');
         $vat = 0;
+        $ac = 1; // advance coefficient
+        if($check->payment_on_delivery) $ac = $check->total / ($check->total + $check->payment_on_delivery);
+        if($check->advance_id)  $ac = $check->total / ($check->total + $check->advance->total);
         foreach ($check->products as $product) {
-            $p_total = (float)$product->pivot->price * (float)$product->pivot->quantity;
+            $p_total = (float)$product->pivot->price * (float)$product->pivot->quantity * $ac;
             if($check->discount){
                 if(str_contains($check->discount_type,'percent')){
                     $p_discount = $p_total * $check->discount / 100;
@@ -70,10 +73,22 @@
     <div style="float:none;clear:both;"></div>
     <div>{{__('Discount',[],$place->language)}} <span style="float: right">{{number_format($check->discount,2)}} {{(str_contains($check->discount_type,'percent') ? '%' : $currency)}}</span></div>
     <div style="float:none;clear:both;"></div>
+    @if($check->advance_id)
+    <div>{{__('Prepayment',[],$place->language)}} ref. {{$check->advance->place_check_id}}<span style="float: right">{{number_format($check->advance->total*-1,2)}} {{$currency}}</span></div>
+    <div style="float:none;clear:both;"></div>
+    @endif
     <div>{{__('VAT',[],$place->language)}} 25% <span style="float: right">{{number_format($vat,2)}} {{$currency}}</span></div>
     <div style="float:none;clear:both;"></div>
-    <div>{{__('Total',[],$place->language)}} <span style="float: right;font-weight:bold;font-size: 16pt">{{number_format($check->total,2)}} {{$currency}}</span></div>
+    @if($check->payment_on_delivery)
+        <div>{{__('Prepayment',[],$place->language)}} <span style="float: right;font-weight:bold;font-size: 16pt">{{number_format($check->total,2)}} {{$currency}}</span></div>
+    @else
+        <div>{{__('Total',[],$place->language)}} <span style="float: right;font-weight:bold;font-size: 16pt">{{number_format($check->total,2)}} {{$currency}}</span></div>
+    @endif
     <div style="float:none;clear:both;"></div>
+    @if($check->payment_on_delivery)
+        <div>{{__('Remaining amount',[],$place->language)}} <span style="float: right">{{number_format($check->payment_on_delivery,2)}} {{$currency}}</span></div>
+        <div style="float:none;clear:both;"></div>
+    @endif
     <hr>
     @if($check->payment_method === 'card')
         <div>{{__('Received',[],$place->language)}} {{__('on card',[],$place->language)}}

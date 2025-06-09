@@ -15,6 +15,9 @@ import SelectRestaurantModal from "./SelectRestaurantModal/SelectRestaurantModal
 import moment from "moment";
 import CalendarTooltip from "./Calendar/CalendarTooltip";
 import axios from "axios";
+import CoursesMenu from "./CoursesMenu/CoursesMenu";
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import {IconButton} from "@mui/material";
 
 function SecondBlock(props) {
   const { t } = useTranslation();
@@ -36,6 +39,7 @@ function SecondBlock(props) {
   const [extraTimeReq, setExtraTimeReq] = useState([]);
   const [times, setTimes] = useState([]);
   const [nonWorkingDayReason, setNonWorkingDayReason] = useState('')
+  const [openCoursesMenu, setOpenCoursesMenu] = useState(false)
 
   useEffect(async () => {
     if(!selectedDay){
@@ -62,7 +66,7 @@ function SecondBlock(props) {
 
   useEffect(async () => {
     if(extraTimeReq.length > 0){
-      setTimelineType(extraTimeReq[0])
+      setTimelineType(extraTimeReq[0],true)
     }
   }, [extraTimeReq]);
 
@@ -78,13 +82,16 @@ function SecondBlock(props) {
   //   }
   // }, [times, extraTimeReq])
 
-  const setTimelineType = (type) => {
+  const setTimelineType = (type, isDefault= false) => {
     setTimeline(type.length);
     console.log('setTimelineId', type)
-    if(type.hasOwnProperty('payment_settings')){
+    if(!isDefault && type.hasOwnProperty('payment_settings')){
       window.payment_settings = type.payment_settings
+      window.courses = [...type.courses]
+      if(type.courses.length > 0) setOpenCoursesMenu(true)
     }else{
       window.payment_settings = []
+      window.courses = []
     }
     setTimelineId(type.id)
     const extraTimesArray = (timereq) =>
@@ -326,7 +333,10 @@ function SecondBlock(props) {
                     <div className="select-time-wrapper">
                       {blockTime?.image && <img src={blockTime.image} alt="" />}
                       <div>
-                        <p className="select-time-title">{blockTime.name}</p>
+                        <p className="select-time-title">{blockTime.name}
+                          {(blockTime.courses.length > 0 && blockTime.id === timelineId) ?
+                            <IconButton onClick={e => setOpenCoursesMenu(true)}><MenuBookIcon sx={{fontSize: "30px",marginTop: "-20px"}}/></IconButton> : null}
+                        </p>
                         {blockTime.description}
                       </div>
                     </div>
@@ -362,6 +372,7 @@ function SecondBlock(props) {
           </div>
         </div>
       </div>
+      <CoursesMenu open={openCoursesMenu} setOpen={setOpenCoursesMenu}/>
       {(props.defaultModal === "email" ||
         props.defaultModal === "emailWait") && (
           <MainModal

@@ -91,31 +91,6 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
     return out
   }
 
-    [
-    ,
-    { field: 'pos', headerName: t('POS'), width: 100, renderCell: (params) =>
-        <span style={{cursor: "pointer"}} onClick={(e) => openPos(e,params.row)}>{t('POS')}</span>, type: 'actions', },
-    { field: 'status', headerName: t('Status'), width: 100 },
-    { field: 'from', headerName: t('From'), width: 70 },
-    { field: 'to', headerName: t('To'), width: 70 },
-    { field: 'table_first_name', headerName: t('First name'), width: 130 },
-    { field: 'table_last_name', headerName: t('Last name'), width: 130 },
-    { field: 'seats', headerName: t('Seats'), width: 10 },
-    // { field: 'take_away', headerName: t('Take away'), width: 100 },
-    { field: 'drag', headerName: t('Drag'), width: 20, renderCell: (params) => <DragIndicatorIcon style={{cursor: "pointer"}}/>},
-    { field: 'tables', headerName: t('Tables'), width: 70, editable: true },
-    { field: 'length', headerName: t('Booking Length'), width: 100 },
-    { field: 'source', headerName: t('Source'), width: 70 },
-    { field: 'comment', headerName: t('Note'), width: 200},
-    { field: 'amount', headerName: t('Amount'), width: 100},
-    { field: 'code', headerName: t('Code'), width: 100},
-    { field: 'menu', headerName: t('Menu'), width: 100},
-    { field: 'order_date', headerName: t('Order date'), width: 140 },
-    { field: 'area_name', headerName: t('Area'), width: 160 },
-    { field: 'tableplan_name', headerName: t('Tableplan'), width: 160 },
-    { field: 'author_name', headerName: t('Admin'), width: 160 },
-  ];
-
   const openPos = (e, order) => {
     setSelectedOrder(order)
     eventBus.dispatch('openPosPopUp')

@@ -251,5 +251,7 @@
     "Automatic SMS & Emails": "Automatiske SMS & e-mails",
     "Custom Table Layouts": "Tilpassede bordlayouts",
     "Guest Payment Integrated": "Gæstebetaling integreret",
-    "Custom Menus per Table": "Tilpassede menuer pr. bord"
+    "Custom Menus per Table": "Tilpassede menuer pr. bord",
+    "Prepayment": "Forudbetaling",
+    "Remaining amount": "Resterende beløb"
 }

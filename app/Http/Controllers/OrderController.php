@@ -1136,8 +1136,8 @@ class OrderController extends Controller
                 'place_id' => $order->place_id,
                 'order_id' => $order->id,
                 'status' => 'closed',
-                'subtotal' => number_format($subtotal,2), //сума кількості продуктів на ціну
-                'total' => number_format($total,2), // відняти від сабтотала знижку
+                'subtotal' => round($subtotal,2), //сума кількості продуктів на ціну
+                'total' => round($total,2), // відняти від сабтотала знижку
                 'payment_method' => 'card'
             ];
 
@@ -1146,15 +1146,15 @@ class OrderController extends Controller
                 $discount = $total - ($order->custom_booking_length->price * $order->seats);
                 if($discount != 0){
                     $total = $order->custom_booking_length->price * $order->seats;
-                    $check_data['total'] = number_format($total,2);
+                    $check_data['total'] = round($total,2);
                     $check_data['discount'] = $discount;
                     $check_data['discount_type'] = 'custom_amount';
                 }
             }
             // Використання авансу
             if($advance && $advance < $total){
-                $check_data['total'] = number_format($advance * $order->seats,2);
-                $check_data['payment_on_delivery'] = number_format($total - $advance,2);
+                $check_data['total'] = round($advance * $order->seats,2);
+                $check_data['payment_on_delivery'] = round($total - $advance,2);
             }
 
             $check = Check::create($check_data);

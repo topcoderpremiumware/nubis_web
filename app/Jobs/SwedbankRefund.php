@@ -28,7 +28,7 @@ class SwedbankRefund implements ShouldQueue
      */
     public function __construct($amount,$check_id,$terminal_id,$user_id)
     {
-       $this->amount = number_format($amount,2);
+       $this->amount = round($amount,2);
        $this->check_id = $check_id;
        $this->terminal_id = $terminal_id;
        $this->user_id = $user_id;

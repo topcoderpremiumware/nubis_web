@@ -13,17 +13,19 @@ export default function DayViewTop() {
   const [tableSidebar, setTableSidebar] = useState('');
 
   const openTableSidebar = (type) => {
-    if(!localStorage.getItem('place_id')){
-      eventBus.dispatch("notification", {type: 'error', message: 'Place is not selected'});
-      return;
-    }
-    if(!localStorage.getItem('area_id')){
-      eventBus.dispatch("notification", {type: 'error', message: 'Area is not selected'});
-      return;
-    }
-    if(!localStorage.getItem('time')){
-      eventBus.dispatch("notification", {type: 'error', message: 'Time is not selected'});
-      return;
+    if(type != 'food'){
+      if(!localStorage.getItem('place_id')){
+        eventBus.dispatch("notification", {type: 'error', message: 'Place is not selected'});
+        return;
+      }
+      if(!localStorage.getItem('area_id')){
+        eventBus.dispatch("notification", {type: 'error', message: 'Area is not selected'});
+        return;
+      }
+      if(!localStorage.getItem('time')){
+        eventBus.dispatch("notification", {type: 'error', message: 'Time is not selected'});
+        return;
+      }
     }
     if(tableSidebar === type) type = ''
     setTableSidebar(type)

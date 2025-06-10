@@ -1697,4 +1697,44 @@ class OrderController extends Controller
 
         return response()->json($order);
     }
+
+    public function getProducts(Request $request): JsonResponse
+    {
+        $request->validate([
+            'place_id' => 'required|exists:places,id',
+            'area_id' => 'required', //|exists:areas,id
+            'reservation_from' => 'required|date_format:Y-m-d H:i:s',
+            'reservation_to' => 'required|date_format:Y-m-d H:i:s',
+        ]);
+
+        if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
+            abort(400,'It\'s not your place');
+        }
+
+        $orders = Order::where('place_id',$request->place_id)->orderBy('reservation_time','ASC');
+        if($request->area_id != 'all') {
+            $orders = $orders->where('area_id', $request->area_id);
+        }
+        $orders = $orders->whereBetween('reservation_time', [$request->reservation_from, $request->reservation_to])
+            ->pluck('id');
+
+        $checks = Check::whereIn('order_id',$orders)
+            ->whereNull('advance_id')
+            ->get();
+
+        $products = [];
+        foreach ($checks as $check) {
+            /* @var Check $check */
+            foreach ($check->products as $product) {
+                $index = array_search($product->id, array_column($products, 'id'));
+                if($index === false){
+                    $products[] = ['id' => $product->id, 'name' => $product->name, 'quantity' => $product->pivot->quantity];
+                }else{
+                    $products[$index]['quantity'] += $product->pivot->quantity;
+                }
+            }
+        }
+
+        return response()->json($products);
+    }
 }

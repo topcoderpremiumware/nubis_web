@@ -162,6 +162,7 @@ Route::middleware('auth:user_api')->group(function(){
 
     Route::post('orders',[OrderController::class, 'create'])->middleware('bill_paid:booking');
     Route::get('orders/{id}',[OrderController::class, 'getId'])->where('id', '[0-9]+');
+    Route::get('orders/products',[OrderController::class, 'getProducts']);
     Route::post('orders/{id}',[OrderController::class, 'save'])->where('id', '[0-9]+');
     Route::get('orders',[OrderController::class, 'getAllByParams']);
     Route::delete('orders/{id}',[OrderController::class, 'delete'])->where('id', '[0-9]+');

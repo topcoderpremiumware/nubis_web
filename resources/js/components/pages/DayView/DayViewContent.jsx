@@ -141,12 +141,12 @@ export default function DayViewContent() {
             setFullWidth={setIsFullWidth}
           />
         </div>}
-        {/*{tableSidebar === 'food' && <div className="tablePlanSidebar">*/}
-        {/*  <FoodPlan*/}
-        {/*    isFullWidth={isFullWidth}*/}
-        {/*    setFullWidth={setIsFullWidth}*/}
-        {/*  />*/}
-        {/*</div>}*/}
+        {tableSidebar === 'food' && <div className="tablePlanSidebar">
+          <FoodPlan
+            isFullWidth={isFullWidth}
+            setFullWidth={setIsFullWidth}
+          />
+        </div>}
       </div>
       <BottomPanel selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
       {(selectedOrder && posOpen) &&

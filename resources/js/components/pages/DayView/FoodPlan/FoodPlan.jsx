@@ -1,46 +1,27 @@
 import React, {useEffect, useState} from "react";
 import {useTranslation} from 'react-i18next';
-import Timeline from 'react-calendar-timeline'
 import 'react-calendar-timeline/lib/Timeline.css'
-import {Button, Tooltip} from "@mui/material";
-import TimelineHeaders from "react-calendar-timeline/lib/lib/headers/TimelineHeaders";
-import DateHeader from "react-calendar-timeline/lib/lib/headers/DateHeader";
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import Moment from "moment";
 import {BsFullscreen, BsFullscreenExit} from "react-icons/bs";
 import eventBus from "../../../../eventBus";
-// https://www.npmjs.com/package/react-calendar-timeline
+import {StyledTableRow} from "../../../components/StyledTableRow";
 
 export default function FoodPlan(props) {
   const { t } = useTranslation();
-
-  const selectedDate = localStorage.getItem('date') || Moment.utc().format('YYYY-MM-DD')
-  const selectedTime = JSON.parse(localStorage.getItem('time'))
-
-  const [groups, setGroups] = useState([])
-  const [items, setItems] = useState([])
-  const [lineFrom, setLineFrom] = useState(Moment(selectedDate+' '+(selectedTime.from || '00:00:00'),'YYYY-MM-DD HH:mm:ss'))
-  const [lineTo, setLineTo] = useState(Moment(selectedDate+' '+(selectedTime.to || '22:59:59'),'YYYY-MM-DD HH:mm:ss').add(1,'hour'))
+  const [products, setProducts] = useState([])
 
   let channelName
 
-  const itemRenderer = ({item, itemContext, getItemProps, getResizeProps}) => {
-    const { left: leftResizeProps, right: rightResizeProps } = getResizeProps()
-    return (
-      <Tooltip title={item.tip} arrow>
-        <div {...getItemProps(item.itemProps)}>
-          {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : ''}
-            <div
-              className="rct-item-content"
-              style={{ maxHeight: `${itemContext.dimensions.height}` }}
-            >{item.title_name}</div>
-          {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : ''}
-        </div>
-      </Tooltip>
-    )
-  }
-
   useEffect(() => {
-    getPlan()
     getOrders()
     function placeChanged(){
       getOrders()
@@ -53,13 +34,13 @@ export default function FoodPlan(props) {
         })
     }
     function timeChanged(){
-      redrawComponent()
+      getOrders()
     }
     function areaChanged(){
-      redrawComponent()
+      getOrders()
     }
     function dateChanged(){
-      redrawComponent()
+      getOrders()
     }
     function orderEdited(){
       getOrders()
@@ -93,103 +74,42 @@ export default function FoodPlan(props) {
     }
   },[])
 
-  const redrawComponent = () => {
-    getPlan()
-    getOrders()
-  }
-
-  const getPlan = () => {
-    axios.get(`${process.env.MIX_API_URL}/api/tableplans/${selectedTime['tableplan_id']}`, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    }).then(response => {
-      let g = []
-      response.data.data.forEach(item => {
-        if(!item.type.includes('land')){
-          g.push({id: item.number, title: '#'+item.number+' - '+item.seats})
-        }
-      })
-      setGroups(g)
-    }).catch(error => {
-    })
-  }
-
   const getOrders = () => {
-    axios.get(`${process.env.MIX_API_URL}/api/orders`, {
+    let date = localStorage.getItem('date') || Moment().utc().format('YYYY-MM-DD')
+    let time = JSON.parse(localStorage.getItem('time'))
+    axios.get(`${process.env.MIX_API_URL}/api/orders/products`, {
       params: {
         place_id: localStorage.getItem('place_id'),
         area_id: localStorage.getItem('area_id'),
-        reservation_from: selectedDate+' '+(selectedTime.from || '00:00:00'),
-        reservation_to: selectedDate+' '+(selectedTime.to || '23:59:59')
+        reservation_from: date+' '+(time?.from || '00:00:00'),
+        reservation_to: date+' '+(time?.to || '23:59:59')
       },
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      let tempLineFrom = lineFrom;
-      let tempLineTo = lineTo;
-      let orders = response.data.map(item => {
-        if(item.status === 'waiting' || item.is_take_away) return false
-        item.from = Moment(Moment.utc(item.reservation_time).format('YYYY-MM-DD HH:mm:ss'))
-        item.to = Moment(Moment.utc(item.reservation_time).format('YYYY-MM-DD HH:mm:ss')).add(item.length, 'minutes')
-        if(tempLineFrom.isAfter(item.from)) tempLineFrom = item.from.clone()
-        if(tempLineTo.isBefore(item.to)) tempLineTo = item.to.clone().add(1,'hours')
-        return item
-      }).filter(x => x).sort((a, b) => a.from.valueOf() - b.from.valueOf())
-      setLineFrom(tempLineFrom)
-      setLineTo(tempLineTo)
-      let it = []
-      orders.forEach(item => {
-        item.table_ids.forEach(t => {
-          it.push({
-            id: item.id+'_'+t,
-            group: t,
-            title_name:  '#'+item.id+', ('+item.seats + ') ' +(item.customer_id ? item.customer.first_name+' '+item.customer.last_name :
-              (item?.first_name ? item.first_name+' '+item.last_name : 'Walk in')),
-            tip: tableTip(item),
-            canMove: false,
-            canResize: false,
-            start_time: item.from.valueOf(),
-            end_time: item.to.valueOf()
-          })
-        })
-      })
-      setItems(it)
+      setProducts(response.data)
     }).catch(error => {
     })
   }
 
-  const tableTip = (order) => {
-    return (<div>
-      {order.customer_id ? (order.customer.first_name+' '+order.customer.last_name) : 'Walk in'}
-      <br/>
-      {order.from.format('HH:mm')+' - '+order.to.format('HH:mm')}
-      <br/>
-      {order.seats+' '+t('seats')}
-      <br/>
-      {order.table_ids.join(', ')+' '+t('table')}
-    </div>)
-  }
-
-  return (<div style={{width:2000}}>
-    {(groups && items) && <Timeline
-      groups={groups}
-      items={items}
-      itemRenderer={itemRenderer}
-      buffer={1}
-      minZoom={6 * 60 * 60 * 1000}
-      maxZoom={6 * 60 * 60 * 1000}
-      // defaultTimeStart={lineFrom}
-      // defaultTimeEnd={lineTo}
-      visibleTimeStart={lineFrom.valueOf()}
-      visibleTimeEnd={lineTo.valueOf()}
-    >
-      <TimelineHeaders>
-        <DateHeader unit="primaryHeader" labelFormat="YYYY-MM-DD" />
-        <DateHeader labelFormat="HH:mm" />
-      </TimelineHeaders>
-    </Timeline>}
+  return (<>
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell size="small">{t('Name')}</TableCell>
+            <TableCell size="small" align="right">{t('Quantity')}</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {products.map((product, index) => <StyledTableRow key={index}>
+            <TableCell size="small">{product.name}</TableCell>
+            <TableCell size="small" align="right">{product.quantity}</TableCell>
+          </StyledTableRow>)}
+        </TableBody>
+      </Table>
+    </TableContainer>
     <Button
       variant="contained"
       onClick={() => props.setFullWidth(prev => !prev)}
@@ -197,5 +117,5 @@ export default function FoodPlan(props) {
     >
       {props.isFullWidth ? <BsFullscreenExit /> : <BsFullscreen />}
     </Button>
-  </div>);
+  </>);
 }

@@ -75,7 +75,7 @@ class CustomBookingLengthController extends Controller
             'min_time_before' => $request->min_time_before,
             'is_overwrite' => $request->is_overwrite ?? 0,
             'payment_settings' => $request->payment_settings,
-            'price' => $request->price ?? 0
+            'price' => $request->price === 'null' ? 0 : (float)$request->price
         ]);
 
         $this->syncCourses($request, $custom_booking_length);
@@ -158,7 +158,7 @@ class CustomBookingLengthController extends Controller
             'min_time_before' => $request->min_time_before,
             'is_overwrite' => $request->is_overwrite ?? 0,
             'payment_settings' => $request->payment_settings,
-            'price' => $request->price ?? 0
+            'price' => $request->price === 'null' ? 0 : (float)$request->price
         ]);
 
         $this->syncCourses($request, $custom_booking_length);

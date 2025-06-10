@@ -16,6 +16,7 @@ import TimeLinePlan from "./TimeLinePlan/TimeLinePlan";
 import { Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Pos from "./Pos/Pos";
+import FoodPlan from "./FoodPlan/FoodPlan";
 
 
 function TabPanel(props) {
@@ -140,6 +141,12 @@ export default function DayViewContent() {
             setFullWidth={setIsFullWidth}
           />
         </div>}
+        {/*{tableSidebar === 'food' && <div className="tablePlanSidebar">*/}
+        {/*  <FoodPlan*/}
+        {/*    isFullWidth={isFullWidth}*/}
+        {/*    setFullWidth={setIsFullWidth}*/}
+        {/*  />*/}
+        {/*</div>}*/}
       </div>
       <BottomPanel selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
       {(selectedOrder && posOpen) &&

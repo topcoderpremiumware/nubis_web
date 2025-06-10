@@ -71,7 +71,11 @@
     <hr>
     <div>{{__('Subtotal',[],$place->language)}} <span style="float: right">{{number_format($check->subtotal,2)}} {{$currency}}</span></div>
     <div style="float:none;clear:both;"></div>
+    @if($check->discount >= 0)
     <div>{{__('Discount',[],$place->language)}} <span style="float: right">{{number_format($check->discount,2)}} {{(str_contains($check->discount_type,'percent') ? '%' : $currency)}}</span></div>
+    @else
+    <div>{{__('Adjustment',[],$place->language)}} <span style="float: right">{{number_format($check->discount*-1,2)}} {{(str_contains($check->discount_type,'percent') ? '%' : $currency)}}</span></div>
+    @endif
     <div style="float:none;clear:both;"></div>
     @if($check->advance_id)
     <div>{{__('Prepayment',[],$place->language)}} ref. {{$check->advance->place_check_id}}<span style="float: right">{{number_format($check->advance->total*-1,2)}} {{$currency}}</span></div>

@@ -22,7 +22,8 @@
 }
 
 .TimeTablePopper__container{
-  min-width: 83px;
+  padding: 0 5px;
+  gap: 5px;
   height: 38px;
   border: 6px;
   background: #FFFFFF;
@@ -42,15 +43,15 @@
 .TimePlan-logo img{
   width: 21px;
 }
-.TimePlan-logo::after{
-  content: "";
-  width: 1px;
-  height: 20px;
-  background: #EFEDED;
-  top: 0;
-  right: -13px;
-  position: absolute;
-}
+//.TimePlan-logo::after{
+//  content: "";
+//  width: 1px;
+//  height: 20px;
+//  background: #EFEDED;
+//  top: 0;
+//  right: -13px;
+//  position: absolute;
+//}
 .TablePlan-logo img{
   width: 21px;
 }

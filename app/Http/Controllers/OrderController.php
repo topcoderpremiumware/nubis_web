@@ -1143,9 +1143,9 @@ class OrderController extends Controller
 
             // Приведення тотал товарів до рівня ціни меню за допомогою знижки
             if($order->custom_booking_length->price){
-                $discount = $total - $order->custom_booking_length->price;
+                $discount = $total - ($order->custom_booking_length->price * $order->seats);
                 if($discount != 0){
-                    $total = $order->custom_booking_length->price;
+                    $total = $order->custom_booking_length->price * $order->seats;
                     $check_data['total'] = number_format($total,2);
                     $check_data['discount'] = $discount;
                     $check_data['discount_type'] = 'custom_amount';
@@ -1153,7 +1153,7 @@ class OrderController extends Controller
             }
             // Використання авансу
             if($advance && $advance < $total){
-                $check_data['total'] = number_format($advance,2);
+                $check_data['total'] = number_format($advance * $order->seats,2);
                 $check_data['payment_on_delivery'] = number_format($total - $advance,2);
             }
 

@@ -38,9 +38,9 @@ export default function CheckTable(props){
             {props.check.discount &&
               <StyledTableRow>
                 <TableCell size="small"></TableCell>
-                <TableCell size="small">{t('Discount')}</TableCell>
+                <TableCell size="small">{props.check.discount > 0 ? t('Discount') : t('Adjustment')}</TableCell>
                 <TableCell size="small" align="right">
-                  {parseFloat(props.check.discount)?.toFixed(2)}{props.check.discount_type.includes('percent') ? '%' : ''}
+                  {parseFloat(props.check.discount > 0 ? props.check.discount : props.check.discount*-1)?.toFixed(2)}{props.check.discount_type.includes('percent') ? '%' : ''}
                 </TableCell>
               </StyledTableRow>}
             {(props.check && props.check.advance_id) &&

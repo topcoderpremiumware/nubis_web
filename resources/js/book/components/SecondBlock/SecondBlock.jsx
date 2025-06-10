@@ -334,7 +334,7 @@ function SecondBlock(props) {
                       {blockTime?.image && <img src={blockTime.image} alt="" />}
                       <div>
                         <p className="select-time-title">{blockTime.name}
-                          {(blockTime.courses.length > 0 && blockTime.id === timelineId) ?
+                          {(blockTime.courses.length > 0 && blockTime.id === timelineId && window.courses?.length > 0) ?
                             <IconButton onClick={e => setOpenCoursesMenu(true)}><MenuBookIcon sx={{fontSize: "30px",marginTop: "-20px"}}/></IconButton> : null}
                         </p>
                         {blockTime.description}

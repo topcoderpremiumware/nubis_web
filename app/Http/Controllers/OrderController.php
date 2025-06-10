@@ -1154,7 +1154,7 @@ class OrderController extends Controller
             // Використання авансу
             if($advance && $advance < $total){
                 $check_data['total'] = round($advance * $order->seats,2);
-                $check_data['payment_on_delivery'] = round($total - $advance,2);
+                $check_data['payment_on_delivery'] = round($total - ($advance * $order->seats),2);
             }
 
             $check = Check::create($check_data);

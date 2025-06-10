@@ -75,7 +75,6 @@ export default function PosCart(props){
     }
     function handleAddProductToCart(product){
       let tempChecks = checksRef.current
-      if(tempChecks[selectedCheckIndexRef.current].advance_id) return
       if(tempChecks.length === 0){
         tempChecks.push({
           place_id: localStorage.getItem('place_id'),
@@ -87,6 +86,7 @@ export default function PosCart(props){
         })
         setSelectedCheckIndex(0)
       }else {
+        if(tempChecks[selectedCheckIndexRef.current].advance_id) return
         if(tempChecks[selectedCheckIndexRef.current].status === 'closed'){
           eventBus.dispatch("notification", {type: 'error', message: 'Cart is closed'});
           return

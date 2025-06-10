@@ -43,7 +43,7 @@ export default function CheckTable(props){
                   {parseFloat(props.check.discount)?.toFixed(2)}{props.check.discount_type.includes('percent') ? '%' : ''}
                 </TableCell>
               </StyledTableRow>}
-            {props.check.advance_id &&
+            {(props.check && props.check.advance_id) &&
             <StyledTableRow>
               <TableCell size="small"></TableCell>
               <TableCell size="small"><b>{t('Prepayment')} #{props.check.advance?.place_check_id}</b></TableCell>

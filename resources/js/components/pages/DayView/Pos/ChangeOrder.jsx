@@ -31,7 +31,7 @@ export default function ChangeOrder(props){
   },[props])
 
   const getOrders = async (category_id = false) => {
-    if(isBills(['pos','pos_terminal'])){
+    if(isBills(['pos','pos_terminal']) && !window.is_superadmin){
       localStorage.removeItem('date')
       localStorage.removeItem('time')
       localStorage.removeItem('area_id')

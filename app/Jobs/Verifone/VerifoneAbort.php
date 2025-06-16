@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Verifone;
 
 use App\Events\TerminalAborted;
 use App\Events\TerminalError;
-use App\Events\TerminalPaid;
-use App\Events\TerminalReverted;
-use App\Models\Check;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SwedbankAbort implements ShouldQueue
+class VerifoneAbort implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -41,10 +38,10 @@ class SwedbankAbort implements ShouldQueue
      */
     public function handle()
     {
-        $sg = new \App\Gateways\SwedbankGateway($this->user_id,$this->terminal_id);
+        $vg = new \App\Gateways\VerifoneGateway($this->user_id,$this->terminal_id);
 
-        $abort_data = $sg->abort($this->check_id);
-        Log::info('SwedbankPayment::handle',['$abort_data' => $abort_data]);
+        $abort_data = $vg->abort($this->check_id);
+        Log::info('VerifoneAbort::handle',['$abort_data' => $abort_data]);
         if($abort_data){
             // TODO: make something with check about aborting
             event(new TerminalAborted($this->terminal_id,'The payment has been aborted by the terminal'));

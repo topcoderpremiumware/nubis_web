@@ -285,6 +285,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('terminals/{id}/revert',[TerminalController::class, 'sendRevert']);
     Route::post('terminals/{id}/abort',[TerminalController::class, 'sendAbort']);
     Route::post('terminals/{id}/input',[TerminalController::class, 'sendInput']);
+    Route::post('terminals/{id}/print',[TerminalController::class, 'sendPrint']);
     Route::post('terminals/{id}/refund',[TerminalController::class, 'sendRefund']);
     Route::post('websocket/from_client',[TerminalController::class, 'sendFromClient']);
 

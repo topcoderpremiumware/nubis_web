@@ -4448,6 +4448,16 @@ function TerminalEditPopup(props) {
         url: e.target.value
       });
     });
+    if (e.target.name === 'user') setTerminal(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, {
+        user: e.target.value
+      });
+    });
+    if (e.target.name === 'password') setTerminal(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, {
+        password: e.target.value
+      });
+    });
   };
 
   var handleClose = function handleClose() {
@@ -4553,7 +4563,7 @@ function TerminalEditPopup(props) {
               onChange: onChange,
               value: terminal.serial
             })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {
+          }), terminal.provider === 'swedbank' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {
             item: true,
             xs: 12,
             sm: 6,
@@ -4569,6 +4579,38 @@ function TerminalEditPopup(props) {
               value: terminal.url,
               helperText: "".concat(t('Example'), ": http://192.168.1.10:11001")
             })
+          }), terminal.provider === 'verifone' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {
+              item: true,
+              xs: 12,
+              sm: 6,
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], {
+                label: t('User ID'),
+                size: "small",
+                fullWidth: true,
+                type: "text",
+                id: "user",
+                name: "user",
+                required: true,
+                onChange: onChange,
+                value: terminal.user
+              })
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], {
+              item: true,
+              xs: 12,
+              sm: 6,
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], {
+                label: t('API Key'),
+                size: "small",
+                fullWidth: true,
+                type: "text",
+                id: "password",
+                name: "password",
+                required: true,
+                onChange: onChange,
+                value: terminal.password
+              })
+            })]
           })]
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(_mui_material__WEBPACK_IMPORTED_MODULE_15__["default"], {

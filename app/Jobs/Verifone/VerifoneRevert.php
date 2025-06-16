@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Verifone;
 
 use App\Events\TerminalError;
-use App\Events\TerminalPaid;
 use App\Events\TerminalReverted;
-use App\Models\Check;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SwedbankRevert implements ShouldQueue
+class VerifoneRevert implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -40,10 +38,10 @@ class SwedbankRevert implements ShouldQueue
      */
     public function handle()
     {
-        $sg = new \App\Gateways\SwedbankGateway($this->user_id,$this->terminal_id);
+        $vg = new \App\Gateways\VerifoneGateway($this->user_id,$this->terminal_id);
 
-        $revert_data = $sg->revert($this->check_id);
-        Log::info('SwedbankPayment::handle',['$revert_data' => $revert_data]);
+        $revert_data = $vg->revert($this->check_id);
+        Log::info('VerifoneRevert::handle',['$revert_data' => $revert_data]);
         if($revert_data){
             // TODO: make something with check about reverting
             event(new TerminalReverted($this->terminal_id,'The payment has been reverted by the terminal'));

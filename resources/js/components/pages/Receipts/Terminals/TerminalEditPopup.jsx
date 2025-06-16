@@ -27,6 +27,8 @@ export default function TerminalEditPopup(props) {
     if(e.target.name === 'name') setTerminal(prev => ({...prev, name: e.target.value}))
     if(e.target.name === 'provider') setTerminal(prev => ({...prev, provider: e.target.value}))
     if(e.target.name === 'url') setTerminal(prev => ({...prev, url: e.target.value}))
+    if(e.target.name === 'user') setTerminal(prev => ({...prev, user: e.target.value}))
+    if(e.target.name === 'password') setTerminal(prev => ({...prev, password: e.target.value}))
   }
 
   const handleClose = () => {
@@ -80,13 +82,28 @@ export default function TerminalEditPopup(props) {
                        onChange={onChange} value={terminal.serial}
             />
           </Grid>
+          {terminal.provider === 'swedbank' &&
           <Grid item xs={12} sm={6}>
             <TextField label={t('Url')} size="small" fullWidth
                        type="text" id="url" name="url" required
                        onChange={onChange} value={terminal.url}
                        helperText={`${t('Example')}: http://192.168.1.10:11001`}
             />
-          </Grid>
+          </Grid>}
+          {terminal.provider === 'verifone' && <>
+            <Grid item xs={12} sm={6}>
+              <TextField label={t('User ID')} size="small" fullWidth
+                         type="text" id="user" name="user" required
+                         onChange={onChange} value={terminal.user}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField label={t('API Key')} size="small" fullWidth
+                         type="text" id="password" name="password" required
+                         onChange={onChange} value={terminal.password}
+              />
+            </Grid>
+          </>}
         </Grid>
       </DialogContent>
       <DialogActions sx={{p:2}}>

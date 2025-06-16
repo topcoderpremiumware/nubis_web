@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Verifone;
 
 use App\Events\TerminalError;
 use App\Events\TerminalPaid;
@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SwedbankRefund implements ShouldQueue
+class VerifoneRefund implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -41,30 +41,21 @@ class SwedbankRefund implements ShouldQueue
      */
     public function handle()
     {
-        $sg = new \App\Gateways\SwedbankGateway($this->user_id,$this->terminal_id);
+        $vg = new \App\Gateways\VerifoneGateway($this->user_id,$this->terminal_id);
 
-        $refund_data = $sg->pay($this->amount,$this->check_id,'Refund');
-        Log::info('SwedbankPayment::handle',['$refund_data' => $refund_data]);
+        $refund_data = $vg->pay($this->amount,$this->check_id,'Refund');
+        Log::info('VerifoneRefund::handle',['$refund_data' => $refund_data]);
         if($refund_data){
             // 'Success' | 'Failure'
-            $result = $refund_data['PaymentResponse']['Response']['@attributes']['Result'];
-            if($result === 'Success'){
-                $receipt_text = '';
-                foreach ($refund_data['PaymentResponse']['PaymentReceipt'] as $PaymentReceipt) {
-                    Log::info('SwedbankPayment::handle',[
-                        $PaymentReceipt['@attributes']['DocumentQualifier'] => base64_decode($PaymentReceipt['OutputContent']['OutputText'])
-                    ]);
-                    if($PaymentReceipt['@attributes']['DocumentQualifier'] === 'CustomerReceipt'){
-                        $receipt_text = json_decode(base64_decode($PaymentReceipt['OutputContent']['OutputText']),true);
-                        $check = Check::find($this->check_id);
-                        $check->bank_log = $receipt_text;
-                        $check->save();
-                        event(new TerminalPaid($this->terminal_id,'The order has been refund by the terminal'));
-                    }
-                }
+            if($refund_data['PaymentResponse']['Response']['Result'] === 'SUCCESS'){
+                $PaymentReceipt = $refund_data['PaymentResponse']['PaymentReceipt'];
+                $check = Check::find($this->check_id);
+                $check->bank_log = $PaymentReceipt['OutputContent']['OutputText'];
+                $check->save();
+                event(new TerminalPaid($this->terminal_id,'The order has been refund by the terminal'));
             }else{
                 // 'Cancel' | 'Refusal' | 'NotAllowed'
-                $condition = $refund_data['PaymentResponse']['Response']['@attributes']['ErrorCondition'];
+                $condition = $refund_data['PaymentResponse']['Response']['ErrorCondition'];
                 switch ($condition){
                     case 'Cancel':
                         event(new TerminalError($this->terminal_id,'The payment was cancelled'));

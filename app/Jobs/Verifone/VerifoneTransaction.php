@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Verifone;
 
-use App\SMS\SMS;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SwedbankTransaction implements ShouldQueue
+class VerifoneTransaction implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -38,16 +36,16 @@ class SwedbankTransaction implements ShouldQueue
      */
     public function handle()
     {
-        $sg = new \App\Gateways\SwedbankGateway($this->user_id,$this->place_id,$this->terminal_id);
-        $trans_data = $sg->getTransaction();
-        Log::info('SwedbankTransaction::handle',['$trans_data' => $trans_data]);
+        $vg = new \App\Gateways\VerifoneGateway($this->user_id,$this->place_id,$this->terminal_id);
+        $trans_data = $vg->getTransaction();
+        Log::info('VerifoneTransaction::handle',['$trans_data' => $trans_data]);
         if($trans_data){
             // 'Success' | 'Failure'
-            $result = $trans_data['TransactionStatusResponse']['Response']['@attributes']['Result'];
-            $order_id = $trans_data['SaleData']['SaleTransactionID']['@attributes']['TransactionID'];
-            if($result !== 'Success'){
+            $result = $trans_data['TransactionStatusResponse']['Response']['Result'];
+            $order_id = $trans_data['SaleData']['SaleTransactionID']['TransactionID'];
+            if($result !== 'SUCCESS'){
                 // 'Cancel' | 'Refusal'
-                $condition = $trans_data['TransactionStatusResponse']['Response']['@attributes']['ErrorCondition'];
+                $condition = $trans_data['TransactionStatusResponse']['Response']['ErrorCondition'];
             }
         }
     }

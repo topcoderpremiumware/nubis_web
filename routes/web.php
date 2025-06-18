@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\CheckController;
 use App\Http\Controllers\SwedbankWebhookController;
-use App\Jobs\Swedbank\VerifonePayment;
 use App\Models\Giftcard;
 use App\Models\Order;
 use App\Models\VideoGuide;
@@ -23,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 //    return view('app');
 //})->name('home');
 Route::get('/test', function () {
-    dispatch(new VerifonePayment(20, 162, 1, 1));
+//    dispatch(new VerifonePayment(20, 162, 1, 1));
 });
 
 Route::any('/EPASSaleToPOI/3.1', [SwedbankWebhookController::class, 'webhook']);
@@ -34,10 +33,10 @@ Route::get('/change_lang/{locale}', function ($locale = null) {
     return redirect()->back();
 });
 Route::view('/giftcard/{place_id}', 'new_giftcard')->name('giftcard')->middleware('bill_paid:giftcards');
-Route::view('/feedback/{order_id}', 'feedback')->name('feedback')->middleware('bill_paid:booking');
-Route::view('/feedbacks/{place_id}', 'feedbacks')->name('feedbacks')->middleware('bill_paid:booking');
+Route::view('/feedback/{order_id}', 'feedback')->name('feedback')->middleware('bill_paid:booking,take_away');
+Route::view('/feedbacks/{place_id}', 'feedbacks')->name('feedbacks')->middleware('bill_paid:booking,take_away');
 Route::view('/terms', 'terms')->name('terms');
-Route::view('/book/{place_id}', 'book')->name('book')->middleware('bill_paid:booking');
+Route::view('/book/{place_id}', 'book')->name('book')->middleware('bill_paid:booking,take_away');
 Route::view('/', 'home')->name('home');
 Route::view('/pricing', 'pricing')->name('pricing');
 Route::view('/features', 'features')->name('features');

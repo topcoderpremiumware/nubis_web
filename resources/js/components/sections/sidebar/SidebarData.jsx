@@ -25,7 +25,7 @@ export const SidebarData = (data) => {
       {
         title: 'Booking Settings',
         path: '/BookingSettings',
-        show: isBills(['full','booking']),
+        show: isBills(['full','booking','take_away']),
       },
       {
         title: 'Areas',
@@ -35,24 +35,24 @@ export const SidebarData = (data) => {
       {
         title: 'Opening Times',
         path: '/OpeningTimes',
-        show: isBills(['full','booking']),
+        show: isBills(['full','booking','take_away']),
       },
       {
         title: 'Menus setup',
         path: '/CustomBookingLength',
-        show: isBills(['full','booking']),
+        show: isBills(['full','booking','take_away']),
       },
       {
         title: 'Notification Settings',
         path: '/NotificationsSettings',
         cName: 'sub-nav',
-        show: isBills(['full','booking','pos','pos_terminal']),
+        show: isBills(['full','booking','pos','pos_terminal','take_away']),
       },
       {
         title: 'Roles',
         path: '/Roles',
         cName: 'sub-nav',
-        show: isBills(['full','booking','pos','pos_terminal']),
+        show: isBills(['full','booking','pos','pos_terminal','take_away']),
       },
     ]
   },
@@ -60,7 +60,7 @@ export const SidebarData = (data) => {
     title: 'Daily Use',
     path: '#',
     icon: <FeaturedPlayListOutlined  className='dailyuse-icon'/>,
-    show: isBills(['full','booking']),
+    show: isBills(['full','booking','take_away']),
     subNav: [
       {
         title: 'Day View',
@@ -86,7 +86,7 @@ export const SidebarData = (data) => {
     title: 'Guest Payment',
     path: '#',
     icon: <BsCreditCard />,
-    show: ['admin','manager'].includes(data.role) && isBills(['full','booking']),
+    show: ['admin','manager'].includes(data.role) && isBills(['full','booking','take_away']),
     subNav: [
       {
         title: 'Payment Gateaway',
@@ -106,7 +106,7 @@ export const SidebarData = (data) => {
     title: 'Online Booking',
     path: '#',
     icon: <CalendarMonthOutlined />,
-    show: ['admin','manager'].includes(data.role) && isBills(['full','booking','giftcards']),
+    show: ['admin','manager'].includes(data.role) && isBills(['full','booking','giftcards','take_away']),
     subNav: [
       {
         title: 'Booking Link Guide',
@@ -139,7 +139,7 @@ export const SidebarData = (data) => {
     title: 'SMS Templates',
     path: '#',
     icon: <TiMessages/>,
-    show: ['admin','manager'].includes(data.role) && isBills(['full','booking']),
+    show: ['admin','manager'].includes(data.role) && isBills(['full','booking','take_away']),
     subNav: [
       {
         title: 'Confirmation',
@@ -175,7 +175,7 @@ export const SidebarData = (data) => {
     title: 'Email Templates',
     path: '#',
     icon: <EmailOutlined/>,
-    show: ['admin','manager'].includes(data.role) && isBills(['full','booking']),
+    show: ['admin','manager'].includes(data.role) && isBills(['full','booking','take_away']),
     subNav: [
       {
         title: 'Confirmation',
@@ -216,7 +216,7 @@ export const SidebarData = (data) => {
       {
         title: 'POS',
         path: '/POS',
-        show: data.is_superadmin || (isBills(['pos','pos_terminal']) && !isBills(['booking','full'])),
+        show: data.is_superadmin || (isBills(['pos','pos_terminal']) && !isBills(['booking','full','take_away'])),
       },
       {
         title: 'Receipts',

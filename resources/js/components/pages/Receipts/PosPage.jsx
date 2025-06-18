@@ -25,7 +25,7 @@ export default function PosPage(){
   const {t} = useTranslation();
   const [editMode, setEditMode] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState(false)
-  const [selectedPOSOrderId, setSelectedPOSOrderId] = useState(localStorage.getItem('selectedPOSOrderId'))
+  const [selectedPOSOrder, setSelectedPOSOrder] = useState(localStorage.getItem('selectedPOSOrder'))
   const [allCategories, setAllCategories] = useState([])
   const [categories, setCategories] = useState([])
   const [products, setProducts] = useState([])
@@ -66,8 +66,8 @@ export default function PosPage(){
       getProducts(categoryId)
     }
     function changedSelectedOrder(order){
-      setSelectedPOSOrderId(order.id)
-      localStorage.setItem('selectedPOSOrderId',order.id)
+      setSelectedPOSOrderId(order)
+      localStorage.setItem('selectedPOSOrder',order)
     }
     eventBus.on("placeChanged", placeChanged)
     eventBus.on("pos_create_order", pos_create_order)
@@ -293,7 +293,7 @@ export default function PosPage(){
   }
 
   const checkOrderExist = () => {
-    if(!localStorage.getItem('selectedPOSOrderId')){
+    if(!localStorage.getItem('selectedPOSOrder')){
       createPOSOrder()
     }
   }
@@ -306,8 +306,8 @@ export default function PosPage(){
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
     }).then(response => {
-      setSelectedPOSOrderId(response.data.id)
-      localStorage.setItem('selectedPOSOrderId',response.data.id)
+      setSelectedPOSOrder(response.data)
+      localStorage.setItem('selectedPOSOrder',response.data)
     }).catch(error => {
       simpleCatchError(error)
     })
@@ -403,7 +403,7 @@ export default function PosPage(){
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={5} lg={4}>
-            {selectedPOSOrderId ? <PosCart currency={paymentMethod['online-payment-currency']} orderId={selectedPOSOrderId}/> : null}
+            {selectedPOSOrder ? <PosCart currency={paymentMethod['online-payment-currency']} order={selectedPOSOrder}/> : null}
           </Grid>
         </Grid>
       </div>

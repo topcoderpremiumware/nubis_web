@@ -390,7 +390,7 @@ export default function Pos(props){
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={5} lg={4}>
-              <PosCart currency={paymentMethod['online-payment-currency']} orderId={props.orderId}/>
+              <PosCart currency={paymentMethod['online-payment-currency']} order={props.order}/>
           </Grid>
         </Grid>
       </DialogContent>

@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon $expired_at
  * @property string $payment_intent_id
  * @property string $receipt_url
- * @property string $category // full, booking, pos, pos_terminal, giftcards
+ * @property string $category // full, booking, pos, pos_terminal, giftcards, take_away
  *
  * @property Place $place
  * @method static PaidBill|null find($id)

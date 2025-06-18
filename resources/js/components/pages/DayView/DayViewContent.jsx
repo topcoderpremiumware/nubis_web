@@ -150,7 +150,7 @@ export default function DayViewContent() {
       </div>
       <BottomPanel selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
       {(selectedOrder && posOpen) &&
-        <Pos orderId={selectedOrder.id} open={posOpen} onClose={() => setPosOpen(false)}/>
+        <Pos order={selectedOrder} open={posOpen} onClose={() => setPosOpen(false)}/>
       }
     </div>
   );

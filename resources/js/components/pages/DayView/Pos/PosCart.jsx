@@ -48,6 +48,8 @@ export default function PosCart(props){
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const openMenu = Boolean(menuAnchorEl);
   const [selectedMenuCheck, setSelectedMenuCheck] = useState(null)
+  const [orderComment, setOrderComment] = useState(props.order.comment)
+
   const handleMenuClick = (event, check) => {
     event.stopPropagation()
     setSelectedMenuCheck(check)
@@ -78,7 +80,7 @@ export default function PosCart(props){
       if(tempChecks.length === 0){
         tempChecks.push({
           place_id: localStorage.getItem('place_id'),
-          order_id: props.orderId,
+          order_id: props.order.id,
           status: 'open',
           subtotal: product.selling_price,
           total: product.selling_price,
@@ -154,7 +156,7 @@ export default function PosCart(props){
       eventBus.remove("openReceiptPDF", openReceiptPDF)
       eventBus.remove("madeReversal", madeReversal)
     }
-  }, [props.orderId])
+  }, [props.order.id])
 
   useEffect(() => {
     checksRef.current = checks;
@@ -166,7 +168,7 @@ export default function PosCart(props){
 
   const getChecks = () => {
     setLoading(true)
-    axios.get(`${process.env.MIX_API_URL}/api/orders/${props.orderId}/checks`,{
+    axios.get(`${process.env.MIX_API_URL}/api/orders/${props.order.id}/checks`,{
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token')
       }
@@ -209,7 +211,7 @@ export default function PosCart(props){
   const addCart = () => {
     setChecks(prev => ([...prev,{
       place_id: localStorage.getItem('place_id'),
-      order_id: props.orderId,
+      order_id: props.order.id,
       status: 'open',
       total: 0,
       products: []
@@ -443,11 +445,25 @@ export default function PosCart(props){
     }
   }
 
+  const updateOrderComment = () => {
+    axios.post(`${process.env.MIX_API_URL}/api/orders/${props.order.id}/comment`, {
+      comment: orderComment
+    }, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+    }).then(response => {
+      eventBus.dispatch("notification", {type: 'success', message: 'Comment saved successfully'});
+    }).catch(error => {
+      simpleCatchError(error)
+    })
+  }
+
   return (<>
     <Stack spacing={2} mb={2} direction="row" alignItems="center">
       <h5>{t('Shopping cart')}</h5>
       <Stack direction="row">
-        <ChangeOrder orderId={props.orderId} />
+        <ChangeOrder orderId={props.order.id} />
         {isBills(['pos','pos_terminal']) && <IconButton onClick={e => {eventBus.dispatch('pos_create_order')}}>
           <Tooltip title={t('New order')}><AddIcon/></Tooltip>
         </IconButton>}
@@ -521,6 +537,12 @@ export default function PosCart(props){
           <div>{t('Start adding products')}</div>
         </Box>
       }
+      <TextField label={t('Comment')} size="small" multiline rows="3" sx={{mt:3}}
+                 type="text" id="comment" name="comment" fullWidth
+                 onBlur={updateOrderComment}
+                 onChange={e => setOrderComment(e.target.value)}
+                 value={orderComment}
+      />
     </Box>}
     {(checks.length > 0 && checks[selectedCheckIndex]) && <>
       <DiscountPopup

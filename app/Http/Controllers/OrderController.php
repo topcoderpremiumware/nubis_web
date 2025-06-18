@@ -1737,4 +1737,26 @@ class OrderController extends Controller
 
         return response()->json($products);
     }
+
+    public function setComment($id, Request $request): JsonResponse
+    {
+        $request->validate([
+            'comment' => 'required',
+        ]);
+
+        $order = Order::find($id);
+
+        if(!Auth::user()->places->contains($order->place_id)){
+            return response()->json([
+                'message' => 'It\'s not your place'
+            ], 400);
+        }
+
+        $order->comment = $request->comment;
+        $order->save();
+
+        Log::add($request,'change-order-comment','Changed order #'.$order->id.' comment '.$request->comment);
+
+        return response()->json(['message' => 'Order comment changed']);
+    }
 }

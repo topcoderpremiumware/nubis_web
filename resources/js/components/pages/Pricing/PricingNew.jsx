@@ -81,6 +81,13 @@ const PricingNew = () => {
                          ]}
                          onClick={() => getPaymentLink('price_1R024iCVi0riU70Ptuan8wmp','booking')}
           />
+          <PriceCategory price="795 DKK" disabled={loading}
+                         title={t('Take Away')} subtitle={t('Billed monthly.')}
+                         description={[
+
+                         ]}
+                         onClick={() => getPaymentLink('price_1RYjIwCVi0riU70Pe6uZ6WE2','take_away')}
+          />
           <PriceCategory price="495 DKK" disabled={loading}
                          title={t('POS')} subtitle={t('Billed monthly.')}
                          description={[
@@ -139,6 +146,13 @@ const PricingNew = () => {
                            t('Custom Menus per Table')
                          ]}
                          onClick={() => getPaymentLink('price_1R029GCVi0riU70PdBVcEO3f','booking')}
+          />
+          <PriceCategory discount="13" prev="795 DKK/Mo." price="695 DKK" disabled={loading}
+                         title={t('Take Away')} subtitle={t('Billed annually.')}
+                         description={[
+
+                         ]}
+                         onClick={() => getPaymentLink('price_1RYjKaCVi0riU70PnG6Vz1gv','take_away')}
           />
           <PriceCategory discount="20" prev="495 DKK/Mo." price="395 DKK" disabled={loading}
                          title={t('POS')} subtitle={t('Billed annually.')}

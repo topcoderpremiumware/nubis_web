@@ -32,4 +32,8 @@
     @foreach($products as $product)
         <div>{{$product['name']}} x {{$product['pivot']['quantity']}}</div>
     @endforeach
+    @if($order->comment)
+    <br>
+    <div>{{$order->comment}}</div>
+    @endif
 </body>

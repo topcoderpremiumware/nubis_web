@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\CustomBookingLength;
 use App\Models\Log;
 use App\Models\Order;
+use App\Models\Place;
 use App\Models\Timetable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -17,9 +18,7 @@ class CustomBookingLengthController extends Controller
 {
     public function create(Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
+        if(!Auth::user()->tokenCan('admin')) abort(401,'Unauthorized.');
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
@@ -30,7 +29,7 @@ class CustomBookingLengthController extends Controller
             'end_date' => 'date_format:Y-m-d',
             'max' => 'required|integer',
             'min' => 'required|integer',
-            'area_ids' => 'required|array',
+//            'area_ids' => 'required|array',
             'priority' => 'required|integer',
             'labels' => 'required',
 //            'month_days' => 'array',
@@ -40,10 +39,13 @@ class CustomBookingLengthController extends Controller
             'min_time_before' => 'required|integer',
         ]);
 
+        $place = Place::find($request->place_id);
+        if(!$place->is_bill_paid(['take_away']) && (!$request->area_ids || count($request->area_ids) === 0)){
+            abort(400,'Area is mandatory');
+        }
+
         if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+            abort(400,'It\'s not your place');
         }
 
         $filename = null;
@@ -75,23 +77,29 @@ class CustomBookingLengthController extends Controller
             'min_time_before' => $request->min_time_before,
             'is_overwrite' => $request->is_overwrite ?? 0,
             'payment_settings' => $request->payment_settings,
-            'price' => $request->price === 'null' ? 0 : (float)$request->price
+            'price' => $request->price === 'null' ? 0 : (float)$request->price,
         ]);
+
+        if($request->has('is_take_away')){
+            $custom_booking_length->is_take_away = $request->is_take_away;
+            $custom_booking_length->save();
+        }else if($custom_booking_length->place->is_bill_paid(['take_away'])){
+            $custom_booking_length->is_take_away = 1;
+            $custom_booking_length->save();
+        }
 
         $this->syncCourses($request, $custom_booking_length);
 
         Log::add($request,'create-custom_booking_length','Created custom booking length #'.$custom_booking_length->id);
 
-        $custom_booking_length->areas()->sync($request->area_ids);
+        if(!$place->is_bill_paid(['take_away'])) $custom_booking_length->areas()->sync($request->area_ids);
 
         return response()->json($custom_booking_length);
     }
 
     public function save($id, Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
+        if(!Auth::user()->tokenCan('admin')) abort(401,'Unauthorized.');
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
@@ -102,7 +110,7 @@ class CustomBookingLengthController extends Controller
             'end_date' => 'date_format:Y-m-d',
             'max' => 'required|integer',
             'min' => 'required|integer',
-            'area_ids' => 'required|array',
+//            'area_ids' => 'required|array',
             'priority' => 'required|integer',
             'labels' => 'required',
 //            'month_days' => 'array',
@@ -112,13 +120,16 @@ class CustomBookingLengthController extends Controller
             'min_time_before' => 'required|integer',
         ]);
 
+        $place = Place::find($request->place_id);
+        if(!$place->is_bill_paid(['take_away']) && (!$request->area_ids || count($request->area_ids) === 0)){
+            abort(400,'Area is mandatory');
+        }
+
         $custom_booking_length = CustomBookingLength::find($id);
 
         if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
             !Auth::user()->places->contains($custom_booking_length->place_id))){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+            abort(400,'It\'s not your place');
         }
 
         $filename = null;
@@ -158,7 +169,8 @@ class CustomBookingLengthController extends Controller
             'min_time_before' => $request->min_time_before,
             'is_overwrite' => $request->is_overwrite ?? 0,
             'payment_settings' => $request->payment_settings,
-            'price' => $request->price === 'null' ? 0 : (float)$request->price
+            'price' => $request->price === 'null' ? 0 : (float)$request->price,
+            'is_take_away' => $request->is_take_away
         ]);
 
         $this->syncCourses($request, $custom_booking_length);
@@ -167,7 +179,7 @@ class CustomBookingLengthController extends Controller
 
         if($res){
             $custom_booking_length = CustomBookingLength::find($id);
-            $custom_booking_length->areas()->sync($request->area_ids);
+            if(!$place->is_bill_paid(['take_away'])) $custom_booking_length->areas()->sync($request->area_ids);
             return response()->json($custom_booking_length);
         }else{
             return response()->json(['message' => 'Custom booking length not updated'],400);
@@ -266,16 +278,17 @@ class CustomBookingLengthController extends Controller
             'seats' => 'required|integer'
         ]);
         $place = \App\Models\Place::find($request->place_id);
+        $is_bill_take_away = $place->is_bill_paid(['take_away']);
 
         $request_date = Carbon::parse($request->reservation_date);
         if($request_date->lt($place->country->timeNow()->setTime(0,0,0))) return response()->json([
             'message' => 'Date must be today and later'
         ], 400);
 
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"));
-        if(empty($working_hours)) return response()->json([
-            'message' => 'Non-working day'
-        ], 400);
+        // For take_away tariff need full time without area, so let it be admin
+        $for_admin = $is_bill_take_away;
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),$for_admin);
+        if(empty($working_hours)) abort(400,'Non-working day');
 
         $time_from = $request_date->copy();
         $time_from->setTime(0, 0, 0);
@@ -290,11 +303,13 @@ class CustomBookingLengthController extends Controller
 
         $free_tables = (new OrderController())->getFreeTables($orders, $working_hours, $request->seats, false);
 
-        $custom_lengths = CustomBookingLength::where('place_id',$request->place_id)
-            ->whereHas('areas', function ($q) use ($request){
+        $custom_lengths = CustomBookingLength::where('place_id',$request->place_id);
+        if(!$is_bill_take_away) {
+            $custom_lengths = $custom_lengths->whereHas('areas', function ($q) use ($request) {
                 $q->where('areas.id', $request->area_id);
-            })
-            ->where('is_overwrite',1)
+            });
+        }
+        $custom_lengths = $custom_lengths->where('is_overwrite',1)
             ->where('active', 1)
             ->where('start_date', '<=', $request->reservation_date)
             ->where('end_date', '>=', $request->reservation_date)
@@ -304,11 +319,13 @@ class CustomBookingLengthController extends Controller
             ->get();
 
         if(!$custom_lengths || count($custom_lengths) == 0){
-            $custom_lengths = CustomBookingLength::where('place_id',$request->place_id)
-                ->whereHas('areas', function ($q) use ($request){
+            $custom_lengths = CustomBookingLength::where('place_id',$request->place_id);
+            if(!$is_bill_take_away) {
+                $custom_lengths = $custom_lengths->whereHas('areas', function ($q) use ($request) {
                     $q->where('areas.id', $request->area_id);
-                })
-                ->where('active', 1)
+                });
+            }
+            $custom_lengths = $custom_lengths->where('active', 1)
                 ->where('start_date', '<=', $request->reservation_date)
                 ->where('end_date', '>=', $request->reservation_date)
                 ->where('max', '>=', $request->seats)
@@ -431,7 +448,7 @@ class CustomBookingLengthController extends Controller
             }
             $times = array_values(array_unique($times));
 
-            if(count($times) > 0){
+            if($is_bill_take_away || count($times) > 0){
                 array_push($lengths_data,[
                     'id' => $custom_length->id,
                     'name' => $custom_length->labels[$request->language]['name'],

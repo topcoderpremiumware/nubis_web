@@ -395,7 +395,14 @@ class GiftcardController extends Controller
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4');
         $dompdf->render();
-        $dompdf->stream('giftcard.pdf', array("Attachment" => false,'compress' => false));
+//        $dompdf->stream('giftcard.pdf', array("Attachment" => false,'compress' => false));
+        return response($dompdf->output())
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="giftcard.pdf"')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Content-Transfer-Encoding', 'binary')
+            ->header('X-Content-Type-Options', 'nosniff');
     }
 
     public function delete($giftcard_id, Request $request)

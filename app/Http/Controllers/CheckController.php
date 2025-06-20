@@ -159,14 +159,14 @@ class CheckController extends Controller
         }
 
         $html = view('pdfs.check', compact('check'))->render();
-        $this->generateCheckPDF($html);
+        return $this->generateCheckPDF($html);
     }
 
     public function publicPrint($base64_id, Request $request)
     {
         $check = Check::find(base64_decode($base64_id));
         $html = view('pdfs.check', compact('check'))->render();
-        $this->generateCheckPDF($html,$check->place->name.'_'.now()->format('Y-m-d_H:i:s'));
+        return $this->generateCheckPDF($html,$check->place->name.'_'.now()->format('Y-m-d_H:i:s'));
     }
 
     public function send($id, Request $request)
@@ -215,7 +215,7 @@ class CheckController extends Controller
         }
 
         $html = view('pdfs.check_products', ['check' => $check, 'products' => $request->products, 'print_type' => $request->print_type])->render();
-        $this->generateCheckPDF($html);
+        return $this->generateCheckPDF($html);
     }
 
     public function printTemplate($data, Request $request)
@@ -224,7 +224,7 @@ class CheckController extends Controller
 
         $text = $data['Merchant']['Optional']['ReceiptString'];
         $html = view('pdfs.check_template', compact('text'))->render();
-        $this->generateCheckPDF($html);
+        return $this->generateCheckPDF($html);
     }
 
     public function delete($id, Request $request)
@@ -621,7 +621,14 @@ class CheckController extends Controller
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4');
         $dompdf->render();
-        $dompdf->stream('export_receipts.pdf', array("Attachment" => false,'compress' => false));
+//        $dompdf->stream('export_receipts.pdf', array("Attachment" => false,'compress' => false));
+        return response($dompdf->output())
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="export_receipts.pdf"')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Content-Transfer-Encoding', 'binary')
+            ->header('X-Content-Type-Options', 'nosniff');
     }
 
     public function refund($id, Request $request)
@@ -750,7 +757,7 @@ class CheckController extends Controller
         return response()->json(['message' => 'Proforma saved to the logs']);
     }
 
-    private function generateCheckPDF($html, $name = 'check'): void
+    private function generateCheckPDF($html, $name = 'check')
     {
         $options = new Options();
         $options->set('enable_remote', TRUE);
@@ -783,7 +790,14 @@ class CheckController extends Controller
         $dompdf->loadHtml($html);
         $dompdf->setPaper([0,0,5.7/2.54*72,$docHeight]);
         $dompdf->render();
-        $dompdf->stream($name.'.pdf', array("Attachment" => false,'compress' => false));
+//        $dompdf->stream($name.'.pdf', array("Attachment" => false,'compress' => false));
+        return response($dompdf->output())
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="check.pdf"')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Content-Transfer-Encoding', 'binary')
+            ->header('X-Content-Type-Options', 'nosniff');
     }
 
     public function updateBankLog($id, Request $request)

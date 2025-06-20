@@ -163,6 +163,8 @@ export default function OpeningTimes() {
   }
 
   const getAreaName = (area_id) => {
+    console.log('areas',typeof areas, areas);
+    if(!areas || areas.length === 0) return ''
     const area = areas.find(el => el.id === area_id)
     if (area) {
       return area.name

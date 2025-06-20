@@ -6,6 +6,7 @@ use App\Jobs\TryChangeTableplanInOrders;
 use App\Models\Area;
 use App\Models\Log;
 use App\Models\Order;
+use App\Models\Place;
 use App\Models\Tableplan;
 use App\Models\Timetable;
 use Carbon\Carbon;
@@ -18,14 +19,12 @@ class TimetableController extends Controller
 {
     public function create(Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
+        if(!Auth::user()->tokenCan('admin')) abort(401,'Unauthorized.');
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
 //            'tableplan_id' => 'exists:tableplans,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'start_date' => 'date_format:Y-m-d',
             'end_date' => 'date_format:Y-m-d',
             'start_time' => 'required|date_format:H:i:s',
@@ -39,15 +38,13 @@ class TimetableController extends Controller
         ]);
 
         if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+            abort(400,'It\'s not your place');
         }
 
         $timetable = Timetable::create([
             'place_id' => $request->place_id,
-            'tableplan_id' => $request->has('tableplan_id') ? $request->tableplan_id : null,
-            'area_id' => $request->area_id,
+            'tableplan_id' => $request->has('tableplan_id') && !$request->is_take_away ? $request->tableplan_id : null,
+            'area_id' => $request->has('area_id') && !$request->is_take_away ? $request->area_id : null,
             'start_date' => $request->has('start_date') ? $request->start_date : null,
             'end_date' => $request->has('end_date') ? $request->end_date : null,
             'start_time' => $request->start_time,
@@ -62,6 +59,14 @@ class TimetableController extends Controller
             'future_booking_limit' => $request->future_booking_limit,
         ]);
 
+        if($request->has('is_take_away')){
+            $timetable->is_take_away = $request->is_take_away;
+            $timetable->save();
+        }else if($timetable->place->is_bill_paid(['take_away'])){
+            $timetable->is_take_away = 1;
+            $timetable->save();
+        }
+
         dispatch(new TryChangeTableplanInOrders($request->place_id));
 
         Log::add($request,'create-timetable','Created timetable #'.$timetable->id);
@@ -71,14 +76,12 @@ class TimetableController extends Controller
 
     public function save($id, Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
+        if(!Auth::user()->tokenCan('admin')) abort(401,'Unauthorized.');
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
 //            'tableplan_id' => 'exists:tableplans,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'start_date' => 'date_format:Y-m-d',
             'end_date' => 'date_format:Y-m-d',
             'start_time' => 'required|date_format:H:i:s',
@@ -95,15 +98,13 @@ class TimetableController extends Controller
 
         if(!Auth::user()->is_superadmin && (!Auth::user()->places->contains($request->place_id) ||
             !Auth::user()->places->contains($timetable->place_id))){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+            abort(400,'It\'s not your place');
         }
 
         $res = $timetable->update([
             'place_id' => $request->place_id,
-            'tableplan_id' => $request->has('tableplan_id') ? $request->tableplan_id : null,
-            'area_id' => $request->area_id,
+            'tableplan_id' => $request->has('tableplan_id') && !$request->is_take_away ? $request->tableplan_id : null,
+            'area_id' => $request->has('area_id') && !$request->is_take_away ? $request->area_id : null,
             'start_date' => $request->has('start_date') ? $request->start_date : null,
             'end_date' => $request->has('end_date') ? $request->end_date : null,
             'start_time' => $request->start_time,
@@ -116,6 +117,7 @@ class TimetableController extends Controller
             'booking_limits' => $request->booking_limits,
             'min_time_before' => $request->min_time_before,
             'future_booking_limit' => $request->future_booking_limit,
+            'is_take_away' => $request->is_take_away
         ]);
 
         Log::add($request,'change-timetable','Changed timetable #'.$id);
@@ -131,16 +133,12 @@ class TimetableController extends Controller
 
     public function delete($id, Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
+        if(!Auth::user()->tokenCan('admin')) abort(401,'Unauthorized.');
 
         $timetable = Timetable::find($id);
 
         if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($timetable->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+            abort(400,'It\'s not your place');
         }
 
         Log::add($request,'delete-tableplan','Deleted tableplan #'.$timetable->id);
@@ -157,9 +155,7 @@ class TimetableController extends Controller
         $timetable = Timetable::find($id);
 
         if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($timetable->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+            abort(400,'It\'s not your place');
         }
 
         return response()->json($timetable);
@@ -168,9 +164,7 @@ class TimetableController extends Controller
     public function getAllByPlace($place_id, Request $request)
     {
         if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+            abort(400,'It\'s not your place');
         }
 
         $timetables = Timetable::where('place_id',$place_id)->get();
@@ -190,10 +184,12 @@ class TimetableController extends Controller
 
     public static function get_working_by_area_and_date($area_id, $date, $for_admin = false)
     {
-        $area = Area::find($area_id);
-        if(!$area) return [];
-        $default_tableplan = $area->place->tableplans()->first();
-        if(!$default_tableplan) return [];
+        if(!$for_admin){
+            $area = Area::find($area_id);
+            if(!$area) return [];
+            $default_tableplan = $area->place->tableplans()->first();
+            if(!$default_tableplan) return [];
+        }
         $date_arr = explode('-',$date);
         $without_year = $date_arr[1].'-'.$date_arr[2];
         $week_day = date('w',strtotime($date));
@@ -278,7 +274,7 @@ class TimetableController extends Controller
                 'date' => $date,
                 'from' => '00:00:00',
                 'to' => '23:59:59',
-                'tableplan_id' => $default_tableplan->id,
+                'tableplan_id' => $default_tableplan ? $default_tableplan->id : null,
                 'booking_limits' => [],
                 'length' => 0,
                 'min_time_before' => 0,
@@ -379,27 +375,26 @@ class TimetableController extends Controller
 
     public function stop_booking(Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
+        if(!Auth::user()->tokenCan('admin')) abort(401,'Unauthorized.');
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'date' => 'date_format:Y-m-d',
             'start_time' => 'date_format:H:i:s',
             'end_time' => 'date_format:H:i:s'
         ]);
 
         if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+            abort(400,'It\'s not your place');
         }
+        $place = Place::find($request->place_id);
 
-        $timetable = Timetable::where('place_id',$request->place_id)
-            ->where('area_id',$request->area_id)
-            ->where('start_date',$request->date)
+        $timetable = Timetable::where('place_id',$request->place_id);
+        if(!$place->is_bill_paid(['take_away'])){
+            $timetable = $timetable->where('area_id',$request->area_id);
+        }
+        $timetable = $timetable->where('start_date',$request->date)
             ->where('end_date',$request->date)
             ->where('start_time',$request->start_time)
             ->where('end_time',$request->end_time)
@@ -432,27 +427,27 @@ class TimetableController extends Controller
 
     public function unblock_booking(Request $request)
     {
-        if(!Auth::user()->tokenCan('admin')) return response()->json([
-            'message' => 'Unauthorized.'
-        ], 401);
+        if(!Auth::user()->tokenCan('admin')) abort(401,'Unauthorized.');
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'date' => 'date_format:Y-m-d',
             'start_time' => 'date_format:H:i:s',
             'end_time' => 'date_format:H:i:s'
         ]);
 
         if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+            abort(400,'It\'s not your place');
         }
 
-        $timetable = Timetable::where('place_id',$request->place_id)
-            ->where('area_id',$request->area_id)
-            ->where('start_date',$request->date)
+        $place = Place::find($request->place_id);
+
+        $timetable = Timetable::where('place_id',$request->place_id);
+        if(!$place->is_bill_paid(['take_away'])){
+            $timetable = $timetable->where('area_id',$request->area_id);
+        }
+        $timetable = $timetable->where('start_date',$request->date)
             ->where('end_date',$request->date)
             ->where('start_time',$request->start_time)
             ->where('end_time',$request->end_time)
@@ -474,21 +469,23 @@ class TimetableController extends Controller
 
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'date' => 'date_format:Y-m-d',
             'start_time' => 'date_format:H:i:s',
             'end_time' => 'date_format:H:i:s'
         ]);
 
         if(!Auth::user()->is_superadmin && !Auth::user()->places->contains($request->place_id)){
-            return response()->json([
-                'message' => 'It\'s not your place'
-            ], 400);
+            abort(400,'It\'s not your place');
         }
 
-        $timetable = Timetable::where('place_id',$request->place_id)
-            ->where('area_id',$request->area_id)
-            ->where('start_date',$request->date)
+        $place = Place::find($request->place_id);
+
+        $timetable = Timetable::where('place_id',$request->place_id);
+        if(!$place->is_bill_paid(['take_away'])){
+            $timetable = $timetable->where('area_id',$request->area_id);
+        }
+        $timetable = $timetable->where('start_date',$request->date)
             ->where('end_date',$request->date)
             ->where('start_time',$request->start_time) // 00:00:00
             ->where('end_time',$request->end_time) // 00:00:00

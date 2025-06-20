@@ -25,6 +25,7 @@ import PictureUploadButton from "../../components/PictureUploadButton";
 import Box from '@mui/material/Box';
 import PaymentSettings from "./PaymentSettings";
 import Courses from "./Courses";
+import {isBills} from "../../../helper";
 
 export default function CustomBookingLengthEditPopup(props) {
   const { t } = useTranslation();
@@ -143,6 +144,7 @@ export default function CustomBookingLengthEditPopup(props) {
     if(e.target.name === 'preparation_length') setLengths(prev => ({...prev, preparation_length: e.target.value}))
     if(e.target.name === 'active') setLengths(prev => ({...prev, active: e.target.checked ? 1 : 0}))
     if(e.target.name === 'is_overwrite') setLengths(prev => ({...prev, is_overwrite: e.target.checked ? 1 : 0}))
+    if(e.target.name === 'is_take_away') setLengths(prev => ({...prev, is_take_away: e.target.checked ? 1 : 0}))
     if(e.target.name === 'price') setLengths(prev => ({...prev, price: e.target.value}))
     if(e.target.name === 'start_date') setLengths(prev => ({...prev, start_date: e.target.value}))
     if(e.target.name === 'end_date') setLengths(prev => ({...prev, end_date: e.target.value}))
@@ -357,6 +359,14 @@ export default function CustomBookingLengthEditPopup(props) {
                        onChange={onChange}
             />
           </Grid>
+          {!isBills(['take_away'],window,false) &&
+            <Grid item xs={12} sm={4}>
+              <FormControlLabel
+                control={<Checkbox name="is_take_away" checked={!!lengths.is_take_away} onChange={onChange}/>}
+                label={t('Take away only')}
+                labelPlacement="end"
+              />
+            </Grid>}
         </Grid>
         <ListSubheader component="div" disableSticky sx={{mb:2}}>{t('Calendar Selection')}</ListSubheader>
         <Grid container spacing={2} sx={{pb: 2}}>
@@ -544,6 +554,8 @@ export default function CustomBookingLengthEditPopup(props) {
             />
           </Grid>
         </Grid>
+
+        {(!isBills(['take_away'],window,false) && !lengths.is_take_away) && <>
         <ListSubheader component="div" disableSticky sx={{mb:2}}>{t('Restaurant Areas')}</ListSubheader>
         <Grid container spacing={2} sx={{pb: 2}}>
           <Grid item xs={12} sm={4}>
@@ -563,6 +575,7 @@ export default function CustomBookingLengthEditPopup(props) {
             </FormControl>
           </Grid>
         </Grid>
+        </>}
 
         <PaymentSettings onChange={onChange} lengths={lengths}/>
         <Courses onChange={onChange} courses={lengths.courses}/>

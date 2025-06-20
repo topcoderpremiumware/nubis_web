@@ -60,7 +60,7 @@ Route::get('free_time',[OrderController::class, 'freeTime'])->middleware('bill_p
 Route::get('free_tables',[OrderController::class, 'freeTables'])->middleware('bill_paid:booking,take_away');
 Route::get('work_dates',[OrderController::class, 'workDates'])->middleware('bill_paid:booking,take_away');
 Route::get('work_time',[OrderController::class, 'workTime'])->middleware('bill_paid:booking,take_away');
-Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace'])->middleware('bill_paid:booking');
+Route::get('places/{place_id}/areas',[AreaController::class, 'getAllByPlace']);
 Route::get('places/{place_id}/lengths',[CustomBookingLengthController::class, 'getAllByParams'])->middleware('bill_paid:booking,take_away');
 Route::get('places/{place_id}/is_bill_paid',[PlaceController::class, 'isBillPaid']);
 Route::get('places/{place_id}/bill_paid_status',[PlaceController::class, 'getBillPaidStatus']);
@@ -123,7 +123,7 @@ Route::middleware('auth:user_api')->group(function(){
     Route::post('places/send_support',[PlaceController::class, 'sendSupport']);
     Route::post('places/{id}',[PlaceController::class, 'save']);
     Route::get('places/{place_id}/menus',[MenuController::class, 'getAllByPlace']);
-    Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace'])->middleware('bill_paid:booking');
+    Route::get('places/{place_id}/tableplans',[TableplanController::class, 'getAllByPlace']);
     Route::get('places/{place_id}/timetables',[TimetableController::class, 'getAllByPlace'])->middleware('bill_paid:booking,take_away');
     Route::get('places/{place_id}/custom_booking_lengths',[CustomBookingLengthController::class, 'getAllByPlace'])->middleware('bill_paid:booking,take_away');
     Route::get('places/{place_id}/customers',[PlaceController::class, 'getCustomers'])->middleware('bill_paid:booking,take_away');

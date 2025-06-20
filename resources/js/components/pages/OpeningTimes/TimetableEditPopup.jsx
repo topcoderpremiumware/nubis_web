@@ -19,6 +19,7 @@ import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import EditIcon from "@mui/icons-material/Edit";
 import {StyledTableRow} from "../../components/StyledTableRow";
+import {isBills} from "../../../helper";
 
 export default function TimetableEditPopup(props) {
   const { t } = useTranslation();
@@ -80,6 +81,7 @@ export default function TimetableEditPopup(props) {
       end_time: Moment.utc(e.target.value,'HH:mm:ss').format('HH:mm:ss')}))
     if(e.target.name === 'week_days') setTimetable(prev => ({...prev, week_days: e.target.value}))
     if(e.target.name === 'area_id') setTimetable(prev => ({...prev, area_id: e.target.value}))
+    if(e.target.name === 'is_take_away') setTimetable(prev => ({...prev, is_take_away: e.target.checked ? 1 : 0}))
     if(e.target.name === 'tableplan_id') setTimetable(prev => ({...prev, tableplan_id: e.target.value}))
     if(e.target.name === 'length') setTimetable(prev => ({...prev, length: e.target.value}))
     if(e.target.name === 'max') setTimetable(prev => ({...prev, max: intWrapper(e.target.value)}))
@@ -176,6 +178,7 @@ export default function TimetableEditPopup(props) {
       </DialogTitle>
       <DialogContent dividers>
         <Grid container spacing={2} sx={{pb: 2}}>
+          {(!isBills(['take_away'],window,false) && !timetable.is_take_away) && <>
           <Grid item xs={12} sm={4}>
             <FormControl size="small" fullWidth>
               <InputLabel id="label_area_id">{t('Area')}</InputLabel>
@@ -200,6 +203,15 @@ export default function TimetableEditPopup(props) {
               </Select>
             </FormControl>
           </Grid>
+          </>}
+          {!isBills(['take_away'],window,false) &&
+          <Grid item xs={12} sm={4}>
+              <FormControlLabel
+                control={<Checkbox name="is_take_away" checked={!!timetable.is_take_away} onChange={onChange}/>}
+                label={t('Take away only')}
+                labelPlacement="end"
+              />
+          </Grid>}
           <Grid item xs={12} sm={4}>
             <FormControl size="small" fullWidth>
               <InputLabel id="label_status">{t('Status')}</InputLabel>

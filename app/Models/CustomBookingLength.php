@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Storage;
  * @property array $payment_settings
  * @property bool $is_overwrite
  * @property float $price
+ * @property boolean $is_take_away
  *
  * @property Place $place
  * @property Collection<Area> $areas

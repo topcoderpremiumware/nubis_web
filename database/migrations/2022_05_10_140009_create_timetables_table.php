@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('place_id')->constrained()->onDelete('cascade');
             $table->foreignId('tableplan_id')->nullable()
                 ->constrained()->onDelete('cascade');
-            $table->foreignId('area_id')->constrained()->onDelete('cascade');
+            $table->foreignId('area_id')->nullable()->constrained()->onDelete('cascade');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->time('start_time');

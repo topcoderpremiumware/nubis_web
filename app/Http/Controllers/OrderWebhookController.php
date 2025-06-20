@@ -97,6 +97,8 @@ class OrderWebhookController extends Controller
                             $html = view('pdfs.new_giftcard', compact('giftcard'))->render();
                             $options = new Options();
                             $options->set('enable_remote', TRUE);
+                            $options->set('chroot', [public_path(), storage_path()]);
+                            $options->set('defaultFont', 'poppins');
                             $options->set('enable_html5_parser', FALSE);
                             $dompdf = new Dompdf($options);
                             $dompdf->loadHtml($html);

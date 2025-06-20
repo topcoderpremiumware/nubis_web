@@ -761,6 +761,8 @@ class CheckController extends Controller
     {
         $options = new Options();
         $options->set('enable_remote', TRUE);
+        $options->set('chroot', [public_path(), storage_path()]);
+        $options->set('defaultFont', 'poppins');
         $options->set('enable_html5_parser', FALSE);
         $options->set('dpi', 72);
 

@@ -200,6 +200,8 @@ export default function PosCart(props){
         tempChecks[scIndex].printed_id = response.data.printed_id
         setChecks(prev => ([...tempChecks]))
       }
+      setPaymentMethodOpen(false)
+      setSendReceiptOpen(true)
       eventBus.dispatch("notification", {type: 'success', message: 'Cart saved successfully'});
       return true
     }).catch(error => {
@@ -288,13 +290,12 @@ export default function PosCart(props){
 
   const onChangePaymentMethod = async (data) => {
     let tempChecks = checks
-    setSendReceiptOpen(true)
     if (tempChecks[selectedCheckIndex].status === 'closed') {
+      setSendReceiptOpen(true)
       openPDF()
     } else {
       tempChecks[selectedCheckIndex] = {...tempChecks[selectedCheckIndex], ...data}
       setChecks(prev => ([...tempChecks]))
-      setPaymentMethodOpen(false)
       saveCheck(tempChecks[selectedCheckIndex],selectedCheckIndex).then((res) => {
         if(res) openPDF()
       })

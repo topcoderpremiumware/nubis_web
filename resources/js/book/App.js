@@ -21,6 +21,7 @@ import HelloBlock from "./components/HelloBlock/HelloBlock";
 
 const App = () => {
   const ref = useRef(null);
+  const urlParams = new URLSearchParams(window.location.search);
 
   const [guestValue, setGuestValue] = useState(0);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
@@ -231,12 +232,17 @@ const App = () => {
   // Login request
 
   const testCustomer = () => {
-    myAxios.get("/api/customers").then((response) => {
+    myAxios.get("/api/customers", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    }).then((response) => {
       if(response.data.hasOwnProperty('is_superadmin')){
         logout()
       }
       console.log('testCustomer',response.data)
     }).catch((error) => {
+      logout()
       console.error('testCustomer',error)
     });
   }
@@ -325,7 +331,7 @@ const App = () => {
   const makeOrder = (setupIntentId) => {
     return myAxios
       .post(
-        "/api/make_order",
+        `/api/make_order${window.location.search}`,
         {
           place_id: getPlaceId(),
           area_id: localStorage.getItem('area_id'),
@@ -338,7 +344,7 @@ const App = () => {
           timezone_offset: new Date().getTimezoneOffset()*-1,
           status: defaultModal === "submit" ? "waiting" : "ordered",
           length: timeline,
-          is_take_away: false,
+          is_take_away: !!urlParams.get('take_away'),
           ...(giftCardCode && {giftcard_code: giftCardCode}),
           custom_booking_length_id: timelineId,
           ...(customerDenyRegister && {first_name: userData.first_name, last_name: userData.last_name, phone: userData.phone, email: userData.email}),

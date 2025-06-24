@@ -39,7 +39,7 @@ export default function WaitingModal(props) {
   };
 
   const getTime = () => {
-    axios.get(`${process.env.MIX_API_URL}/api/work_time`, {
+    axios.get(`${process.env.MIX_API_URL}/api/work_time${window.location.search}`, {
       params: {
         place_id: props.getPlaceId(),
         area_id: localStorage.getItem('area_id'),

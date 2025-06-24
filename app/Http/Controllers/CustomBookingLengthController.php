@@ -272,13 +272,16 @@ class CustomBookingLengthController extends Controller
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'reservation_date' => 'required|date_format:Y-m-d',
             'language' => 'required',
             'seats' => 'required|integer'
         ]);
         $place = \App\Models\Place::find($request->place_id);
-        $is_bill_take_away = $place->is_bill_paid(['take_away']);
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) || $request->take_away;
+        if(!$is_bill_take_away && $request->area_id){
+            abort(400,'Area is mandatory');
+        }
 
         $request_date = Carbon::parse($request->reservation_date);
         if($request_date->lt($place->country->timeNow()->setTime(0,0,0))) return response()->json([
@@ -286,8 +289,7 @@ class CustomBookingLengthController extends Controller
         ], 400);
 
         // For take_away tariff need full time without area, so let it be admin
-        $for_admin = $is_bill_take_away;
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),$for_admin);
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),!$request->area_id);
         if(empty($working_hours)) abort(400,'Non-working day');
 
         $time_from = $request_date->copy();
@@ -311,6 +313,7 @@ class CustomBookingLengthController extends Controller
         }
         $custom_lengths = $custom_lengths->where('is_overwrite',1)
             ->where('active', 1)
+            ->where('is_take_away',$is_bill_take_away ? 1 : 0)
             ->where('start_date', '<=', $request->reservation_date)
             ->where('end_date', '>=', $request->reservation_date)
             ->where('max', '>=', $request->seats)
@@ -326,6 +329,7 @@ class CustomBookingLengthController extends Controller
                 });
             }
             $custom_lengths = $custom_lengths->where('active', 1)
+                ->where('is_take_away',$is_bill_take_away ? 1 : 0)
                 ->where('start_date', '<=', $request->reservation_date)
                 ->where('end_date', '>=', $request->reservation_date)
                 ->where('max', '>=', $request->seats)

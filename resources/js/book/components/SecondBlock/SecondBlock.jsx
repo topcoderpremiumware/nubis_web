@@ -181,7 +181,7 @@ function SecondBlock(props) {
   }
 
   const getTime = (date,clicked=false) => {
-    axios.get(`${process.env.MIX_API_URL}/api/free_time`, {
+    axios.get(`${process.env.MIX_API_URL}/api/free_time${window.location.search}`, {
       params: {
         place_id: props.getPlaceId(),
         area_id: localStorage.getItem('area_id'),

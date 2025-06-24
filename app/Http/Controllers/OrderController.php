@@ -570,17 +570,20 @@ class OrderController extends Controller
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'seats' => 'required|integer',
             'from' => 'required|date_format:Y-m-d',
             'to' => 'required|date_format:Y-m-d',
         ]);
         $place = Place::find($request->place_id);
+        if((!$place->is_bill_paid(['take_away']) && !$request->take_away) && $request->area_id){
+            abort(400,'Area is mandatory');
+        }
         $period = CarbonPeriod::create($request->from, $request->to);
         $result = [];
         foreach ($period as $date) {
             if($date->lt($place->country->timeNow()->setTime(0,0,0))) continue;
-            $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"));
+            $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"),!$request->area_id);
             if(empty($working_hours)) continue;
             $time_from = $date->copy();
             $time_from->setTime(0, 0, 0);
@@ -705,17 +708,21 @@ class OrderController extends Controller
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'seats' => 'required|integer',
             'from' => 'required|date_format:Y-m-d',
             'to' => 'required|date_format:Y-m-d',
         ]);
+
         $place = Place::find($request->place_id);
+        if((!$place->is_bill_paid(['take_away']) && !$request->take_away) && $request->area_id){
+            abort(400,'Area is mandatory');
+        }
         $period = CarbonPeriod::create($request->from, $request->to);
         $result = [];
         foreach ($period as $date) {
             if($date->lt($place->country->timeNow()->setTime(0,0,0))) continue;
-            $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"));
+            $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"),!$request->area_id);
             if(empty($working_hours)) continue;
             if($this->getFreeTables(collect([]), $working_hours, $request->seats)){
                 array_push($result,$date);
@@ -728,17 +735,20 @@ class OrderController extends Controller
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'seats' => 'required|integer',
             'date' => 'required|date_format:Y-m-d',
         ]);
         $place = Place::find($request->place_id);
+        if((!$place->is_bill_paid(['take_away']) && !$request->take_away) && $request->area_id){
+            abort(400,'Area is mandatory');
+        }
         $request_date = Carbon::parse($request->date);
         if($request_date->lt($place->country->timeNow()->setTime(0,0,0))) return response()->json([
             'message' => 'Date must be today and later'
         ], 400);
 
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"));
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),!$request->area_id);
         if(empty($working_hours)) return response()->json([
             'message' => 'Non-working day'
         ], 400);
@@ -753,22 +763,25 @@ class OrderController extends Controller
     {
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'seats' => 'required|integer',
             'date' => 'required|date_format:Y-m-d',
         ]);
         $place = Place::find($request->place_id);
+        if((!$place->is_bill_paid(['take_away']) && !$request->take_away) && $request->area_id){
+            abort(400,'Area is mandatory');
+        }
         $request_date = Carbon::parse($request->date);
         if($request_date->lt($place->country->timeNow()->setTime(0,0,0))) return response()->json([
             'message' => 'Date must be today and later'
         ], 400);
 
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),$request->has('admin'));
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),($request->has('admin') || !$request->area_id));
         if(empty($working_hours)) return response()->json([
             'message' => 'Non-working day'
         ], 400);
 
-        $free_tables = $this->getFreeTables(collect([]), $working_hours, $request->seats, false,$request->has('admin'));
+        $free_tables = $this->getFreeTables(collect([]), $working_hours, $request->seats, false,($request->has('admin') || !$request->area_id));
         $work_time = [];
 
         foreach($working_hours as $working_hour){
@@ -880,13 +893,16 @@ class OrderController extends Controller
         $prepayment_url = null;
         $request->validate([
             'place_id' => 'required|exists:places,id',
-            'area_id' => 'required|exists:areas,id',
+//            'area_id' => 'required|exists:areas,id',
             'seats' => 'required|integer',
             'reservation_time' => 'required|date_format:Y-m-d H:i:s',
             'is_take_away' => 'required|boolean',
         ]);
 
         $place = Place::find($request->place_id);
+        if((!$place->is_bill_paid(['take_away']) && !$request->is_take_away) && $request->area_id){
+            abort(400,'Area is mandatory');
+        }
         $customer_deny_register = (bool)$place->setting('customer-deny-register');
 
         if(!$customer_deny_register){
@@ -902,7 +918,7 @@ class OrderController extends Controller
             'message' => 'Time must be in the future'
         ], 400);
 
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$reservation_time->format("Y-m-d"));
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$reservation_time->format("Y-m-d"),!$request->area_id);
         if(empty($working_hours)) return response()->json([
             'message' => 'Non-working day'
         ], 400);
@@ -1012,7 +1028,7 @@ class OrderController extends Controller
                 }
             }
         }else{
-            $tableplan_id = $working_hours[0]['tableplan_id'];
+            $tableplan_id = null;
             $table_ids = [1];
             $length = 120;
         }

@@ -184,6 +184,7 @@ class TimetableController extends Controller
 
     public static function get_working_by_area_and_date($area_id, $date, $for_admin = false)
     {
+        $default_tableplan = null;
         if(!$for_admin){
             $area = Area::find($area_id);
             if(!$area) return [];

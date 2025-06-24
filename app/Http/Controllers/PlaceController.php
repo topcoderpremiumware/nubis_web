@@ -318,7 +318,7 @@ class PlaceController extends Controller
     public function getMaxAvailableSeats($place_id, Request $request)
     {
         $place = Place::find($place_id);
-
+        if($place->is_bill_paid(['take_away']) || $request->take_away) return response()->json(999);
         $workings = $place->timetables()
             ->whereNotNull('tableplan_id')
             ->where('status','working')

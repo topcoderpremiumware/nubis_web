@@ -282,7 +282,7 @@ class CustomBookingLengthController extends Controller
         ]);
         $place = \App\Models\Place::find($request->place_id);
         $is_bill_take_away = ($place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full'])) || $request->take_away;
-        if(!$is_bill_take_away && $request->area_id){
+        if(!$is_bill_take_away && !$request->area_id){
             abort(400,'Area is mandatory');
         }
 

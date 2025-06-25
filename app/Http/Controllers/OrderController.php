@@ -577,7 +577,7 @@ class OrderController extends Controller
         ]);
         $place = Place::find($request->place_id);
         $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
-        if((!$is_bill_take_away && !$request->take_away) && $request->area_id){
+        if((!$is_bill_take_away && !$request->take_away) && !$request->area_id){
             abort(400,'Area is mandatory');
         }
         $period = CarbonPeriod::create($request->from, $request->to);
@@ -721,7 +721,7 @@ class OrderController extends Controller
 
         $place = Place::find($request->place_id);
         $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
-        if((!$is_bill_take_away && !$request->take_away) && $request->area_id){
+        if((!$is_bill_take_away && !$request->take_away) && !$request->area_id){
             abort(400,'Area is mandatory');
         }
         $period = CarbonPeriod::create($request->from, $request->to);
@@ -748,7 +748,7 @@ class OrderController extends Controller
         ]);
         $place = Place::find($request->place_id);
         $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
-        if((!$is_bill_take_away && !$request->take_away) && $request->area_id){
+        if((!$is_bill_take_away && !$request->take_away) && !$request->area_id){
             abort(400,'Area is mandatory');
         }
         $request_date = Carbon::parse($request->date);
@@ -777,7 +777,7 @@ class OrderController extends Controller
         ]);
         $place = Place::find($request->place_id);
         $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
-        if((!$is_bill_take_away && !$request->take_away) && $request->area_id){
+        if((!$is_bill_take_away && !$request->take_away) && !$request->area_id){
             abort(400,'Area is mandatory');
         }
         $request_date = Carbon::parse($request->date);
@@ -910,7 +910,7 @@ class OrderController extends Controller
 
         $place = Place::find($request->place_id);
         $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
-        if((!$is_bill_take_away && !$request->is_take_away) && $request->area_id){
+        if((!$is_bill_take_away && !$request->is_take_away) && !$request->area_id){
             abort(400,'Area is mandatory');
         }
         $customer_deny_register = (bool)$place->setting('customer-deny-register');

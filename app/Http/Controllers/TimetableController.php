@@ -258,7 +258,7 @@ class TimetableController extends Controller
                     'date' => $date,
                     'from' => $item->start_time,
                     'to' => $item->end_time,
-                    'tableplan_id' => $item->tableplan_id ?? $default_tableplan ? $default_tableplan->id : null,
+                    'tableplan_id' => $item->tableplan_id ?? ($default_tableplan ? $default_tableplan->id : null),
                     'booking_limits' => $item->booking_limits,
                     'length' => $item->length,
                     'min_time_before' => $item->min_time_before,

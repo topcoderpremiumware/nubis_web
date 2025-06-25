@@ -13,7 +13,7 @@ use phpDocumentor\Reflection\Types\Integer;
 class VerifoneGateway
 {
     private string $url;
-    private Integer $user_id;
+    private int $user_id;
     private Terminal $terminal;
     private string $currency;
     private string $service_id;

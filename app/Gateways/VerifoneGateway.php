@@ -274,7 +274,7 @@ class VerifoneGateway
     {
         try{
 //            $pay_service_id = Cache::get('verifone_pay_'.$order_id.'_service');
-            $result = $this->request(['url' => 'abort', 'method' => 'post', 'headers' => ['x-site-entity-id' => $this->entityUID],
+            $result = $this->request(['url' => 'transactionReport', 'method' => 'post', 'headers' => ['x-site-entity-id' => $this->entityUID],
                 'body' => [
                     "MessageHeader" => [
                         "MessageClass" => "SERVICE",
@@ -363,7 +363,7 @@ class VerifoneGateway
         return false;
     }
 
-    private function request($data): bool|array
+    private function request($data): bool|array|null
     {
         $method = $data['method'];
         $response = Http::timeout(60)

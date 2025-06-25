@@ -365,13 +365,14 @@ class VerifoneGateway
 
     private function request($data): bool|array
     {
+        $method = $data['method'];
         $response = Http::timeout(60)
             ->withHeaders([
                 'Accept' => '*/*',
                 'Authorization' => 'Basic '.$this->token,
                 ...($data['headers'] ?? [])
         ])->withBody($data['body'] ?? [],'application/json; charset=utf-8')
-            ->$data['method']($this->url.$data['url']);
+            ->$method($this->url.$data['url']);
 
         if($response->status() == 200){
             $data = json_decode($response->body(),true);

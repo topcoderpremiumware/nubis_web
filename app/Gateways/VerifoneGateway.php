@@ -8,7 +8,6 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\Types\Integer;
 
 class VerifoneGateway
 {
@@ -370,7 +369,7 @@ class VerifoneGateway
             ->withHeaders([
                 'Accept' => '*/*',
                 'Authorization' => 'Basic '.$this->token,
-                ...$data['headers']
+                ...($data['headers'] ?? [])
         ])->withBody($data['body'],'application/json; charset=utf-8')
             ->$data['method']($this->url.$data['url']);
 

@@ -185,7 +185,7 @@ class TimetableController extends Controller
     public static function get_working_by_area_and_date($area_id, $date, $for_admin = false)
     {
         $default_tableplan = null;
-        if(!$for_admin){
+        if($area_id){
             $area = Area::find($area_id);
             if(!$area) return [];
             $default_tableplan = $area->place->tableplans()->first();
@@ -195,8 +195,13 @@ class TimetableController extends Controller
         $without_year = $date_arr[1].'-'.$date_arr[2];
         $week_day = date('w',strtotime($date));
 
-        $working = Timetable::where('area_id', $area_id)
-            ->where(function ($query) use ($date,$without_year) {
+        $working = Timetable::query();
+        if($area_id){
+            $working = $working->where('area_id', $area_id);
+        }else{
+            $working = $working->where('is_take_away', 1);
+        }
+        $working = $working->where(function ($query) use ($date,$without_year) {
                 $query->where(function ($query) use ($date) {
                     $query->where(function ($query) use ($date) {
                         $query->whereDate('start_date', '<=', $date)
@@ -217,8 +222,13 @@ class TimetableController extends Controller
             })->where('status', 'working')
             ->get();
 
-        $non_working = Timetable::where('area_id', $area_id)
-            ->where(function ($query) use ($date,$without_year) {
+        $non_working = Timetable::query();
+        if($area_id){
+            $non_working = $non_working->where('area_id', $area_id);
+        }else{
+            $non_working = $non_working->where('is_take_away', 1);
+        }
+        $non_working = $non_working->where(function ($query) use ($date,$without_year) {
                 $query->where(function ($query) use ($date) {
                     $query->where(function ($query) use ($date) {
                         $query->whereDate('start_date', '<=', $date)
@@ -248,7 +258,7 @@ class TimetableController extends Controller
                     'date' => $date,
                     'from' => $item->start_time,
                     'to' => $item->end_time,
-                    'tableplan_id' => $item->tableplan_id ?? $default_tableplan->id,
+                    'tableplan_id' => $item->tableplan_id ?? $default_tableplan ? $default_tableplan->id : null,
                     'booking_limits' => $item->booking_limits,
                     'length' => $item->length,
                     'min_time_before' => $item->min_time_before,
@@ -390,9 +400,9 @@ class TimetableController extends Controller
             abort(400,'It\'s not your place');
         }
         $place = Place::find($request->place_id);
-
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
         $timetable = Timetable::where('place_id',$request->place_id);
-        if(!$place->is_bill_paid(['take_away'])){
+        if(!$is_bill_take_away){
             $timetable = $timetable->where('area_id',$request->area_id);
         }
         $timetable = $timetable->where('start_date',$request->date)
@@ -443,9 +453,9 @@ class TimetableController extends Controller
         }
 
         $place = Place::find($request->place_id);
-
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
         $timetable = Timetable::where('place_id',$request->place_id);
-        if(!$place->is_bill_paid(['take_away'])){
+        if(!$is_bill_take_away){
             $timetable = $timetable->where('area_id',$request->area_id);
         }
         $timetable = $timetable->where('start_date',$request->date)
@@ -481,9 +491,9 @@ class TimetableController extends Controller
         }
 
         $place = Place::find($request->place_id);
-
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
         $timetable = Timetable::where('place_id',$request->place_id);
-        if(!$place->is_bill_paid(['take_away'])){
+        if(!$is_bill_take_away){
             $timetable = $timetable->where('area_id',$request->area_id);
         }
         $timetable = $timetable->where('start_date',$request->date)

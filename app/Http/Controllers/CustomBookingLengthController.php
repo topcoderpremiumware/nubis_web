@@ -40,7 +40,8 @@ class CustomBookingLengthController extends Controller
         ]);
 
         $place = Place::find($request->place_id);
-        if(!$place->is_bill_paid(['take_away']) && (!$request->area_ids || count($request->area_ids) === 0)){
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
+        if(!$is_bill_take_away && (!$request->area_ids || count($request->area_ids) === 0)){
             abort(400,'Area is mandatory');
         }
 
@@ -91,8 +92,8 @@ class CustomBookingLengthController extends Controller
         $this->syncCourses($request, $custom_booking_length);
 
         Log::add($request,'create-custom_booking_length','Created custom booking length #'.$custom_booking_length->id);
-
-        if(!$place->is_bill_paid(['take_away'])) $custom_booking_length->areas()->sync($request->area_ids);
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
+        if(!$is_bill_take_away) $custom_booking_length->areas()->sync($request->area_ids);
 
         return response()->json($custom_booking_length);
     }
@@ -121,7 +122,8 @@ class CustomBookingLengthController extends Controller
         ]);
 
         $place = Place::find($request->place_id);
-        if(!$place->is_bill_paid(['take_away']) && (!$request->area_ids || count($request->area_ids) === 0)){
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
+        if(!$is_bill_take_away && (!$request->area_ids || count($request->area_ids) === 0)){
             abort(400,'Area is mandatory');
         }
 
@@ -179,7 +181,8 @@ class CustomBookingLengthController extends Controller
 
         if($res){
             $custom_booking_length = CustomBookingLength::find($id);
-            if(!$place->is_bill_paid(['take_away'])) $custom_booking_length->areas()->sync($request->area_ids);
+            $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
+            if(!$is_bill_take_away) $custom_booking_length->areas()->sync($request->area_ids);
             return response()->json($custom_booking_length);
         }else{
             return response()->json(['message' => 'Custom booking length not updated'],400);
@@ -278,7 +281,7 @@ class CustomBookingLengthController extends Controller
             'seats' => 'required|integer'
         ]);
         $place = \App\Models\Place::find($request->place_id);
-        $is_bill_take_away = $place->is_bill_paid(['take_away']) || $request->take_away;
+        $is_bill_take_away = ($place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full'])) || $request->take_away;
         if(!$is_bill_take_away && $request->area_id){
             abort(400,'Area is mandatory');
         }
@@ -289,7 +292,7 @@ class CustomBookingLengthController extends Controller
         ], 400);
 
         // For take_away tariff need full time without area, so let it be admin
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),!$request->area_id);
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"));
         if(empty($working_hours)) abort(400,'Non-working day');
 
         $time_from = $request_date->copy();
@@ -398,56 +401,59 @@ class CustomBookingLengthController extends Controller
                         if(!$is_max_seats || !$is_max_books) continue;
                     }
 
-                    foreach ($free_tables as $tables) {
-                        foreach ($tables as $table) {
-                            if(!array_key_exists('seats',$table)) continue;
-                            if($table['seats'] < $request->seats) continue;
-                            if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request->seats) continue;
-                            if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
-                                $reserv_to = $time->copy()->addMinutes($custom_length->length);
-                                $reserv_from = $time->copy();
+                    if(!$is_bill_take_away){
+                        foreach ($free_tables as $tables) {
+                            foreach ($tables as $table) {
+                                if(!array_key_exists('seats',$table)) continue;
+                                if($table['seats'] < $request->seats) continue;
+                                if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request->seats) continue;
+                                if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                                    $reserv_to = $time->copy()->addMinutes($custom_length->length);
+                                    $reserv_from = $time->copy();
 
-                                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
-                                    $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
-                                    if(array_key_exists('ordered', $table['time'][$i])){
-                                        continue 2;
+                                    for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                        $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
+                                        if(array_key_exists('ordered', $table['time'][$i])){
+                                            continue 2;
+                                        }
                                     }
-                                }
-                                $logs[$time->copy()->toString()] = $table['number'];
-                                $logs['tables'][$table['number']] = $table;
-                                array_push($times,$time->copy());
-                                break 2;
-                            }
-                        }
-                        $groups_table_seats = [];
-                        $groups_tables = [];
-                        foreach ($tables as $table) {
-                            if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request->seats) continue;
-                            if(!array_key_exists('grouped',$table)) continue;
-                            if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
-                                $group_id = $table['time'][0]['group'];
-                                $reserv_to = $time->copy()->addMinutes($custom_length->length);
-                                $reserv_from = $time->copy();
-
-                                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
-                                    $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
-                                    if(array_key_exists('ordered', $table['time'][$i])){
-                                        continue 2;
-                                    }
-                                }
-
-                                if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
-                                $groups_table_seats[$group_id] += $table['seats'];
-                                $groups_tables[$group_id][] = $table['number'];
-                                if($groups_table_seats[$group_id] >= $request->seats){
-                                    $logs[$time->copy()->toString().' g'] = json_encode($groups_tables[$group_id]).', group_seats='.$groups_table_seats[$group_id].', order_seats='.$request->seats;
+                                    $logs[$time->copy()->toString()] = $table['number'];
+                                    $logs['tables'][$table['number']] = $table;
                                     array_push($times,$time->copy());
                                     break 2;
                                 }
                             }
-                        }
-                    }
+                            $groups_table_seats = [];
+                            $groups_tables = [];
+                            foreach ($tables as $table) {
+                                if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request->seats) continue;
+                                if(!array_key_exists('grouped',$table)) continue;
+                                if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                                    $group_id = $table['time'][0]['group'];
+                                    $reserv_to = $time->copy()->addMinutes($custom_length->length);
+                                    $reserv_from = $time->copy();
 
+                                    for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                        $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
+                                        if(array_key_exists('ordered', $table['time'][$i])){
+                                            continue 2;
+                                        }
+                                    }
+
+                                    if(!array_key_exists($group_id, $groups_table_seats)) $groups_table_seats[$group_id] = 0;
+                                    $groups_table_seats[$group_id] += $table['seats'];
+                                    $groups_tables[$group_id][] = $table['number'];
+                                    if($groups_table_seats[$group_id] >= $request->seats){
+                                        $logs[$time->copy()->toString().' g'] = json_encode($groups_tables[$group_id]).', group_seats='.$groups_table_seats[$group_id].', order_seats='.$request->seats;
+                                        array_push($times,$time->copy());
+                                        break 2;
+                                    }
+                                }
+                            }
+                        }
+                    }else{
+                        array_push($times,$time->copy());
+                    }
                 }
             }
             $times = array_values(array_unique($times));

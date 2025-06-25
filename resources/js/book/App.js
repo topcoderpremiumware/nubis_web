@@ -104,8 +104,9 @@ const App = () => {
     })
   }
 
+  const blockTypeList = ['helloblock','mainblock','areablock','secondblock','lastblock']
   const handleChangeItem = () => {
-    if(blockType === 'mainblock' && !showSelectAreas) {
+    if(blockTypeList[ref.current?.state.selectedItem] === 'mainblock' && !showSelectAreas) {
       ref.current?.moveTo(3)
     } else {
       ref.current?.increment();
@@ -114,7 +115,7 @@ const App = () => {
 
   const handlePrevItem = (e) => {
     e.preventDefault()
-    if(blockType === 'secondblock' && !showSelectAreas) {
+    if(blockTypeList[ref.current?.state.selectedItem] === 'secondblock' && !showSelectAreas) {
       ref.current?.moveTo(1)
     } else {
       ref.current?.decrement();
@@ -367,6 +368,8 @@ const App = () => {
       }
       if (availableAreas.length === 1) {
         localStorage.setItem('area_id', availableAreas[0].id)
+      }else{
+        localStorage.removeItem('area_id')
       }
     }).catch(error => {
       console.log("Error: ", error);

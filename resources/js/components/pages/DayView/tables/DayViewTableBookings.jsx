@@ -124,8 +124,8 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
           item.tables = item.is_take_away ? '' : item.table_ids.join(', ')
           item.order_date = Moment.utc(item.created_at).local().format('YYYY-MM-DD HH:mm') // removed local
           item.take_away = item.is_take_away ? t('yes') : t('no')
-          item.area_name = item.area.name
-          item.tableplan_name = item.tableplan.name
+          item.area_name = item.area?.name
+          item.tableplan_name = item.tableplan?.name
           item.menu = item.custom_booking_length_id ? item.custom_booking_length.name : ''
           item.amount = item.marks.hasOwnProperty('amount') ? item.marks['amount'] : ''
           item.code = item.marks.hasOwnProperty('giftcard_code') ? item.marks['giftcard_code'] : ''
@@ -138,6 +138,7 @@ export default function DayViewTableBookings({ setSelectedOrder }) {
         eventBus.dispatch("dayViewOrdersLoaded",{orders: orders, columns: columns(), pdfTitle: t('Bookings')});
         setLoading(false)
       }).catch(error => {
+        console.log('getOrders::error',error)
       })
     }else{
       setOrders([])

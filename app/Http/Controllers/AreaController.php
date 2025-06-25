@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\Log;
+use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -99,6 +100,10 @@ class AreaController extends Controller
 
     public function getAllByPlace($place_id, Request $request)
     {
+        $place = Place::find($place_id);
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
+        if($is_bill_take_away || $request->take_away) return response()->json([]);
+
         $query = Area::where('place_id',$place_id);
         if(!$request->has('all'))
             $query->where('online_available',1);

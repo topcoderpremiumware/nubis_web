@@ -576,14 +576,15 @@ class OrderController extends Controller
             'to' => 'required|date_format:Y-m-d',
         ]);
         $place = Place::find($request->place_id);
-        if((!$place->is_bill_paid(['take_away']) && !$request->take_away) && $request->area_id){
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
+        if((!$is_bill_take_away && !$request->take_away) && $request->area_id){
             abort(400,'Area is mandatory');
         }
         $period = CarbonPeriod::create($request->from, $request->to);
         $result = [];
         foreach ($period as $date) {
             if($date->lt($place->country->timeNow()->setTime(0,0,0))) continue;
-            $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"),!$request->area_id);
+            $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"));
             if(empty($working_hours)) continue;
             $time_from = $date->copy();
             $time_from->setTime(0, 0, 0);
@@ -626,8 +627,7 @@ class OrderController extends Controller
             for($time;$time->lt($end);$time->addMinutes(15)){
                 if($time->lt($place->country->timeNow()->addMinutes($working_hour['min_time_before']))) continue;
                 $indexFrom = intval($time->format('H'))*4 + floor(intval($time->format('i'))/15);
-                if(array_key_exists($working_hour['tableplan_id'],$free_tables)) {
-
+                if(array_key_exists($working_hour['tableplan_id'],$free_tables) || !$area_id) {
                     if(array_key_exists('booking_limits', $working_hour) && is_array($working_hour['booking_limits']) &&
                         array_key_exists($indexFrom, $working_hour['booking_limits'])){
                         $timeOrders_seats = 0;
@@ -648,54 +648,59 @@ class OrderController extends Controller
                         if(!$is_max_seats || !$is_max_books) continue;
                     }
 
-                    foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
-                        if(!array_key_exists('seats',$table)) continue;
-                        if($table['seats'] < $request_seats) continue;
-                        if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request_seats) continue;
-                        if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
-                            $reserv_to = $time->copy()->addMinutes($working_hour['length']);
-                            $reserv_from = $time->copy();
+                    if($area_id){
+                        foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
+                            if(!array_key_exists('seats',$table)) continue;
+                            if($table['seats'] < $request_seats) continue;
+                            if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request_seats) continue;
+                            if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                                $reserv_to = $time->copy()->addMinutes($working_hour['length']);
+                                $reserv_from = $time->copy();
 
-                            for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
-                                $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
-                                if(array_key_exists('ordered', $table['time'][$i])){
-                                    continue 2;
+                                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                    $i = intval($reserv_from->format('H'))*4 + floor(intval($reserv_from->format('i'))/15);
+                                    if(array_key_exists('ordered', $table['time'][$i])){
+                                        continue 2;
+                                    }
                                 }
-                            }
 
-                            array_push($free_time, $time->copy());
-                            break;
-                        }
-                    }
-
-                    $groups_table_seats = [];
-                    $groups_tables = [];
-                    foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
-                        if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request_seats) continue;
-                        if(!array_key_exists('grouped',$table)) continue;
-                        if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
-                            $group_id = $table['time'][0]['group'];
-                            $reserv_to = $time->copy()->addMinutes($working_hour['length']);
-                            $reserv_from = $time->copy();
-
-                            for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
-                                $i = intval($reserv_from->format('H')) * 4 + floor(intval($reserv_from->format('i')) / 15);
-                                if (array_key_exists('ordered', $table['time'][$i])) {
-                                    continue 2;
-                                }
-                            }
-
-                            if(!array_key_exists($group_id, $groups_table_seats)){
-                                $groups_tables[$group_id] = [];
-                                $groups_table_seats[$group_id] = 0;
-                            }
-                            $groups_tables[$group_id][] = $table;
-                            $groups_table_seats[$group_id] += $table['seats'];
-                            if($groups_table_seats[$group_id] >= $request_seats) {
                                 array_push($free_time, $time->copy());
                                 break;
                             }
                         }
+
+
+                        $groups_table_seats = [];
+                        $groups_tables = [];
+                        foreach ($free_tables[$working_hour['tableplan_id']] as $table) {
+                            if($table['time'][0]['min_seats'] > 0 && $table['time'][0]['min_seats'] > $request_seats) continue;
+                            if(!array_key_exists('grouped',$table)) continue;
+                            if (!array_key_exists('ordered', $table['time'][$indexFrom])) {
+                                $group_id = $table['time'][0]['group'];
+                                $reserv_to = $time->copy()->addMinutes($working_hour['length']);
+                                $reserv_from = $time->copy();
+
+                                for ($reserv_from; $reserv_from->lt($reserv_to); $reserv_from->addMinutes(15)) {
+                                    $i = intval($reserv_from->format('H')) * 4 + floor(intval($reserv_from->format('i')) / 15);
+                                    if (array_key_exists('ordered', $table['time'][$i])) {
+                                        continue 2;
+                                    }
+                                }
+
+                                if(!array_key_exists($group_id, $groups_table_seats)){
+                                    $groups_tables[$group_id] = [];
+                                    $groups_table_seats[$group_id] = 0;
+                                }
+                                $groups_tables[$group_id][] = $table;
+                                $groups_table_seats[$group_id] += $table['seats'];
+                                if($groups_table_seats[$group_id] >= $request_seats) {
+                                    array_push($free_time, $time->copy());
+                                    break;
+                                }
+                            }
+                        }
+                    }else{
+                        array_push($free_time, $time->copy());
                     }
                 }
             }
@@ -715,16 +720,18 @@ class OrderController extends Controller
         ]);
 
         $place = Place::find($request->place_id);
-        if((!$place->is_bill_paid(['take_away']) && !$request->take_away) && $request->area_id){
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
+        if((!$is_bill_take_away && !$request->take_away) && $request->area_id){
             abort(400,'Area is mandatory');
         }
         $period = CarbonPeriod::create($request->from, $request->to);
+
         $result = [];
         foreach ($period as $date) {
             if($date->lt($place->country->timeNow()->setTime(0,0,0))) continue;
-            $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"),!$request->area_id);
+            $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$date->format("Y-m-d"));
             if(empty($working_hours)) continue;
-            if($this->getFreeTables(collect([]), $working_hours, $request->seats)){
+            if($this->getFreeTables(collect([]), $working_hours, $request->seats) || !$request->area_id){
                 array_push($result,$date);
             }
         }
@@ -740,7 +747,8 @@ class OrderController extends Controller
             'date' => 'required|date_format:Y-m-d',
         ]);
         $place = Place::find($request->place_id);
-        if((!$place->is_bill_paid(['take_away']) && !$request->take_away) && $request->area_id){
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
+        if((!$is_bill_take_away && !$request->take_away) && $request->area_id){
             abort(400,'Area is mandatory');
         }
         $request_date = Carbon::parse($request->date);
@@ -748,7 +756,7 @@ class OrderController extends Controller
             'message' => 'Date must be today and later'
         ], 400);
 
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),!$request->area_id);
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"));
         if(empty($working_hours)) return response()->json([
             'message' => 'Non-working day'
         ], 400);
@@ -768,7 +776,8 @@ class OrderController extends Controller
             'date' => 'required|date_format:Y-m-d',
         ]);
         $place = Place::find($request->place_id);
-        if((!$place->is_bill_paid(['take_away']) && !$request->take_away) && $request->area_id){
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
+        if((!$is_bill_take_away && !$request->take_away) && $request->area_id){
             abort(400,'Area is mandatory');
         }
         $request_date = Carbon::parse($request->date);
@@ -776,7 +785,7 @@ class OrderController extends Controller
             'message' => 'Date must be today and later'
         ], 400);
 
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),($request->has('admin') || !$request->area_id));
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$request_date->format("Y-m-d"),$request->has('admin'));
         if(empty($working_hours)) return response()->json([
             'message' => 'Non-working day'
         ], 400);
@@ -900,7 +909,8 @@ class OrderController extends Controller
         ]);
 
         $place = Place::find($request->place_id);
-        if((!$place->is_bill_paid(['take_away']) && !$request->is_take_away) && $request->area_id){
+        $is_bill_take_away = $place->is_bill_paid(['take_away']) && !$place->is_bill_paid(['full']);
+        if((!$is_bill_take_away && !$request->is_take_away) && $request->area_id){
             abort(400,'Area is mandatory');
         }
         $customer_deny_register = (bool)$place->setting('customer-deny-register');
@@ -918,7 +928,7 @@ class OrderController extends Controller
             'message' => 'Time must be in the future'
         ], 400);
 
-        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$reservation_time->format("Y-m-d"),!$request->area_id);
+        $working_hours = TimetableController::get_working_by_area_and_date($request->area_id,$reservation_time->format("Y-m-d"));
         if(empty($working_hours)) return response()->json([
             'message' => 'Non-working day'
         ], 400);

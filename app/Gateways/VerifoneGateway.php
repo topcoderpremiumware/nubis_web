@@ -28,7 +28,7 @@ class VerifoneGateway
         $this->service_id = $this->generateRandom10DigitString();
         $this->token = base64_encode($this->terminal->user.':'.$this->terminal->password);
         $status = $this->status();
-        $this->entityUID = $status ? $status['entityUID'] : null;
+        $this->entityUID = $status ? $status['entityUID'] : '';
     }
 
     private function generateRandom10DigitString(): string
@@ -49,7 +49,7 @@ class VerifoneGateway
         if(isset($result['Response']['Result']) && $result['Response']['Result'] === 'SUCCESS'){
             $data = null;
             foreach ($result['POIStatus'] as $item) {
-                if (isset($item['POIID'], $item['POIState']) && $item['POIID'] === $this->terminal->serial && $item['POIState'] === 'CONNECTED') {
+                if (isset($item['POIID'], $item['POIState']) && $item['POIID'] === $this->terminal->serial && in_array($item['POIState'],['CONNECTED','ACTIVE'])) {
                     $data = $item;
                     break;
                 }

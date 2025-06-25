@@ -2,6 +2,7 @@
 
 namespace App\Gateways;
 
+use App\Models\Check;
 use App\Models\Terminal;
 use Carbon\Carbon;
 use Illuminate\Http\Client\ConnectionException;
@@ -213,13 +214,13 @@ class VerifoneGateway
                             ]
                         ],
                         "ReversalReason" => "CUSTCANCEL",
-                      // "CustomerOrder" => [
-                      //   "CustomerOrderID" => "123",
-                      //   "StartDate" => "2021-02-25T07:42:12.580Z",
-                      //   "ForecastedAmount" => 6.18,
-                      //   "OpenOrderState" => true,
-                      //   "Currency" => "USD"
-                      // ]
+                        "CustomerOrder" => [
+                            "CustomerOrderID" => $order_id,
+                            "StartDate" => $pay_transaction1,
+                            "ForecastedAmount" => Check::find($order_id)->total,
+                            "OpenOrderState" => true,
+                            "Currency" => $this->currency
+                        ]
                     ]
                 ]]);
             return $result;

@@ -47,7 +47,7 @@ class VerifonePayment implements ShouldQueue
         Log::info('VerifonePayment::handle',['$pay_data' => $pay_data]);
         if($pay_data){
             // 'Success' | 'Failure'
-            if($pay_data['PaymentResponse']['Response']['Result'] === 'Success'){
+            if($pay_data['PaymentResponse']['Response']['Result'] === 'SUCCESS'){
                 $PaymentReceipt = $pay_data['PaymentResponse']['PaymentReceipt'];
                 $check = Check::find($this->check_id);
                 $check->bank_log = $PaymentReceipt['OutputContent']['OutputText'];
@@ -57,16 +57,16 @@ class VerifonePayment implements ShouldQueue
                 // 'Cancel' | 'Refusal' | 'NotAllowed'
                 $condition = $pay_data['PaymentResponse']['Response']['ErrorCondition'];
                 switch ($condition){
-                    case 'Cancel':
+                    case 'CANCEL':
                         event(new TerminalError($this->terminal_id,'The payment was cancelled'));
                         break;
-                    case 'Refusal':
+                    case 'REFUSAL':
                         event(new TerminalError($this->terminal_id,'The payment was refused'));
                         break;
-                    case 'NotAllowed':
+                    case 'NOT_ALLOWED':
                         event(new TerminalError($this->terminal_id,'The payment was not allowed without auth'));
                         break;
-                    case 'Aborted':
+                    case 'ABORTED':
                         event(new TerminalError($this->terminal_id,'The payment was aborted'));
                         break;
                     default:

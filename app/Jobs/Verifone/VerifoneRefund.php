@@ -57,16 +57,16 @@ class VerifoneRefund implements ShouldQueue
                 // 'Cancel' | 'Refusal' | 'NotAllowed'
                 $condition = $refund_data['PaymentResponse']['Response']['ErrorCondition'];
                 switch ($condition){
-                    case 'Cancel':
+                    case 'CANCEL':
                         event(new TerminalError($this->terminal_id,'The payment was cancelled'));
                         break;
-                    case 'Refusal':
+                    case 'REFUSAL':
                         event(new TerminalError($this->terminal_id,'The payment was refused'));
                         break;
-                    case 'NotAllowed':
+                    case 'NOT_ALLOWED':
                         event(new TerminalError($this->terminal_id,'The payment was not allowed without auth'));
                         break;
-                    case 'Aborted':
+                    case 'ABORTED':
                         event(new TerminalError($this->terminal_id,'The payment was aborted'));
                         break;
                     default:

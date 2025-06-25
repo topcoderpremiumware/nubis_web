@@ -371,7 +371,7 @@ class VerifoneGateway
                 'Accept' => '*/*',
                 'Authorization' => 'Basic '.$this->token,
                 ...($data['headers'] ?? [])
-        ])->withBody($data['body'] ?? [],'application/json; charset=utf-8')
+        ])->withBody(json_encode($data['body'] ?? []),'application/json; charset=utf-8')
             ->$method($this->url.$data['url']);
 
         if($response->status() == 200){

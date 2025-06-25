@@ -201,7 +201,6 @@ export default function PosCart(props){
         setChecks(prev => ([...tempChecks]))
       }
       setPaymentMethodOpen(false)
-      setSendReceiptOpen(true)
       eventBus.dispatch("notification", {type: 'success', message: 'Cart saved successfully'});
       return true
     }).catch(error => {
@@ -297,7 +296,10 @@ export default function PosCart(props){
       tempChecks[selectedCheckIndex] = {...tempChecks[selectedCheckIndex], ...data}
       setChecks(prev => ([...tempChecks]))
       saveCheck(tempChecks[selectedCheckIndex],selectedCheckIndex).then((res) => {
-        if(res) openPDF()
+        if(res){
+          setSendReceiptOpen(true)
+          openPDF()
+        }
       })
     }
   }

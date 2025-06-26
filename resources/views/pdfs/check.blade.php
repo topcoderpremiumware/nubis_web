@@ -116,10 +116,16 @@
     @endphp
     @if($check->bank_log)
         <div style="float:none;clear:both;"></div>
-        @foreach($check->bank_log['Cardholder']['Optional']['ReceiptString'] as $index => $line)
-            @if($index < 7) @continue @endif
-            <pre>{{$line}}</pre>
-        @endforeach
+        @if(array_key_exists('Cardholder',$check->bank_log))
+            @foreach($check->bank_log['Cardholder']['Optional']['ReceiptString'] as $index => $line)
+                @if($index < 7) @continue @endif
+                <pre>{{$line}}</pre>
+            @endforeach
+        @elseif(isset($array[0]) && array_key_exists('Text', $array[0]))
+            @foreach($check->bank_log as $index => $line)
+                <pre>{{$line['Text']}}</pre>
+            @endforeach
+        @endif
     @endif
     <div style="float:none;clear:both;"></div>
 </body>

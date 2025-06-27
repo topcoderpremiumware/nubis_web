@@ -2,6 +2,7 @@
 
 namespace App\Gateways;
 
+use App\Events\TerminalError;
 use App\Models\Terminal;
 use Carbon\Carbon;
 use Illuminate\Http\Client\ConnectionException;
@@ -89,6 +90,7 @@ class SwedbankGateway
             return $result;
         }catch (ConnectionException $e){
             Log::error('SwedbankGateway::pay',[$e->getMessage()]);
+            event(new TerminalError($this->terminal->id, 'Connection error: '.$e->getMessage()));
         }
 
         return false;
